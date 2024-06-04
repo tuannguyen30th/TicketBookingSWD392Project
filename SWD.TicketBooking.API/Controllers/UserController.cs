@@ -1,0 +1,275 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using SWD.TicketBooking.Repo.Common;
+using SWD.TicketBooking.Repo.Common.RequestModels;
+using SWD.TicketBooking.Repo.Helpers;
+using SWD.TicketBooking.Repo.Exceptions;
+using SWD.TicketBooking.Service.Services.IdentityService;
+using SWD.TicketBooking.Service.Services.EmailService;
+using SWD.TicketBooking.Service.Dtos.User;
+using SWD.TicketBooking.Service.Services.UserService;
+
+namespace SWD.TicketBooking.Controllers
+{
+    [Route("user")]
+    [ApiController]
+    public class UserController : ControllerBase
+    {
+        private ResponseDto _response;
+        private UserService _userService;
+        private readonly IdentityService _identityService;
+        private readonly EmailService _emailService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public UserController(UserService userService, IdentityService identityService, EmailService emailService, IWebHostEnvironment webHostEnvironment)
+        {
+            _userService = userService;
+            _identityService = identityService;
+            _emailService = emailService;
+            _webHostEnvironment = webHostEnvironment;
+            _response = new ResponseDto();
+
+        }
+        [HttpPost("send-otp-code")]
+        public async Task<ResponseDto> SendOTPCodeToEmail(SendOTPCodeEmailReq req)
+        {
+            try
+            {
+                             
+                var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
+
+                if (userResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    _response.Message = "Account does not exist!";
+                    return _response;
+                   /* BadRequest(new GenericResponse<bool>
+                    {
+                        Data = false,
+                        StatusCode = userResponse.StatusCode,
+                        Message = userResponse.Message
+                    });*/
+                }
+
+                var user = userResponse.Data;
+
+                if (user.OTPCode == "0" && user.IsVerified == true)
+                {
+                    _response.Message = "Account already exists!";
+                    return _response;
+
+                   /* BadRequest(new GenericResponse<bool>
+                    {
+                        Data = false,
+                        StatusCode = HttpStatusCode.BadRequest,
+                        Message = "Account already exists!"
+                    });*/
+                }
+
+                if (user.IsVerified == false)
+                {
+                    var otp = new Random().Next(100000, 999999);
+
+                    var mailData = new MailData()
+                    {
+                        EmailToId = req.Email,
+                        EmailToName = "TicketBookingWebSite",
+                        EmailBody = GenerateEmailBody(user.FullName, otp),
+                        EmailSubject = "OTP Verification"
+                    };
+
+                    var emailResult = await _emailService.SendEmailAsync(mailData);
+                    if (!emailResult)
+                    {
+                        throw new BadRequestException("Failed to send email.");
+                    }
+
+                    var createUser = new CreateUserReq
+                    {
+                        Email = req.Email,
+                        OTPCode = otp.ToString(),
+                    };
+
+                    var createUserResponse = await _userService.SendOTPCode(createUser);
+
+                    if (createUserResponse.returnModel.OTPCode != otp.ToString())
+                    {
+                        var mailUpdateData = new MailData()
+                        {
+                            EmailToId = req.Email,
+                            EmailToName = "TicketBookingWebSite",
+                            EmailBody = GenerateEmailBody(user.FullName, otp),
+                            EmailSubject = "OTP Verification"
+                        };
+
+                        var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
+                        if (!rsUpdate)
+                        {
+                            _response.Message = "Failed to send update email.";
+                            return _response;
+                        }
+                    }
+                    _response.Message = "Check your email and verify the OTP.";
+                    return _response;
+                   /* Ok(new GenericResponse<bool>
+                    {
+                        Data = true,
+                        StatusCode = HttpStatusCode.OK,
+                        Message = "Check your email and verify the OTP."
+                    });*/
+                }
+                _response.Message = "Error.";
+                return _response;
+
+               /* BadRequest(new GenericResponse<bool>
+                {
+                    Data = false,
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = "Error."
+                });*/
+            }
+
+            catch (Exception ex)
+            {
+                _response.Message = "An error occurred while sending OTP.";
+                return _response;
+               /* StatusCode((int)HttpStatusCode.InternalServerError, new GenericResponse<bool>
+                {
+                    Data = false,
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Message = "An error occurred while sending OTP."
+                });*/
+            }
+        }
+        [HttpPut("submit-otp")]
+        public async Task<IActionResult> SubmitOTP(SubmitOTPReq req)
+        {
+            try
+            {
+                var checkOTP = await _userService.SubmitOTP(req);
+                if (checkOTP.returnModel == null)
+                {
+                    return BadRequest(new GenericResponse<UserModel>
+                    {
+                        Data = null,
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        Message = checkOTP.message
+                    });
+
+                }
+                return Ok(new GenericResponse<UserModel>
+                {
+                    Data = checkOTP.returnModel,
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    Message = checkOTP.message
+                });
+            }
+            catch (Exception ex) {
+                return BadRequest(new GenericResponse<UserModel>
+                {
+                    Data = null,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+
+        }
+        [HttpGet]
+        public ActionResult GetALl()
+        {
+            return Ok("Ok");
+        }
+        private string GenerateEmailBody(string fullName, int otp)
+        {
+            return $@"
+   <body style=""display: flex; justify-content: center; align-items: center"">
+    <div>
+      <div
+        style=""
+          color: #536e88;
+          width: fit-content;
+          box-shadow: 0 2px 8px rgba(8, 120, 211, 0.2);
+          padding: 10px;
+          border-radius: 5px;
+        ""
+      >
+        <div
+          style=""
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 10px;
+            margin-top: 0px;
+            background-color: #3498db;
+            font-size: 0.875rem;
+            font-weight: bold;
+            color: #ffffff;
+          ""
+        ></div>
+
+        <h1 style=""text-align: center; color: #3498db"">
+          Chào mừng đến với
+          <span style=""color: #f99f41"">trạm của chúng tôi!</span>
+        </h1>
+
+        <div style=""text-align: center"">
+          <img
+            src=""https://img.freepik.com/free-vector/students-bus-transportation_24877-83765.jpg?size=338&ext=jpg&ga=GA1.1.553209589.1715040000&semt=ais""
+            alt=""logo""
+            width=""70""
+          />
+        </div>
+
+        <p style=""text-align: center; font-weight: bold; margin-top: 0"">
+          <span style=""color: #f99f41"">THE BUS </span
+          ><span style=""color: #3498db"">JOURNEY</span>
+        </p>
+
+        <div
+          style=""
+            width: fit-content;
+            margin: auto;
+            box-shadow: 0 2px 8px rgba(8, 120, 211, 0.2);
+            padding-top: 10px;
+            border-radius: 10px;
+          ""
+        >
+          <p>
+            Xin chào,
+            <span style=""font-weight: bold; color: #0d1226"">{fullName}</span>
+          </p>
+          <p>
+            <span style=""font-weight: bold"">THE BUS JOURNEY </span>xin thông báo
+            tài khoản của bạn đã được đăng kí thành công. <span></span>
+          </p>
+          <p>
+            <span>Mã xác thực của bạn là: </span
+            ><span style=""color: #0d1226; font-weight: bold"">{otp}</span>
+          </p>
+          <p>Xin chân thành cảm ơn vì bạn đã sử dụng dịch vụ của chúng tôi!</p>
+          <p>Hân hạnh,</p>
+          <p style=""font-weight: 700; color: #0d1226"">THE BUS JOURNEY</p>
+        </div>
+
+        <div
+          style=""
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            background-color: #3498db;
+            font-size: 0.875rem;
+            font-weight: bold;
+            color: #ffffff;
+          ""
+        >
+          © 2024 | Bản quyền thuộc về THE BUS JOURNEY.
+        </div>
+      </div>
+    </div>
+  </body>
+
+    ";
+        }
+
+    }
+}
