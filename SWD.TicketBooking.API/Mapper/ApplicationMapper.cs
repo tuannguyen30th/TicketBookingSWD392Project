@@ -25,6 +25,10 @@ namespace SWD.TicketBooking.API.Mapper
 
             //////Trip/////////
             CreateMap<PopularTripModel, PopularTripResponse>().ReverseMap();
+            CreateMap<FromCityToCityModel.CityModel, FromCityToCityRepsonse.CityResponse>().ReverseMap();
+            CreateMap<FromCityToCityModel.CityInfo, FromCityToCityRepsonse.CityInfo>().ReverseMap();
+            CreateMap<FeedbackRequestModel, FeedbackRequest>().ReverseMap();
+            CreateMap<FeedbackRequestModel, Feedback>().ReverseMap();
         }
     }
 }
