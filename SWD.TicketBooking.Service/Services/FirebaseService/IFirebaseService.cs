@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SWD.TicketBooking.Repo.Common;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Dtos.BackendService;
 using System;
 using System.Collections.Generic;
 using System.Linq;

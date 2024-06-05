@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.Repo.Common;
+using SWD.TicketBooking.API.Common;
 using SWD.TicketBooking.Repo.Exceptions;
 
 

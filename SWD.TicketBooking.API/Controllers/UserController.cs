@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using SWD.TicketBooking.Repo.Common;
-using SWD.TicketBooking.Repo.Common.RequestModels;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Service.Services.IdentityService;
 using SWD.TicketBooking.Service.Services.EmailService;
 using SWD.TicketBooking.Service.Dtos.User;
 using SWD.TicketBooking.Service.Services.UserService;
+using SWD.TicketBooking.Service.Dtos.Auth;
+using SWD.TicketBooking.API.Common.RequestModels;
+using SWD.TicketBooking.API.Common;
+using SWD.TicketBooking.API.Common.ResponseModels;
 
 namespace SWD.TicketBooking.Controllers
 {
@@ -31,41 +33,48 @@ namespace SWD.TicketBooking.Controllers
 
         }
         [HttpPost("send-otp-code")]
-        public async Task<ResponseDto> SendOTPCodeToEmail(SendOTPCodeEmailReq req)
+        public async Task<IActionResult> SendOTPCodeToEmail(SendOTPCodeEmailReq req)
         {
             try
             {
+                var resultFail = new SignUpResponse();
                              
                 var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
 
-                if (userResponse.StatusCode != HttpStatusCode.OK)
+                if (userResponse == null)
                 {
-                    _response.Message = "Account does not exist!";
-                    return _response;
-                   /* BadRequest(new GenericResponse<bool>
+                    
+                     resultFail = new SignUpResponse
                     {
-                        Data = false,
-                        StatusCode = userResponse.StatusCode,
-                        Message = userResponse.Message
-                    });*/
+                        Messages = "Account does not exist!"
+                    };
+                    return BadRequest(resultFail);
+                    /* BadRequest(new GenericResponse<bool>
+                     {
+                         Data = false,
+                         StatusCode = userResponse.StatusCode,
+                         Message = userResponse.Message
+                     });*/
                 }
 
-                var user = userResponse.Data;
-
-                if (user.OTPCode == "0" && user.IsVerified == true)
+                if (userResponse.OTPCode == "0" && userResponse.IsVerified == true)
                 {
-                    _response.Message = "Account already exists!";
-                    return _response;
-
-                   /* BadRequest(new GenericResponse<bool>
+                   
+                    resultFail = new SignUpResponse
                     {
-                        Data = false,
-                        StatusCode = HttpStatusCode.BadRequest,
-                        Message = "Account already exists!"
-                    });*/
+                        Messages = "Account does not exist!"
+                    };
+                    return BadRequest(resultFail);
+
+                    /* BadRequest(new GenericResponse<bool>
+                     {
+                         Data = false,
+                         StatusCode = HttpStatusCode.BadRequest,
+                         Message = "Account already exists!"
+                     });*/
                 }
 
-                if (user.IsVerified == false)
+                if (userResponse.IsVerified == false)
                 {
                     var otp = new Random().Next(100000, 999999);
 
@@ -73,7 +82,7 @@ namespace SWD.TicketBooking.Controllers
                     {
                         EmailToId = req.Email,
                         EmailToName = "TicketBookingWebSite",
-                        EmailBody = GenerateEmailBody(user.FullName, otp),
+                        EmailBody = GenerateEmailBody(userResponse.FullName, otp),
                         EmailSubject = "OTP Verification"
                     };
 
@@ -97,47 +106,60 @@ namespace SWD.TicketBooking.Controllers
                         {
                             EmailToId = req.Email,
                             EmailToName = "TicketBookingWebSite",
-                            EmailBody = GenerateEmailBody(user.FullName, otp),
+                            EmailBody = GenerateEmailBody(userResponse.FullName, otp),
                             EmailSubject = "OTP Verification"
                         };
 
                         var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
                         if (!rsUpdate)
                         {
-                            _response.Message = "Failed to send update email.";
-                            return _response;
+                            return BadRequest(new SignUpResponse
+                            {
+                                Messages = "Failed to send update email."
+                            });
+
                         }
                     }
-                    _response.Message = "Check your email and verify the OTP.";
-                    return _response;
-                   /* Ok(new GenericResponse<bool>
+                    
+                    return Ok(new SignUpResponse
                     {
-                        Data = true,
-                        StatusCode = HttpStatusCode.OK,
-                        Message = "Check your email and verify the OTP."
-                    });*/
+                        Messages = "Check your email and verify the OTP."
+                    });
+                    /* Ok(new GenericResponse<bool>
+                     {
+                         Data = true,
+                         StatusCode = HttpStatusCode.OK,
+                         Message = "Check your email and verify the OTP."
+                     });*/
                 }
-                _response.Message = "Error.";
-                return _response;
-
-               /* BadRequest(new GenericResponse<bool>
+                 resultFail = new SignUpResponse
                 {
-                    Data = false,
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Message = "Error."
-                });*/
+                    Messages = "Error."
+                };
+                return BadRequest(resultFail);
+
+                /* BadRequest(new GenericResponse<bool>
+                 {
+                     Data = false,
+                     StatusCode = HttpStatusCode.BadRequest,
+                     Message = "Error."
+                 });*/
             }
 
             catch (Exception ex)
             {
-                _response.Message = "An error occurred while sending OTP.";
-                return _response;
-               /* StatusCode((int)HttpStatusCode.InternalServerError, new GenericResponse<bool>
+               
+                var resultFail = new SignUpResponse
                 {
-                    Data = false,
-                    StatusCode = HttpStatusCode.InternalServerError,
-                    Message = "An error occurred while sending OTP."
-                });*/
+                    Messages = "An error occurred while sending OTP."
+                };
+                return BadRequest(resultFail);
+                /* StatusCode((int)HttpStatusCode.InternalServerError, new GenericResponse<bool>
+                 {
+                     Data = false,
+                     StatusCode = HttpStatusCode.InternalServerError,
+                     Message = "An error occurred while sending OTP."
+                 });*/
             }
         }
         [HttpPut("submit-otp")]
