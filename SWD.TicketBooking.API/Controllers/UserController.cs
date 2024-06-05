@@ -37,13 +37,20 @@ namespace SWD.TicketBooking.Controllers
 
         }
 
-        [HttpGet("Get-profile")]
-        public async Task<IActionResult> GetProfile(int id)
+        [HttpGet("Get-user-detail")]
+        public async Task<IActionResult> GetUserDetail(int id)
         {
-            var user = _mapper.Map<UserResponse>(await _userService.GetProfile(id));
+            var user = _mapper.Map<UserResponse>(await _userService.GetUserById(id));
             return Ok(user);
         }
 
+        [HttpPut("Update-user")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserReq req)
+        {
+            var map = _mapper.Map<UpdateUserModel>(req);
+            var user = await _userService.UpdateUser(id, map);
+            return Ok(user);
+        }
 
         [HttpPost("send-otp-code")]
         public async Task<IActionResult> SendOTPCodeToEmail(SendOTPCodeEmailReq req)

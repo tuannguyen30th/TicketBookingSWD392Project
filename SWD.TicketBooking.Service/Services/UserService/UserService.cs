@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
 using System.Net;
-
+using System.Runtime.CompilerServices;
 
 namespace SWD.TicketBooking.Service.Services.UserService
 {
@@ -140,7 +141,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
             }
         }
 
-        public async Task<UserModel> GetProfile(int id)
+        public async Task<UserModel> GetUserById(int id)
         {
             try
             {
@@ -151,6 +152,41 @@ namespace SWD.TicketBooking.Service.Services.UserService
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+        public async Task<(UpdateUserModel returnModel, string message)> UpdateUser(int id, UpdateUserModel updateUser)
+        {
+            try
+            {
+                var existedUser = await _userRepository.FindByCondition(x=> x.UserID == id).FirstOrDefaultAsync();
+                if (existedUser != null )
+                {
+                    if (SecurityUtil.Hash(updateUser.confirmPassword).Equals(existedUser.Password))
+                    {
+                        existedUser.UserName = updateUser.UserName;
+                        existedUser.Password = updateUser.Password;
+                        existedUser.FullName = updateUser.FullName;
+                        existedUser.Avatar = updateUser.Avatar;
+                        existedUser.Address = updateUser.Address;
+                        existedUser.PhoneNumber = updateUser.PhoneNumber;
+                        _userRepository.Update(existedUser);
+                        _userRepository.Commit();
+                        var update = _mapper.Map<UpdateUserModel>(existedUser);
+                        return (update, "OK");
+                    }
+                    else
+                    {
+                        throw new BadRequestException("Password is not true!");
+                    }
+                }
+                else
+                {
+                    throw new BadRequestException("User not found!");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
             }
         }
 
