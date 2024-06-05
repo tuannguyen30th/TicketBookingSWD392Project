@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Routing;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWD.TicketBooking.Repo.Entities
@@ -17,4 +18,6 @@ namespace SWD.TicketBooking.Repo.Entities
         public string Status { get; set; }
         public int OrderInRoute {  get; set; }
     }
+
+    
 }
