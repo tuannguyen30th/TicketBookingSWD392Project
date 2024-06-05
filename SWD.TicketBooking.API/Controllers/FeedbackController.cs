@@ -21,8 +21,8 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpPost("feedback-trip")]
         public async Task<IActionResult> CreateRating([FromForm] FeedbackRequest feedbackRequest)
         {
-            var map = _mapper.Map<FeedbackRequestModel>(feedbackRequest);
-            await _feedbackService.CreateRating(map);
+            var feedback = _mapper.Map<FeedbackRequestModel>(feedbackRequest);
+            await _feedbackService.CreateRating(feedback);
             return Ok();
         }
     }
