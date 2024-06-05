@@ -140,5 +140,19 @@ namespace SWD.TicketBooking.Service.Services.UserService
             }
         }
 
+        public async Task<UserModel> GetProfile(int id)
+        {
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(id);
+                var us = _mapper.Map<UserModel>(user);
+                return us;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }

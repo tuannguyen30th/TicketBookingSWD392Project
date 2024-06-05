@@ -11,6 +11,7 @@ using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common;
 using SWD.TicketBooking.API.Common.ResponseModels;
+using AutoMapper;
 
 namespace SWD.TicketBooking.Controllers
 {
@@ -23,15 +24,27 @@ namespace SWD.TicketBooking.Controllers
         private readonly IdentityService _identityService;
         private readonly EmailService _emailService;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public UserController(UserService userService, IdentityService identityService, EmailService emailService, IWebHostEnvironment webHostEnvironment)
+        private readonly IMapper _mapper;
+
+        public UserController(UserService userService, IdentityService identityService, EmailService emailService, IWebHostEnvironment webHostEnvironment, IMapper mapper)
         {
             _userService = userService;
             _identityService = identityService;
             _emailService = emailService;
             _webHostEnvironment = webHostEnvironment;
             _response = new ResponseDto();
+            _mapper = mapper;
 
         }
+
+        [HttpGet("Get-profile")]
+        public async Task<IActionResult> GetProfile(int id)
+        {
+            var user = _mapper.Map<UserResponse>(await _userService.GetProfile(id));
+            return Ok(user);
+        }
+
+
         [HttpPost("send-otp-code")]
         public async Task<IActionResult> SendOTPCodeToEmail(SendOTPCodeEmailReq req)
         {
