@@ -7,7 +7,7 @@ using RestSharp;
 using Microsoft.Extensions.Configuration;
 using SWD.TicketBooking.Repo.Repositories;
 using static SWD.TicketBooking.Service.Configuration.ConfigurationModel;
-using SWD.TicketBooking.Repo.Common;
+using SWD.TicketBooking.Service.Dtos.BackendService;
 
 namespace SWD.TicketBooking.Service.Services.FirebaseService
 {

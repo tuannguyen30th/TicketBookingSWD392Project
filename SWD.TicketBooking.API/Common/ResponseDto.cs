@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.TicketBooking.Repo.Common
+namespace SWD.TicketBooking.API.Common
 {
     public class ResponseDto
     {

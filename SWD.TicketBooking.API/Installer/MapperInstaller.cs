@@ -1,6 +1,6 @@
 ﻿
 using AutoMapper;
-using SWD.TicketBooking.Service.Mapper;
+using SWD.TicketBooking.API.Mapper;
 
 namespace SWD.TicketBooking.API.Installer
 {

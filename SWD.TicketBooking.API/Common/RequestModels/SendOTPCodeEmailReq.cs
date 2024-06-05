@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.TicketBooking.Repo.Common.RequestModels
+namespace SWD.TicketBooking.API.Common.RequestModels
 {
     public class SendOTPCodeEmailReq
     {

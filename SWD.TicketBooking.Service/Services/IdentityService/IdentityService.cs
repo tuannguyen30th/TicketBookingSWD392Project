@@ -10,7 +10,6 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Repo.Exceptions;
-using SWD.TicketBooking.Repo.Common.RequestModels;
 
 
 namespace SWD.TicketBooking.Service.Services.IdentityService;
@@ -28,7 +27,7 @@ public class IdentityService
         _userRoleRepository = userRoleRepository;
     }
 
-    public async Task<bool> Signup(SignUpRequest req)
+    public async Task<bool> Signup(SignUpModel req)
     {     
             try
             {

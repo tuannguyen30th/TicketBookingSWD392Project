@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SWD.TicketBooking.Repo.Common;
-using SWD.TicketBooking.Repo.Common.RequestModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
 using System.Net;
 
@@ -27,7 +26,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
             _userRoleRepository = userRoleRepository;
          
         }
-        public async Task<GenericResponse<UserModel>> GetUserByEmailForOTP(string email)
+        public async Task<UserModel> GetUserByEmailForOTP(string email)
         {
             try
             {
@@ -37,50 +36,25 @@ namespace SWD.TicketBooking.Service.Services.UserService
 
                     if (result == null)
                     {
-                        return new GenericResponse<UserModel>
-                        {
-                            Data = null,
-                            StatusCode = HttpStatusCode.NotFound,
-                            Message = "Account does not exist!"
-                        };
+                        throw new Exception();
                     }
 
                     if (result.OTPCode == "0" && result.IsVerified == true)
                     {
-                        return new GenericResponse<UserModel>
-                        {
-                            Data = null,
-                            StatusCode = HttpStatusCode.BadRequest,
-                            Message = "Account already exists!"
-                        };
+                        throw new Exception();
                     }
 
                     if (result.IsVerified == false)
                     {
-                        return new GenericResponse<UserModel>
-                        {
-                            Data = result,
-                            StatusCode = HttpStatusCode.OK,
-                            Message = "Get email successfully!"
-                        };
+                        return result;
                     }
 
-                    return new GenericResponse<UserModel>
-                    {
-                        Data = null,
-                        StatusCode = HttpStatusCode.BadRequest,
-                        Message = "Fail"
-                    };
-                }
+                    throw new Exception();
+            }
             
             catch (Exception ex)
             {
-                return new GenericResponse<UserModel>
-                {
-                    Data = null,
-                    StatusCode = HttpStatusCode.InternalServerError,
-                    Message = "An error occurred while retrieving the user."
-                };
+                throw new Exception(ex.Message);
             }
         }
         public async Task<UserModel> GetUserByEmail(string email)

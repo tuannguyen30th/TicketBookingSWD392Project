@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using SWD.TicketBooking.Repo.Common;
-using SWD.TicketBooking.Repo.Common.RequestModels;
-using SWD.TicketBooking.Repo.Common.ResponseModels;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Service.Services.IdentityService;
 using SWD.TicketBooking.Service.Services.EmailService;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Services.UserService;
+using SWD.TicketBooking.API.Common.RequestModels;
+using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.Common;
+using AutoMapper;
 
 namespace SWD.TicketBooking.Booking.API;
 
@@ -18,18 +19,17 @@ namespace SWD.TicketBooking.Booking.API;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private ResponseDto _response;
     private readonly IdentityService _identityService;
     private readonly EmailService _emailService;
-
     private readonly UserService _userService;
+    private readonly IMapper _mapper;
 
-    public AuthController(IdentityService identityService, UserService userService, EmailService emailService)
+    public AuthController(IdentityService identityService, UserService userService, EmailService emailService, IMapper mapper)
     {
         _identityService = identityService;
         _userService = userService;
         _emailService = emailService;
-        _response = new ResponseDto();
+        _mapper = mapper;
     }
 
     [AllowAnonymous]
@@ -38,46 +38,34 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var res = await _identityService.Signup(req);
+            var res = await _identityService.Signup(_mapper.Map<SignUpModel>(req));
             if (!res)
             {
                 var resultFail = new SignUpResponse
                 {
                     Messages = "Sign up fail"
                 };
-                return BadRequest(ApiResult<SignUpResponse>.Succeed(resultFail));
+                return BadRequest(resultFail);
             }
 
-            var result = new SignUpResponse
+            var resultSucess = new SignUpResponse
             {
                 Messages = "Sign up success"
             };
 
             var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
 
-            if (userResponse.StatusCode != HttpStatusCode.OK)
+            if (userResponse == null)
             {
-                return BadRequest(new GenericResponse<bool>
-                {
-                    Data = false,
-                    StatusCode = userResponse.StatusCode,
-                    Message = userResponse.Message
-                });
+                return BadRequest();
             }
 
-            var user = userResponse.Data;
-
-            if (user.OTPCode == "0" && user.IsVerified == true)
+            if (userResponse.OTPCode == "0" && userResponse.IsVerified == true)
             {
-                return BadRequest(new GenericResponse<bool>
-                {
-                    Data = false,
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Message = "Account already exists!"
-                });
+                return BadRequest();
             }
 
-            if (user.IsVerified == false)
+            if (userResponse.IsVerified == false)
             {
                 var otp = new Random().Next(100000, 999999);
 
@@ -85,7 +73,7 @@ public class AuthController : ControllerBase
                 {
                     EmailToId = req.Email,
                     EmailToName = "TicketBookingWebSite",
-                    EmailBody = GenerateEmailBody(user.FullName, otp),
+                    EmailBody = GenerateEmailBody(userResponse.FullName, otp),
                     EmailSubject = "OTP Verification"
                 };
 
@@ -109,35 +97,20 @@ public class AuthController : ControllerBase
                     {
                         EmailToId = req.Email,
                         EmailToName = "TicketBookingWebSite",
-                        EmailBody = GenerateEmailBody(user.FullName, otp),
+                        EmailBody = GenerateEmailBody(userResponse.FullName, otp),
                         EmailSubject = "OTP Verification"
                     };
 
                     var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
                     if (!rsUpdate)
                     {
-                        return BadRequest(new GenericResponse<bool>
-                        {
-                            Data = false,
-                            StatusCode = HttpStatusCode.BadRequest,
-                            Message = "Failed to send update email."
-                        });
+                        return BadRequest();
                     }
                 }
-                return Ok(new GenericResponse<bool>
-                {
-                    Data = true,
-                    StatusCode = HttpStatusCode.OK,
-                    Message = "Check your email and verify the OTP."
-                });
+                return Ok(resultSucess);
             }
 
-            return BadRequest(new GenericResponse<bool>
-            {
-                Data = false,
-                StatusCode = HttpStatusCode.BadRequest,
-                Message = "Error"
-            });
+            return BadRequest();
         }
         catch (Exception ex)
         {
@@ -158,11 +131,11 @@ public class AuthController : ControllerBase
         }
 
         var handler = new JwtSecurityTokenHandler();
-        var res = new SWD.TicketBooking.Repo.Common.ResponseModels.LoginResponse
+        var res = new SWD.TicketBooking.API.Common.ResponseModels.LoginResponse
         {
             AccessToken = handler.WriteToken(loginResult.Token),
         };
-        return Ok(ApiResult<SWD.TicketBooking.Repo.Common.ResponseModels.LoginResponse>.Succeed(res));
+        return Ok(ApiResult<SWD.TicketBooking.API.Common.ResponseModels.LoginResponse>.Succeed(res));
     }
 
     [Authorize]
