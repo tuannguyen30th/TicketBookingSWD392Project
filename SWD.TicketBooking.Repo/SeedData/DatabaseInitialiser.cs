@@ -844,7 +844,92 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Station = stations[3],
                     Service = services[3],
                     Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[1],
+                    Service = services[0],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[1],
+                    Service = services[4],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[2],
+                    Service = services[0],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[2],
+                    Service = services[2],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[2],
+                    Service = services[3],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[3],
+                    Service = services[2],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[3],
+                    Service = services[3],
+                    Status = "Active"
+
+                },
+                new Station_Service
+                {
+                    Station = stations[4],
+                    Service = services[1],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[4],
+                    Service = services[2],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[4],
+                    Service = services[0],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[5],
+                    Service = services[1],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[5],
+                    Service = services[0],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[5],
+                    Service = services[2],
+                    Status = "Active" },
+                    new Station_Service
+                {
+                    Station = stations[5],
+                    Service = services[3],
+                    Status = "Active"
                 }
+
             };
 
             List<Service_Trip> trip_Services = new()

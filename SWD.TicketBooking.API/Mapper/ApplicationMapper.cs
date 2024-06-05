@@ -31,6 +31,9 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<PopularTripModel, PopularTripResponse>().ReverseMap();
             CreateMap<PictureModel,GetPictureResponse>().ReverseMap();
             CreateMap<Trip, PictureModel>().ReverseMap();
+
+            /////Utility/////
+            CreateMap<UtilityInTripResponse,UtilityModel > ().ReverseMap();
         }
     }
 }
