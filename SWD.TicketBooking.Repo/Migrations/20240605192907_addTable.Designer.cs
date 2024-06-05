@@ -12,7 +12,7 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20240605185408_addTable")]
+    [Migration("20240605192907_addTable")]
     partial class addTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -505,6 +505,33 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.ToTable("Trip");
                 });
 
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip_Utility", b =>
+                {
+                    b.Property<int>("Trip_UtilityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Trip_UtilityID"), 1L, 1);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TripID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UtilityID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Trip_UtilityID");
+
+                    b.HasIndex("TripID");
+
+                    b.HasIndex("UtilityID");
+
+                    b.ToTable("Trip_Utility");
+                });
+
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -595,6 +622,10 @@ namespace SWD.TicketBooking.Repo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UtilityID"), 1L, 1);
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -606,37 +637,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.HasKey("UtilityID");
 
                     b.ToTable("Utility");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.UtilityInTrip", b =>
-                {
-                    b.Property<int>("UtilityInTripID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UtilityInTripID"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UtilityID")
-                        .HasColumnType("int");
-
-                    b.HasKey("UtilityInTripID");
-
-                    b.HasIndex("TripID");
-
-                    b.HasIndex("UtilityID");
-
-                    b.ToTable("UtilityInTrip");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Booking", b =>
@@ -878,18 +878,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Navigation("Route");
                 });
 
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>
-                {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.UserRole", "UserRole")
-                        .WithMany()
-                        .HasForeignKey("RoleID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserRole");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.UtilityInTrip", b =>
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip_Utility", b =>
                 {
                     b.HasOne("SWD.TicketBooking.Repo.Entities.Trip", "Trip")
                         .WithMany()
@@ -906,6 +895,17 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Navigation("Trip");
 
                     b.Navigation("Utility");
+                });
+
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>
+                {
+                    b.HasOne("SWD.TicketBooking.Repo.Entities.UserRole", "UserRole")
+                        .WithMany()
+                        .HasForeignKey("RoleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserRole");
                 });
 #pragma warning restore 612, 618
         }

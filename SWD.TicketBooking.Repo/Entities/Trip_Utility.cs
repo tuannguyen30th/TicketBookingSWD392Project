@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Repo.Entities
 {
-    [Table("UtilityInTrip")]
+    [Table("Trip_Utility")]
 
-    public class UtilityInTrip
+    public class Trip_Utility
     {
         [Key]
-        public int UtilityInTripID { get; set; }
+        public int Trip_UtilityID { get; set; }
         public int TripID {  get; set; }
         [ForeignKey("TripID")]
         public Trip Trip { get; set; }
@@ -22,7 +22,6 @@ namespace SWD.TicketBooking.Repo.Entities
         [ForeignKey("UtilityID")]
         public Utility Utility { get; set; }
 
-        public string Description { get; set; } = string.Empty;
 
         public string Status { get; set; } = string.Empty;
     }

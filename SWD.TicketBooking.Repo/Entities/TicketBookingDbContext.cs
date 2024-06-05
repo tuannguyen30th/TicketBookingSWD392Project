@@ -46,7 +46,7 @@ namespace SWD.TicketBooking.Repo.Entities
 
         public DbSet<Utility> Utility { get; set; }
 
-        public DbSet<UtilityInTrip> utilityInTrips { get; set; }
+        public DbSet<Trip_Utility> utilityInTrips { get; set; }
 
         #endregion
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -91,7 +91,7 @@ namespace SWD.TicketBooking.Repo.Entities
                .HasOne(vr => vr.Trip)
                .WithMany()
                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<UtilityInTrip>()
+            modelBuilder.Entity<Trip_Utility>()
                 .HasOne(vr => vr.Trip)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
