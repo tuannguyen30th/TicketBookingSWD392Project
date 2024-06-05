@@ -119,5 +119,59 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
             }
             return _result;
         }
+        public async Task<AppActionResult> UploadFilesToFirebase(List<IFormFile> files, string basePath)
+        {
+            var _result = new AppActionResult();
+            var uploadResults = new List<string>();
+
+            var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyCMlVnrHg3XcmcgNXfIvHjw-6OGyoaC33w"));
+            var account = await auth.SignInWithEmailAndPasswordAsync("nguyenngoctuanthct@gmail.com", "0917899898");
+            var storage = new FirebaseStorage(
+                "cloudfunction-yt-2b3df.appspot.com",
+                new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(account.FirebaseToken),
+                    ThrowOnCancel = true
+                });
+
+            foreach (var file in files)
+            {
+                if (file == null || file.Length == 0)
+                {
+                    _result.Messages.Add("One or more files are empty");
+                    continue;
+                }
+
+                var stream = file.OpenReadStream();
+                string destinationPath = $"{basePath}/{file.FileName}";
+
+                var task = storage.Child(destinationPath).PutAsync(stream);
+                var downloadUrl = await task;
+
+                if (task != null)
+                {
+                    uploadResults.Add(downloadUrl);
+                }
+                else
+                {
+                    _result.IsSuccess = false;
+                    _result.Messages.Add($"Upload failed for file: {file.FileName}");
+                }
+            }
+
+            _result.Result = uploadResults;
+            if (uploadResults.Count == files.Count)
+            {
+                _result.IsSuccess = true;
+                _result.Messages.Add("All files uploaded successfully");
+            }
+            else
+            {
+                _result.IsSuccess = false;
+                _result.Messages.Add("Some files failed to upload");
+            }
+
+            return _result;
+        }
     }
 }
