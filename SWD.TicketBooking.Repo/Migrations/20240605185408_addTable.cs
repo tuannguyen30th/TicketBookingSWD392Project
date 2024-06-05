@@ -66,6 +66,20 @@ namespace SWD.TicketBooking.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Utility",
+                columns: table => new
+                {
+                    UtilityID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Utility", x => x.UtilityID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Route",
                 columns: table => new
                 {
@@ -399,6 +413,33 @@ namespace SWD.TicketBooking.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UtilityInTrip",
+                columns: table => new
+                {
+                    UtilityInTripID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TripID = table.Column<int>(type: "int", nullable: false),
+                    UtilityID = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UtilityInTrip", x => x.UtilityInTripID);
+                    table.ForeignKey(
+                        name: "FK_UtilityInTrip_Trip_TripID",
+                        column: x => x.TripID,
+                        principalTable: "Trip",
+                        principalColumn: "TripID");
+                    table.ForeignKey(
+                        name: "FK_UtilityInTrip_Utility_UtilityID",
+                        column: x => x.UtilityID,
+                        principalTable: "Utility",
+                        principalColumn: "UtilityID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TicketDetail",
                 columns: table => new
                 {
@@ -583,6 +624,16 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "IX_User_RoleID",
                 table: "User",
                 column: "RoleID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UtilityInTrip_TripID",
+                table: "UtilityInTrip",
+                column: "TripID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UtilityInTrip_UtilityID",
+                table: "UtilityInTrip",
+                column: "UtilityID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -603,6 +654,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "TicketDetail_Service");
 
             migrationBuilder.DropTable(
+                name: "UtilityInTrip");
+
+            migrationBuilder.DropTable(
                 name: "Station");
 
             migrationBuilder.DropTable(
@@ -610,6 +664,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             migrationBuilder.DropTable(
                 name: "TicketDetail");
+
+            migrationBuilder.DropTable(
+                name: "Utility");
 
             migrationBuilder.DropTable(
                 name: "ServiceType");

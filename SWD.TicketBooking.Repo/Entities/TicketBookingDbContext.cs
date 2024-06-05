@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -42,6 +43,10 @@ namespace SWD.TicketBooking.Repo.Entities
 
         public DbSet<Route_Company> Route_Company { get; set; }
         public DbSet<Service_Trip> Service_Trip { get; set; }
+
+        public DbSet<Utility> Utility { get; set; }
+
+        public DbSet<UtilityInTrip> utilityInTrips { get; set; }
 
         #endregion
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -86,6 +91,10 @@ namespace SWD.TicketBooking.Repo.Entities
                .HasOne(vr => vr.Trip)
                .WithMany()
                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<UtilityInTrip>()
+                .HasOne(vr => vr.Trip)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     
     }

@@ -27,5 +27,13 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = _mapper.Map<List<PopularTripResponse>>(await _tripService.GetPopularTrips());
             return Ok(rs);
         }
+
+        [AllowAnonymous]
+        [HttpGet("trip-detail/{id}")]
+        public async Task<IActionResult> GetTripPictureDetail(int id)
+        {
+            var rs = _mapper.Map<GetPictureResponse>(await _tripService.GetPictureOfTrip(id));
+            return Ok(rs);
+        }
     }
 }

@@ -585,6 +585,58 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.ToTable("UserRole");
                 });
 
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Utility", b =>
+                {
+                    b.Property<int>("UtilityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UtilityID"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UtilityID");
+
+                    b.ToTable("Utility");
+                });
+
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.UtilityInTrip", b =>
+                {
+                    b.Property<int>("UtilityInTripID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UtilityInTripID"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TripID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UtilityID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UtilityInTripID");
+
+                    b.HasIndex("TripID");
+
+                    b.HasIndex("UtilityID");
+
+                    b.ToTable("UtilityInTrip");
+                });
+
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Booking", b =>
                 {
                     b.HasOne("SWD.TicketBooking.Repo.Entities.Trip", "Trip")
@@ -833,6 +885,25 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired();
 
                     b.Navigation("UserRole");
+                });
+
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.UtilityInTrip", b =>
+                {
+                    b.HasOne("SWD.TicketBooking.Repo.Entities.Trip", "Trip")
+                        .WithMany()
+                        .HasForeignKey("TripID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SWD.TicketBooking.Repo.Entities.Utility", "Utility")
+                        .WithMany()
+                        .HasForeignKey("UtilityID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trip");
+
+                    b.Navigation("Utility");
                 });
 #pragma warning restore 612, 618
         }
