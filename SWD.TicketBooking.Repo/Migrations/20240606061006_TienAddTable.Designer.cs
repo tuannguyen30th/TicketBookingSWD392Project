@@ -12,8 +12,8 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20240606052903_addEntities")]
-    partial class addEntities
+    [Migration("20240606061006_TienAddTable")]
+    partial class TienAddTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -522,10 +522,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsTemplate")
                         .HasColumnType("bit");
 
@@ -570,6 +566,28 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.HasIndex("UtilityID");
 
                     b.ToTable("Trip_Utility");
+                });
+
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TripPicture", b =>
+                {
+                    b.Property<int>("TripPictureID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TripPictureID"), 1L, 1);
+
+                    b.Property<int>("TripID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("imageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TripPictureID");
+
+                    b.HasIndex("TripID");
+
+                    b.ToTable("TripPicture");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>
@@ -938,6 +956,17 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Navigation("Trip");
 
                     b.Navigation("Utility");
+                });
+
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TripPicture", b =>
+                {
+                    b.HasOne("SWD.TicketBooking.Repo.Entities.Trip", "Trip")
+                        .WithMany()
+                        .HasForeignKey("TripID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>

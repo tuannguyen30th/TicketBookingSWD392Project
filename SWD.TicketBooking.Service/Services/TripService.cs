@@ -26,7 +26,7 @@ namespace SWD.TicketBooking.Service.Services
             _ticketTypeTripRepo = ticketTypeTripRepo;
             _mapper = mapper;
         }
-
+/*
         public async Task<PictureModel> GetPictureOfTrip(int id)
         {
             try
@@ -45,7 +45,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message, ex);
             }
-        }
+        }*/
 
         public async Task<List<PopularTripModel>> GetPopularTrips()
         {
@@ -78,7 +78,7 @@ namespace SWD.TicketBooking.Service.Services
                         TripId = t.TripID,
                         FromCity = t.Route.FromCity.Name,
                         ToCity = t.Route.ToCity.Name,
-                        ImageUrl = t.ImageUrl,
+                        /*ImageUrl = t.ImageUrl,*/
                         PriceFrom = minPriceByTrip.GetValueOrDefault(t.TripID, 0),
                     };
 

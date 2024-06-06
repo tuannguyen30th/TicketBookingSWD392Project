@@ -1097,6 +1097,106 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Status = "Active"
                 }
             };
+
+            List<TripPicture> tripPictures = new()
+            {
+                new TripPicture
+                {
+                    imageUrl ="https://thuexekhach.com/wp-content/uploads/2019/10/xe-giu%CC%9Bo%CC%9B%CC%80ng-na%CC%86%CC%80m-34-giu%CC%9Bo%CC%9B%CC%80ng.jpg",
+                    status = "Active",
+                    Trip = trips[0]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://nhieuxe.vn/upload/images/xe-giuong-nam-co-bao-nhieu-cho--so-ghe-xe-giuong-nam-danh-so-nhu-the-nao2.png",
+                    status = "Active",
+                    Trip = trips[0]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://viptrip.vn/public/upload/service/cho-thue-xe-giuong-nam-di-hai-phong4_800x600_714394588.webp",
+                    status = "Active",
+                    Trip = trips[0]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://storage.googleapis.com/blogvxr-uploads/2023/03/3.jpg",
+                    status = "Active",
+                    Trip = trips[0]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://static.vexere.com/production/images/1662198208436.jpeg",
+                    status = "Active",
+                    Trip = trips[1]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://static.vexere.com/production/images/1662976460604.jpeg",
+                    status = "Active",
+                    Trip = trips[1]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://static.vexere.com/production/images/1662976466001.jpeg",
+                    status = "Active",
+                    Trip = trips[1]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://static.vexere.com/production/images/1702817477891.jpeg",
+                    status = "Active",
+                    Trip = trips[1]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://cdn.kosshop.vn/wp-content/uploads/2022/11/kinh-nghiem-chon-vi-tri-ghe-xe-giuong-nam.jpg",
+                    status = "Active",
+                    Trip = trips[2]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwGHIHBkYG0EkW4B0NNETWKPuMqnvFrDt2YA&s",
+                    status = "Active",
+                    Trip = trips[2]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://mia.vn/media/uploads/blog-du-lich/danh-sach-nha-xe-giuong-nam-tuyen-da-nang-quang-binh-ban-can-bo-tui-03-1653402305.jpg",
+                    status = "Active",
+                    Trip = trips[3]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://xekhachhonghai.com/wp-content/uploads/2018/12/dcar-cung-dien-di-dong-21-phong-1.jpg",
+                    status = "Active",
+                    Trip = trips[3]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://i-vnexpress.vnecdn.net/2018/05/08/dcar-2-3889-1525748221.jpg",
+                    status = "Active",
+                    Trip = trips[3]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSi4Ci_N8RbkPp52dXagxazPW1ylCx1SCINbQ&s",
+                    status = "Active",
+                    Trip = trips[4]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://cdn.alongwalk.info/wp-content/uploads/2022/06/17055236/image-top-6-xe-giuong-nam-binh-duong-di-da-lat-xin-so-nhat-165539475673144.jpg",
+                    status = "Active",
+                    Trip = trips[4]
+                },
+                new TripPicture
+                {
+                    imageUrl ="https://bookinglimo.vn/wp-content/uploads/2022/06/Xe-gi%C6%B0%E1%BB%9Dng-%C4%91%C3%B4i-B%C3%ACnh-D%C6%B0%C6%A1ng-%C4%91i-%C4%90%C3%A0-L%E1%BA%A1t-Booking-Limo.jpg",
+                    status = "Active",
+                    Trip = trips[4]
+                }
+            };
             // Add Range training program
             await _context.Users.AddRangeAsync(users);
             await _context.UserRoles.AddRangeAsync(userRoles);

@@ -14,7 +14,7 @@ namespace SWD.TicketBooking.Repo.Entities
         public bool IsTemplate { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public string ImageUrl { get; set; } = string.Empty;
+/*        public string ImageUrl { get; set; } = string.Empty;*/
         public string? Status { get; set; } = string.Empty;
 
 

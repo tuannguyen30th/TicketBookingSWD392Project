@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWD.TicketBooking.Repo.Migrations
 {
-    public partial class addEntities : Migration
+    public partial class TienAddTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -253,7 +253,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                     IsTemplate = table.Column<bool>(type: "bit", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -435,6 +434,26 @@ namespace SWD.TicketBooking.Repo.Migrations
                         column: x => x.UtilityID,
                         principalTable: "Utility",
                         principalColumn: "UtilityID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TripPicture",
+                columns: table => new
+                {
+                    TripPictureID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    imageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TripID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TripPicture", x => x.TripPictureID);
+                    table.ForeignKey(
+                        name: "FK_TripPicture_Trip_TripID",
+                        column: x => x.TripID,
+                        principalTable: "Trip",
+                        principalColumn: "TripID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -651,6 +670,11 @@ namespace SWD.TicketBooking.Repo.Migrations
                 column: "UtilityID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TripPicture_TripID",
+                table: "TripPicture",
+                column: "TripID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_RoleID",
                 table: "User",
                 column: "RoleID");
@@ -675,6 +699,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             migrationBuilder.DropTable(
                 name: "Trip_Utility");
+
+            migrationBuilder.DropTable(
+                name: "TripPicture");
 
             migrationBuilder.DropTable(
                 name: "Feedback");
