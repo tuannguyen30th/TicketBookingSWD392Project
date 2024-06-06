@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWD.TicketBooking.Repo.Entities;
 
@@ -11,9 +12,10 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    partial class TicketBookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240605142829_addTable")]
+    partial class addTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -563,33 +565,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.ToTable("Trip");
                 });
 
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip_Utility", b =>
-                {
-                    b.Property<int>("Trip_UtilityID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Trip_UtilityID"), 1L, 1);
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UtilityID")
-                        .HasColumnType("int");
-
-                    b.HasKey("Trip_UtilityID");
-
-                    b.HasIndex("TripID");
-
-                    b.HasIndex("UtilityID");
-
-                    b.ToTable("Trip_Utility");
-                });
-
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -670,31 +645,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.HasKey("RoleID");
 
                     b.ToTable("UserRole");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Utility", b =>
-                {
-                    b.Property<int>("UtilityID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UtilityID"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UtilityID");
-
-                    b.ToTable("Utility");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Booking", b =>
@@ -964,25 +914,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired();
 
                     b.Navigation("Route");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip_Utility", b =>
-                {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Trip", "Trip")
-                        .WithMany()
-                        .HasForeignKey("TripID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Utility", "Utility")
-                        .WithMany()
-                        .HasForeignKey("UtilityID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trip");
-
-                    b.Navigation("Utility");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>

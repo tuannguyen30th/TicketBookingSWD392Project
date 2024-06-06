@@ -12,6 +12,7 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
     public interface IFirebaseService
     {
         Task<AppActionResult> UploadFileToFirebase(IFormFile file, string pathFileName);
+        Task<AppActionResult> UploadFilesToFirebase(List<IFormFile> files, string basePath);
         public Task<string> GetUrlImageFromFirebase(string pathFileName);
         public Task<AppActionResult> DeleteFileFromFirebase(string pathFileName);
     }

@@ -27,6 +27,8 @@ namespace SWD.TicketBooking.Repo.Entities
 
         public DbSet<Station> Station { get; set; }
         public DbSet<Station_Route> Station_Route { get; set; }
+        public DbSet<Feedback> Feedback { get; set; }
+        public DbSet<Feedback_Image> Feedback_Image { get; set; }
 
         public DbSet<Booking> Booking { get; set; }
         public DbSet<TicketDetail> TicketDetail { get; set; }

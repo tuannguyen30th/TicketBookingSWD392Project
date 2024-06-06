@@ -5,6 +5,8 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
+using static SWD.TicketBooking.API.Common.ResponseModels.ServiceFromStationResponse;
+using static SWD.TicketBooking.Service.Dtos.ServiceFromStation;
 
 
 namespace SWD.TicketBooking.API.Mapper
@@ -34,6 +36,14 @@ namespace SWD.TicketBooking.API.Mapper
 
             /////Utility/////
             CreateMap<UtilityInTripResponse,UtilityModel > ().ReverseMap();
+            CreateMap<FromCityToCityModel.CityModel, FromCityToCityRepsonse.CityResponse>().ReverseMap();
+            CreateMap<FromCityToCityModel.CityInfo, FromCityToCityRepsonse.CityInfo>().ReverseMap();
+            CreateMap<FeedbackRequestModel, FeedbackRequest>().ReverseMap();
+            CreateMap<FeedbackRequestModel, Feedback>().ReverseMap();
+            CreateMap<ServiceModel, ServiceFromStationResponse.ServiceResponse>();
+            CreateMap<ServiceTypeModel, ServiceFromStationResponse.ServiceTypeResponse>()
+                .ForMember(dest => dest.ServiceResponses, opt => opt.MapFrom(src => src.ServiceModels));
+            CreateMap<StationFromRouteModel, StationFromRouteResponse>();
         }
     }
 }
