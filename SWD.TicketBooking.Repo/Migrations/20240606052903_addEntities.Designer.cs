@@ -12,8 +12,8 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20240605142829_addTable")]
-    partial class addTable
+    [Migration("20240606052903_addEntities")]
+    partial class addEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,6 +39,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QRCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QRCodeImage")
@@ -249,6 +253,10 @@ namespace SWD.TicketBooking.Repo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceID"), 1L, 1);
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -256,46 +264,18 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("RouteID")
-                        .HasColumnType("int");
-
                     b.Property<int>("ServiceTypeID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ServiceID");
-
-                    b.HasIndex("RouteID");
-
-                    b.HasIndex("ServiceTypeID");
-
-                    b.ToTable("Service");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Service_Trip", b =>
-                {
-                    b.Property<int>("Service_TripID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Service_TripID"), 1L, 1);
-
-                    b.Property<int>("ServiceID")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
+                    b.HasKey("ServiceID");
 
-                    b.HasKey("Service_TripID");
+                    b.HasIndex("ServiceTypeID");
 
-                    b.HasIndex("ServiceID");
-
-                    b.HasIndex("TripID");
-
-                    b.ToTable("Service_Trip");
+                    b.ToTable("Service");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.ServiceType", b =>
@@ -565,6 +545,33 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.ToTable("Trip");
                 });
 
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip_Utility", b =>
+                {
+                    b.Property<int>("Trip_UtilityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Trip_UtilityID"), 1L, 1);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TripID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UtilityID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Trip_UtilityID");
+
+                    b.HasIndex("TripID");
+
+                    b.HasIndex("UtilityID");
+
+                    b.ToTable("Trip_Utility");
+                });
+
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -645,6 +652,31 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.HasKey("RoleID");
 
                     b.ToTable("UserRole");
+                });
+
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Utility", b =>
+                {
+                    b.Property<int>("UtilityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UtilityID"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UtilityID");
+
+                    b.ToTable("Utility");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Booking", b =>
@@ -744,40 +776,13 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Service", b =>
                 {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Route", "Route")
-                        .WithMany()
-                        .HasForeignKey("RouteID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SWD.TicketBooking.Repo.Entities.ServiceType", "ServiceType")
                         .WithMany()
                         .HasForeignKey("ServiceTypeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Route");
-
                     b.Navigation("ServiceType");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Service_Trip", b =>
-                {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Trip", "Trip")
-                        .WithMany()
-                        .HasForeignKey("TripID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Service");
-
-                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Station", b =>
@@ -914,6 +919,25 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired();
 
                     b.Navigation("Route");
+                });
+
+            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip_Utility", b =>
+                {
+                    b.HasOne("SWD.TicketBooking.Repo.Entities.Trip", "Trip")
+                        .WithMany()
+                        .HasForeignKey("TripID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SWD.TicketBooking.Repo.Entities.Utility", "Utility")
+                        .WithMany()
+                        .HasForeignKey("UtilityID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trip");
+
+                    b.Navigation("Utility");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>

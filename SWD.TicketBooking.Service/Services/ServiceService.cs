@@ -15,13 +15,11 @@ namespace SWD.TicketBooking.Service.Services
     public class ServiceService
     {
         private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, int> _serviceRepository;
-        private readonly IRepository<Service_Trip, int> _serviceTripRepository;
         private readonly IRepository<Station_Service, int> _stationServiceRepository;
         private readonly IMapper _mapper;
-        public ServiceService(IRepository<SWD.TicketBooking.Repo.Entities.Service, int> serviceRepository, IRepository<Service_Trip, int> serviceTripRepository, IRepository<Station_Service, int> stationServiceRepository, IMapper mapper)
+        public ServiceService(IRepository<SWD.TicketBooking.Repo.Entities.Service, int> serviceRepository, IRepository<Station_Service, int> stationServiceRepository, IMapper mapper)
         {
             _serviceRepository = serviceRepository;
-            _serviceTripRepository = serviceTripRepository;
             _stationServiceRepository = stationServiceRepository;
             _mapper = mapper;
         }

@@ -44,7 +44,7 @@ namespace SWD.TicketBooking.Repo.Entities
         public DbSet<Trip> Trip { get; set; }
 
         public DbSet<Route_Company> Route_Company { get; set; }
-        public DbSet<Service_Trip> Service_Trip { get; set; }
+        //public DbSet<Service_Trip> Service_Trip { get; set; }
 
         public DbSet<Utility> Utility { get; set; }
 
@@ -89,10 +89,10 @@ namespace SWD.TicketBooking.Repo.Entities
                .HasOne(vr => vr.Route)
                .WithMany()
                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<Service_Trip>()
-               .HasOne(vr => vr.Trip)
-               .WithMany()
-               .OnDelete(DeleteBehavior.NoAction);
+            //modelBuilder.Entity<Service_Trip>()
+            //   .HasOne(vr => vr.Trip)
+            //   .WithMany()
+            //   .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Trip_Utility>()
                 .HasOne(vr => vr.Trip)
                 .WithMany()
