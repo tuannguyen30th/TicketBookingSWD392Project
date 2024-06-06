@@ -44,6 +44,11 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<ServiceTypeModel, ServiceFromStationResponse.ServiceTypeResponse>()
                 .ForMember(dest => dest.ServiceResponses, opt => opt.MapFrom(src => src.ServiceModels));
             CreateMap<StationFromRouteModel, StationFromRouteResponse>();
+
+
+
+            ////Feedback////
+            CreateMap<TripFeedbackModel, FeedbackInTripResponse>().ReverseMap();
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.API.Common.RequestModels;
+using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Services;
 
@@ -24,6 +25,13 @@ namespace SWD.TicketBooking.API.Controllers
             var feedback = _mapper.Map<FeedbackRequestModel>(feedbackRequest);
             await _feedbackService.CreateRating(feedback);
             return Ok();
+        }
+
+        [HttpGet("feedback-in-trip/{id}/{filter}")]
+        public async Task<IActionResult> GetAllFeedbackInTrip(int id, int filter, int pageNumber =1, int pageSize =5)
+        {
+            var fb = _mapper.Map<FeedbackInTripResponse>(await _feedbackService.GetAllFeedbackInTrip(id,pageNumber,pageSize, filter));
+            return Ok(fb);
         }
     }
 }
