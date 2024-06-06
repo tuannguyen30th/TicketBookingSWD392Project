@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
+using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using System;
@@ -24,6 +25,26 @@ namespace SWD.TicketBooking.Service.Services
             _bookingRepo = bookingRepo;
             _ticketTypeTripRepo = ticketTypeTripRepo;
             _mapper = mapper;
+        }
+
+        public async Task<PictureModel> GetPictureOfTrip(int id)
+        {
+            try
+            {
+                var trip = await _tripRepo.GetByIdAsync(id);
+                if (trip == null)
+                {
+                    throw new BadRequestException("Trip not found!");
+                }
+                else
+                {
+                    var result =_mapper.Map<PictureModel>(trip);
+                    return result;
+                }
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
         }
 
         public async Task<List<PopularTripModel>> GetPopularTrips()

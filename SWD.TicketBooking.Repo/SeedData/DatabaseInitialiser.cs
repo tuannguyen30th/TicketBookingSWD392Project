@@ -409,8 +409,114 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                    Name = "Đồ ăn nhanh",
                     Status = "Active"
+                },
+                new ServiceType
+                {
+                   Name = "ATM",
+                    Status = "Active"
+                },
+                new ServiceType
+                {
+                   Name = "Khu vui chơi trẻ em",
+                    Status = "Active"
+                },
+                new ServiceType
+                {
+                   Name = "Dịch vụ gửi đồ và hành lý",
+                    Status = "Active"
+                },
+                new ServiceType
+                {
+                   Name = "Xe máy",
+                    Status = "Active"
                 }
 
+            };
+            List<Utility> utilities = new()
+            {
+                new Utility
+                {
+                    Name="Nhà vệ sinh",
+                    Description ="Xe được trang bị nhà vệ sinh sạch sẽ.",
+                    Status = "active"
+                },
+                new Utility
+                {
+                    Name="Chăn",
+                    Description ="Xe cung cấp chăn để hành khách có thể giữ ấm trong suốt hành trình, đặc biệt là vào ban đêm hoặc khi điều hòa nhiệt độ lạnh.",
+
+                    Status = "active"
+                },
+                new Utility
+                {
+                    Name="Wi-Fi miễn phí",
+                    Description ="Xe cung cấp dịch vụ Wi-Fi miễn phí để hành khách có thể sử dụng internet trong suốt chuyến đi",
+                    Status = "active"
+                },
+                new Utility
+                {
+                    Name="Ổ cắm điện và cổng USB",
+                    Description ="Các ổ cắm điện và cổng USB được trang bị để hành khách có thể sạc điện thoại, máy tính bảng hoặc laptop.",
+                    Status = "active"
+                },
+                new Utility
+                {
+                    Name="Nước uống và khăn lạnh",
+                    Description ="Nhà xe cung cấp nước uống đóng chai và khăn lạnh miễn phí cho hành khách.",
+                    Status = "active"
+                },
+                new Utility
+                {
+                    Name="Rèm che riêng tư",
+                    Description ="Trên xe có rèm che riêng tư giúp hành khách có không gian riêng tư hơn.",
+                    Status = "active"
+                },
+
+            };
+            List<Trip_Utility> utilityInTrips = new()
+            {
+                new Trip_Utility
+                {
+                    Utility = utilities[0],
+                    Status = "active",
+                    Trip = trips[0]
+                },
+                new Trip_Utility
+                {
+                    Utility = utilities[1],
+                    Status = "active",
+                    Trip = trips[0]
+                },
+                new Trip_Utility
+                {
+                    Utility = utilities[2],
+                    Status = "active",
+                    Trip = trips[0]
+                },
+                new Trip_Utility
+                {
+                    Utility = utilities[1],
+                    Status = "active",
+                    Trip = trips[2]
+                },
+                new Trip_Utility
+                {
+                    Utility = utilities[1],
+                    Status = "active",
+                    Trip = trips[3]
+                },
+                new Trip_Utility
+                {
+                    Utility = utilities[2],
+                    Status = "active",
+                    Trip = trips[3]
+                },
+                new Trip_Utility
+                {
+                    Utility = utilities[0],
+                    Status = "active",
+                    Trip = trips[3]
+                }
             };
             List<Service> services = new()
             {
@@ -448,6 +554,66 @@ namespace SWD.TicketBooking.Repo.SeedData
                     ServiceType=serviceTypes[1],
                     Name = "Com phan",
                     Price = 35000
+                },
+                new Service
+                {
+                    Route=routes[1],
+                    ServiceType=serviceTypes[0],
+                    Name = "Mi tom",
+                    Price = 35000
+                },
+                new Service
+                {
+                    Route=routes[1],
+                    ServiceType=serviceTypes[3],
+                    Name = "Hamburger",
+                    Price = 35000
+                },
+                new Service
+                {
+                    Route=routes[2],
+                    ServiceType=serviceTypes[3],
+                    Name = "Sandwich",
+                    Price = 35000
+                },
+                new Service
+                {
+                    Route=routes[2],
+                    ServiceType=serviceTypes[3],
+                    Name = "hotdog",
+                    Price = 35000
+                },
+                new Service
+                {
+                    Route=routes[1],
+                    ServiceType=serviceTypes[2],
+                    Name = "Trái cây",
+                    Price = 35000
+
+                },
+                new Service
+                {
+                    Route=routes[1],
+                    ServiceType=serviceTypes[1],
+                    Name = "Cà phê",
+                    Price = 35000
+
+                },
+                new Service
+                {
+                    Route=routes[1],
+                    ServiceType=serviceTypes[1],
+                    Name = "Nước trái cây",
+                    Price = 35000
+
+                },
+                new Service
+                {
+                    Route=routes[1],
+                    ServiceType=serviceTypes[1],
+                    Name = "Trà",
+                    Price = 35000
+
                 },
             };
             List<TicketType> types = new()
@@ -678,7 +844,92 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Station = stations[3],
                     Service = services[3],
                     Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[1],
+                    Service = services[0],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[1],
+                    Service = services[4],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[2],
+                    Service = services[0],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[2],
+                    Service = services[2],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[2],
+                    Service = services[3],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[3],
+                    Service = services[2],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[3],
+                    Service = services[3],
+                    Status = "Active"
+
+                },
+                new Station_Service
+                {
+                    Station = stations[4],
+                    Service = services[1],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[4],
+                    Service = services[2],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[4],
+                    Service = services[0],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[5],
+                    Service = services[1],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[5],
+                    Service = services[0],
+                    Status = "Active"
+                },
+                new Station_Service
+                {
+                    Station = stations[5],
+                    Service = services[2],
+                    Status = "Active" },
+                    new Station_Service
+                {
+                    Station = stations[5],
+                    Service = services[3],
+                    Status = "Active"
                 }
+
             };
 
             List<Service_Trip> trip_Services = new()
@@ -845,6 +1096,8 @@ namespace SWD.TicketBooking.Repo.SeedData
             await _context.Station_Service.AddRangeAsync(station_Services);
             await _context.Service_Trip.AddRangeAsync(trip_Services);
             await _context.Route_Company.AddRangeAsync(route_Companies);
+            await _context.Utility.AddRangeAsync(utilities);
+            await _context.utilityInTrips.AddRangeAsync(utilityInTrips);
 
             // Save to DB
             await _context.SaveChangesAsync();

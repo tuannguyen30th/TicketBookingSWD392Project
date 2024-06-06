@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWD.TicketBooking.Repo.Entities;
 
@@ -11,9 +12,10 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    partial class TicketBookingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240605192907_addTable")]
+    partial class addTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,66 +112,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.HasKey("CompanyID");
 
                     b.ToTable("Company");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Feedback", b =>
-                {
-                    b.Property<int>("FeedbackID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeedbackID"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("FeedbackID");
-
-                    b.HasIndex("TripID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("Feedback");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Feedback_Image", b =>
-                {
-                    b.Property<int>("Feedback_Image_ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Feedback_Image_ID"), 1L, 1);
-
-                    b.Property<int>("FeedbackID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Feedback_Image_ID");
-
-                    b.HasIndex("FeedbackID");
-
-                    b.ToTable("Feedback_Image");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Route", b =>
@@ -714,36 +656,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Navigation("Trip");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Feedback", b =>
-                {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Trip", "Trip")
-                        .WithMany()
-                        .HasForeignKey("TripID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trip");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Feedback_Image", b =>
-                {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Feedback", "Feedback")
-                        .WithMany()
-                        .HasForeignKey("FeedbackID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Feedback");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Route", b =>
