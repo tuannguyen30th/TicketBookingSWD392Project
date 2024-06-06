@@ -55,7 +55,7 @@ namespace SWD.TicketBooking.Service.Services
                 };
                 await _feedbackRepository.AddAsync(newRating);
                 await _feedbackRepository.Commit();
-                var imagePath = FirebasePathName.RATING + $"{newRating.FeedbackID}";
+                var imagePath = FirebasePathName.RATING + $"{Guid.NewGuid()}";
                 var imageUploadResult = await _firebaseService.UploadFilesToFirebase(ratingModel.Files, imagePath);
                 if (!imageUploadResult.IsSuccess)
                 {
