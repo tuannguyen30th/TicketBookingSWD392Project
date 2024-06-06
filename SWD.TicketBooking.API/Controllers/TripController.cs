@@ -32,7 +32,7 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpGet("trip-detail/{id}")]
         public async Task<IActionResult> GetTripPictureDetail(int id)
         {
-            var rs = _mapper.Map<GetPictureResponse>(await _tripService.GetPictureOfTrip(id));
+            var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(id));
             return Ok(rs);
         }
     }
