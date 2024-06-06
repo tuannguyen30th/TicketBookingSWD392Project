@@ -522,97 +522,111 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Service
                 {
-                    Route=routes[1],
+                 
                     ServiceType=serviceTypes[0],
                     Name = "Mi tom",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 },
                 new Service
                 {
-                    Route=routes[1],
+            
                     ServiceType=serviceTypes[0],
                     Name = "Pho",
-                    Price = 45000
+                    Price = 45000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
+
                 },
                 new Service
                 {
-                    Route=routes[2],
+                
                     ServiceType=serviceTypes[1],
                     Name = "Bun bo",
-                    Price = 45000
+                    Price = 45000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 },
                 new Service
                 {
-                    Route=routes[3],
+             
                     ServiceType=serviceTypes[2],
                     Name = "Com xeo",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 },
                 new Service
                 {
-                    Route=routes[3],
+                
                     ServiceType=serviceTypes[1],
                     Name = "Com phan",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 },
                 new Service
                 {
-                    Route=routes[1],
+             
                     ServiceType=serviceTypes[0],
                     Name = "Mi tom",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 },
                 new Service
                 {
-                    Route=routes[1],
+               
                     ServiceType=serviceTypes[3],
                     Name = "Hamburger",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 },
                 new Service
                 {
-                    Route=routes[2],
+                
                     ServiceType=serviceTypes[3],
                     Name = "Sandwich",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 },
                 new Service
                 {
-                    Route=routes[2],
+                   
                     ServiceType=serviceTypes[3],
                     Name = "hotdog",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 },
                 new Service
                 {
-                    Route=routes[1],
+                   
                     ServiceType=serviceTypes[2],
                     Name = "Trái cây",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
 
                 },
                 new Service
                 {
-                    Route=routes[1],
+                 
                     ServiceType=serviceTypes[1],
                     Name = "Cà phê",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
 
                 },
                 new Service
                 {
-                    Route=routes[1],
+               
                     ServiceType=serviceTypes[1],
                     Name = "Nước trái cây",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
 
                 },
                 new Service
                 {
-                    Route=routes[1],
+                 
                     ServiceType=serviceTypes[1],
                     Name = "Trà",
-                    Price = 35000
+                    Price = 35000,
+                    ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
 
                 },
             };
@@ -691,7 +705,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentStatus = "True",
                     TotalBill = 120000,
                     Trip = trips[0],
-                    User = users[0]
+                    User = users[0],
+                    QRCode = "11111",
                 },
                 new Booking
                 {
@@ -702,7 +717,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentStatus = "True",
                     TotalBill = 240000,
                     Trip = trips[1],
-                    User = users[1]
+                    User = users[1],
+                    QRCode = "22222"
+
                 },
                 new Booking
                 {
@@ -713,7 +730,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentStatus = "True",
                     TotalBill = 240000,
                     Trip = trips[3],
-                    User = users[3]
+                    User = users[3],
+                    QRCode = "33333"
                 },
                 new Booking
                 {
@@ -724,7 +742,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentStatus = "True",
                     TotalBill = 100000,
                     Trip = trips[0],
-                    User = users[0]
+                    User = users[0],
+                    QRCode = "44444"
                 },
                 new Booking
                 {
@@ -735,7 +754,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentStatus = "True",
                     TotalBill = 120000,
                     Trip = trips[3],
-                    User = users[3]
+                    User = users[3],
+                    QRCode = "55555"
                 }
             };
             List<TicketDetail> ticketDetails = new()
@@ -932,7 +952,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
             };
 
-            List<Service_Trip> trip_Services = new()
+          /*  List<Service_Trip> trip_Services = new()
             {
                 new Service_Trip
                 {
@@ -964,7 +984,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Service = services[1],
                     Status = "Active"
                 }
-            };
+            };*/
             List<Route_Company> route_Companies = new()
             {
                 new Route_Company
@@ -1094,7 +1114,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             await _context.TicketDetail.AddRangeAsync(ticketDetails);
             await _context.TicketDetail_Service.AddRangeAsync(ticketDetail_Services);
             await _context.Station_Service.AddRangeAsync(station_Services);
-            await _context.Service_Trip.AddRangeAsync(trip_Services);
+            //await _context.Service_Trip.AddRangeAsync(trip_Services);
             await _context.Route_Company.AddRangeAsync(route_Companies);
             await _context.Utility.AddRangeAsync(utilities);
             await _context.utilityInTrips.AddRangeAsync(utilityInTrips);
