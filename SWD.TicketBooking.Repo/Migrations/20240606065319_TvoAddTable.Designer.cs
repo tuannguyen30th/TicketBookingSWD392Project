@@ -12,8 +12,8 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20240606061006_TienAddTable")]
-    partial class TienAddTable
+    [Migration("20240606065319_TvoAddTable")]
+    partial class TvoAddTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -580,6 +580,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("imageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

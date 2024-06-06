@@ -16,18 +16,20 @@ namespace SWD.TicketBooking.Service.Services
     {
         private readonly IRepository<Trip, int> _tripRepo;
         private readonly IRepository<Booking, int> _bookingRepo;
+        private readonly IRepository<TripPicture, int> _tripPictureRepo;
         private readonly IRepository<TicketType_Trip, int> _ticketTypeTripRepo;
         private readonly IMapper _mapper;
 
-        public TripService(IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IMapper mapper)
+        public TripService(IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo)
         {
             _tripRepo = tripRepo;
             _bookingRepo = bookingRepo;
             _ticketTypeTripRepo = ticketTypeTripRepo;
             _mapper = mapper;
+            _tripPictureRepo = tripPictureRepo;
         }
-/*
-        public async Task<PictureModel> GetPictureOfTrip(int id)
+
+        public async Task<List<PictureModel>> GetPictureOfTrip(int id)
         {
             try
             {
@@ -38,14 +40,27 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 else
                 {
-                    var result =_mapper.Map<PictureModel>(trip);
-                    return result;
+                    var pics = await _tripPictureRepo.GetAll().Where(x => x.TripID == id).Select(p => p.TripPictureID).ToListAsync();
+
+                    var rs = new List<PictureModel>();
+                    foreach (var p in pics)
+                    {
+                        var tripPic = await _tripPictureRepo.GetByIdAsync(p);
+                        var tripPicModel = new PictureModel
+                        {
+                            ImageUrl = tripPic.imageUrl,
+                            TripId = tripPic.TripID
+                        };
+                        rs.Add(tripPicModel);
+                    }
+                    return rs;
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
             }
-        }*/
+        }
 
         public async Task<List<PopularTripModel>> GetPopularTrips()
         {

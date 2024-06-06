@@ -1218,7 +1218,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             await _context.Route_Company.AddRangeAsync(route_Companies);
             await _context.Utility.AddRangeAsync(utilities);
             await _context.utilityInTrips.AddRangeAsync(utilityInTrips);
-
+            await _context.tripPictures.AddRangeAsync(tripPictures);
             // Save to DB
             await _context.SaveChangesAsync();
         }

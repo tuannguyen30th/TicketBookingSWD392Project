@@ -581,6 +581,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("TripPictureID");
 
                     b.HasIndex("TripID");
