@@ -20,6 +20,7 @@ namespace SWD.TicketBooking.Service.Services
         private readonly IRepository<TicketType_Trip, int> _ticketTypeTripRepo;
         private readonly IMapper _mapper;
 
+        // trip --> route --> route_service --> service
         public TripService(IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo)
         {
             _tripRepo = tripRepo;

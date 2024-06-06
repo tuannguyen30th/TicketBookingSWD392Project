@@ -49,6 +49,16 @@ namespace SWD.TicketBooking.API.Mapper
 
             ////Feedback////
             CreateMap<TripFeedbackModel, FeedbackInTripResponse>().ReverseMap();
+
+
+
+            ////Station////
+            CreateMap<GetStationModel,Station>().ReverseMap();
+
+            CreateMap<GetStationModel,GetStationResponse>().ReverseMap();   
+
+
+            CreateMap<CreateStationModel,CreateStationRequest>().ReverseMap();
         }
     }
 }
