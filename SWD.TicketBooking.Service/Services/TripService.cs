@@ -70,12 +70,23 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var mostBooking = await _bookingRepo.GetTopNItems(b => b.TripID, 5);
+                var topTrips = _bookingRepo.GetAll()
+                                            .GroupBy(b => b.TripID)
+                                            .Select(g => new
+                                            {
+                                                TripID = g.Key,
+                                                TotalQuantity = g.Sum(b => b.Quantity),
+                                            })
+                                            .OrderByDescending(t => t.TotalQuantity)
+                                            .Take(5)
+                                            .ToList();
+
+
 
                 var trips = await _tripRepo.GetAll()
                                                 .Include(t => t.Route.FromCity)
                                                 .Include(t => t.Route.ToCity)
-                                                .Where(t => t.Status.ToLower().Trim() == "active" && mostBooking.Select(_ => _.TripID).Contains(t.TripID))
+                                                .Where(t => t.Status.ToLower().Trim() == "active" && topTrips.Select(_ => _.TripID).Contains(t.TripID))
                                                 .ToListAsync();
 
                 var rs = new List<PopularTripModel>();
