@@ -18,14 +18,16 @@ namespace SWD.TicketBooking.Service.Services
         private readonly IRepository<Station, int> _stationRepository;
         private readonly IRepository<Company, int> _companyRepository;
         private readonly IRepository<City, int> _cityRepository;
+        private readonly IRepository<Trip, int> _tripRepository;
         private readonly IMapper _mapper;
-        public StationService(IRepository<Station_Route, int> stationRouteRepository, IRepository<Station, int> stationRepository, IMapper mapper, IRepository<Company, int> companyRepository, IRepository<City, int> cityRepository)
+        public StationService(IRepository<Station_Route, int> stationRouteRepository, IRepository<Station, int> stationRepository, IMapper mapper, IRepository<Company, int> companyRepository, IRepository<City, int> cityRepository, IRepository<Trip, int> tripRepository)
         {
             _stationRouteRepository = stationRouteRepository;
             _stationRepository = stationRepository;
             _mapper = mapper;
             _companyRepository = companyRepository;
             _cityRepository = cityRepository;
+            _tripRepository = tripRepository;
         }
         public async Task<List<StationFromRouteModel>> GetStationsFromRoute(int routeID)
         {
@@ -132,6 +134,30 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        
+
+
+        public async Task<List<StationFromRouteModel>> GetAllStationInRoute(int id)
+        {
+            try
+            {
+                var route = await _tripRepository.FindByCondition(s=> s.TripID == id).Select(s=>s.RouteID).FirstOrDefaultAsync();
+                var stations = await _stationRouteRepository
+                                    .FindByCondition(_ => _.RouteID == route)
+                                    .Include(_ => _.Station)
+                                    .OrderBy(_ => _.OrderInRoute)
+                                    .Select(_ => new StationFromRouteModel
+                                    {
+                                        StationID = _.StationID,
+                                        Name = _.Station.Name
+                                    })
+                                     .ToListAsync();
+                return stations;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
     }
 }

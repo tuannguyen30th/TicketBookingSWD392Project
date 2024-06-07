@@ -27,6 +27,14 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(stationResponses);
         }
 
+        [HttpGet("stations-from-trip/{tripID}")]
+        public async Task<IActionResult> GetStationsInTrip(int tripID)
+        {
+            var stations = await _stationService.GetAllStationInRoute(tripID);
+            var stationResponses = _mapper.Map<List<StationFromRouteResponse>>(stations);
+            return Ok(stationResponses);
+        }
+
         [HttpGet("all-stations")]
         public async Task<IActionResult> GetAllStations()
         {
