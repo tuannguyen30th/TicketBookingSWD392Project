@@ -18,15 +18,19 @@ namespace SWD.TicketBooking.Service.Services
         private readonly IRepository<Booking, int> _bookingRepo;
         private readonly IRepository<TripPicture, int> _tripPictureRepo;
         private readonly IRepository<TicketType_Trip, int> _ticketTypeTripRepo;
+        private readonly IRepository<Route, int> _routeRepo;
+        private readonly IRepository<Feedback, int> _feedbackRepo;
         private readonly IMapper _mapper;
 
-        public TripService(IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo)
+        public TripService(IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IRepository<Route, int> routeRepo, IRepository<Feedback, int> feedbackRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo)
         {
             _tripRepo = tripRepo;
             _bookingRepo = bookingRepo;
             _ticketTypeTripRepo = ticketTypeTripRepo;
-            _mapper = mapper;
             _tripPictureRepo = tripPictureRepo;
+            _routeRepo = routeRepo;
+            _feedbackRepo = feedbackRepo;
+            _mapper = mapper;
         }
 
         public async Task<List<PictureModel>> GetPictureOfTrip(int id)
@@ -48,7 +52,7 @@ namespace SWD.TicketBooking.Service.Services
                         var tripPic = await _tripPictureRepo.GetByIdAsync(p);
                         var tripPicModel = new PictureModel
                         {
-                            ImageUrl = tripPic.imageUrl,
+                            ImageUrl = tripPic.ImageUrl,
                             TripId = tripPic.TripID
                         };
                         rs.Add(tripPicModel);
@@ -66,12 +70,23 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var mostBooking = await _bookingRepo.GetTopNItems(b => b.TripID, 5);
+                var topTrips = _bookingRepo.GetAll()
+                                            .GroupBy(b => b.TripID)
+                                            .Select(g => new
+                                            {
+                                                TripID = g.Key,
+                                                TotalQuantity = g.Sum(b => b.Quantity),
+                                            })
+                                            .OrderByDescending(t => t.TotalQuantity)
+                                            .Take(5)
+                                            .ToList();
+
+
 
                 var trips = await _tripRepo.GetAll()
                                                 .Include(t => t.Route.FromCity)
                                                 .Include(t => t.Route.ToCity)
-                                                .Where(t => t.Status.ToLower().Trim() == "active" && mostBooking.Select(_ => _.TripID).Contains(t.TripID))
+                                                .Where(t => t.Status.ToLower().Trim() == "active" && topTrips.Select(_ => _.TripID).Contains(t.TripID))
                                                 .ToListAsync();
 
                 var rs = new List<PopularTripModel>();
@@ -79,12 +94,12 @@ namespace SWD.TicketBooking.Service.Services
                 foreach (var t in trips)
                 {
                     var minPriceByTrip = await _ticketTypeTripRepo.GetAll()
-                     .Where(ttt => ttt.TripID == t.TripID)
-                     .GroupBy(ttt => ttt.TripID)
+                     .Where(_ => _.TripID == t.TripID)
+                     .GroupBy(_ => _.TripID)
                      .Select(g => new
                      {
                          TripId = g.Key,
-                         MinPrice = g.Min(ttt => ttt.Price)
+                         MinPrice = g.Min(_ => _.Price)
                      })
                      .ToDictionaryAsync(x => x.TripId, x => x.MinPrice);
 
@@ -101,6 +116,57 @@ namespace SWD.TicketBooking.Service.Services
                 }
 
                 return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
+        public async Task<List<SearchTripModel>> SearchTrip(int fromCity, int toCity, DateTime startTime)
+        {
+            try
+            {
+                var startDate = startTime.Date;
+                var trips = await _tripRepo.GetAll().Include(_ => _.Route).ThenInclude(_ => _.Company).Where(_ => _.Route.FromCityID == fromCity
+                                                              && _.Route.ToCityID == toCity
+                                                              && _.StartTime.Date == startDate)
+                                                                  .ToListAsync();
+
+                var searchTripModels = new List<SearchTripModel>();
+
+                foreach (var trip in trips)
+                {
+                    var feedbacks = await _feedbackRepo.FindByCondition(_ => _.TripID == trip.TripID).ToListAsync();
+                    var ratingAverage = feedbacks.Select(_ => _.Rating).DefaultIfEmpty(0).Average();
+                    var ratingQuantity = await _feedbackRepo.FindByCondition(fb => fb.TripID == trip.TripID).CountAsync();
+                    ratingQuantity = ratingQuantity == 0 ? 0 : ratingQuantity;
+                    var totalSeatsInTrip = await _ticketTypeTripRepo.FindByCondition(_ => _.TripID == trip.TripID).SumAsync(_ => _.Quantity);
+                    var seatsBookedInTrip = await _bookingRepo.FindByCondition(_ => _.TripID == trip.TripID && _.BookingTime < startTime).CountAsync();
+                    var remainingSeats = totalSeatsInTrip - seatsBookedInTrip;
+                    var tripImages = await _tripPictureRepo.FindByCondition(_ => _.TripID == trip.TripID).ToListAsync();
+                    var tripImage = tripImages.Select(_ => _.ImageUrl).FirstOrDefault();
+                    var lowestPrice = await _ticketTypeTripRepo.FindByCondition(_ => _.TripID == trip.TripID).MinAsync(_ => _.Price);
+
+                    var searchTrip = new SearchTripModel
+                    {
+                        TripID = trip.TripID,
+                        CompanyName = trip.Route.Company.Name,
+                        ImageUrl = tripImage,
+                        AverageRating = ratingAverage,
+                        QuantityRating = ratingQuantity,
+                        EmptySeat = remainingSeats,
+                        Price = lowestPrice,
+                        StartLocation = trip.Route?.StartLocation,
+                        EndLocation = trip.Route?.EndLocation, 
+                        StartTime = trip.StartTime,
+                        EndTime = trip.EndTime,
+                    };
+
+                    searchTripModels.Add(searchTrip);
+                }
+
+                return searchTripModels;
             }
             catch (Exception ex)
             {

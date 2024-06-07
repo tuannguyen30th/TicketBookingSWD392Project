@@ -1,11 +1,11 @@
-﻿namespace SWD.TicketBooking.API.Common.ResponseModels
+﻿namespace SWD.TicketBooking.API.Common.RequestModels
 {
     public class UpdateUserReq
     {
         public string UserName { get; set; }
 
         public string Password { get; set; }
-        public String confirmPassword { get; set; }
+        public string confirmPassword { get; set; }
 
 
         public string FullName { get; set; }

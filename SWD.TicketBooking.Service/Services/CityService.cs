@@ -52,5 +52,94 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception();
             }
         }
+
+        public async Task<int> CreateCity(CreateCityModel model)
+        {
+            try
+            {
+                var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName).FirstOrDefaultAsync();
+                if (checkExisted != null)
+                {
+                    throw new Exception("Company name existed");
+                }
+                var company = await _cityRepository.AddAsync(new City
+                {
+                    Name = model.CityName,
+                    Status = "Active"
+                });
+                if (company == null)
+                {
+                    throw new Exception("Cannot create");
+                }
+                var rs = await _cityRepository.Commit();
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<int> UpdateCity(int cityId, CreateCityModel model)
+        {
+            try
+            {
+                var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName).FirstOrDefaultAsync();
+                if (checkExisted != null)
+                {
+                    throw new Exception("City name already existed");
+                }
+
+                var entity = await _cityRepository.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CityID == cityId).FirstOrDefaultAsync();
+
+                if (entity == null)
+                {
+                    throw new Exception("Cannot find city");
+                }
+
+                entity.Name = model.CityName;
+
+                var companyUpdate = _cityRepository.Update(entity);
+
+                if (companyUpdate == null)
+                {
+                    throw new Exception("Cannot update");
+                }
+                var rs = await _cityRepository.Commit();
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<int> ChangeStatus(int cityId, string status)
+        {
+            try
+            {
+                var entity = await _cityRepository.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CityID == cityId).FirstOrDefaultAsync();
+
+                if (entity == null)
+                {
+                    throw new Exception("Cannot find company");
+                }
+
+                entity.Status = status;
+
+                var companyUpdate = _cityRepository.Update(entity);
+
+                if (companyUpdate == null)
+                {
+                    throw new Exception("Cannot update");
+                }
+                var rs = await _cityRepository.Commit();
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
     }
 }
