@@ -41,7 +41,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("company")]
+        [HttpPost("new-company")]
         public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyRequest req)
         {
             var map = _mapper.Map<CreateCompanyModel>(req);
@@ -59,6 +59,18 @@ namespace SWD.TicketBooking.API.Controllers
         {
             var map = _mapper.Map<CreateCompanyModel>(req);
             var rs = await _companyService.UpdateCompany(companyID, map);
+            if (rs < 1)
+            {
+                return BadRequest("Update failed");
+            }
+            return Ok("Update successfully");
+        }
+
+        [AllowAnonymous]
+        [HttpPut("company-status/{id}")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] ChangeStatusRequest req)
+        {
+            var rs = await _companyService.ChangeStatus(id, req.Status);
             if (rs < 1)
             {
                 return BadRequest("Update failed");

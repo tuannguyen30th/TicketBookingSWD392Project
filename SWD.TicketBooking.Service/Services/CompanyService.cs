@@ -110,5 +110,33 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        public async Task<int> ChangeStatus(int companyId, string status)
+        {
+            try
+            {
+                var entity = await _companyRepo.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CompanyID == companyId).FirstOrDefaultAsync();
+
+                if (entity == null)
+                {
+                    throw new Exception("Cannot find company");
+                }
+
+                entity.Status = status;
+
+                var companyUpdate = _companyRepo.Update(entity);
+
+                if (companyUpdate == null)
+                {
+                    throw new Exception("Cannot update");
+                }
+                var rs = await _companyRepo.Commit();
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
     }
 }
