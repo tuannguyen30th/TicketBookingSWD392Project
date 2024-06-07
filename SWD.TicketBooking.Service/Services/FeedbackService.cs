@@ -98,14 +98,25 @@ namespace SWD.TicketBooking.Service.Services
                 if (existedTrip != null)
                 {
                     var feedback = await _feedbackRepository.FindByCondition(x => x.TripID == id)
+                                 .ToListAsync();
+                    var feedbacks = new List<Feedback>();
+                    if (filter == 0)
+                    {
+                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TripID == id)
                                  .Skip((pageNumber - 1) * pageSize)
                                  .Take(pageSize)
                                  .ToListAsync();
-                    var feedbacks = await _feedbackRepository.FindByCondition(x => x.TripID == id && (x.Rating == filter))
+                    }
+                    else
+                    {
+                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TripID == id && (x.Rating == filter))
                                  .Skip((pageNumber - 1) * pageSize)
                                  .Take(pageSize)
                                  .ToListAsync();
+                    }
+
                     var rs = new List<FeedbackModel>();
+
                     var totalRating = feedback.Sum(fb => fb.Rating);
                     var averageRating = feedback.Count > 0 ? (double)totalRating / feedback.Count : 0; // Calculate average rating
 
@@ -126,6 +137,8 @@ namespace SWD.TicketBooking.Service.Services
                             
                         rs.Add(fbModel);
                     }
+
+
                     return new TripFeedbackModel
                     {
                         Feedbacks = rs,

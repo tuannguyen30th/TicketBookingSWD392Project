@@ -270,6 +270,20 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Status = "Active",
                     City = cities[5],
                     Company = companies[2]
+                },
+                new Station
+                {
+                    Name = "Trạm dừng chân ở Bảo Lộc",
+                    Status = "Active",
+                    City = cities[34],
+                    Company = companies[2]
+                },
+                new Station
+                {
+                    Name = "Khu du lịch Đồng Tâm",
+                    Status = "Active",
+                    City = cities[5],
+                    Company = companies[2]
                 }
             };
 
@@ -277,26 +291,17 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Route
                 {
-                    FromCity = cities[0],
-                    ToCity = cities[6],
+                    FromCity = cities[57],
+                    ToCity = cities[55],
                     Company = companies[0],
-                    StartLocation = "KCN Mỹ Xuân A",
-                    EndLocation = "Quan 2",
-                    Status = "Active"
-                },
-                new Route
-                {
-                    FromCity = cities[2],
-                    ToCity = cities[6],
-                    Company = companies[1],
-                    StartLocation = "Giáo xứ Chu Hải",
-                    EndLocation = "Quan 5",
+                    StartLocation = "Bưu điện trung tâm TP. Hồ Chí Minh",
+                    EndLocation = " Bến xe Huế",
                     Status = "Active"
                 },
                 new Route
                 {
                     FromCity = cities[3],
-                    ToCity = cities[6],
+                    ToCity = cities[57],
                     Company = companies[2],
                     StartLocation = "Ngã ba Cái Mép",
                     EndLocation = "Quan 10",
@@ -304,11 +309,65 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
-                    FromCity = cities[4],
-                    ToCity = cities[6],
+                    FromCity = cities[1],
+                    ToCity = cities[57],
                     Company = companies[3],
-                    StartLocation = "Siêu thị Coop Mart Tân Thành",
-                    EndLocation = "Quan 9",
+                    StartLocation = "Bãi Trước",
+                    EndLocation = "Sân bay Tân Sơn Nhất",
+                    Status = "Active"
+                },
+                new Route
+                {
+                    FromCity = cities[57],
+                    ToCity = cities[12],
+                    Company = companies[3],
+                    StartLocation = " Bến xe miền tây",
+                    EndLocation = " Bến xe Cần Thơ",
+                    Status = "Active"
+                },
+                new Route
+                {
+                    FromCity = cities[57],
+                    ToCity = cities[30],
+                    Company = companies[3],
+                    StartLocation = "Công viên 23/9, Quận 1",
+                    EndLocation = "Bến xe Nha Trang",
+                    Status = "Active"
+                },
+                new Route
+                {
+                    FromCity = cities[57],
+                    ToCity = cities[15],
+                    Company = companies[3],
+                    StartLocation = "Bến Xe Miền Đông",
+                    EndLocation = "Bến Xe Đà Nẵng",
+                    Status = "Active"
+                },
+                new Route
+                {
+                    FromCity = cities[6],
+                    ToCity = cities[57],
+                    Company = companies[3],
+                    StartLocation = " Bến Tre Bus Station",
+                    EndLocation = "Bến Xe Miền Tây",
+                    Status = "Active"
+                },
+                new Route
+                {
+                    FromCity = cities[57],
+                    ToCity = cities[34],
+                    Company = companies[3],
+                    StartLocation = "Bến Xe Miền Đông",
+                    EndLocation = "Bến Xe Đà Lạt",
+                    Status = "Active"
+                },
+                new Route
+                {
+                    FromCity = cities[57],
+                    ToCity = cities[1],
+                    Company = companies[3],
+                    StartLocation = "Bến Xe Miền Đông",
+                    EndLocation = "Bến Xe Vũng Tàu",
                     Status = "Active"
                 }
             };
@@ -323,32 +382,242 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
-                    Route = routes[2],
+                    Route = routes[0],
                     Station = stations[1],
                     Status = "Active",
                     OrderInRoute = 2
                 },
                 new Station_Route
                 {
-                    Route = routes[1],
+                    Route = routes[0],
                     Station = stations[4],
                     Status = "Active",
-                    OrderInRoute =1
+                    OrderInRoute =3
                 },
                 new Station_Route
                 {
                     Route = routes[1],
                     Station = stations[2],
                     Status = "Active",
-                    OrderInRoute = 2
+                    OrderInRoute = 1
+                },
+                new Station_Route
+                {
+                    Route = routes[1],
+                    Station = stations[0],
+                    Status = "Active",
+                    OrderInRoute =3
+                },
+                new Station_Route
+                {
+                    Route = routes[1],
+                    Station = stations[1],
+                    Status = "Active",
+                    OrderInRoute =4
+                },
+                new Station_Route
+                {
+                    Route = routes[1],
+                    Station = stations[5],
+                    Status = "Active",
+                    OrderInRoute =2
+                },
+                new Station_Route
+                {
+                    Route = routes[1],
+                    Station = stations[4],
+                    Status = "Active",
+                    OrderInRoute =5
+                },
+                new Station_Route
+                {
+                    Route = routes[2],
+                    Station = stations[0],
+                    Status = "Active",
+                    OrderInRoute =3
+                },
+                new Station_Route
+                {
+                    Route = routes[2],
+                    Station = stations[1],
+                    Status = "Active",
+                    OrderInRoute =2
+                },
+                new Station_Route
+                {
+                    Route = routes[2],
+                    Station = stations[5],
+                    Status = "Active",
+                    OrderInRoute =1
+                },
+                new Station_Route
+                {
+                    Route = routes[2],
+                    Station = stations[3],
+                    Status = "Active",
+                    OrderInRoute =4
+                },
+                new Station_Route
+                {
+                    Route = routes[3],
+                    Station = stations[1],
+                    Status = "Active",
+                    OrderInRoute =1
                 },
                 new Station_Route
                 {
                     Route = routes[3],
                     Station = stations[2],
                     Status = "Active",
+                    OrderInRoute =2
+                },
+                new Station_Route
+                {
+                    Route = routes[3],
+                    Station = stations[5],
+                    Status = "Active",
+                    OrderInRoute =4
+                },
+                new Station_Route
+                {
+                    Route = routes[3],
+                    Station = stations[7],
+                    Status = "Active",
+                    OrderInRoute =3
+                },
+                new Station_Route
+                {
+                    Route = routes[4],
+                    Station = stations[1],
+                    Status = "Active",
                     OrderInRoute =1
                 },
+                new Station_Route
+                {
+                    Route = routes[4],
+                    Station = stations[2],
+                    Status = "Active",
+                    OrderInRoute =2
+                },
+                new Station_Route
+                {
+                    Route = routes[4],
+                    Station = stations[3],
+                    Status = "Active",
+                    OrderInRoute =4
+                },
+                new Station_Route
+                {
+                    Route = routes[4],
+                    Station = stations[7],
+                    Status = "Active",
+                    OrderInRoute =3
+                },
+                new Station_Route
+                {
+                    Route = routes[5],
+                    Station = stations[1],
+                    Status = "Active",
+                    OrderInRoute =3
+                },
+                new Station_Route
+                {
+                    Route = routes[5],
+                    Station = stations[2],
+                    Status = "Active",
+                    OrderInRoute =2
+                },
+                new Station_Route
+                {
+                    Route = routes[5],
+                    Station = stations[5],
+                    Status = "Active",
+                    OrderInRoute =1
+                },
+                new Station_Route
+                {
+                    Route = routes[6],
+                    Station = stations[0],
+                    Status = "Active",
+                    OrderInRoute =2
+                },
+                new Station_Route
+                {
+                    Route = routes[6],
+                    Station = stations[1],
+                    Status = "Active",
+                    OrderInRoute =3
+                },
+                new Station_Route
+                {
+                    Route = routes[6],
+                    Station = stations[2],
+                    Status = "Active",
+                    OrderInRoute =4
+                },
+                new Station_Route
+                {
+                    Route = routes[6],
+                    Station = stations[4],
+                    Status = "Active",
+                    OrderInRoute =5
+                },
+                new Station_Route
+                {
+                    Route = routes[6],
+                    Station = stations[7],
+                    Status = "Active",
+                    OrderInRoute =6
+                },
+                new Station_Route
+                {
+                    Route = routes[6],
+                    Station = stations[3],
+                    Status = "Active",
+                    OrderInRoute =7
+                },
+                new Station_Route
+                {
+                    Route = routes[6],
+                    Station = stations[5],
+                    Status = "Active",
+                    OrderInRoute =8
+                },
+                new Station_Route
+                {
+                    Route = routes[7],
+                    Station = stations[0],
+                    Status = "Active",
+                    OrderInRoute =3
+                },
+                new Station_Route
+                {
+                    Route = routes[7],
+                    Station = stations[1],
+                    Status = "Active",
+                    OrderInRoute =2
+                },
+                new Station_Route
+                {
+                    Route = routes[7],
+                    Station = stations[2],
+                    Status = "Active",
+                    OrderInRoute =4
+                },
+                new Station_Route
+                {
+                    Route = routes[7],
+                    Station = stations[4],
+                    Status = "Active",
+                    OrderInRoute =1
+                },
+                new Station_Route
+                {
+                    Route = routes[7],
+                    Station = stations[7],
+                    Status = "Active",
+                    OrderInRoute =5
+                }
             };
             List<Trip> trips = new()
             {
@@ -361,7 +630,77 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
-                    Route=routes[3],
+                    Route=routes[0],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[0],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[1],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[1],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[1],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[1],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[1],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[1],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[2],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[2],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[2],
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now,
                     Status ="Active"
@@ -386,7 +725,204 @@ namespace SWD.TicketBooking.Repo.SeedData
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now,
                     Status ="Active"
-                }
+                },
+                new Trip
+                {
+                    Route=routes[3],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[3],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[3],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[3],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[4],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[4],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[4],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[4],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                 new Trip
+                {
+                    Route=routes[5],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                  new Trip
+                {
+                    Route=routes[5],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                   new Trip
+                {
+                    Route=routes[5],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                    new Trip
+                {
+                    Route=routes[5],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                     new Trip
+                {
+                    Route=routes[5],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                      new Trip
+                {
+                    Route=routes[6],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                 new Trip
+                {
+                    Route=routes[6],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                  new Trip
+                {
+                    Route=routes[6],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                   new Trip
+                {
+                    Route=routes[6],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                    new Trip
+                {
+                    Route=routes[6],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                     new Trip
+                {
+                    Route=routes[7],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+
+                },
+                      new Trip
+                {
+                    Route=routes[7],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                       new Trip
+                {
+                    Route=routes[7],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                        new Trip
+                {
+                    Route=routes[7],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                         new Trip
+                {
+                    Route=routes[7],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                          new Trip
+                {
+                    Route=routes[8],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                 new Trip
+                {
+                    Route=routes[8],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                  new Trip
+                {
+                    Route=routes[8],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                   new Trip
+                {
+                    Route=routes[8],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
+                    new Trip
+                {
+                    Route=routes[8],
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now,
+                    Status ="Active"
+                },
             };
             List<ServiceType> serviceTypes = new()
             {
@@ -951,7 +1487,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 }
 
             };
-
           /*  List<Service_Trip> trip_Services = new()
             {
                 new Service_Trip
@@ -1197,6 +1732,12 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[4]
                 }
             };
+
+
+
+
+
+
             // Add Range training program
             await _context.Users.AddRangeAsync(users);
             await _context.UserRoles.AddRangeAsync(userRoles);
