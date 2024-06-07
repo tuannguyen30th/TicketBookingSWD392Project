@@ -8,38 +8,32 @@ namespace SWD.TicketBooking.Service.Dtos.User
         public int UserID { get; set; }
 
         [MaxLength(255)]
-        public string? UserName { get; set; }
+        public string? UserName { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string? Password { get; set; }
+        public string? Password { get; set; } = string.Empty;
 
         [MaxLength(50)]
-        public string? FullName { get; set; }
+        public string? FullName { get; set; } = string.Empty;
 
         [MaxLength(255)]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
+
         public string? Avatar { get; set; }
 
         [MaxLength(255)]
-        public string? Address { get; set; }
+        public string? Address { get; set; } = string.Empty;
 
-        public string? OTPCode { get; set; }
+        public string? OTPCode { get; set; } = string.Empty;
 
         [MaxLength(15)]
-        public string? PhoneNumber { get; set; }
-
-        public string? FSU { get; set; }
-        public string? CreateBy { get; set; }
-
+        public string? PhoneNumber { get; set; } = string.Empty;
+        public double Balance { get; set; }
         public DateTimeOffset? CreateDate { get; set; }
-
-        public string? ModifyBy { get; set; }
-
-        public DateTimeOffset? ModifyDate { get; set; }
         public bool? IsVerified { get; set; }
 
-        public string? Status { get; set; }
+        public string? Status { get; set; } = string.Empty;
         public int RoleID { get; set; }
     }
 }
