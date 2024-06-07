@@ -37,18 +37,18 @@ namespace SWD.TicketBooking.Controllers
 
         }
 
-        [HttpGet("Get-user-detail")]
-        public async Task<IActionResult> GetUserDetail(int id)
+        [HttpGet("user-detail/{userID}")]
+        public async Task<IActionResult> GetUserDetail([FromRoute] int userID)
         {
-            var user = _mapper.Map<UserResponse>(await _userService.GetUserById(id));
+            var user = _mapper.Map<UserResponse>(await _userService.GetUserById(userID));
             return Ok(user);
         }
 
-        [HttpPut("Update-user")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserReq req)
+        [HttpPut("user/{userID}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] int userID, [FromBody] UpdateUserReq req)
         {
             var map = _mapper.Map<UpdateUserModel>(req);
-            var user = await _userService.UpdateUser(id, map);
+            var user = await _userService.UpdateUser(userID, map);
             return Ok(user);
         }
 
@@ -215,10 +215,12 @@ namespace SWD.TicketBooking.Controllers
             }
 
         }
-        [HttpGet]
-        public ActionResult GetALl()
+        [HttpGet("all-users")]
+        public async Task<ActionResult> GetALlUsers()
         {
-            return Ok("Ok");
+            var user = await _userService.GetAllUsers();
+            var rs = _mapper.Map<List<UserResponse>>(user);
+            return Ok(rs);
         }
         private string GenerateEmailBody(string fullName, int otp)
         {

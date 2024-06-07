@@ -32,10 +32,10 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("company-by-id/{id}")]
-        public async Task<IActionResult> GetCompanyById([FromRoute] int id)
+        [HttpGet("company-by-id/{companyID}")]
+        public async Task<IActionResult> GetCompanyById([FromRoute] int companyID)
         {
-            var company = await _companyService.GetCompanyById(id);
+            var company = await _companyService.GetCompanyById(companyID);
             var rs = _mapper.Map<GetCompanyResponse>(company);
             return Ok(rs);
         }
@@ -54,11 +54,11 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("company/{id}")]
-        public async Task<IActionResult> UpdateCompany([FromRoute] int id ,[FromBody] CreateCompanyRequest req)
+        [HttpPut("company/{companyID}")]
+        public async Task<IActionResult> UpdateCompany([FromRoute] int companyID, [FromBody] CreateCompanyRequest req)
         {
             var map = _mapper.Map<CreateCompanyModel>(req);
-            var rs = await _companyService.UpdateCompany(id, map);
+            var rs = await _companyService.UpdateCompany(companyID, map);
             if (rs < 1)
             {
                 return BadRequest("Update failed");

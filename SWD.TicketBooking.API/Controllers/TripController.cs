@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.Repo.Entities;
+using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Services;
+using static SWD.TicketBooking.Service.Dtos.CreateTripModel;
 
 namespace SWD.TicketBooking.API.Controllers
 {
@@ -40,6 +44,22 @@ namespace SWD.TicketBooking.API.Controllers
         {
             var rs = _mapper.Map<List<SearchTripResponse>>(await _tripService.SearchTrip(fromCity, toCity, startTime));
             return Ok(rs);
+        }
+        [HttpPost("new-trip")]
+        public async Task<IActionResult> CreateTrip([FromForm] CreateTripRequest createTripRequest)
+        {
+            var createTrip = _mapper.Map<CreateTripModel>(createTripRequest);
+
+            var updatedService = await _tripService.CreateTrip(createTrip);
+
+            return Ok(updatedService);
+        }
+        [HttpPut("trip/{tripId}")]
+        public async Task<IActionResult> ChangeStatusTrip([FromRoute] int tripId)
+        {
+
+            var updatedService = await _tripService.ChangeStatusTrip(tripId);
+            return Ok(updatedService);
         }
     }
 }

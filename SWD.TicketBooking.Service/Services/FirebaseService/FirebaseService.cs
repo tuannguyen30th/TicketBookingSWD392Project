@@ -30,11 +30,10 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
             var _result = new AppActionResult();
             try
             {
-                var auth = new FirebaseAuthProvider(new FirebaseConfig(_firebaseConfiguration.ApiKey));
-
-                var account = await auth.SignInWithEmailAndPasswordAsync(_firebaseConfiguration.AuthEmail, _firebaseConfiguration.AuthPassword);
+                var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyCMlVnrHg3XcmcgNXfIvHjw-6OGyoaC33w"));
+                var account = await auth.SignInWithEmailAndPasswordAsync("nguyenngoctuanthct@gmail.com", "0917899898");
                 var storage = new FirebaseStorage(
-             _firebaseConfiguration.Bucket,
+             "cloudfunction-yt-2b3df.appspot.com",
              new FirebaseStorageOptions
              {
                  AuthTokenAsyncFactory = () => Task.FromResult(account.FirebaseToken),
@@ -44,6 +43,7 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
                     .Child(pathFileName)
                     .DeleteAsync();
                 _result.Messages.Add("Delete image successful");
+                _result.IsSuccess = true;
             }
             catch (FirebaseStorageException ex)
             {
@@ -54,9 +54,10 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
 
         public async Task<string> GetUrlImageFromFirebase(string pathFileName)
         {
-            var a = pathFileName.Split("/");
-            pathFileName = $"{a[0]}%2F{a[1]}";
-            var api = $"https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o?name={pathFileName}";
+            //var a = pathFileName.Split("/");
+            var a = pathFileName.Split("/o/")[1];
+            //pathFileName = $"{a[0]}%2F{a[1]}";
+            var api = $"https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o?name={a}";
             if (string.IsNullOrEmpty(pathFileName))
             {
                 return string.Empty;
@@ -70,7 +71,7 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
                 var jmessage = JObject.Parse(response.Content);
                 var downloadToken = jmessage.GetValue("downloadTokens").ToString();
                 return
-                    $"https://firebasestorage.googleapis.com/v0/b/{_configuration["Firebase:Bucket"]}/o/{pathFileName}?alt=media&token={downloadToken}";
+                    $"https://firebasestorage.googleapis.com/v0/b/{_configuration["cloudfunction-yt-2b3df.appspot.com"]}/o/{pathFileName}?alt=media&token={downloadToken}";
             }
 
             return string.Empty;

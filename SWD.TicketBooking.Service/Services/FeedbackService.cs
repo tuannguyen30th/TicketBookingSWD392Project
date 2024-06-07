@@ -35,7 +35,7 @@ namespace SWD.TicketBooking.Service.Services
             _fbImageRepository = fbImageRepository;
             _userRepository = userRepository;
         }
-        public async Task CreateRating(FeedbackRequestModel ratingModel)
+        public async Task<bool> CreateRating(FeedbackRequestModel ratingModel)
         {
             try
             {
@@ -63,25 +63,52 @@ namespace SWD.TicketBooking.Service.Services
                 };
                 await _feedbackRepository.AddAsync(newRating);
                 await _feedbackRepository.Commit();
-                var imagePath = FirebasePathName.RATING + $"{Guid.NewGuid()}";
-                var imageUploadResult = await _firebaseService.UploadFilesToFirebase(ratingModel.Files, imagePath);
-                if (!imageUploadResult.IsSuccess)
-                {
-                    throw new Exception("Error uploading files to Firebase.");
-                }
+                /*  var guidPath = Guid.NewGuid().ToString();
+                  var imagePath = FirebasePathName.RATING + $"{guidPath}";
+                  var imageUploadResult = await _firebaseService.UploadFilesToFirebase(ratingModel.Files, imagePath);
+                  if (!imageUploadResult.IsSuccess)
+                  {
+                      throw new Exception("Error uploading files to Firebase.");
+                  }
 
-                foreach ( var imageUrl in (List<string>)imageUploadResult.Result)
+                  foreach ( var imageUrl in (List<string>)imageUploadResult.Result)
+                  {
+                      var newFeedbackImage = new Feedback_Image
+                      {
+                          FeedbackID = newRating.FeedbackID,
+                          ImageUrl = imageUrl,
+                          UrlGuidID = guidPath,
+                      };
+
+                      await _feedbackImageRepository.AddAsync(newFeedbackImage);
+                  }
+                  await _feedbackImageRepository.Commit();*/
+                var imageUrls = ratingModel.Files;
+                foreach (var imageUrl in imageUrls)
                 {
+                    var guidPath = Guid.NewGuid().ToString();
+                    var imagePath = FirebasePathName.RATING + $"{guidPath}";
+                    var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
+                    if (!imageUploadResult.IsSuccess)
+                    {
+                        throw new Exception("Error uploading files to Firebase.");
+                    }
+
                     var newFeedbackImage = new Feedback_Image
                     {
                         FeedbackID = newRating.FeedbackID,
-                        ImageUrl = imageUrl
+                        ImageUrl = (string)imageUploadResult.Result,
+                        UrlGuidID = guidPath
                     };
 
                     await _feedbackImageRepository.AddAsync(newFeedbackImage);
                 }
-                await _feedbackImageRepository.Commit();
-
+                var rs = await _feedbackImageRepository.Commit();
+                if (rs > 0)
+                {
+                    return true;
+                }
+                return false;
 
             }
             catch (Exception ex)

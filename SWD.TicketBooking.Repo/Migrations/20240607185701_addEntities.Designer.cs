@@ -12,8 +12,8 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20240606070841_addTable")]
-    partial class addTable
+    [Migration("20240607185701_addEntities")]
+    partial class addEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -171,6 +171,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UrlGuidID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Feedback_Image_ID");
 
                     b.HasIndex("FeedbackID");
@@ -268,6 +272,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlGuidID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -587,6 +595,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Property<int>("TripID")
                         .HasColumnType("int");
 
+                    b.Property<string>("UrlGuidID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("TripPictureID");
 
                     b.HasIndex("TripID");
@@ -642,6 +654,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlGuidID")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")

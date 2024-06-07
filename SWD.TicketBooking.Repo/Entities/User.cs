@@ -24,7 +24,9 @@ namespace SWD.TicketBooking.Repo.Entities
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        public string? Avatar { get; set; }
+        public string? Avatar { get; set; } = string.Empty;
+        public string UrlGuidID { get; set; } = string.Empty;
+
 
         [MaxLength(255)]
         public string? Address { get; set; } = string.Empty;

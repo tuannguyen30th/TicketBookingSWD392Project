@@ -9,6 +9,7 @@ namespace SWD.TicketBooking.Service.Dtos
     public class SearchTripModel
     {
         public int TripID { get; set; }
+        public int RouteID { get; set; }
         public string CompanyName { get; set; }
         public string ImageUrl { get; set; }
         public double AverageRating { get; set; }

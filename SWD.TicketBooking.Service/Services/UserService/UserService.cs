@@ -27,6 +27,19 @@ namespace SWD.TicketBooking.Service.Services.UserService
             _userRoleRepository = userRoleRepository;
          
         }
+        public async Task<List<UserModel>> GetAllUsers()
+        {
+            try
+            {
+                var users = _userRepository.GetAll();
+                var rs = _mapper.Map<List<UserModel>>(users);
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
         public async Task<UserModel> GetUserByEmailForOTP(string email)
         {
             try

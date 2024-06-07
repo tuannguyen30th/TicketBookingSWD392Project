@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
 
             var resultSucess = new SignUpResponse
             {
-                Messages = "Sign up success"
+                Messages = "Sign up success and check your email and verify the OTP!"
             };
 
             var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
