@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
@@ -30,6 +33,44 @@ namespace SWD.TicketBooking.API.Controllers
             {
                 throw new Exception();
             }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("new-city")]
+        public async Task<IActionResult> CreateCompany([FromBody] CreateCityRequest req)
+        {
+            var map = _mapper.Map<CreateCityModel>(req);
+            var rs = await _cityService.CreateCity(map);
+            if (rs < 1)
+            {
+                return BadRequest("Create failed");
+            }
+            return Ok("Create successfully");
+        }
+
+        [AllowAnonymous]
+        [HttpPut("city/{id}")]
+        public async Task<IActionResult> UpdateCompany([FromRoute] int id, [FromBody] CreateCityRequest req)
+        {
+            var map = _mapper.Map<CreateCityModel>(req);
+            var rs = await _cityService.UpdateCity(id, map);
+            if (rs < 1)
+            {
+                return BadRequest("Update failed");
+            }
+            return Ok("Update successfully");
+        }
+
+        [AllowAnonymous]
+        [HttpPut("city-status/{id}")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] ChangeStatusRequest req)
+        {
+            var rs = await _cityService.ChangeStatus(id, req.Status);
+            if (rs < 1)
+            {
+                return BadRequest("Update failed");
+            }
+            return Ok("Update successfully");
         }
     }
 }
