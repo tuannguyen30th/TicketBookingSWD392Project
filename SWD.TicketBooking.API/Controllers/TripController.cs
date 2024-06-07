@@ -35,5 +35,11 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(id));
             return Ok(rs);
         }
+        [HttpGet("list-trip-fromCity-toCity/{fromCity}/{toCity}/{startTime}")]
+        public async Task<IActionResult> SearchTrip(int fromCity, int toCity, DateTime startTime)
+        {
+            var rs = _mapper.Map<List<SearchTripResponse>>(await _tripService.SearchTrip(fromCity, toCity, startTime));
+            return Ok(rs);
+        }
     }
 }
