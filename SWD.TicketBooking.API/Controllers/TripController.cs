@@ -33,10 +33,10 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("trip-picture-detail/{id}")]
-        public async Task<IActionResult> GetTripPictureDetail(int id)
+        [HttpGet("trip-picture-detail/{tripId}")]
+        public async Task<IActionResult> GetTripPictureDetail(int tripId)
         {
-            var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(id));
+            var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
             return Ok(rs);
         }
         [HttpGet("list-trip-fromCity-toCity/{fromCity}/{toCity}/{startTime}")]
