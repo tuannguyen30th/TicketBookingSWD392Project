@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWD.TicketBooking.Repo.Migrations
 {
-    public partial class addEntities : Migration
+    public partial class addTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,6 +49,20 @@ namespace SWD.TicketBooking.Repo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ServiceType", x => x.ServiceTypeID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TicketType",
+                columns: table => new
+                {
+                    TicketTypeID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketType", x => x.TicketTypeID);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,27 +236,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                         column: x => x.RouteID,
                         principalTable: "Route",
                         principalColumn: "RouteID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TicketType",
-                columns: table => new
-                {
-                    TicketTypeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RouteID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TicketType", x => x.TicketTypeID);
-                    table.ForeignKey(
-                        name: "FK_TicketType_Route_RouteID",
-                        column: x => x.RouteID,
-                        principalTable: "Route",
-                        principalColumn: "RouteID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -643,11 +636,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "IX_TicketDetail_Service_TicketDetailID",
                 table: "TicketDetail_Service",
                 column: "TicketDetailID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TicketType_RouteID",
-                table: "TicketType",
-                column: "RouteID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TicketType_Trip_TicketTypeID",

@@ -1170,19 +1170,16 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new TicketType
                 {
-                    Route = routes[1],
                     Name = "Hàng đầu",
                     Status = "Active"
                 },
                 new TicketType
                 {
-                    Route = routes[1],
                     Name = "Hàng giữa",
                     Status = "Active"
                 },
                 new TicketType
                 {
-                    Route = routes[2],
                     Name = "Hàng sau",
                     Status = "Active"
                 },

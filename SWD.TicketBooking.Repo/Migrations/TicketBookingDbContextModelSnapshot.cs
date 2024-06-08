@@ -471,15 +471,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RouteID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TicketTypeID");
-
-                    b.HasIndex("RouteID");
 
                     b.ToTable("TicketType");
                 });
@@ -914,17 +909,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Navigation("Service");
 
                     b.Navigation("TicketDetail");
-                });
-
-            modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TicketType", b =>
-                {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Route", "Route")
-                        .WithMany()
-                        .HasForeignKey("RouteID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Route");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TicketType_Trip", b =>

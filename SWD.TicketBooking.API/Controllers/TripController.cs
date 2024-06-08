@@ -39,26 +39,34 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
             return Ok(rs);
         }
-        [HttpGet("list-trip-fromCity-toCity/{fromCity}/{toCity}/{startTime}")]
-        public async Task<IActionResult> SearchTrip(int fromCity, int toCity, DateTime startTime)
+        [HttpGet("list-trip-fromCity-toCity/{fromCity}/{toCity}/{startTime}/{pageNumber}/{pageSize}")]
+        public async Task<IActionResult> SearchTrip(int fromCity, int toCity, DateTime startTime, int pageNumber = 1, int pageSize = 10)
         {
-            var rs = _mapper.Map<List<SearchTripResponse>>(await _tripService.SearchTrip(fromCity, toCity, startTime));
-            return Ok(rs);
+            var rs = await _tripService.SearchTrip(fromCity, toCity, startTime, pageNumber, pageSize);
+            var rsMapper = _mapper.Map<List<SearchTripResponse>>(rs.Items);
+
+            var paginatedResult = new
+            {
+                Data = rsMapper,
+                TotalPages = rs.TotalCount,
+            };
+
+            return Ok(paginatedResult);
         }
         [HttpPost("new-trip")]
-        public async Task<IActionResult> CreateTrip([FromForm] CreateTripRequest createTripRequest)
+        public async Task<IActionResult> CreateTrip([FromForm] CreateTripModel createTripRequest)
         {
-            var createTrip = _mapper.Map<CreateTripModel>(createTripRequest);
+            //var createTrip = _mapper.Map<CreateTripModel>(createTripRequest);
 
-            var updatedService = await _tripService.CreateTrip(createTrip);
+            var updatedService = await _tripService.CreateTrip(createTripRequest);
 
             return Ok(updatedService);
         }
-        [HttpPut("trip/{tripId}")]
-        public async Task<IActionResult> ChangeStatusTrip([FromRoute] int tripId)
+        [HttpPut("trip/{tripID}")]
+        public async Task<IActionResult> ChangeStatusTrip([FromRoute] int tripID)
         {
 
-            var updatedService = await _tripService.ChangeStatusTrip(tripId);
+            var updatedService = await _tripService.ChangeStatusTrip(tripID);
             return Ok(updatedService);
         }
     }
