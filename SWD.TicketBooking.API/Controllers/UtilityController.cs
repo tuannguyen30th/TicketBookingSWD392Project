@@ -16,10 +16,10 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
             _utilityService = utilityService;
         }
-        [HttpGet("trip/{utilityID}")]
-        public async Task<IActionResult> GetUtilityByTripID([FromRoute] int utilityID) 
+        [HttpGet("trip/{tripID}")]
+        public async Task<IActionResult> GetUtilityByTripID([FromRoute] int tripID) 
         {
-               var rs = _mapper.Map<List<UtilityInTripResponse>>(await _utilityService.GetAllUtilityByTripID(utilityID));
+               var rs = _mapper.Map<List<UtilityInTripResponse>>(await _utilityService.GetAllUtilityByTripID(tripID));
            // var rs = _utilityService.GetAllUtilityByTripID(id);
             return Ok(rs);
         }

@@ -164,8 +164,6 @@ namespace SWD.TicketBooking.Service.Services
                             
                         rs.Add(fbModel);
                     }
-
-
                     return new TripFeedbackModel
                     {
                         Feedbacks = rs,
