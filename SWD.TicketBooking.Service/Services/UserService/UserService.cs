@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
-using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
+using SWD.TicketBooking.Service.Exceptions;
 using System.Net;
 using System.Runtime.CompilerServices;
 
@@ -37,7 +37,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
         public async Task<UserModel> GetUserByEmailForOTP(string email)
@@ -50,12 +50,12 @@ namespace SWD.TicketBooking.Service.Services.UserService
 
                     if (result == null)
                     {
-                        throw new Exception();
+                        throw new NotFoundException("Cannot find user");
                     }
 
                     if (result.OTPCode == "0" && result.IsVerified == true)
                     {
-                        throw new Exception();
+                        throw new InternalServerErrorException("Some error occur");
                     }
 
                     if (result.IsVerified == false)
@@ -63,12 +63,12 @@ namespace SWD.TicketBooking.Service.Services.UserService
                         return result;
                     }
 
-                    throw new Exception();
+                    throw new InternalServerErrorException("Some error occur");
             }
             
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(ex.Message, ex);
             }
         }
         public async Task<UserModel> GetUserByEmail(string email)
@@ -81,7 +81,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -116,7 +116,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message, ex);
             }
         }
         public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
@@ -150,7 +150,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message, ex);
             }
         }
 

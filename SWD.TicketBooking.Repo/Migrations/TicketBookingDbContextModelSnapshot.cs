@@ -188,9 +188,6 @@ namespace SWD.TicketBooking.Repo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RouteID"), 1L, 1);
 
-                    b.Property<int>("CompanyID")
-                        .HasColumnType("int");
-
                     b.Property<string>("EndLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -210,8 +207,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("RouteID");
-
-                    b.HasIndex("CompanyID");
 
                     b.HasIndex("FromCityID");
 
@@ -761,12 +756,6 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Route", b =>
                 {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SWD.TicketBooking.Repo.Entities.City", "FromCity")
                         .WithMany()
                         .HasForeignKey("FromCityID")
@@ -778,8 +767,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasForeignKey("ToCityID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Company");
 
                     b.Navigation("FromCity");
 

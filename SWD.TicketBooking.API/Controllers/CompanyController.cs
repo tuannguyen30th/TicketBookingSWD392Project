@@ -57,6 +57,10 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpPut("company/{companyID}")]
         public async Task<IActionResult> UpdateCompany([FromRoute] int companyID, [FromBody] CreateCompanyRequest req)
         {
+            if (companyID <= 0)
+            {
+                return BadRequest("Invalid ID");
+            }
             var map = _mapper.Map<CreateCompanyModel>(req);
             var rs = await _companyService.UpdateCompany(companyID, map);
             if (rs < 1)
@@ -70,6 +74,10 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpPut("company-status/{id}")]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] ChangeStatusRequest req)
         {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid ID");
+            }
             var rs = await _companyService.ChangeStatus(id, req.Status);
             if (rs < 1)
             {

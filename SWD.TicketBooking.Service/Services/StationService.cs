@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +49,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -96,12 +97,12 @@ namespace SWD.TicketBooking.Service.Services
                             });
                     if (station == null)
                     {
-                        throw new Exception("Cannot add new station");
+                        throw new BadRequestException("Cannot add new station");
                     }
                     await _stationRepository.Commit();
                     return "OK";
                 }
-                else throw new Exception("Station exited!");
+                else throw new BadRequestException("Station exited!");
 
             } catch (Exception ex)
             {
@@ -116,7 +117,7 @@ namespace SWD.TicketBooking.Service.Services
                 var check  = await _stationRepository.GetAll().Where(s=> s.Status.ToLower().Equals("active") && s.StationID == stationId).FirstOrDefaultAsync();
                 if (check == null)
                 {
-                    throw new Exception("Station not found!");
+                    throw new NotFoundException("Station not found!");
                 }
                 else
                 {
@@ -125,7 +126,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         check.Name = stationModel.stationName;
                         _stationRepository.Update(check);
-                        _stationRepository.Commit();
+                        await _stationRepository.Commit();
                     }
                     return "OK";
                 }

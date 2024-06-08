@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit.Encodings;
 using SWD.TicketBooking.Repo.Entities;
-using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using static SWD.TicketBooking.Service.Dtos.FeedbackRequestModel;
 
@@ -42,16 +42,16 @@ namespace SWD.TicketBooking.Service.Services
                 var checkHadBooked = await _bookingRepository.FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID).FirstOrDefaultAsync();
                 if (checkHadBooked == null)
                 {
-                    throw new Exception("Not had booked this Trip yet!");
+                    throw new BadRequestException("Not had booked this Trip yet!");
                 }
                 var checkHadRated = await _feedbackRepository.FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID).FirstOrDefaultAsync();
                 if (checkHadRated != null)
                 {
-                    throw new Exception("Had rated before!");
+                    throw new BadRequestException("Had rated before!");
                 }
                 if (ratingModel.Rating > 5 || ratingModel.Rating <= 0)
                 {
-                    throw new Exception("The point does not suitable!");
+                    throw new BadRequestException("The point does not suitable!");
                 }
                 var newRating = new Feedback
                 {
@@ -91,7 +91,7 @@ namespace SWD.TicketBooking.Service.Services
                     var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
                     if (!imageUploadResult.IsSuccess)
                     {
-                        throw new Exception("Error uploading files to Firebase.");
+                        throw new InternalServerErrorException("Error uploading files to Firebase.");
                     }
 
                     var newFeedbackImage = new Feedback_Image
@@ -113,7 +113,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -170,10 +170,10 @@ namespace SWD.TicketBooking.Service.Services
                         TotalRating = averageRating
                     };
                 }
-                else throw new Exception("Trip not found");
+                else throw new NotFoundException("Trip not found");
             }catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(ex.Message, ex);
             }
         }
 

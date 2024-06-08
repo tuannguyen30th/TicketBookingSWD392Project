@@ -30,6 +30,7 @@ namespace SWD.TicketBooking.API.Mapper
             ///////Route////////
             CreateMap<RouteResponse, RouteModel>().ReverseMap();
             CreateMap<SWD.TicketBooking.Repo.Entities.Route, RouteModel>().ReverseMap();
+            CreateMap<CreateRouteModel, CreateRouteRequest>().ReverseMap();
 
             //////Trip/////////
             CreateMap<PopularTripModel, PopularTripResponse>().ReverseMap();

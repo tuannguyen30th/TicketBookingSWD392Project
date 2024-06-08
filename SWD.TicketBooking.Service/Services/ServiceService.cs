@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using Microsoft.IdentityModel.Tokens;
+using SWD.TicketBooking.Service.Exceptions;
 
 
 namespace SWD.TicketBooking.Service.Services
@@ -50,7 +51,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var checkExistedName = await _serviceRepository.GetAll().Where(_ => _.ServiceTypeID == createServiceModel.ServiceTypeID && _.Name.ToLower().Trim().Equals(createServiceModel.Name.ToLower())).FirstOrDefaultAsync();
                 if (checkExistedName != null) {
-                    throw new Exception("Service name existed");
+                    throw new BadRequestException("Service name existed");
                 }
                 
                 var service = new SWD.TicketBooking.Repo.Entities.Service
@@ -78,7 +79,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
         public async Task<int> UpdateService(UpdateServiceModel updateServiceModel)
@@ -88,7 +89,7 @@ namespace SWD.TicketBooking.Service.Services
                 var service = await _serviceRepository.GetByIdAsync(updateServiceModel.ServiceID);
                 if (service == null)
                 {
-                    throw new Exception("Service not found.");
+                    throw new NotFoundException("Service not found.");
                 }
 
                 var checkExistedName = await _serviceRepository.GetAll()
@@ -99,7 +100,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (checkExistedName != null)
                 {
-                    throw new Exception("Service name existed");
+                    throw new BadRequestException("Service name existed");
                 }
 
                 service.Name = updateServiceModel.Name;
@@ -114,7 +115,7 @@ namespace SWD.TicketBooking.Service.Services
                         var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
                         if (!deleteResult.IsSuccess)
                         {
-                            throw new Exception($"Failed to delete old image");
+                            throw new InternalServerErrorException($"Failed to delete old image");
                         }
                     }
                     service.UrlGuidID = Guid.NewGuid().ToString();
@@ -127,7 +128,7 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     else
                     {
-                        throw new Exception($"Failed to upload new image:");
+                        throw new InternalServerErrorException($"Failed to upload new image:");
                     }
                 }
 
@@ -148,7 +149,7 @@ namespace SWD.TicketBooking.Service.Services
                 var service = await _serviceRepository.GetByIdAsync(serviceID);
                 if (service == null)
                 {
-                    throw new Exception("Service not found.");
+                    throw new NotFoundException("Service not found.");
                 }
                 service.Status = "Inactive";
                 _serviceRepository.Update(service);
@@ -161,7 +162,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception  ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
     }

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
-using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using System;
 using System.Collections.Generic;
@@ -22,12 +22,13 @@ namespace SWD.TicketBooking.Service.Services
         private readonly IRepository<TripPicture, int> _tripPictureRepo;
         private readonly IRepository<TicketType_Trip, int> _ticketTypeTripRepo;
         private readonly IRepository<Route, int> _routeRepo;
+        private readonly IRepository<Route_Company, int> _routeCompanyRepo;
         private readonly IRepository<Feedback, int> _feedbackRepo;
         private readonly IRepository<Trip_Utility, int> _tripUtilityRepo;
         private readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
-        public TripService(IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IRepository<Route, int> routeRepo, IRepository<Feedback, int> feedbackRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, int> tripUtilityRepo)
+        public TripService(IRepository<Route_Company, int> routeCompanyRepo, IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IRepository<Route, int> routeRepo, IRepository<Feedback, int> feedbackRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, int> tripUtilityRepo)
 
         {
             _tripRepo = tripRepo;
@@ -38,6 +39,7 @@ namespace SWD.TicketBooking.Service.Services
             _feedbackRepo = feedbackRepo;
             _firebaseService = firebaseService;
             _tripUtilityRepo = tripUtilityRepo;
+            _routeCompanyRepo = routeCompanyRepo;
             _mapper = mapper;
         }
 
@@ -137,7 +139,6 @@ namespace SWD.TicketBooking.Service.Services
 
                 var tripsQuery = _tripRepo.GetAll()
                     .Include(_ => _.Route)
-                    .ThenInclude(_ => _.Company)
                     .Where(_ => _.Route.FromCityID == fromCity
                                 && _.Route.ToCityID == toCity
                                 && _.StartTime.Date == startDate);
@@ -174,7 +175,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         TripID = trip.TripID,
                         RouteID = trip.RouteID,
-                        CompanyName = trip.Route.Company.Name,
+                        CompanyName = await _routeCompanyRepo.GetAll().Where(_ => _.RouteID == trip.RouteID).Select(_ => _.Company.Name).FirstOrDefaultAsync(),
                         ImageUrl = tripImage,
                         AverageRating = ratingAverage,
                         QuantityRating = ratingQuantity,
