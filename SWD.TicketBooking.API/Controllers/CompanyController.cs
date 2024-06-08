@@ -71,14 +71,14 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("company-status/{id}")]
-        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] ChangeStatusRequest req)
+        [HttpPut("company-status/{companyID}")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int companyID, [FromBody] ChangeStatusRequest req)
         {
-            if (id <= 0)
+            if (companyID <= 0)
             {
                 return BadRequest("Invalid ID");
             }
-            var rs = await _companyService.ChangeStatus(id, req.Status);
+            var rs = await _companyService.ChangeStatus(companyID, req.Status);
             if (rs < 1)
             {
                 return BadRequest("Update failed");

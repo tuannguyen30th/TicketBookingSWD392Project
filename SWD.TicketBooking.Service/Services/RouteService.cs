@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
@@ -11,17 +12,22 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Route = SWD.TicketBooking.Repo.Entities.Route;
 
 namespace SWD.TicketBooking.Service.Services
 {
     public class RouteService
     {
         private readonly IRepository<Route, int> _routeRepo;
+        private readonly IRepository<Company, int> _companyRepo;
+        private readonly IRepository<Route_Company, int> _routeCompanyRepo;
         private readonly IMapper _mapper;
 
-        public RouteService(IRepository<Route, int> routeRepo, IMapper mapper)
+        public RouteService(IRepository<Route, int> routeRepo, IRepository<Company, int> companyRepo, IRepository<Route_Company, int> routeCompanyRepo, IMapper mapper)
         {
             _routeRepo = routeRepo;
+            _companyRepo = companyRepo;
+            _routeCompanyRepo = routeCompanyRepo;
             _mapper = mapper;
         }
 
@@ -43,27 +49,69 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _routeRepo.GetAll().Where(_ => _.FromCityID == model.FromCityID 
+                var checkCompanyExisted = await _companyRepo.GetAll().Where(_ => _.CompanyID == model.CompanyID && _.Status.ToLower().Trim().Equals("active")).FirstOrDefaultAsync();
+                if (checkCompanyExisted == null)
+                {
+                    throw new BadRequestException("Company does not exist");
+                }
+
+                var checkRouteExisted = await _routeRepo.GetAll().Where(_ => _.FromCityID == model.FromCityID 
                                                                 && _.ToCityID == model.ToCityID
                                                                 && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
-                if (checkExisted != null)
+                if (checkRouteExisted == null)
                 {
-                    throw new BadRequestException("Route existed");
+                    var route = await _routeRepo.AddAsync(new Route
+                    {
+                        FromCityID = model.FromCityID,
+                        ToCityID = model.ToCityID,
+                        StartLocation = model.StartLocation,
+                        EndLocation = model.EndLocation,
+                        Status = "Active"
+                    });
+                    if (route == null)
+                    {
+                        throw new InternalServerErrorException("Cannot create");
+                    }
+                    await _routeRepo.Commit();
                 }
-                var company = await _routeRepo.AddAsync(new Route
+                else if (!checkRouteExisted.Status.ToLower().Trim().Equals("active"))
                 {
-                    FromCityID = model.FromCityID,
-                    ToCityID = model.ToCityID,
-                    StartLocation = model.StartLocation,
-                    EndLocation = model.EndLocation,
-                    Status = "Active"
-                });
-                if (company == null)
-                {
-                    throw new InternalServerErrorException("Cannot create");
+                    throw new BadRequestException("Route is not available");
                 }
-                var rs = await _routeRepo.Commit();
-                return rs;
+
+                var getRoute = await _routeRepo.GetAll().Where(_ => _.FromCityID == model.FromCityID
+                                                && _.ToCityID == model.ToCityID
+                                                && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
+
+                if (getRoute == null)
+                {
+                    throw new InternalServerErrorException("Some errors occured");
+                }
+
+                var checkRouteCompanyExisted = await _routeCompanyRepo.GetAll().Where(_ => _.RouteID == getRoute.RouteID && _.CompanyID == model.CompanyID).FirstOrDefaultAsync();
+
+                if (checkRouteCompanyExisted == null && getRoute != null)
+                {
+                    var routeCompany = await _routeCompanyRepo.AddAsync(new Route_Company
+                    {
+                        RouteID = getRoute.RouteID,
+                        CompanyID = model.CompanyID,
+                        Status = "Active"
+                    });
+
+                    if (routeCompany == null)
+                    {
+                        throw new InternalServerErrorException("Cannot create");
+                    }
+
+                    var rs = await _routeCompanyRepo.Commit();
+
+                    return rs;
+                }
+                else 
+                {
+                    throw new BadRequestException("Route already existed");
+                }
             }
             catch (Exception ex)
             {
@@ -71,7 +119,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateRoute(int routeId, CreateRouteModel model)
+        public async Task<int> UpdateRoute(int routeId, UpdateRouteModel model)
         {
             try
             {

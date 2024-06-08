@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Dtos
 {
-    public class CreateRouteModel
+    public class UpdateRouteModel
     {
         public int FromCityID { get; set; }
         public int ToCityID { get; set; }
-        public int CompanyID { get; set; }
         public string StartLocation { get; set; } = string.Empty;
         public string EndLocation { get; set; } = string.Empty;
     }
