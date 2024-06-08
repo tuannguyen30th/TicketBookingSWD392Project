@@ -9,10 +9,10 @@ using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Repo.SeedData;
-using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.Exceptions;
 
 
 namespace SWD.TicketBooking.Service.Services.IdentityService;

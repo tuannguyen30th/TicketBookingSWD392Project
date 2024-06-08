@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace SWD.TicketBooking.Service.Services
                 var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new Exception("Company name existed");
+                    throw new BadRequestException("Company name existed");
                 }
                 var company = await _cityRepository.AddAsync(new City
                 {
@@ -69,7 +70,7 @@ namespace SWD.TicketBooking.Service.Services
                 });
                 if (company == null)
                 {
-                    throw new Exception("Cannot create");
+                    throw new InternalServerErrorException("Cannot create");
                 }
                 var rs = await _cityRepository.Commit();
                 return rs;
@@ -87,14 +88,14 @@ namespace SWD.TicketBooking.Service.Services
                 var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new Exception("City name already existed");
+                    throw new BadRequestException("City name already existed");
                 }
 
                 var entity = await _cityRepository.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CityID == cityId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
-                    throw new Exception("Cannot find city");
+                    throw new NotFoundException("Cannot find city");
                 }
 
                 entity.Name = model.CityName;
@@ -103,7 +104,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new Exception("Cannot update");
+                    throw new InternalServerErrorException("Cannot update");
                 }
                 var rs = await _cityRepository.Commit();
                 return rs;
@@ -122,7 +123,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (entity == null)
                 {
-                    throw new Exception("Cannot find company");
+                    throw new NotFoundException("Cannot find company");
                 }
 
                 entity.Status = status;

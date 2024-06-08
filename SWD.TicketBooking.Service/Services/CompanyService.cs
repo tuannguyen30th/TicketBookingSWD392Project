@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace SWD.TicketBooking.Service.Services
                 var checkExisted = await _companyRepo.GetAll().Where(_ => _.Name ==  model.Name).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new Exception("Company name existed");
+                    throw new BadRequestException("Company name existed");
                 }
                 var company = await _companyRepo.AddAsync(new Company
                 {
@@ -66,7 +67,7 @@ namespace SWD.TicketBooking.Service.Services
                 });
                 if (company == null)
                 {
-                    throw new Exception("Cannot create");
+                    throw new InternalServerErrorException("Cannot create");
                 }
                 var rs = await _companyRepo.Commit();
                 return rs;
@@ -84,14 +85,14 @@ namespace SWD.TicketBooking.Service.Services
                 var checkExisted = await _companyRepo.GetAll().Where(_ => _.Name == model.Name).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new Exception("Company name already existed");
+                    throw new BadRequestException("Company name already existed");
                 }
 
                 var entity = await _companyRepo.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CompanyID == companyId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
-                    throw new Exception("Cannot find company");
+                    throw new NotFoundException("Cannot find company");
                 }
 
                 entity.Name = model.Name;
@@ -100,7 +101,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new Exception("Cannot update");
+                    throw new InternalServerErrorException("Cannot update");
                 }
                 var rs = await _companyRepo.Commit();
                 return rs;
@@ -119,7 +120,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (entity == null)
                 {
-                    throw new Exception("Cannot find company");
+                    throw new NotFoundException("Cannot find company");
                 }
 
                 entity.Status = status;
@@ -128,7 +129,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new Exception("Cannot update");
+                    throw new InternalServerErrorException("Cannot update");
                 }
                 var rs = await _companyRepo.Commit();
                 return rs;

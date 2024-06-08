@@ -42,6 +42,7 @@ namespace SWD.TicketBooking.Service.Services.EmailService
             catch (Exception ex)
             {
                 // Log the exception or handle it as per your application's requirement
+                throw new Exception(ex.Message, ex);
                 return false;
             }
         }

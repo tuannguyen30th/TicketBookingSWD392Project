@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using SWD.TicketBooking.Repo.Helpers;
-using SWD.TicketBooking.Repo.Exceptions;
 using SWD.TicketBooking.Service.Services.IdentityService;
 using SWD.TicketBooking.Service.Services.EmailService;
 using SWD.TicketBooking.Service.Dtos.Auth;
@@ -12,6 +11,7 @@ using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.API.Common;
 using AutoMapper;
+using SWD.TicketBooking.Service.Exceptions;
 
 namespace SWD.TicketBooking.Booking.API;
 

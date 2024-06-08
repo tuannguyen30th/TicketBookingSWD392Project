@@ -293,7 +293,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[57],
                     ToCity = cities[55],
-                    Company = companies[0],
                     StartLocation = "Bưu điện trung tâm TP. Hồ Chí Minh",
                     EndLocation = " Bến xe Huế",
                     Status = "Active"
@@ -302,7 +301,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[3],
                     ToCity = cities[57],
-                    Company = companies[2],
                     StartLocation = "Ngã ba Cái Mép",
                     EndLocation = "Quan 10",
                     Status = "Active"
@@ -311,7 +309,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[1],
                     ToCity = cities[57],
-                    Company = companies[3],
                     StartLocation = "Bãi Trước",
                     EndLocation = "Sân bay Tân Sơn Nhất",
                     Status = "Active"
@@ -320,7 +317,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[57],
                     ToCity = cities[12],
-                    Company = companies[3],
                     StartLocation = " Bến xe miền tây",
                     EndLocation = " Bến xe Cần Thơ",
                     Status = "Active"
@@ -329,7 +325,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[57],
                     ToCity = cities[30],
-                    Company = companies[3],
                     StartLocation = "Công viên 23/9, Quận 1",
                     EndLocation = "Bến xe Nha Trang",
                     Status = "Active"
@@ -338,7 +333,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[57],
                     ToCity = cities[15],
-                    Company = companies[3],
                     StartLocation = "Bến Xe Miền Đông",
                     EndLocation = "Bến Xe Đà Nẵng",
                     Status = "Active"
@@ -347,7 +341,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[6],
                     ToCity = cities[57],
-                    Company = companies[3],
                     StartLocation = " Bến Tre Bus Station",
                     EndLocation = "Bến Xe Miền Tây",
                     Status = "Active"
@@ -356,7 +349,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[57],
                     ToCity = cities[34],
-                    Company = companies[3],
                     StartLocation = "Bến Xe Miền Đông",
                     EndLocation = "Bến Xe Đà Lạt",
                     Status = "Active"
@@ -365,7 +357,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     FromCity = cities[57],
                     ToCity = cities[1],
-                    Company = companies[3],
                     StartLocation = "Bến Xe Miền Đông",
                     EndLocation = "Bến Xe Vũng Tàu",
                     Status = "Active"

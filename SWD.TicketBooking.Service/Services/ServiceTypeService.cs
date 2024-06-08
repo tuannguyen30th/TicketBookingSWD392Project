@@ -56,7 +56,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
         public async Task<ServiceTypeModel> ServicesOfTypeFromStations(int stationID, int serviceTypeID)
@@ -91,7 +91,7 @@ namespace SWD.TicketBooking.Service.Services
             catch (Exception ex)
             {
               
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
 

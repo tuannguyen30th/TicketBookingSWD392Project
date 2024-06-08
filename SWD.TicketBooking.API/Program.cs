@@ -6,6 +6,9 @@ using SWD.TicketBooking.API.Middlewares;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.API.Installer;
+using Microsoft.AspNetCore.Diagnostics;
+using System.Net;
+using SWD.TicketBooking.Service.Exceptions;
 
 
 namespace SWD.TicketBooking.API

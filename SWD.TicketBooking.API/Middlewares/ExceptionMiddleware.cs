@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.API.Common;
-using SWD.TicketBooking.Repo.Exceptions;
+using SWD.TicketBooking.Service.Exceptions;
 
 
 namespace SWD.TicketBooking.API.Middlewares;
@@ -30,7 +30,7 @@ public class ExceptionMiddleware : IMiddleware
 
         { typeof(BadRequestException), HandleBadRequestException },
 
-        { typeof(RequestValidationException), HandleRequestValidationException },
+        { typeof(InternalServerErrorException), HandleInternalServeErrorException },
     };
 
     private Task HandleExceptionAsync(HttpContext context, Exception ex)
@@ -46,7 +46,8 @@ public class ExceptionMiddleware : IMiddleware
 
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         Console.WriteLine(ex.ToString());
-        return Task.CompletedTask;
+        
+        return WriteExceptionMessageAsync(context, ex);
     }
 
 
@@ -62,15 +63,10 @@ public class ExceptionMiddleware : IMiddleware
         await WriteExceptionMessageAsync(context, ex);
     }
 
-    private static async void HandleRequestValidationException(HttpContext context, Exception ex)
+    private static async void HandleInternalServeErrorException(HttpContext context, Exception ex)
     {
-        context.Response.StatusCode = StatusCodes.Status400BadRequest;
-        var exception = ex as RequestValidationException;
-        var result = ApiResult<Dictionary<string, string[]>>.Fail(exception!) with
-        {
-            Result = exception!.ProblemDetails.Errors,
-        };
-        await context.Response.Body.WriteAsync(SerializeToUtf8BytesWeb(result));
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await WriteExceptionMessageAsync(context, ex);
     }
 
 

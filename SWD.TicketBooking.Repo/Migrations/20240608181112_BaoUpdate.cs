@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWD.TicketBooking.Repo.Migrations
 {
-    public partial class addTable : Migration
+    public partial class BaoUpdate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -102,7 +102,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FromCityID = table.Column<int>(type: "int", nullable: false),
                     ToCityID = table.Column<int>(type: "int", nullable: false),
-                    CompanyID = table.Column<int>(type: "int", nullable: false),
                     StartLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EndLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -120,12 +119,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                         column: x => x.ToCityID,
                         principalTable: "City",
                         principalColumn: "CityID");
-                    table.ForeignKey(
-                        name: "FK_Route_Company_CompanyID",
-                        column: x => x.CompanyID,
-                        principalTable: "Company",
-                        principalColumn: "CompanyID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -558,11 +551,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                 column: "FeedbackID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Route_CompanyID",
-                table: "Route",
-                column: "CompanyID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Route_FromCityID",
                 table: "Route",
                 column: "FromCityID");
@@ -712,6 +700,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Utility");
 
             migrationBuilder.DropTable(
+                name: "Company");
+
+            migrationBuilder.DropTable(
                 name: "ServiceType");
 
             migrationBuilder.DropTable(
@@ -737,9 +728,6 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             migrationBuilder.DropTable(
                 name: "City");
-
-            migrationBuilder.DropTable(
-                name: "Company");
         }
     }
 }
