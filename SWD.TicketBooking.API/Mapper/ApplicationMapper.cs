@@ -5,7 +5,9 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
+using static SWD.TicketBooking.API.Common.RequestModels.CreateTripRequest;
 using static SWD.TicketBooking.API.Common.ResponseModels.ServiceFromStationResponse;
+using static SWD.TicketBooking.Service.Dtos.CreateTripModel;
 using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
 
 
@@ -33,6 +35,9 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<PopularTripModel, PopularTripResponse>().ReverseMap();
             CreateMap<PictureModel,GetPictureResponse>().ReverseMap();
             CreateMap<SearchTripModel,SearchTripResponse>().ReverseMap();
+            CreateMap<CreateTripModel, CreateTripRequest>().ReverseMap();
+            CreateMap<TicketType_TripRequest, TicketType_TripModel>().ReverseMap();
+            CreateMap<Trip_UtilityRequest, Trip_UtilityModel>().ReverseMap();
             //   CreateMap<Trip, PictureModel>().ReverseMap();
 
             /////Utility/////
@@ -47,7 +52,6 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<StationFromRouteModel, StationFromRouteResponse>().ReverseMap();
             CreateMap<CreateServiceModel, CreateServiceRequest>().ReverseMap();
             CreateMap<UpdateServiceModel, UpdateServiceRequest>().ReverseMap();
-            CreateMap<CreateTripModel, CreateTripRequest>().ReverseMap();
 
                
 
