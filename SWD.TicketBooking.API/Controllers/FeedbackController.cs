@@ -27,10 +27,10 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok();
         }
 
-        [HttpGet("feedback-in-trip/{id}/{filter}")]
-        public async Task<IActionResult> GetAllFeedbackInTrip(int id, int filter, int pageNumber =1, int pageSize =5)
+        [HttpGet("feedback-in-trip/{tripID}/{filter}")]
+        public async Task<IActionResult> GetAllFeedbackInTrip(int tripID, int filter, int pageNumber =1, int pageSize =5)
         {
-            var fb = _mapper.Map<FeedbackInTripResponse>(await _feedbackService.GetAllFeedbackInTrip(id,pageNumber,pageSize, filter));
+            var fb = _mapper.Map<FeedbackInTripResponse>(await _feedbackService.GetAllFeedbackInTrip(tripID, pageNumber,pageSize, filter));
             return Ok(fb);
         }
     }

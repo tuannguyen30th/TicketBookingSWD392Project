@@ -11,13 +11,24 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class CreateTripModel
     {
-            public int RouteID { get; set; }
-            public bool IsTemplate { get; set; }
-            public DateTime StartTime { get; set; }
-            public DateTime EndTime { get; set; }
-            public string Status { get; set; } = string.Empty;
-            public List<IFormFile> ImageUrls { get; set; }
-        
-       
+        public int RouteID { get; set; }
+        public bool IsTemplate { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public List<IFormFile> ImageUrls { get; set; } = new List<IFormFile>();
+        public List<TicketType_TripModel> TicketType_TripModels { get; set; } = new List<TicketType_TripModel>();
+        public List<Trip_UtilityModel> Trip_UtilityModels { get; set; } = new List<Trip_UtilityModel>();
+
+        public class TicketType_TripModel
+        {
+            public int TicketTypeID { get; set; }
+            public double Price { get; set; }
+            public int Quantity { get; set; }
+        }
+        public class Trip_UtilityModel
+        {         
+            public int UtilityID { get; set; }
+        }
     }
 }
