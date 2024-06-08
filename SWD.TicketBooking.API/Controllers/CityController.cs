@@ -49,15 +49,15 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("city/{id}")]
-        public async Task<IActionResult> UpdateCompany([FromRoute] int id, [FromBody] CreateCityRequest req)
+        [HttpPut("city/{cityID}")]
+        public async Task<IActionResult> UpdateCompany([FromRoute] int cityID, [FromBody] CreateCityRequest req)
         {
-            if (id <= 0)
+            if (cityID <= 0)
             {
                 return BadRequest("Invalid ID");
             }
             var map = _mapper.Map<CreateCityModel>(req);
-            var rs = await _cityService.UpdateCity(id, map);
+            var rs = await _cityService.UpdateCity(cityID, map);
             if (rs < 1)
             {
                 return BadRequest("Update failed");
@@ -66,14 +66,14 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("city-status/{id}")]
-        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] ChangeStatusRequest req)
+        [HttpPut("city-status/{cityID}")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int cityID, [FromBody] ChangeStatusRequest req)
         {
-            if (id <= 0)
+            if (cityID <= 0)
             {
                 return BadRequest("Invalid ID");
             }
-            var rs = await _cityService.ChangeStatus(id, req.Status);
+            var rs = await _cityService.ChangeStatus(cityID, req.Status);
             if (rs < 1)
             {
                 return BadRequest("Update failed");

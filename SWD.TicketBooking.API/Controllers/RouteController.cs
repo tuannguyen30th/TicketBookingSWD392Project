@@ -33,7 +33,7 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpPost("new-route")]
         public async Task<IActionResult> CreateRoute([FromBody] CreateRouteRequest req)
         {
-            if (req.FromCityID <= 0 ||  req.ToCityID <= 0) 
+            if (req.FromCityID <= 0 ||  req.ToCityID <= 0 || req.CompanyID <= 0) 
             {
                 return BadRequest("Invalid ID");
             }
@@ -47,15 +47,15 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("route/{id}")]
-        public async Task<IActionResult> UpdateRoute([FromRoute] int id, [FromBody] CreateRouteRequest req)
+        [HttpPut("route/{routeID}")]
+        public async Task<IActionResult> UpdateRoute([FromRoute] int routeID, [FromBody] UpdateRouteRequest req)
         {
-            if (id <= 0 || req.FromCityID <= 0 || req.ToCityID <= 0)
+            if (routeID <= 0 || req.FromCityID <= 0 || req.ToCityID <= 0)
             {
                 return BadRequest("Invalid ID");
             }
-            var map = _mapper.Map<CreateRouteModel>(req);
-            var rs = await _routeService.UpdateRoute(id, map);
+            var map = _mapper.Map<UpdateRouteModel>(req);
+            var rs = await _routeService.UpdateRoute(routeID, map);
             if (rs < 1)
             {
                 return BadRequest("Update failed");
@@ -64,14 +64,14 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("route-status/{id}")]
-        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] ChangeStatusRequest req)
+        [HttpPut("route-status/{routeID}")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int routeID, [FromBody] ChangeStatusRequest req)
         {
-            if (id <= 0)
+            if (routeID <= 0)
             {
                 return BadRequest("Invalid ID");
             }
-            var rs = await _routeService.ChangeStatus(id, req.Status);
+            var rs = await _routeService.ChangeStatus(routeID, req.Status);
             if (rs < 1)
             {
                 return BadRequest("Update failed");
