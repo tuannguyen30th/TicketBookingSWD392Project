@@ -12,6 +12,7 @@ using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using Microsoft.IdentityModel.Tokens;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.Utilities;
 
 
 namespace SWD.TicketBooking.Service.Services
@@ -61,7 +62,7 @@ namespace SWD.TicketBooking.Service.Services
                     ServiceTypeID = createServiceModel.ServiceTypeID,
                     UrlGuidID = Guid.NewGuid().ToString(),
                     ImageUrl = "",
-                    Status = "Active"
+                    Status = SD.ACTIVE
                 };
                 await _serviceRepository.AddAsync(service);
                 await _serviceRepository.Commit();

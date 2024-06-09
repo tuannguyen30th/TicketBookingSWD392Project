@@ -6,6 +6,7 @@ using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace SWD.TicketBooking.Service.Services
     {
         private readonly IRepository<Trip, int> _tripRepo;
         private readonly IRepository<Booking, int> _bookingRepo;
+        private readonly IRepository<TicketDetail, int> _ticketDetailRepo;
         private readonly IRepository<TripPicture, int> _tripPictureRepo;
         private readonly IRepository<TicketType_Trip, int> _ticketTypeTripRepo;
         private readonly IRepository<Route, int> _routeRepo;
@@ -28,11 +30,12 @@ namespace SWD.TicketBooking.Service.Services
         private readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
-        public TripService(IRepository<Route_Company, int> routeCompanyRepo, IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IRepository<Route, int> routeRepo, IRepository<Feedback, int> feedbackRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, int> tripUtilityRepo)
+        public TripService(IRepository<TicketDetail, int> ticketDetailRepo, IRepository<Route_Company, int> routeCompanyRepo, IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IRepository<Route, int> routeRepo, IRepository<Feedback, int> feedbackRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, int> tripUtilityRepo)
 
         {
             _tripRepo = tripRepo;
             _bookingRepo = bookingRepo;
+            _ticketDetailRepo = ticketDetailRepo;
             _ticketTypeTripRepo = ticketTypeTripRepo;
             _tripPictureRepo = tripPictureRepo;
             _routeRepo = routeRepo;
@@ -94,7 +97,7 @@ namespace SWD.TicketBooking.Service.Services
                 var trips = await _tripRepo.GetAll()
                                                 .Include(t => t.Route.FromCity)
                                                 .Include(t => t.Route.ToCity)
-                                                .Where(t => t.Status.ToLower().Trim() == "active" && topTrips.Select(_ => _.TripID).Contains(t.TripID))
+                                                .Where(t => t.Status.Trim().Equals(SD.ACTIVE) && topTrips.Select(_ => _.TripID).Contains(t.TripID))
                                                 .ToListAsync();
 
                 var rs = new List<PopularTripModel>();
@@ -141,7 +144,7 @@ namespace SWD.TicketBooking.Service.Services
                     .Include(_ => _.Route)
                     .Where(_ => _.Route.FromCityID == fromCity
                                 && _.Route.ToCityID == toCity
-                                && _.StartTime.Date == startDate);
+                                && _.StartTime.Date == startDate && _.Status.Trim().Equals(SD.ACTIVE));
 
                 var totalTrips = await tripsQuery.CountAsync();
                 var totalPages = (int)Math.Ceiling((double)totalTrips / pageSize);
@@ -218,7 +221,7 @@ namespace SWD.TicketBooking.Service.Services
                     IsTemplate = true,
                     StartTime = createTrip.StartTime,
                     EndTime = createTrip.EndTime,
-                    Status = "Active"
+                    Status = SD.ACTIVE
                 };
                 await _tripRepo.AddAsync(trip);
                 await _tripRepo.Commit();
@@ -239,7 +242,7 @@ namespace SWD.TicketBooking.Service.Services
                         TripID = trip.TripID,
                         ImageUrl = (string)imageUploadResult.Result,
                         UrlGuidID = guidPath,
-                        Status = "Active"
+                        Status = SD.ACTIVE
                     };
 
                     await _tripPictureRepo.AddAsync(newtripImage);
@@ -262,7 +265,7 @@ namespace SWD.TicketBooking.Service.Services
                         TripID = trip.TripID,
                         Price = ticketType.Price,
                         Quantity = ticketType.Quantity,
-                        Status = "Active"
+                        Status = SD.ACTIVE
                     };
                     await _ticketTypeTripRepo.AddAsync(newTicketType_Trip);
                 }
@@ -281,7 +284,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         TripID = trip.TripID,
                         UtilityID = tripUtility.UtilityID,
-                        Status = "Active"
+                        Status = SD.ACTIVE
                     };
                     await _tripUtilityRepo.AddAsync(newTrip_Utility);
                 }
@@ -330,7 +333,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new Exception("No exist!");
                 }
-                trip.Status = "Inactive";
+                trip.Status = SD.INACTIVE;
                 _tripRepo.Update(trip);
                 var rs = await _tripPictureRepo.Commit();
                 if (rs > 0)
@@ -344,5 +347,65 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception();
             }
         }
+        public async Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(int tripID)
+        {
+            try
+            {
+                var bookingDetails = await _ticketDetailRepo
+                    .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.ACTIVE) && _.TicketType_Trip.Status.Trim().Equals(SD.ACTIVE))
+                    .Select(_ => new
+                    {
+                        _.Booking.Trip.RouteID,
+                        _.SeatCode,
+                        _.Booking.Trip.Route.StartLocation,
+                        _.Booking.Trip.Route.EndLocation,
+                        _.Booking.Trip.StartTime,
+                    })
+                    .ToListAsync();
+
+                if (bookingDetails == null || !bookingDetails.Any())
+                {
+                    throw new BadRequestException("Empty!");
+                }
+
+                var ticketTypeTrips = await _ticketTypeTripRepo
+                    .FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.ACTIVE))
+                    .Select(_ => new GetSeatBookedFromTripModel.TicketType_TripModel
+                    {
+                        TicketType_TripID = _.TicketType_TripID,
+                        TicketName = _.TicketType.Name,
+                        Price = _.Price,
+                        Quantity = _.Quantity,
+                    })
+                    .ToListAsync();
+                if (ticketTypeTrips == null || !ticketTypeTrips.Any())
+                {
+                    throw new BadRequestException("Empty!");
+                }
+                var totalSeat = await _ticketTypeTripRepo.FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.ACTIVE)).SumAsync(_ => _.Quantity);
+                var firstBooking = bookingDetails.First();
+                var seatBookeds = bookingDetails.Select(b => b.SeatCode).ToList();
+                var result = new GetSeatBookedFromTripModel
+                {
+                    TripID = tripID,
+                    RouteID = firstBooking.RouteID,
+                    SeatBooked = seatBookeds,
+                    TotalSeats = totalSeat,
+                    StartLocation = firstBooking.StartLocation,
+                    EndLocation = firstBooking.EndLocation,
+                    StartDate = firstBooking.StartTime.ToString("yyyy-MM-dd"),
+                    StartTime = firstBooking.StartTime.ToString("HH:mm:ss"),
+                    TicketType_TripModels = ticketTypeTrips
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException(ex.Message);
+            }
+        }
+
+
     }
 }

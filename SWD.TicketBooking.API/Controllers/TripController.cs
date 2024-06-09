@@ -69,5 +69,12 @@ namespace SWD.TicketBooking.API.Controllers
             var updatedService = await _tripService.ChangeStatusTrip(tripID);
             return Ok(updatedService);
         }
+        [HttpGet("seat-booked-from-trip/{tripID}")]
+        public async Task<IActionResult> GetSeatBookedFromTrip(int tripID)
+        {
+            var rs = await _tripService.GetSeatBookedFromTrip(tripID);
+            return Ok(rs);
+        }
+
     }
 }

@@ -1290,7 +1290,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Price = 120000,
                     Status = "Active",
                     SeatCode = "A01",
-
                     TicketType_Trip = ticketType_Trips[0]
                 },
                 new TicketDetail

@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace SWD.TicketBooking.Service.Services
         public async Task<List<UtilityModel>> GetAllUtilityByTripID(int id)
         {
             var utilities = await _tripUtilityRepository
-                .FindByCondition(tu => tu.TripID == id)
+                .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.ACTIVE))
                 .Select(tu => tu.Utility)
                 .ToListAsync();
             var result = new List<UtilityModel>();

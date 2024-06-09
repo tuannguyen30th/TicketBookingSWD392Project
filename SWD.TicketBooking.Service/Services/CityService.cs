@@ -5,6 +5,7 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,14 +32,14 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var fromCities = await _routeRepository.GetAll().Select(r => r.FromCity)
+                var fromCities = await _routeRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.FromCity )
                                                        .Distinct()
-                                                       .Select(c => new CityInfo { CityID = c.CityID, CityName = c.Name })
+                                                       .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })
                                                        .ToListAsync();
 
-                var toCities = await _routeRepository.GetAll().Select(r => r.ToCity)
+                var toCities = await _routeRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.ToCity)
                                                        .Distinct()
-                                                       .Select(c => new CityInfo { CityID = c.CityID, CityName = c.Name })
+                                                       .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })
                                                        .ToListAsync();
 
                 var rs =  new CityModel
@@ -58,7 +59,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName).FirstOrDefaultAsync();
+                var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("Company name existed");
@@ -66,7 +67,7 @@ namespace SWD.TicketBooking.Service.Services
                 var company = await _cityRepository.AddAsync(new City
                 {
                     Name = model.CityName,
-                    Status = "Active"
+                    Status = SD.ACTIVE
                 });
                 if (company == null)
                 {
@@ -85,13 +86,13 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName).FirstOrDefaultAsync();
+                var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("City name already existed");
                 }
 
-                var entity = await _cityRepository.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CityID == cityId).FirstOrDefaultAsync();
+                var entity = await _cityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -119,7 +120,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var entity = await _cityRepository.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CityID == cityId).FirstOrDefaultAsync();
+                var entity = await _cityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
