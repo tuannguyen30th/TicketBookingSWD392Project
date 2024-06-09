@@ -10,6 +10,7 @@ using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.Utilities;
 using static SWD.TicketBooking.Service.Dtos.FeedbackRequestModel;
 
 namespace SWD.TicketBooking.Service.Services
@@ -121,7 +122,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var existedTrip = await _tripRepository.FindByCondition(x=>x.TripID == id).FirstOrDefaultAsync();
+                var existedTrip = await _tripRepository.FindByCondition(x=>x.TripID == id && x.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (existedTrip != null)
                 {
                     var feedback = await _feedbackRepository.FindByCondition(x => x.TripID == id)

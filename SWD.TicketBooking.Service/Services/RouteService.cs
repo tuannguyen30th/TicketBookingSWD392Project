@@ -5,6 +5,7 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -35,7 +36,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var routes = await _routeRepo.FindByCondition(_ => _.Status.ToLower().Trim() == "active").ToListAsync();
+                var routes = await _routeRepo.FindByCondition(_ => _.Status.Trim().Equals(SD.ACTIVE)).ToListAsync();
                 var rs = _mapper.Map<List<RouteModel>>(routes);
                 return rs;
             }

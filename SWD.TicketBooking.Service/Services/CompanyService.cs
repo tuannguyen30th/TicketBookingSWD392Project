@@ -4,6 +4,7 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var companies = await _companyRepo.GetAll().Where(_ => _.Status.ToLower().Trim() == "active").ToListAsync();
+                var companies = await _companyRepo.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).ToListAsync();
                 var rs = _mapper.Map<List<GetCompanyModel>>(companies);
                 return rs;
             }
@@ -63,7 +64,7 @@ namespace SWD.TicketBooking.Service.Services
                 var company = await _companyRepo.AddAsync(new Company
                 {
                     Name = model.Name,
-                    Status = "Active"
+                    Status = SD.ACTIVE
                 });
                 if (company == null)
                 {
@@ -88,7 +89,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new BadRequestException("Company name already existed");
                 }
 
-                var entity = await _companyRepo.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CompanyID == companyId).FirstOrDefaultAsync();
+                var entity = await _companyRepo.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CompanyID == companyId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -116,7 +117,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var entity = await _companyRepo.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.CompanyID == companyId).FirstOrDefaultAsync();
+                var entity = await _companyRepo.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CompanyID == companyId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {

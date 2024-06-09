@@ -4,6 +4,7 @@ using NuGet.Protocol;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var stationServices = await _stationServiceRepository
-                    .FindByCondition(_ => _.StationID == stationID && _.Service.Status.ToLower().Equals("active"))
+                    .FindByCondition(_ => _.StationID == stationID && _.Service.Status.Trim().Equals(SD.ACTIVE))
                     .Include(_ => _.Service)
                     .ThenInclude(_ => _.ServiceType)
                     .ToListAsync();
@@ -64,7 +65,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var stationServices = await _stationServiceRepository
-                                        .FindByCondition(_ => _.StationID == stationID && _.Service.ServiceTypeID == serviceTypeID && _.Service.Status.ToLower().Equals("active"))
+                                        .FindByCondition(_ => _.StationID == stationID && _.Service.ServiceTypeID == serviceTypeID && _.Service.Status.Trim().Equals(SD.ACTIVE))
                                         .Include(_ => _.Service)
                                         .ThenInclude(_ => _.ServiceType)
                                         .ToListAsync();

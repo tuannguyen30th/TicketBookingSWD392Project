@@ -5,6 +5,7 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var stations = await _stationRouteRepository
-                                    .FindByCondition(_ => _.RouteID == routeID)
+                                    .FindByCondition(_ => _.RouteID == routeID && _.Status.Trim().Equals(SD.ACTIVE))
                                     .Include(_ => _.Station)
                                     .Select(_ => new StationFromRouteModel
                                      {
@@ -57,7 +58,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var station = await _stationRepository.GetAll().Where(s => s.Status.ToLower().Trim().Equals("active")).ToListAsync();
+                var station = await _stationRepository.GetAll().Where(s => s.Status.Trim().Equals(SD.ACTIVE)).ToListAsync();
                 var rs = _mapper.Map<List<GetStationModel>>(station);
                 return rs;
             } catch (Exception ex)
@@ -93,7 +94,7 @@ namespace SWD.TicketBooking.Service.Services
                                 City = city,
                                 Company = company,
                                 Name = stationModel.stationName, 
-                                Status = "Active" 
+                                Status = SD.ACTIVE,
                             });
                     if (station == null)
                     {
@@ -114,7 +115,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var check  = await _stationRepository.GetAll().Where(s=> s.Status.ToLower().Equals("active") && s.StationID == stationId).FirstOrDefaultAsync();
+                var check  = await _stationRepository.GetAll().Where(s=> s.Status.Trim().Equals(SD.ACTIVE) && s.StationID == stationId).FirstOrDefaultAsync();
                 if (check == null)
                 {
                     throw new NotFoundException("Station not found!");
@@ -141,7 +142,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var route = await _tripRepository.FindByCondition(s=> s.TripID == id).Select(s=>s.RouteID).FirstOrDefaultAsync();
+                var route = await _tripRepository.FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.ACTIVE) && s.Route.Status.ToLower().Trim().Equals("active")).Select(s=>s.RouteID).FirstOrDefaultAsync();
                 var stations = await _stationRouteRepository
                                     .FindByCondition(_ => _.RouteID == route)
                                     .Include(_ => _.Station)
