@@ -30,22 +30,7 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
-      /*  public async Task<GetStationServiceModel> GetServiceByStationID(int stationID)
-        {
-            try
-            {
-                var service = await _stationServiceRepository.FindByCondition(_ => _.StationID == stationID).ToListAsync();
-
-                var response = new GetStationServiceModel
-                {
-                    
-                };
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }*/
+     
         public async Task<int> CreateService(CreateServiceModel createServiceModel)
         {
             try

@@ -119,6 +119,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
                 throw new Exception(ex.Message, ex);
             }
         }
+      
         public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
         {
             try
