@@ -51,7 +51,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
 

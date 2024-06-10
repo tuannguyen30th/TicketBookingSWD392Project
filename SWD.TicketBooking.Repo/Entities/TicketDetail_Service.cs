@@ -14,6 +14,9 @@ namespace SWD.TicketBooking.Repo.Entities
         public int ServiceID { get; set; }
         [ForeignKey("ServiceID")]
         public Service Service { get; set; }
+        public int StationID { get; set; }
+        [ForeignKey("StationID")]
+        public Station Station { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
         public string Status { get; set; } = string.Empty;
