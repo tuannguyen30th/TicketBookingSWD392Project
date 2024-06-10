@@ -2476,7 +2476,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[0],
                     Price = 120000,
                     Status = "Active",
-                    Quantity = 5
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2484,7 +2484,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[1],
                     Price = 150000,
                     Status = "Active",
-                    Quantity = 1
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2492,7 +2492,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[2],
                     Price = 120000,
                     Status = "Active",
-                    Quantity = 5
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2500,7 +2500,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[3],
                     Price = 100000,
                     Status = "Active",
-                    Quantity = 3
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2524,7 +2524,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[89], // Assuming trips[89] is a valid Trip
                     Price = 175000,
                     Status = "Active",
-                    Quantity = 12
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2548,7 +2548,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[42], // Assuming trips[42] is a valid Trip
                     Price = 85000,
                     Status = "Active",
-                    Quantity = 10
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2580,7 +2580,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[80], // Assuming trips[80] is a valid Trip
                     Price = 180000,
                     Status = "Active",
-                    Quantity = 9
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2628,7 +2628,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[84], // Assuming trips[84] is a valid Trip
                     Price = 190000,
                     Status = "Inactive",
-                    Quantity = 5
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2644,7 +2644,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[65], // Assuming trips[65] is a valid Trip
                     Price = 70000,
                     Status = "Active",
-                    Quantity = 8
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2668,7 +2668,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[12], // Assuming trips[12] is a valid Trip
                     Price = 95000,
                     Status = "Inactive",
-                    Quantity = 11
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2708,7 +2708,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[45], // Assuming trips[45] is a valid Trip
                     Price = 170000,
                     Status = "Inactive",
-                    Quantity = 9
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2724,7 +2724,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[11], // Assuming trips[11] is a valid Trip
                     Price = 80000,
                     Status = "Active",
-                    Quantity = 9
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2748,7 +2748,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[92], // Assuming trips[92] is a valid Trip
                     Price = 105000,
                     Status = "Inactive",
-                    Quantity = 11
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2764,7 +2764,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[18], // Assuming trips[18] is a valid Trip
                     Price = 82000,
                     Status = "Active",
-                    Quantity = 10
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2788,7 +2788,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[62], // Assuming trips[62] is a valid Trip
                     Price = 95000,
                     Status = "Inactive",
-                    Quantity = 8
+                    Quantity = 20
                 },
                 new TicketType_Trip
                 {
@@ -2796,7 +2796,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[29], // Assuming trips[29] is a valid Trip
                     Price = 112000,
                     Status = "Active",
-                    Quantity = 13
+                    Quantity = 20
                 }
             };
             List<Booking> bookings = new()
@@ -3007,53 +3007,36 @@ namespace SWD.TicketBooking.Repo.SeedData
                     QRCode = "poiuy"
                 }
             };
-            List<TicketDetail> ticketDetails = new()
+            List<TicketDetail> ticketDetails = new List<TicketDetail>();
+
+            for (int i = 0; i < bookings.Count; i++)
             {
-                new TicketDetail
+                double price = 0;
+                foreach (Booking booking in bookings)
                 {
-                    Booking = bookings[0],
-                    Price = 120000,
-                    Status = "Active",
-                    SeatCode = "A01",
-                    TicketType_Trip = ticketType_Trips[0]
-                },
-                new TicketDetail
-                {
-                    Booking = bookings[2],
-                    Price = 120000,
-                    Status = "Active",
-                    SeatCode = "A02",
-
-                    TicketType_Trip = ticketType_Trips[1]
-                },
-                new TicketDetail
-                {
-                    Booking = bookings[1],
-                    Price = 120000,
-                    Status = "Active",
-                    SeatCode = "A03",
-
-                    TicketType_Trip = ticketType_Trips[1]
-                },
-                new TicketDetail
-                {
-                    Booking = bookings[3],
-                    Price = 100000,
-                    Status = "Active",
-                    SeatCode = "A04",
-
-                    TicketType_Trip = ticketType_Trips[2]
-                },
-                new TicketDetail
-                {
-                    Booking = bookings[4],
-                    Price = 120000,
-                    Status = "Active",
-                    SeatCode = "A05",
-
-                    TicketType_Trip = ticketType_Trips[3]
+                    for (int a = 0; a < ticketType_Trips.Count; a++)
+                    {
+                        if (ticketType_Trips[a].Trip == booking.Trip)
+                        {
+                            price = ticketType_Trips[a].Price;
+                            break;
+                        }
+                    }
+                    break;
                 }
-            };
+                for (int j = 0; j < bookings[i].Quantity; j++)
+                {
+                    ticketDetails.Add(new TicketDetail
+                    {
+                        Booking = bookings[i],
+                        Price = price,
+                        Status = "Active",
+                        SeatCode = $"A{j + 1}",
+                        TicketType_Trip = ticketType_Trips[i]
+                    });
+                }
+            }
+
             List<TicketDetail_Service> ticketDetail_Services = new()
             {
                 new TicketDetail_Service
