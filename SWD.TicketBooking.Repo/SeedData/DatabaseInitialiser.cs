@@ -2826,7 +2826,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 240000,
-                    Trip = trips[3],
+                    Trip = trips[2],
                     User = users[3],
                     QRCode = "33333"
                 },
@@ -2838,7 +2838,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 100000,
-                    Trip = trips[0],
+                    Trip = trips[3],
                     User = users[0],
                     QRCode = "44444"
                 },
@@ -2850,7 +2850,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[3],
+                    Trip = trips[4],
                     User = users[3],
                     QRCode = "55555"
                 },
@@ -2862,7 +2862,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 240000,
-                    Trip = trips[1],
+                    Trip = trips[5],
                     User = users[1],
                     QRCode = "12345"
                 },
@@ -2874,7 +2874,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "False",
                     TotalBill = 120000,
-                    Trip = trips[2],
+                    Trip = trips[6],
                     User = users[2],
                     QRCode = "67890"
                 },
@@ -2886,7 +2886,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 360000,
-                    Trip = trips[0],
+                    Trip = trips[7],
                     User = users[0],
                     QRCode = "abcde"
                 },
@@ -2898,7 +2898,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[3],
+                    Trip = trips[8],
                     User = users[3],
                     QRCode = "fghij"
                 },
@@ -2910,7 +2910,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 240000,
-                    Trip = trips[1],
+                    Trip = trips[9],
                     User = users[1],
                     QRCode = "qwert"
                 },
@@ -2922,7 +2922,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[2],
+                    Trip = trips[10],
                     User = users[2],
                     QRCode = "yuiop"
                 },
@@ -2934,7 +2934,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 360000,
-                    Trip = trips[0],
+                    Trip = trips[11],
                     User = users[0],
                     QRCode = "asdfg"
                 },
@@ -2946,7 +2946,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[3],
+                    Trip = trips[12],
                     User = users[3],
                     QRCode = "hjkl"
                 },
@@ -2958,7 +2958,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 240000,
-                    Trip = trips[2],
+                    Trip = trips[13],
                     User = users[1],
                     QRCode = "zxcvb"
                 },
@@ -2970,7 +2970,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[0],
+                    Trip = trips[14],
                     User = users[3],
                     QRCode = "mnbvc"
                 },
@@ -2982,7 +2982,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 360000,
-                    Trip = trips[1],
+                    Trip = trips[15],
                     User = users[2],
                     QRCode = "lkjhg"
                 },
@@ -2990,14 +2990,111 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     BookingTime = new DateTime(2024, 4, 25),
                     Quantity = 1,
-                    Status = "INACTIVE",
+                    Status = "ACTIVE",
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[3],
+                    Trip = trips[16],
                     User = users[0],
                     QRCode = "poiuy"
-                }
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[16],
+                    User = users[1],
+                    QRCode = "poauy"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[17],
+                    User = users[1],
+                    QRCode = "podsf"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[18],
+                    User = users[1],
+                    QRCode = "qweuy"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[19],
+                    User = users[1],
+                    QRCode = "poaqw"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[20],
+                    User = users[1],
+                    QRCode = "poaut"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[21],
+                    User = users[1],
+                    QRCode = "qoauy"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[22],
+                    User = users[1],
+                    QRCode = "poasy"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[23],
+                    User = users[1],
+                    QRCode = "poaay"
+                },
+
             };
             List<TicketDetail> ticketDetails = new List<TicketDetail>();
 
