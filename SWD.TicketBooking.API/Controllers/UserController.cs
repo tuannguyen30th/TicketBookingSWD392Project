@@ -69,12 +69,6 @@ namespace SWD.TicketBooking.Controllers
                         Messages = "Account does not exist!"
                     };
                     return BadRequest(resultFail);
-                    /* BadRequest(new GenericResponse<bool>
-                     {
-                         Data = false,
-                         StatusCode = userResponse.StatusCode,
-                         Message = userResponse.Message
-                     });*/
                 }
 
                 if (userResponse.OTPCode == "0" && userResponse.IsVerified == true)
@@ -85,13 +79,6 @@ namespace SWD.TicketBooking.Controllers
                         Messages = "Account does not exist!"
                     };
                     return BadRequest(resultFail);
-
-                    /* BadRequest(new GenericResponse<bool>
-                     {
-                         Data = false,
-                         StatusCode = HttpStatusCode.BadRequest,
-                         Message = "Account already exists!"
-                     });*/
                 }
 
                 if (userResponse.IsVerified == false)
@@ -145,25 +132,12 @@ namespace SWD.TicketBooking.Controllers
                     {
                         Messages = "Check your email and verify the OTP."
                     });
-                    /* Ok(new GenericResponse<bool>
-                     {
-                         Data = true,
-                         StatusCode = HttpStatusCode.OK,
-                         Message = "Check your email and verify the OTP."
-                     });*/
                 }
                  resultFail = new SignUpResponse
                 {
                     Messages = "Error."
                 };
                 return BadRequest(resultFail);
-
-                /* BadRequest(new GenericResponse<bool>
-                 {
-                     Data = false,
-                     StatusCode = HttpStatusCode.BadRequest,
-                     Message = "Error."
-                 });*/
             }
 
             catch (Exception ex)
@@ -174,12 +148,6 @@ namespace SWD.TicketBooking.Controllers
                     Messages = "An error occurred while sending OTP."
                 };
                 return BadRequest(resultFail);
-                /* StatusCode((int)HttpStatusCode.InternalServerError, new GenericResponse<bool>
-                 {
-                     Data = false,
-                     StatusCode = HttpStatusCode.InternalServerError,
-                     Message = "An error occurred while sending OTP."
-                 });*/
             }
         }
         [HttpPut("submit-otp")]
@@ -215,6 +183,7 @@ namespace SWD.TicketBooking.Controllers
             }
 
         }
+        
         [HttpGet("all-users")]
         public async Task<ActionResult> GetALlUsers()
         {

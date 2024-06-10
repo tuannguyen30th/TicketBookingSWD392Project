@@ -130,7 +130,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -147,6 +147,10 @@ namespace SWD.TicketBooking.Service.Services
                                 && _.StartTime.Date == startDate && _.Status.Trim().Equals(SD.ACTIVE));
 
                 var totalTrips = await tripsQuery.CountAsync();
+                if (totalTrips == 0)
+                {
+                    throw new NotFoundException("No trips found!");
+                }
                 var totalPages = (int)Math.Ceiling((double)totalTrips / pageSize);
 
                 var trips = await tripsQuery.Skip((pageNumber - 1) * pageSize)
@@ -186,23 +190,24 @@ namespace SWD.TicketBooking.Service.Services
                         Price = lowestPrice,
                         StartLocation = trip.Route?.StartLocation,
                         EndLocation = trip.Route?.EndLocation,
-                        StartTime = trip.StartTime,
-                        EndTime = trip.EndTime,
+                        StartDate = trip.StartTime.ToString("yyyy-MM-dd"),
+                        EndDate = trip.EndTime.ToString("yyyy-MM-dd"),
+                        StartTime = trip.StartTime.ToString("HH:mm"),
+                        EndTime = trip.EndTime.ToString("HH:mm")
                     };
-
                     searchTripModels.Add(searchTrip);
                 }
-
-                return new PagedResult<SearchTripModel>
-                {
-                    Items = searchTripModels,
-                    TotalCount = totalPages
-                };
+         
+                    return new PagedResult<SearchTripModel>
+                    {
+                        Items = searchTripModels,
+                        TotalCount = totalPages
+                    };
+                
             }
             catch (Exception ex)
             {
-                // Log the exception (ex) here if needed
-                throw new Exception("An error occurred while searching for trips.", ex);
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -297,7 +302,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -331,7 +336,7 @@ namespace SWD.TicketBooking.Service.Services
                 var trip = await _tripRepo.FindByCondition(_ => _.TripID == tripId).FirstOrDefaultAsync();
                 if (trip == null)
                 {
-                    throw new Exception("No exist!");
+                    throw new NotFoundException("No exist!");
                 }
                 trip.Status = SD.INACTIVE;
                 _tripRepo.Update(trip);
@@ -344,7 +349,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception();
+                throw new Exception(ex.Message, ex);
             }
         }
         public async Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(int tripID)
@@ -365,7 +370,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (bookingDetails == null || !bookingDetails.Any())
                 {
-                    throw new BadRequestException("Empty!");
+                    throw new BadRequestException("Not Found!");
                 }
 
                 var ticketTypeTrips = await _ticketTypeTripRepo
@@ -380,11 +385,11 @@ namespace SWD.TicketBooking.Service.Services
                     .ToListAsync();
                 if (ticketTypeTrips == null || !ticketTypeTrips.Any())
                 {
-                    throw new BadRequestException("Empty!");
+                    throw new BadRequestException("Not Found!");
                 }
                 var totalSeat = await _ticketTypeTripRepo.FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.ACTIVE)).SumAsync(_ => _.Quantity);
                 var firstBooking = bookingDetails.First();
-                var seatBookeds = bookingDetails.Select(b => b.SeatCode).ToList();
+                var seatBookeds = bookingDetails.Select(_ => _.SeatCode).ToList();
                 var result = new GetSeatBookedFromTripModel
                 {
                     TripID = tripID,
@@ -394,7 +399,7 @@ namespace SWD.TicketBooking.Service.Services
                     StartLocation = firstBooking.StartLocation,
                     EndLocation = firstBooking.EndLocation,
                     StartDate = firstBooking.StartTime.ToString("yyyy-MM-dd"),
-                    StartTime = firstBooking.StartTime.ToString("HH:mm:ss"),
+                    StartTime = firstBooking.StartTime.ToString("HH:mm"),
                     TicketType_TripModels = ticketTypeTrips
                 };
 
@@ -402,7 +407,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new InternalServerErrorException(ex.Message);
+                throw new Exception(ex.Message, ex);
             }
         }
 
