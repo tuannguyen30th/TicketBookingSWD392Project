@@ -27,6 +27,7 @@ namespace SWD.TicketBooking.API.Installer
             services.AddScoped<StationService>();
             services.AddScoped<CompanyService>();
             services.AddScoped<ServiceService>();
+            services.AddScoped<TicketDetailService>();
         }
     }
 }
