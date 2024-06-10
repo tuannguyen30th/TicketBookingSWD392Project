@@ -1065,7 +1065,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Route=routes[1],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 7, 17, 45, 0),
-                    Status ="Active,
+                    Status ="Active",
                 },
                 new Trip
                 {
