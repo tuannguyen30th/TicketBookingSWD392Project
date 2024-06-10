@@ -17,11 +17,11 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
         private AppActionResult _result;
         private FirebaseConfiguration _firebaseConfiguration;
         private readonly IConfiguration _configuration;
-        public FirebaseService(IServiceProvider serviceProvider, IConfiguration configuration) : base(serviceProvider)
+        public FirebaseService(IServiceProvider serviceProvider, IConfiguration configuration, FirebaseConfiguration firebaseConfiguration) : base(serviceProvider)
         {
             //_pdfConverter = pdfConverter;
             _result = new();
-            _firebaseConfiguration = Resolve<FirebaseConfiguration>();
+            _firebaseConfiguration = firebaseConfiguration;
             _configuration = configuration;
         }
 
@@ -30,10 +30,10 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
             var _result = new AppActionResult();
             try
             {
-                var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyCMlVnrHg3XcmcgNXfIvHjw-6OGyoaC33w"));
-                var account = await auth.SignInWithEmailAndPasswordAsync("nguyenngoctuanthct@gmail.com", "0917899898");
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(_firebaseConfiguration.ApiKey));
+                var account = await auth.SignInWithEmailAndPasswordAsync(_firebaseConfiguration.AuthEmail, _firebaseConfiguration.AuthPassword);
                 var storage = new FirebaseStorage(
-             "cloudfunction-yt-2b3df.appspot.com",
+             _firebaseConfiguration.Bucket,
              new FirebaseStorageOptions
              {
                  AuthTokenAsyncFactory = () => Task.FromResult(account.FirebaseToken),
@@ -88,17 +88,13 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
             }
             if (isValid)
             {
-                /* "ApiKey": "AIzaSyCMlVnrHg3XcmcgNXfIvHjw-6OGyoaC33w",
-     "AuthEmail": "nguyenngoctuanthct@gmail.com",
-     "AuthPassword": "0917899898",
-     "Bucket": "cloudfunction-yt-2b3df.appspot.com"*/
                 var stream = file!.OpenReadStream();
-                var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyCMlVnrHg3XcmcgNXfIvHjw-6OGyoaC33w"));
-                var account = await auth.SignInWithEmailAndPasswordAsync("nguyenngoctuanthct@gmail.com", "0917899898");
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(_firebaseConfiguration.ApiKey));
+                var account = await auth.SignInWithEmailAndPasswordAsync(_firebaseConfiguration.AuthEmail, _firebaseConfiguration.AuthPassword);
                 string destinationPath = $"{pathFileName}";
 
                 var task = new FirebaseStorage(
-                "cloudfunction-yt-2b3df.appspot.com",
+                _firebaseConfiguration.Bucket,
                 new FirebaseStorageOptions
                 {
                     AuthTokenAsyncFactory = () => Task.FromResult(account.FirebaseToken),
@@ -125,10 +121,10 @@ namespace SWD.TicketBooking.Service.Services.FirebaseService
             var _result = new AppActionResult();
             var uploadResults = new List<string>();
 
-            var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyCMlVnrHg3XcmcgNXfIvHjw-6OGyoaC33w"));
-            var account = await auth.SignInWithEmailAndPasswordAsync("nguyenngoctuanthct@gmail.com", "0917899898");
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(_firebaseConfiguration.ApiKey));
+            var account = await auth.SignInWithEmailAndPasswordAsync(_firebaseConfiguration.AuthEmail, _firebaseConfiguration.AuthPassword);
             var storage = new FirebaseStorage(
-                "cloudfunction-yt-2b3df.appspot.com",
+                _firebaseConfiguration.Bucket,
                 new FirebaseStorageOptions
                 {
                     AuthTokenAsyncFactory = () => Task.FromResult(account.FirebaseToken),
