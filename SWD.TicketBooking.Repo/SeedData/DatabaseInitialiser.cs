@@ -1014,29 +1014,29 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     Route=routes[0],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
-                    EndTime = new DateTime(2024, 7, 6, 18, 45, 0),
+                    StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
+                    EndTime = new DateTime(2024, 7, 6, 18, 45, 1),
                     Status ="Active"
                 },
                 new Trip
                 {
                     Route=routes[0],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
-                    EndTime = new DateTime(2024, 7, 6, 18, 45, 0),
+                    StartTime = new DateTime(2024, 7, 5, 17, 45, 2),
+                    EndTime = new DateTime(2024, 7, 6, 18, 45, 2),
                     Status ="Active"
                 },
                 new Trip
                 {
                     Route=routes[1],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 25, 11, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 3),
+                    EndTime = new DateTime(2024, 6, 25, 11, 30, 3),
                     Status ="Active"
                 },
                 new Trip
                 {
                     Route=routes[1],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
-                    EndTime = new DateTime(2024, 7, 7, 17, 45, 0),
+                    StartTime = new DateTime(2024, 7, 5, 17, 45, 4),
+                    EndTime = new DateTime(2024, 7, 7, 17, 45, 4),
                     Status ="Active"
                 },
                 new Trip
@@ -1049,29 +1049,29 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     Route=routes[1],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 25, 11, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
+                    EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
                     Status ="Active"
                 },
                 new Trip
                 {
                     Route=routes[1],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 25, 11, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
+                    EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
                     Status ="Active"
                 },
                 new Trip
                 {
                     Route=routes[1],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
-                    EndTime = new DateTime(2024, 7, 7, 17, 45, 0),
+                    StartTime = new DateTime(2024, 7, 5, 17, 45, 5),
+                    EndTime = new DateTime(2024, 7, 7, 17, 45, 5),
                     Status ="Active",
                 },
                 new Trip
                 {
                     Route=routes[2],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 15, 0, 0, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
+                    EndTime = new DateTime(2024, 6, 15, 0, 0, 5),
                     Status ="Active"
                 },
                 new Trip
@@ -1084,8 +1084,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     Route=routes[2],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
-                    EndTime = new DateTime(2024, 7, 8, 17, 45, 0),
+                    StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
+                    EndTime = new DateTime(2024, 7, 8, 17, 45, 1),
                     Status ="Active"
                 },
                 new Trip
@@ -1112,8 +1112,15 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     Route=routes[3],
-                    StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
-                    EndTime = new DateTime(2024, 7, 13, 14, 20, 0),
+                    StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
+                    EndTime = new DateTime(2024, 7, 13, 14, 20, 1),
+                    Status ="Active"
+                },
+                new Trip
+                {
+                    Route=routes[3],
+                    StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
+                    EndTime = new DateTime(2024, 7, 9, 17, 45, 1),
                     Status ="Active"
                 },
                 new Trip
@@ -1126,22 +1133,15 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     Route=routes[3],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
-                    EndTime = new DateTime(2024, 7, 9, 17, 45, 0),
-                    Status ="Active"
-                },
-                new Trip
-                {
-                    Route=routes[3],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 17, 17, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
+                    EndTime = new DateTime(2024, 6, 17, 17, 30, 1),
                     Status ="Active"
                 },
                 new Trip
                 {
                     Route=routes[4],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 15, 18, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
+                    EndTime = new DateTime(2024, 6, 15, 18, 30, 1),
                     Status ="Active"
                 },
                 new Trip
@@ -1168,8 +1168,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                  new Trip
                 {
                     Route=routes[5],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 25, 11, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
+                    EndTime = new DateTime(2024, 6, 25, 11, 30, 1),
                     Status ="Active"
                 },
                   new Trip
@@ -1182,8 +1182,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                    new Trip
                 {
                     Route=routes[5],
-                    StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
-                    EndTime = new DateTime(2024, 7, 15, 14, 20, 0),
+                    StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
+                    EndTime = new DateTime(2024, 7, 15, 14, 20, 1),
                     Status ="Active"
                 },
                     new Trip
@@ -1210,8 +1210,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                  new Trip
                 {
                     Route=routes[6],
-                    StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
-                    EndTime = new DateTime(2024, 7, 14, 14, 20, 0),
+                    StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
+                    EndTime = new DateTime(2024, 7, 14, 14, 20, 1),
                     Status ="Active"
                 },
                   new Trip
@@ -1246,15 +1246,15 @@ namespace SWD.TicketBooking.Repo.SeedData
                       new Trip
                 {
                     Route=routes[7],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 18, 11, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
+                    EndTime = new DateTime(2024, 6, 18, 11, 30, 1),
                     Status ="Active"
                 },
                        new Trip
                 {
                     Route=routes[7],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 18, 11, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 2),
+                    EndTime = new DateTime(2024, 6, 18, 11, 30, 2),
                     Status ="Active"
                 },
                         new Trip
@@ -1281,8 +1281,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                  new Trip
                 {
                     Route=routes[8],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 16, 11, 30, 0),
+                    StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
+                    EndTime = new DateTime(2024, 6, 16, 11, 30, 1),
                     Status ="Active"
                 },
                   new Trip
@@ -2490,7 +2490,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     TicketType = types[2],
                     Trip = trips[2],
-                    Price = 120000,
+                    Price = 130000,
                     Status = "Active",
                     Quantity = 20
                 },
@@ -2523,14 +2523,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[89], // Assuming trips[89] is a valid Trip
                     Price = 175000,
-                    Status = "Active",
-                    Quantity = 20
-                },
-                new TicketType_Trip
-                {
-                    TicketType = types[2], // Assuming types[2] is a valid TicketType
-                    Trip = trips[2], // Assuming trips[2] is a valid Trip
-                    Price = 75000,
                     Status = "Active",
                     Quantity = 20
                 },
@@ -2834,7 +2826,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 240000,
-                    Trip = trips[3],
+                    Trip = trips[2],
                     User = users[3],
                     QRCode = "33333"
                 },
@@ -2846,7 +2838,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 100000,
-                    Trip = trips[0],
+                    Trip = trips[3],
                     User = users[0],
                     QRCode = "44444"
                 },
@@ -2858,7 +2850,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[3],
+                    Trip = trips[4],
                     User = users[3],
                     QRCode = "55555"
                 },
@@ -2870,7 +2862,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 240000,
-                    Trip = trips[1],
+                    Trip = trips[5],
                     User = users[1],
                     QRCode = "12345"
                 },
@@ -2882,7 +2874,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "False",
                     TotalBill = 120000,
-                    Trip = trips[2],
+                    Trip = trips[6],
                     User = users[2],
                     QRCode = "67890"
                 },
@@ -2894,7 +2886,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 360000,
-                    Trip = trips[0],
+                    Trip = trips[7],
                     User = users[0],
                     QRCode = "abcde"
                 },
@@ -2906,7 +2898,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[3],
+                    Trip = trips[8],
                     User = users[3],
                     QRCode = "fghij"
                 },
@@ -2918,7 +2910,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 240000,
-                    Trip = trips[1],
+                    Trip = trips[9],
                     User = users[1],
                     QRCode = "qwert"
                 },
@@ -2930,7 +2922,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[2],
+                    Trip = trips[10],
                     User = users[2],
                     QRCode = "yuiop"
                 },
@@ -2942,7 +2934,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 360000,
-                    Trip = trips[0],
+                    Trip = trips[11],
                     User = users[0],
                     QRCode = "asdfg"
                 },
@@ -2954,7 +2946,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[3],
+                    Trip = trips[12],
                     User = users[3],
                     QRCode = "hjkl"
                 },
@@ -2966,7 +2958,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 240000,
-                    Trip = trips[2],
+                    Trip = trips[13],
                     User = users[1],
                     QRCode = "zxcvb"
                 },
@@ -2978,7 +2970,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[0],
+                    Trip = trips[14],
                     User = users[3],
                     QRCode = "mnbvc"
                 },
@@ -2990,7 +2982,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     PaymentMethod = "CASH",
                     PaymentStatus = "True",
                     TotalBill = 360000,
-                    Trip = trips[1],
+                    Trip = trips[15],
                     User = users[2],
                     QRCode = "lkjhg"
                 },
@@ -2998,41 +2990,139 @@ namespace SWD.TicketBooking.Repo.SeedData
                 {
                     BookingTime = new DateTime(2024, 4, 25),
                     Quantity = 1,
-                    Status = "INACTIVE",
+                    Status = "ACTIVE",
                     PaymentMethod = "BALANCE",
                     PaymentStatus = "True",
                     TotalBill = 120000,
-                    Trip = trips[3],
+                    Trip = trips[16],
                     User = users[0],
                     QRCode = "poiuy"
-                }
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[16],
+                    User = users[1],
+                    QRCode = "poauy"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[17],
+                    User = users[1],
+                    QRCode = "podsf"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[18],
+                    User = users[1],
+                    QRCode = "qweuy"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[19],
+                    User = users[1],
+                    QRCode = "poaqw"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[20],
+                    User = users[1],
+                    QRCode = "poaut"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[21],
+                    User = users[1],
+                    QRCode = "qoauy"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[22],
+                    User = users[1],
+                    QRCode = "poasy"
+                },
+                new Booking
+                {
+                    BookingTime = new DateTime(2024, 4, 24),
+                    Quantity = 1,
+                    Status = "ACTIVE",
+                    PaymentMethod = "CASH",
+                    PaymentStatus = "True",
+                    TotalBill = 240000,
+                    Trip = trips[23],
+                    User = users[1],
+                    QRCode = "poaay"
+                },
+
             };
             List<TicketDetail> ticketDetails = new List<TicketDetail>();
 
             for (int i = 0; i < bookings.Count; i++)
             {
                 double price = 0;
-                foreach (Booking booking in bookings)
+                var ticketTypeTrip = new TicketType_Trip();
+                for (int a = 0; a < ticketType_Trips.Count; a++)
                 {
-                    for (int a = 0; a < ticketType_Trips.Count; a++)
+                    if (ticketType_Trips[a].Trip.Route == bookings[i].Trip.Route 
+                        && ticketType_Trips[a].Trip.StartTime == bookings[i].Trip.StartTime 
+                        && ticketType_Trips[a].Trip.EndTime == bookings[i].Trip.EndTime)
                     {
-                        if (ticketType_Trips[a].Trip == booking.Trip)
-                        {
-                            price = ticketType_Trips[a].Price;
-                            break;
-                        }
+                        price = ticketType_Trips[a].Price;
+                        ticketTypeTrip = ticketType_Trips[a];
+                        break;
                     }
-                    break;
                 }
                 for (int j = 0; j < bookings[i].Quantity; j++)
                 {
                     ticketDetails.Add(new TicketDetail
                     {
+                        BookingID = i + 1,
                         Booking = bookings[i],
                         Price = price,
                         Status = "Active",
                         SeatCode = $"A{j + 1}",
-                        TicketType_Trip = ticketType_Trips[i]
+                        TicketType_Trip = ticketTypeTrip,
                     });
                 }
             }
