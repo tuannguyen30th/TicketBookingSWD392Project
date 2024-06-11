@@ -7,11 +7,11 @@ namespace SWD.TicketBooking.Repo.Entities
     public class UserRole
     {
         [Key]
-        public int RoleID { get; set; }
+        public Guid RoleID { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string RoleName { get; set; }
+        public string RoleName { get; set; } = string.Empty;
         public string? Status { get; set; } = string.Empty;
 
     }

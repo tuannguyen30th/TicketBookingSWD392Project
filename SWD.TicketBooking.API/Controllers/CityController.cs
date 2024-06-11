@@ -50,12 +50,12 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpPut("city/{cityID}")]
-        public async Task<IActionResult> UpdateCompany([FromRoute] int cityID, [FromBody] CreateCityRequest req)
+        public async Task<IActionResult> UpdateCompany([FromRoute] Guid cityID, [FromBody] CreateCityRequest req)
         {
-            if (cityID <= 0)
+ /*           if (cityID == "")
             {
                 return BadRequest("Invalid ID");
-            }
+            }*/
             var map = _mapper.Map<CreateCityModel>(req);
             var rs = await _cityService.UpdateCity(cityID, map);
             if (rs < 1)
@@ -67,12 +67,12 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpPut("city-status/{cityID}")]
-        public async Task<IActionResult> ChangeStatus([FromRoute] int cityID, [FromBody] ChangeStatusRequest req)
+        public async Task<IActionResult> ChangeStatus([FromRoute] Guid cityID, [FromBody] ChangeStatusRequest req)
         {
-            if (cityID <= 0)
+          /*  if (cityID <= 0)
             {
                 return BadRequest("Invalid ID");
-            }
+            }*/
             var rs = await _cityService.ChangeStatus(cityID, req.Status);
             if (rs < 1)
             {

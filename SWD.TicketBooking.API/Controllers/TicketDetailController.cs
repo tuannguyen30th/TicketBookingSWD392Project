@@ -24,7 +24,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("ticket-details/{ticketDetailID}")]
-        public async Task<IActionResult> GetDetailTicketDetailByTicketDetail([FromRoute] int ticketDetailID)
+        public async Task<IActionResult> GetDetailTicketDetailByTicketDetail([FromRoute] Guid ticketDetailID)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("ticket-details-by-user/{userID}")]
-        public async Task<IActionResult> GetTicketDetailByUser([FromRoute] int userID)
+        public async Task<IActionResult> GetTicketDetailByUser([FromRoute] Guid userID)
         {
             try
             {
@@ -52,12 +52,12 @@ namespace SWD.TicketBooking.API.Controllers
             }
         }
 
-        [HttpGet("ticket-detail-by-QRCode/{QRCode}")]
-        public async Task<IActionResult> SearchTicket([FromRoute] string QRCode)
+        [HttpGet("ticket-detail-by-QRCode/{qrCode}")]
+        public async Task<IActionResult> SearchTicket([FromRoute] string qrCode)
         {
             try
             {
-                var rs = _mapper.Map<SearchTicketResponse>(await _ticketDetailService.SearchTicket(QRCode));
+                var rs = _mapper.Map<SearchTicketResponse>(await _ticketDetailService.SearchTicket(qrCode));
                 return Ok(rs);
             }
             catch (Exception ex)

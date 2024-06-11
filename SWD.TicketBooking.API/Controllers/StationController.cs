@@ -20,7 +20,7 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
         }
         [HttpGet("stations-from-route/{routeID}")]
-        public async Task<IActionResult> GetStationsFromRoute(int routeID)
+        public async Task<IActionResult> GetStationsFromRoute(Guid routeID)
         {
             var stations = await _stationService.GetStationsFromRoute(routeID);
             var stationResponses = _mapper.Map<List<StationFromRouteResponse>>(stations);
@@ -28,7 +28,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("stations-from-trip/{tripID}")]
-        public async Task<IActionResult> GetStationsInTrip(int tripID)
+        public async Task<IActionResult> GetStationsInTrip(Guid tripID)
         {
             var stations = await _stationService.GetAllStationInRoute(tripID);
             var stationResponses = _mapper.Map<List<StationFromRouteResponse>>(stations);
@@ -43,10 +43,10 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
-        [HttpGet("station-by-id/{id}")]
-        public async Task<IActionResult> GetStationById(int id)
+        [HttpGet("station-by-id/{stationID}")]
+        public async Task<IActionResult> GetStationById(Guid stationID)
         {
-            var station = await _stationService.GetStationById(id);
+            var station = await _stationService.GetStationById(stationID);
             var rs = _mapper.Map<GetStationResponse>(station);
             return Ok(rs);
         }
@@ -58,11 +58,11 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = await _stationService.CreateStation(map);
             return Ok(rs);
         }
-        [HttpPut("station/{id}")]
-        public async Task<IActionResult> UpdateStaion([FromRoute] int id, [FromBody] CreateStationRequest req)
+        [HttpPut("station/{stationID}")]
+        public async Task<IActionResult> UpdateStaion([FromRoute] Guid stationID, [FromBody] CreateStationRequest req)
         {
             var map = _mapper.Map<CreateStationModel>(req);
-            var rs = await _stationService.UpdateStation(id, map);
+            var rs = await _stationService.UpdateStation(stationID, map);
             return Ok(rs);
         }
     }

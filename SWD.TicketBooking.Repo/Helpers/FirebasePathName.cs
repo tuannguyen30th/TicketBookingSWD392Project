@@ -12,7 +12,7 @@ namespace SWD.TicketBooking.Repo.Helpers
         public static string TRIP = "TRIP/";
         public static string BOOKINGQR = "BOOKING/QR/";
         public static string RATING = "RATING/";
-        public static string SERVICE = "SERVICE/";
+        public static string SERVICE_STATION = "SERVICE_STATION/";
         public static string AVATAR = "AVATAR/";
 
     }

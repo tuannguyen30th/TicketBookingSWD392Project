@@ -11,14 +11,12 @@ namespace SWD.TicketBooking.Repo.Entities
 {
     public class TicketBookingDbContext : DbContext
     {
-
-
         public TicketBookingDbContext(DbContextOptions<TicketBookingDbContext> options) : base(options)
         {
-
         }
 
         #region Dbset
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<UserRole> UserRoles { get; set; }
@@ -52,7 +50,8 @@ namespace SWD.TicketBooking.Repo.Entities
 
         public DbSet<TripPicture> tripPictures { get; set; }
 
-        #endregion
+        #endregion Dbset
+
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    optionsBuilder.UseSqlServer("Server=localhost;uid=sa;pwd=12345;Database=TicketBookingSWD;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -99,9 +98,11 @@ namespace SWD.TicketBooking.Repo.Entities
                 .HasOne(vr => vr.Trip)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
-
-
+            modelBuilder.Entity<TicketDetail_Service>()
+       .HasOne(td => td.TicketDetail)
+       .WithMany() // Adjust as necessary
+       .HasForeignKey(td => td.TicketDetailID)
+       .OnDelete(DeleteBehavior.NoAction);
         }
-    
     }
 }

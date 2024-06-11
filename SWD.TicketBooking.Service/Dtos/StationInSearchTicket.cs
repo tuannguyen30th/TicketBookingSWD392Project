@@ -8,8 +8,8 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class StationInSearchTicket
     {
-        public string staionName { get; set; }
-        public double price { get; set; }
+        public string? StaionName { get; set; }
+        public double Price { get; set; }
 
     }
 }

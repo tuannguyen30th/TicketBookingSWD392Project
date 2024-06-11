@@ -8,11 +8,11 @@ namespace SWD.TicketBooking.Repo.Entities
     public class Station
     {
         [Key]
-        public int StationID { get; set; }
-        public int CompanyID { get; set; }
+        public Guid StationID { get; set; }
+        public Guid CompanyID { get; set; }
         [ForeignKey("CompanyID")]
         public Company Company { get; set; }
-        public int CityID { get; set; }
+        public Guid CityID { get; set; }
         [ForeignKey("CityID")]
         public City City { get; set; }
         public string Name { get; set; } = string.Empty;

@@ -18,10 +18,10 @@ namespace SWD.TicketBooking.Service.Services
     public class CityService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<City, int> _cityRepository;
-        private readonly IRepository<Route, int> _routeRepository;
+        private readonly IRepository<City, Guid> _cityRepository;
+        private readonly IRepository<Route, Guid> _routeRepository;
 
-        public CityService(IRepository<City, int> cityRepository, IRepository<Route, int> routeRepository, IMapper mapper)
+        public CityService(IRepository<City, Guid> cityRepository, IRepository<Route, Guid> routeRepository, IMapper mapper)
         {
             _cityRepository = cityRepository;
             _routeRepository = routeRepository;
@@ -66,6 +66,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 var company = await _cityRepository.AddAsync(new City
                 {
+                    CityID = Guid.NewGuid(),
                     Name = model.CityName,
                     Status = SD.ACTIVE
                 });
@@ -82,7 +83,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateCity(int cityId, CreateCityModel model)
+        public async Task<int> UpdateCity(Guid cityId, CreateCityModel model)
         {
             try
             {
@@ -116,7 +117,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> ChangeStatus(int cityId, string status)
+        public async Task<int> ChangeStatus(Guid cityId, string status)
         {
             try
             {

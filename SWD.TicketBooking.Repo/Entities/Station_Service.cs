@@ -12,16 +12,15 @@ namespace SWD.TicketBooking.Repo.Entities
     public class Station_Service
     {
         [Key]
-        public int Station_ServiceID { get; set; }
-        public int StationID { get; set; }
+        public Guid Station_ServiceID { get; set; }
+        public Guid StationID { get; set; }
         [ForeignKey("StationID")]
         public Station Station { get; set; }
-        public int ServiceID { get; set; }
+        public Guid ServiceID { get; set; }
         [ForeignKey("ServiceID")]
         public Service Service { get; set; }
         public double Price { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
-        public string UrlGuidID { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
     }
 }

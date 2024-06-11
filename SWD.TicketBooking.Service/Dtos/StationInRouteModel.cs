@@ -8,7 +8,7 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class StationInRouteModel
     {
-        public int StationID { get; set; }
-        public string StationName { get; set; }
+        public Guid StationID { get; set; }
+        public string? StationName { get; set; }
     }
 }

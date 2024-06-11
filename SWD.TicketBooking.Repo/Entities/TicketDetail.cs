@@ -7,11 +7,11 @@ namespace SWD.TicketBooking.Repo.Entities
     public class TicketDetail
     {
         [Key]
-        public int TicketDetailID { get; set; }
-        public int BookingID { get; set; }
+        public Guid TicketDetailID { get; set; }
+        public Guid BookingID { get; set; }
         [ForeignKey("BookingID")]
         public Booking Booking { get; set; }
-        public int TicketType_TripID { get; set; }
+        public Guid TicketType_TripID { get; set; }
         [ForeignKey("TicketType_TripID")]
         public TicketType_Trip TicketType_Trip { get; set; }
         public double Price { get; set; }

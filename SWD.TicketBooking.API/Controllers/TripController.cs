@@ -34,13 +34,13 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("trip-picture-detail/{tripId}")]
-        public async Task<IActionResult> GetTripPictureDetail(int tripId)
+        public async Task<IActionResult> GetTripPictureDetail(Guid tripId)
         {
             var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
             return Ok(rs);
         }
         [HttpGet("list-trip-fromCity-toCity/{fromCity}/{toCity}/{startTime}/{pageNumber}/{pageSize}")]
-        public async Task<IActionResult> SearchTrip(int fromCity, int toCity, DateTime startTime, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber = 1, int pageSize = 10)
         {
             var rs = await _tripService.SearchTrip(fromCity, toCity, startTime, pageNumber, pageSize);
             var rsMapper = _mapper.Map<List<SearchTripResponse>>(rs.Items);
@@ -63,14 +63,14 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(updatedService);
         }
         [HttpPut("trip/{tripID}")]
-        public async Task<IActionResult> ChangeStatusTrip([FromRoute] int tripID)
+        public async Task<IActionResult> ChangeStatusTrip([FromRoute] Guid tripID)
         {
 
             var updatedService = await _tripService.ChangeStatusTrip(tripID);
             return Ok(updatedService);
         }
         [HttpGet("seat-booked-from-trip/{tripID}")]
-        public async Task<IActionResult> GetSeatBookedFromTrip(int tripID)
+        public async Task<IActionResult> GetSeatBookedFromTrip(Guid tripID)
         {
             var rs = await _tripService.GetSeatBookedFromTrip(tripID);
             return Ok(rs);

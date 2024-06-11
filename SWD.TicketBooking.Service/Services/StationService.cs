@@ -16,13 +16,13 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class StationService
     {
-        private readonly IRepository<Station_Route, int> _stationRouteRepository;
-        private readonly IRepository<Station, int> _stationRepository;
-        private readonly IRepository<Company, int> _companyRepository;
-        private readonly IRepository<City, int> _cityRepository;
-        private readonly IRepository<Trip, int> _tripRepository;
+        private readonly IRepository<Station_Route, Guid> _stationRouteRepository;
+        private readonly IRepository<Station, Guid> _stationRepository;
+        private readonly IRepository<Company, Guid> _companyRepository;
+        private readonly IRepository<City, Guid> _cityRepository;
+        private readonly IRepository<Trip, Guid> _tripRepository;
         private readonly IMapper _mapper;
-        public StationService(IRepository<Station_Route, int> stationRouteRepository, IRepository<Station, int> stationRepository, IMapper mapper, IRepository<Company, int> companyRepository, IRepository<City, int> cityRepository, IRepository<Trip, int> tripRepository)
+        public StationService(IRepository<Station_Route, Guid> stationRouteRepository, IRepository<Station, Guid> stationRepository, IMapper mapper, IRepository<Company, Guid> companyRepository, IRepository<City, Guid> cityRepository, IRepository<Trip, Guid> tripRepository)
         {
             _stationRouteRepository = stationRouteRepository;
             _stationRepository = stationRepository;
@@ -31,7 +31,7 @@ namespace SWD.TicketBooking.Service.Services
             _cityRepository = cityRepository;
             _tripRepository = tripRepository;
         }
-        public async Task<List<StationFromRouteModel>> GetStationsFromRoute(int routeID)
+        public async Task<List<StationFromRouteModel>> GetStationsFromRoute(Guid routeID)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<GetStationModel> GetStationById(int id)
+        public async Task<GetStationModel> GetStationById(Guid id)
         {
             try
             {
@@ -84,16 +84,17 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var check = await _stationRepository.GetAll().Where(s =>s.Name.Equals(stationModel.stationName)).FirstOrDefaultAsync();
+                var check = await _stationRepository.GetAll().Where(s =>s.Name.Equals(stationModel.StationName)).FirstOrDefaultAsync();
                 if (check == null)
                 {
-                    var company = await _companyRepository.GetByIdAsync(stationModel.companyId);
-                    var city = await _cityRepository.GetByIdAsync(stationModel.cityId);
+                    var company = await _companyRepository.GetByIdAsync(stationModel.CompanyId);
+                    var city = await _cityRepository.GetByIdAsync(stationModel.CityId);
                     var station = await _stationRepository.AddAsync(new Station 
                             {   
+                                CityID = Guid.NewGuid(),
                                 City = city,
                                 Company = company,
-                                Name = stationModel.stationName, 
+                                Name = stationModel.StationName, 
                                 Status = SD.ACTIVE,
                             });
                     if (station == null)
@@ -111,7 +112,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         } 
 
-        public async Task<string> UpdateStation(int stationId, CreateStationModel stationModel)
+        public async Task<string> UpdateStation(Guid stationId, CreateStationModel stationModel)
         {
             try
             {
@@ -122,10 +123,10 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 else
                 {
-                    var checkName = await _stationRepository.GetAll().Where(s => s.Name.ToLower().Equals(stationModel.stationName)).FirstOrDefaultAsync();
+                    var checkName = await _stationRepository.GetAll().Where(s => s.Name.ToLower().Equals(stationModel.StationName)).FirstOrDefaultAsync();
                     if (checkName == null)
                     {
-                        check.Name = stationModel.stationName;
+                        check.Name = stationModel.StationName;
                         _stationRepository.Update(check);
                         await _stationRepository.Commit();
                     }
@@ -138,11 +139,11 @@ namespace SWD.TicketBooking.Service.Services
         }
 
 
-        public async Task<List<StationFromRouteModel>> GetAllStationInRoute(int id)
+        public async Task<List<StationFromRouteModel>> GetAllStationInRoute(Guid id)
         {
             try
             {
-                var route = await _tripRepository.FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.ACTIVE) && s.Route.Status.ToLower().Trim().Equals("active")).Select(s=>s.RouteID).FirstOrDefaultAsync();
+                var route = await _tripRepository.FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.ACTIVE) && s.Route_Company.Route.Status.ToLower().Trim().Equals("active")).Include(_ => _.Route_Company).Select(s=>s.Route_Company.RouteID).FirstOrDefaultAsync();
                 var stations = await _stationRouteRepository
                                     .FindByCondition(_ => _.RouteID == route)
                                     .Include(_ => _.Station)

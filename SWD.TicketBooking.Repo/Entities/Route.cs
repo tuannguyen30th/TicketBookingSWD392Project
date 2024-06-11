@@ -8,12 +8,12 @@ namespace SWD.TicketBooking.Repo.Entities
     public class Route
     {
         [Key]
-        public int RouteID { get; set; }
-        public int FromCityID { get; set; }
+        public Guid RouteID { get; set; }
+        public Guid FromCityID { get; set; }
         [ForeignKey("FromCityID")]
         public City FromCity { get; set; }
 
-        public int ToCityID { get; set; }
+        public Guid ToCityID { get; set; }
         [ForeignKey("ToCityID")]
         public City ToCity { get; set; }
         public string StartLocation { get; set; } = string.Empty;

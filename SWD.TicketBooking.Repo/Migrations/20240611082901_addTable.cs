@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWD.TicketBooking.Repo.Migrations
 {
-    public partial class TienvoooAddable : Migration
+    public partial class addTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +13,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "City",
                 columns: table => new
                 {
-                    CityID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CityID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -27,8 +26,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Company",
                 columns: table => new
                 {
-                    CompanyID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -41,8 +39,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "ServiceType",
                 columns: table => new
                 {
-                    ServiceTypeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ServiceTypeID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -55,8 +52,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "TicketType",
                 columns: table => new
                 {
-                    TicketTypeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TicketTypeID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -69,8 +65,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "UserRole",
                 columns: table => new
                 {
-                    RoleID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RoleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -83,8 +78,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Utility",
                 columns: table => new
                 {
-                    UtilityID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UtilityID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -98,10 +92,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Route",
                 columns: table => new
                 {
-                    RouteID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FromCityID = table.Column<int>(type: "int", nullable: false),
-                    ToCityID = table.Column<int>(type: "int", nullable: false),
+                    RouteID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FromCityID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ToCityID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EndLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -125,10 +118,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Station",
                 columns: table => new
                 {
-                    StationID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CompanyID = table.Column<int>(type: "int", nullable: false),
-                    CityID = table.Column<int>(type: "int", nullable: false),
+                    StationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CityID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -153,9 +145,8 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Service",
                 columns: table => new
                 {
-                    ServiceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ServiceTypeID = table.Column<int>(type: "int", nullable: false),
+                    ServiceID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ServiceTypeID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -174,14 +165,12 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    UserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     FullName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UrlGuidID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     OTPCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
@@ -189,7 +178,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                     CreateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     IsVerified = table.Column<bool>(type: "bit", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RoleID = table.Column<int>(type: "int", nullable: false)
+                    RoleID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -206,10 +195,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Route_Company",
                 columns: table => new
                 {
-                    Route_CompanyID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CompanyID = table.Column<int>(type: "int", nullable: false),
-                    RouteID = table.Column<int>(type: "int", nullable: false),
+                    Route_CompanyID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RouteID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -229,36 +217,12 @@ namespace SWD.TicketBooking.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Trip",
-                columns: table => new
-                {
-                    TripID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RouteID = table.Column<int>(type: "int", nullable: false),
-                    IsTemplate = table.Column<bool>(type: "bit", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Trip", x => x.TripID);
-                    table.ForeignKey(
-                        name: "FK_Trip_Route_RouteID",
-                        column: x => x.RouteID,
-                        principalTable: "Route",
-                        principalColumn: "RouteID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Station_Route",
                 columns: table => new
                 {
-                    Station_RouteID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StationID = table.Column<int>(type: "int", nullable: false),
-                    RouteID = table.Column<int>(type: "int", nullable: false),
+                    Station_RouteID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RouteID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrderInRoute = table.Column<int>(type: "int", nullable: false)
                 },
@@ -282,13 +246,11 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Station_Service",
                 columns: table => new
                 {
-                    Station_ServiceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StationID = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: false),
+                    Station_ServiceID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ServiceID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UrlGuidID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -308,20 +270,41 @@ namespace SWD.TicketBooking.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Trip",
+                columns: table => new
+                {
+                    TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Route_CompanyID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsTemplate = table.Column<bool>(type: "bit", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Trip", x => x.TripID);
+                    table.ForeignKey(
+                        name: "FK_Trip_Route_Company_Route_CompanyID",
+                        column: x => x.Route_CompanyID,
+                        principalTable: "Route_Company",
+                        principalColumn: "Route_CompanyID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Booking",
                 columns: table => new
                 {
-                    BookingID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    TripID = table.Column<int>(type: "int", nullable: false),
+                    BookingID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BookingTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     QRCodeImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     QRCodeText = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     QRCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TotalBill = table.Column<double>(type: "float", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -346,10 +329,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Feedback",
                 columns: table => new
                 {
-                    FeedbackID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    TripID = table.Column<int>(type: "int", nullable: false),
+                    FeedbackID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -375,10 +357,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "TicketType_Trip",
                 columns: table => new
                 {
-                    TicketType_TripID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TicketTypeID = table.Column<int>(type: "int", nullable: false),
-                    TripID = table.Column<int>(type: "int", nullable: false),
+                    TicketType_TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TicketTypeID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -403,10 +384,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Trip_Utility",
                 columns: table => new
                 {
-                    Trip_UtilityID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TripID = table.Column<int>(type: "int", nullable: false),
-                    UtilityID = table.Column<int>(type: "int", nullable: false),
+                    Trip_UtilityID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UtilityID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -429,11 +409,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "TripPicture",
                 columns: table => new
                 {
-                    TripPictureID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TripPictureID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UrlGuidID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TripID = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -451,11 +429,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Feedback_Image",
                 columns: table => new
                 {
-                    Feedback_Image_ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FeedbackID = table.Column<int>(type: "int", nullable: false),
+                    Feedback_Image_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FeedbackID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UrlGuidID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -473,10 +449,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "TicketDetail",
                 columns: table => new
                 {
-                    TicketDetailID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BookingID = table.Column<int>(type: "int", nullable: false),
-                    TicketType_TripID = table.Column<int>(type: "int", nullable: false),
+                    TicketDetailID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BookingID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TicketType_TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     SeatCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -501,11 +476,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "TicketDetail_Service",
                 columns: table => new
                 {
-                    TicketDetail_ServiceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TicketDetailID = table.Column<int>(type: "int", nullable: false),
-                    ServiceID = table.Column<int>(type: "int", nullable: false),
-                    StationID = table.Column<int>(type: "int", nullable: false),
+                    TicketDetail_ServiceID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TicketDetailID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ServiceID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -528,8 +502,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                         name: "FK_TicketDetail_Service_TicketDetail_TicketDetailID",
                         column: x => x.TicketDetailID,
                         principalTable: "TicketDetail",
-                        principalColumn: "TicketDetailID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "TicketDetailID");
                 });
 
             migrationBuilder.CreateIndex(
@@ -648,9 +621,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                 column: "TripID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Trip_RouteID",
+                name: "IX_Trip_Route_CompanyID",
                 table: "Trip",
-                column: "RouteID");
+                column: "Route_CompanyID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Trip_Utility_TripID",
@@ -677,9 +650,6 @@ namespace SWD.TicketBooking.Repo.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Feedback_Image");
-
-            migrationBuilder.DropTable(
-                name: "Route_Company");
 
             migrationBuilder.DropTable(
                 name: "Station_Route");
@@ -715,9 +685,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "ServiceType");
 
             migrationBuilder.DropTable(
-                name: "Company");
-
-            migrationBuilder.DropTable(
                 name: "Booking");
 
             migrationBuilder.DropTable(
@@ -734,6 +701,12 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserRole");
+
+            migrationBuilder.DropTable(
+                name: "Route_Company");
+
+            migrationBuilder.DropTable(
+                name: "Company");
 
             migrationBuilder.DropTable(
                 name: "Route");

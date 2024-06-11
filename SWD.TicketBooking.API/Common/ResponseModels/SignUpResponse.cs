@@ -8,6 +8,6 @@ namespace SWD.TicketBooking.API.Common.ResponseModels
 {
     public class SignUpResponse
     {
-        public string Messages { get; set; } = string.Empty;
+        public string? Messages { get; set; } = string.Empty;
     }
 }

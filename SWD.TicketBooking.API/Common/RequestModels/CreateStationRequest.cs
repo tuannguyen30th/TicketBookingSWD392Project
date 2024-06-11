@@ -2,8 +2,8 @@
 {
     public class CreateStationRequest
     {
-        public int cityId { get; set; }
-        public int companyId { get; set; }
-        public string stationName { get; set; }
+        public Guid CityId { get; set; }
+        public Guid CompanyId { get; set; }
+        public string? StationName { get; set; }
     }
 }

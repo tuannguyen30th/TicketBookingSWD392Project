@@ -15,21 +15,21 @@ namespace SWD.TicketBooking.Service.Services
     public class TicketDetailService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<TicketDetail, int> _ticketDetailRepo;
-        private readonly IRepository<Booking, int> _bookingRepo;
-        private readonly IRepository<Trip, int> _tripRepo;
-        private readonly IRepository<User, int> _userRepo;
-        private readonly IRepository<City, int> _cityRepo;
+        private readonly IRepository<TicketDetail, Guid> _ticketDetailRepo;
+        private readonly IRepository<Booking, Guid> _bookingRepo;
+        private readonly IRepository<Trip, Guid> _tripRepo;
+        private readonly IRepository<User, Guid> _userRepo;
+        private readonly IRepository<City, Guid> _cityRepo;
 
 
-        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, int> _serviceRepo;
+        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepo;
 
-        private readonly IRepository<Station_Service, int> _stationServiceRepo;
-        private readonly IRepository<Station_Route, int> _stationRouteRepo;
-        private readonly IRepository<Route_Company, int> _routeCompanyRepo;
-        private readonly IRepository<TicketDetail_Service, int> _ticketDetailServiceRepo;
+        private readonly IRepository<Station_Service, Guid> _stationServiceRepo;
+        private readonly IRepository<Station_Route, Guid> _stationRouteRepo;
+        private readonly IRepository<Route_Company, Guid> _routeCompanyRepo;
+        private readonly IRepository<TicketDetail_Service, Guid> _ticketDetailServiceRepo;
 
-        public TicketDetailService(IRepository<TicketDetail, int> ticketDetailRepo, IRepository<Station_Route, int> stationRouteRepo, IRepository<Station_Service, int> stationServiceRepo, IRepository<Route_Company, int> routeCompanyRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketDetail_Service, int> ticketDetailServiceRepo, IMapper mapper, IRepository<Trip, int> tripRepo, IRepository<SWD.TicketBooking.Repo.Entities.Service, int> serviceRepo, IRepository<User, int> userRepo, IRepository<City, int> cityRepo)
+        public TicketDetailService(IRepository<TicketDetail, Guid> ticketDetailRepo, IRepository<Station_Route, Guid> stationRouteRepo, IRepository<Station_Service, Guid> stationServiceRepo, IRepository<Route_Company, Guid> routeCompanyRepo, IRepository<Booking, Guid> bookingRepo, IRepository<TicketDetail_Service, Guid> ticketDetailServiceRepo, IMapper mapper, IRepository<Trip, Guid> tripRepo, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepo, IRepository<User, Guid> userRepo, IRepository<City, Guid> cityRepo)
         {
             _ticketDetailRepo = ticketDetailRepo;
             _bookingRepo = bookingRepo;
@@ -44,16 +44,16 @@ namespace SWD.TicketBooking.Service.Services
             _cityRepo = cityRepo;
         }
 
-        public async Task<GetDetailTicketDetailByTicketDetailModel> GetDetailTicketDetailByTicketDetail(int ticketDetailID)
+        public async Task<GetDetailTicketDetailByTicketDetailModel> GetDetailTicketDetailByTicketDetail(Guid ticketDetailID)
         {
             try
             {
                 var ticketDetail = await _ticketDetailRepo.FindByCondition(_ => _.TicketDetailID == ticketDetailID).FirstOrDefaultAsync();
 
                 var booking = await _bookingRepo.FindByCondition(_ => _.BookingID == ticketDetail.BookingID)
-                    .Include(_ => _.Trip.Route.FromCity).Include(_ => _.Trip.Route.ToCity).Include(_ => _.Trip.Route).Include(_ => _.User).FirstOrDefaultAsync();
+                    .Include(_ => _.Trip.Route_Company.Route.FromCity).Include(_ => _.Trip.Route_Company.Route.ToCity).Include(_ => _.Trip.Route_Company.Route).Include(_ => _.User).FirstOrDefaultAsync();
 
-                var company = await _routeCompanyRepo.FindByCondition(_ => _.RouteID == booking.Trip.RouteID).Include(_ => _.Company).FirstOrDefaultAsync();
+                var company = await _routeCompanyRepo.FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID).Include(_ => _.Company).FirstOrDefaultAsync();
 
                 var ticketDetailServices = await _ticketDetailServiceRepo.FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID).Include(_ => _.Service).Include(_ => _.Station).ToListAsync();
                 double servicePrice = 0;
@@ -83,8 +83,8 @@ namespace SWD.TicketBooking.Service.Services
                     StartTime = booking.Trip.StartTime.ToString("HH:mm"),
                     EndDate = booking.Trip.EndTime.ToString("yyyy-MM-dd"),
                     EndTime = booking.Trip.EndTime.ToString("HH:mm"),
-                    StartCity = booking.Trip.Route.FromCity.Name,
-                    EndCity = booking.Trip.Route.ToCity.Name,
+                    StartCity = booking.Trip.Route_Company.Route.FromCity.Name,
+                    EndCity = booking.Trip.Route_Company.Route.ToCity.Name,
                     TicketPrice = ticketDetail.Price,
                     TotalServicePrice = servicePrice,
                     SumOfPrice = servicePrice + ticketDetail.Price,
@@ -102,12 +102,12 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(int userID)
+        public async Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid userID)
         {
             try
             {
                 var bookings = await _bookingRepo.FindByCondition(_ => _.UserID == userID && _.Status.Equals(SD.ACTIVE))
-                    .Include(_ => _.Trip.Route.FromCity).Include(_ => _.Trip.Route.ToCity).Include(_ => _.Trip.Route).ToListAsync();
+                    .Include(_ => _.Trip.Route_Company.Route.FromCity).Include(_ => _.Trip.Route_Company.Route.ToCity).Include(_ => _.Trip.Route_Company.Route).ToListAsync();
 
                 var rsList = new List<GetTicketDetailByUserModel>();
 
@@ -125,7 +125,7 @@ namespace SWD.TicketBooking.Service.Services
                             servicePrice += ticketDetail_Service.Price * ticketDetail_Service.Quantity;
                         }
 
-                        var company = await _routeCompanyRepo.FindByCondition(_ => _.RouteID == booking.Trip.RouteID).Include(_ => _.Company).FirstOrDefaultAsync();
+                        var company = await _routeCompanyRepo.FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID).Include(_ => _.Company).FirstOrDefaultAsync();
 
                         var rs = new GetTicketDetailByUserModel
                         {
@@ -137,8 +137,8 @@ namespace SWD.TicketBooking.Service.Services
                             EndDate = booking.Trip.EndTime.ToString("yyyy-MM-dd"),
                             EndTime = booking.Trip.EndTime.ToString("HH:mm"),
                             TotalTime = booking.Trip.EndTime - booking.Trip.StartTime,
-                            StartCity = booking.Trip.Route.FromCity.Name,
-                            EndCity = booking.Trip.Route.ToCity.Name,
+                            StartCity = booking.Trip.Route_Company.Route.FromCity.Name,
+                            EndCity = booking.Trip.Route_Company.Route.ToCity.Name,
                             SeatCode = ticketDetail.SeatCode,
                             TicketPrice = ticketDetail.Price,
                             TotalServicePrice = servicePrice,
@@ -176,7 +176,7 @@ namespace SWD.TicketBooking.Service.Services
                         Where(t => t.TicketDetailID == ticketDetail.TicketDetailID).
                                         Select(ts => ts.ServiceID).ToListAsync();
 
-                    var route = await _tripRepo.GetAll().Where(x => x.TripID == trip.TripID).Select(r => r.Route).FirstOrDefaultAsync();
+                    var route = await _tripRepo.GetAll().Where(x => x.TripID == trip.TripID).Select(r => r.Route_Company.Route).FirstOrDefaultAsync();
                     var priceRs = new PriceInSearchTicketModel
                     {
                         price = ticketDetail.Price,
@@ -185,8 +185,8 @@ namespace SWD.TicketBooking.Service.Services
 
                     var rs = new SearchTicketModel
                     {
-                        price = priceRs,
-                        trip = GetTripBaseOnModel(trip, booking, route, ticketDetail),
+                        Price = priceRs,
+                        Trip = GetTripBaseOnModel(trip, booking, route, ticketDetail),
                         TotalBill = booking.TotalBill,
                         QrCodeImage = booking.QRCodeImage
                     };
@@ -200,7 +200,7 @@ namespace SWD.TicketBooking.Service.Services
 
         }
 
-        public List<StationInSearchTicket> GetAllStationName(List<int> serviceID)
+        public List<StationInSearchTicket> GetAllStationName(List<Guid> serviceID)
         {
             var rs = new List<StationInSearchTicket>();
             foreach (var item in serviceID)
@@ -209,8 +209,8 @@ namespace SWD.TicketBooking.Service.Services
                 var name  = _serviceRepo.FindByCondition(t => t.ServiceID == item).Select(s=>s.Name).FirstOrDefault();
                 var stationModel = new StationInSearchTicket
                 {
-                    price = priceInService,
-                    staionName = name
+                    Price = priceInService,
+                    StaionName = name
                 };
                 rs.Add(stationModel);
             }
@@ -219,7 +219,7 @@ namespace SWD.TicketBooking.Service.Services
 
         public TripInSearchTicketModel GetTripBaseOnModel(Trip trip, Booking booking, Route route, TicketDetail ticket)
         {
-            var company = _routeCompanyRepo.FindByCondition(x => x.RouteID == trip.RouteID).Select(c => c.Company).FirstOrDefault();
+            var company = _routeCompanyRepo.FindByCondition(x => x.RouteID == trip.Route_Company.RouteID).Select(c => c.Company).FirstOrDefault();
             var user = _userRepo.FindByCondition(u=>u.UserID == booking.UserID).Select(u=>u.UserName).FirstOrDefault();
 
             var fromCity = _cityRepo.FindByCondition(c=>c.CityID == route.FromCityID).Select(c=>c.Name).FirstOrDefault();
@@ -227,12 +227,12 @@ namespace SWD.TicketBooking.Service.Services
 
             var rs = new TripInSearchTicketModel
             {
-                userName = user,
-                company = company.Name,
-                route = $"{fromCity} - {toCity}",
-                position = ticket.SeatCode,
-                date = trip.StartTime.ToString("yyyy-MM-dd"),
-                time = trip.StartTime.ToString("HH:mm")
+                UserName = user,
+                Company = company.Name,
+                Route = $"{fromCity} - {toCity}",
+                Position = ticket.SeatCode,
+                Date = trip.StartTime.ToString("yyyy-MM-dd"),
+                Time = trip.StartTime.ToString("HH:mm")
             };
             return rs;
         }

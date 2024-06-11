@@ -19,12 +19,12 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class RouteService
     {
-        private readonly IRepository<Route, int> _routeRepo;
-        private readonly IRepository<Company, int> _companyRepo;
-        private readonly IRepository<Route_Company, int> _routeCompanyRepo;
+        private readonly IRepository<Route, Guid> _routeRepo;
+        private readonly IRepository<Company, Guid> _companyRepo;
+        private readonly IRepository<Route_Company, Guid> _routeCompanyRepo;
         private readonly IMapper _mapper;
 
-        public RouteService(IRepository<Route, int> routeRepo, IRepository<Company, int> companyRepo, IRepository<Route_Company, int> routeCompanyRepo, IMapper mapper)
+        public RouteService(IRepository<Route, Guid> routeRepo, IRepository<Company, Guid> companyRepo, IRepository<Route_Company, Guid> routeCompanyRepo, IMapper mapper)
         {
             _routeRepo = routeRepo;
             _companyRepo = companyRepo;
@@ -53,7 +53,7 @@ namespace SWD.TicketBooking.Service.Services
                 var checkCompanyExisted = await _companyRepo.GetAll().Where(_ => _.CompanyID == model.CompanyID && _.Status.ToLower().Trim().Equals("active")).FirstOrDefaultAsync();
                 if (checkCompanyExisted == null)
                 {
-                    throw new BadRequestException("Company does not exist");
+                    throw new BadRequestException("Company does not exist!");
                 }
 
                 var checkRouteExisted = await _routeRepo.GetAll().Where(_ => _.FromCityID == model.FromCityID 
@@ -63,19 +63,20 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     var route = await _routeRepo.AddAsync(new Route
                     {
+                        RouteID = Guid.NewGuid(),
                         FromCityID = model.FromCityID,
                         ToCityID = model.ToCityID,
                         StartLocation = model.StartLocation,
                         EndLocation = model.EndLocation,
-                        Status = "Active"
+                        Status = SD.ACTIVE
                     });
                     if (route == null)
                     {
-                        throw new InternalServerErrorException("Cannot create");
+                        throw new InternalServerErrorException("Cannot create!");
                     }
                     await _routeRepo.Commit();
                 }
-                else if (!checkRouteExisted.Status.ToLower().Trim().Equals("active"))
+                else if (!checkRouteExisted.Status.Trim().Equals(SD.ACTIVE))
                 {
                     throw new BadRequestException("Route is not available");
                 }
@@ -95,9 +96,10 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     var routeCompany = await _routeCompanyRepo.AddAsync(new Route_Company
                     {
+                        Route_CompanyID = Guid.NewGuid(),
                         RouteID = getRoute.RouteID,
                         CompanyID = model.CompanyID,
-                        Status = "Active"
+                        Status = SD.ACTIVE
                     });
 
                     if (routeCompany == null)
@@ -120,7 +122,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateRoute(int routeId, UpdateRouteModel model)
+        public async Task<int> UpdateRoute(Guid routeId, UpdateRouteModel model)
         {
             try
             {
@@ -132,7 +134,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new BadRequestException("Route already existed");
                 }
 
-                var entity = await _routeRepo.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.RouteID == routeId).FirstOrDefaultAsync();
+                var entity = await _routeRepo.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.RouteID == routeId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -159,11 +161,11 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> ChangeStatus(int routeId, string status)
+        public async Task<int> ChangeStatus(Guid routeId, string status)
         {
             try
             {
-                var entity = await _routeRepo.GetAll().Where(_ => _.Status.ToLower().Trim() == "active" && _.RouteID == routeId).FirstOrDefaultAsync();
+                var entity = await _routeRepo.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.RouteID == routeId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {

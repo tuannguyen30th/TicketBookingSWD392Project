@@ -12,8 +12,8 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20240611024618_TienvoooAddable")]
-    partial class TienvoooAddable
+    [Migration("20240611082901_addTable")]
+    partial class addTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,16 +26,15 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Booking", b =>
                 {
-                    b.Property<int>("BookingID")
+                    b.Property<Guid>("BookingID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("BookingTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentMethod")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentStatus")
@@ -62,11 +61,11 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Property<double>("TotalBill")
                         .HasColumnType("float");
 
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TripID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("BookingID");
 
@@ -79,11 +78,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.City", b =>
                 {
-                    b.Property<int>("CityID")
+                    b.Property<Guid>("CityID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CityID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -100,11 +97,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Company", b =>
                 {
-                    b.Property<int>("CompanyID")
+                    b.Property<Guid>("CompanyID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -120,11 +115,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Feedback", b =>
                 {
-                    b.Property<int>("FeedbackID")
+                    b.Property<Guid>("FeedbackID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeedbackID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -137,11 +130,11 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TripID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("FeedbackID");
 
@@ -154,24 +147,18 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Feedback_Image", b =>
                 {
-                    b.Property<int>("Feedback_Image_ID")
+                    b.Property<Guid>("Feedback_Image_ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Feedback_Image_ID"), 1L, 1);
-
-                    b.Property<int>("FeedbackID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FeedbackID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UrlGuidID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -184,18 +171,16 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Route", b =>
                 {
-                    b.Property<int>("RouteID")
+                    b.Property<Guid>("RouteID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RouteID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("EndLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FromCityID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FromCityID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("StartLocation")
                         .IsRequired()
@@ -205,8 +190,8 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ToCityID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ToCityID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("RouteID");
 
@@ -219,17 +204,15 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Route_Company", b =>
                 {
-                    b.Property<int>("Route_CompanyID")
+                    b.Property<Guid>("Route_CompanyID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Route_CompanyID"), 1L, 1);
+                    b.Property<Guid>("CompanyID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CompanyID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RouteID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RouteID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -246,18 +229,16 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Service", b =>
                 {
-                    b.Property<int>("ServiceID")
+                    b.Property<Guid>("ServiceID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ServiceTypeID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ServiceTypeID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -272,11 +253,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.ServiceType", b =>
                 {
-                    b.Property<int>("ServiceTypeID")
+                    b.Property<Guid>("ServiceTypeID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceTypeID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -293,17 +272,15 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Station", b =>
                 {
-                    b.Property<int>("StationID")
+                    b.Property<Guid>("StationID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StationID"), 1L, 1);
+                    b.Property<Guid>("CityID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CityID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompanyID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CompanyID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -323,20 +300,18 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Station_Route", b =>
                 {
-                    b.Property<int>("Station_RouteID")
+                    b.Property<Guid>("Station_RouteID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Station_RouteID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("OrderInRoute")
                         .HasColumnType("int");
 
-                    b.Property<int>("RouteID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RouteID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("StationID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("StationID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -353,11 +328,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Station_Service", b =>
                 {
-                    b.Property<int>("Station_ServiceID")
+                    b.Property<Guid>("Station_ServiceID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Station_ServiceID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -366,17 +339,13 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("ServiceID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ServiceID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("StationID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("StationID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UrlGuidID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -391,14 +360,12 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TicketDetail", b =>
                 {
-                    b.Property<int>("TicketDetailID")
+                    b.Property<Guid>("TicketDetailID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketDetailID"), 1L, 1);
-
-                    b.Property<int>("BookingID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("BookingID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -411,8 +378,8 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TicketType_TripID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TicketType_TripID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TicketDetailID");
 
@@ -425,11 +392,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TicketDetail_Service", b =>
                 {
-                    b.Property<int>("TicketDetail_ServiceID")
+                    b.Property<Guid>("TicketDetail_ServiceID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketDetail_ServiceID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -437,18 +402,18 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("ServiceID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ServiceID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("StationID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("StationID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TicketDetailID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TicketDetailID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TicketDetail_ServiceID");
 
@@ -463,11 +428,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TicketType", b =>
                 {
-                    b.Property<int>("TicketTypeID")
+                    b.Property<Guid>("TicketTypeID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketTypeID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -483,11 +446,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TicketType_Trip", b =>
                 {
-                    b.Property<int>("TicketType_TripID")
+                    b.Property<Guid>("TicketType_TripID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketType_TripID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -499,11 +460,11 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TicketTypeID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TicketTypeID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TripID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TicketType_TripID");
 
@@ -516,11 +477,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip", b =>
                 {
-                    b.Property<int>("TripID")
+                    b.Property<Guid>("TripID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TripID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
@@ -528,39 +487,38 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Property<bool>("IsTemplate")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RouteID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("Route_CompanyID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TripID");
 
-                    b.HasIndex("RouteID");
+                    b.HasIndex("Route_CompanyID");
 
                     b.ToTable("Trip");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip_Utility", b =>
                 {
-                    b.Property<int>("Trip_UtilityID")
+                    b.Property<Guid>("Trip_UtilityID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Trip_UtilityID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TripID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("UtilityID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UtilityID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Trip_UtilityID");
 
@@ -573,11 +531,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.TripPicture", b =>
                 {
-                    b.Property<int>("TripPictureID")
+                    b.Property<Guid>("TripPictureID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TripPictureID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -587,12 +543,8 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TripID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UrlGuidID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("TripID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TripPictureID");
 
@@ -603,11 +555,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.User", b =>
                 {
-                    b.Property<int>("UserID")
+                    b.Property<Guid>("UserID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .HasMaxLength(255)
@@ -645,14 +595,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<int>("RoleID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RoleID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UrlGuidID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -668,11 +614,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.UserRole", b =>
                 {
-                    b.Property<int>("RoleID")
+                    b.Property<Guid>("RoleID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("RoleName")
                         .IsRequired()
@@ -689,11 +633,9 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Utility", b =>
                 {
-                    b.Property<int>("UtilityID")
+                    b.Property<Guid>("UtilityID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UtilityID"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -903,7 +845,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.HasOne("SWD.TicketBooking.Repo.Entities.TicketDetail", "TicketDetail")
                         .WithMany()
                         .HasForeignKey("TicketDetailID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Service");
@@ -934,13 +876,13 @@ namespace SWD.TicketBooking.Repo.Migrations
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip", b =>
                 {
-                    b.HasOne("SWD.TicketBooking.Repo.Entities.Route", "Route")
+                    b.HasOne("SWD.TicketBooking.Repo.Entities.Route_Company", "Route_Company")
                         .WithMany()
-                        .HasForeignKey("RouteID")
+                        .HasForeignKey("Route_CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Route");
+                    b.Navigation("Route_Company");
                 });
 
             modelBuilder.Entity("SWD.TicketBooking.Repo.Entities.Trip_Utility", b =>

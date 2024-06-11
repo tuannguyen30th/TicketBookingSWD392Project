@@ -38,14 +38,14 @@ namespace SWD.TicketBooking.Controllers
         }
 
         [HttpGet("user-detail/{userID}")]
-        public async Task<IActionResult> GetUserDetail([FromRoute] int userID)
+        public async Task<IActionResult> GetUserDetail([FromRoute] Guid userID)
         {
             var user = _mapper.Map<UserResponse>(await _userService.GetUserById(userID));
             return Ok(user);
         }
 
         [HttpPut("user/{userID}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] int userID, [FromBody] UpdateUserRequest req)
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid userID, [FromBody] UpdateUserRequest req)
         {
             var map = _mapper.Map<UpdateUserModel>(req);
             var user = await _userService.UpdateUser(userID, map);

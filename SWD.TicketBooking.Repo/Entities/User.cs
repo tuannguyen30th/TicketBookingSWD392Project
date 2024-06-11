@@ -9,7 +9,7 @@ namespace SWD.TicketBooking.Repo.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserID { get; set; }
+        public Guid UserID { get; set; }
 
         [MaxLength(255)]
         public string? UserName { get; set; } = string.Empty;
@@ -25,7 +25,6 @@ namespace SWD.TicketBooking.Repo.Entities
         public string Email { get; set; } = string.Empty;
 
         public string? Avatar { get; set; } = string.Empty;
-        public string UrlGuidID { get; set; } = string.Empty;
 
 
         [MaxLength(255)]
@@ -40,7 +39,7 @@ namespace SWD.TicketBooking.Repo.Entities
         public bool? IsVerified { get; set; }
 
         public string? Status { get; set; } = string.Empty;
-        public int RoleID { get; set; }
+        public Guid RoleID { get; set; }
 
         [ForeignKey("RoleID")]
 

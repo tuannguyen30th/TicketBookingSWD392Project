@@ -15,10 +15,10 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class CompanyService
     {
-        private readonly IRepository<Company, int> _companyRepo;
+        private readonly IRepository<Company, Guid> _companyRepo;
         private readonly IMapper _mapper;
 
-        public CompanyService(IRepository<Company, int> companyRepo, IMapper mapper)
+        public CompanyService(IRepository<Company, Guid> companyRepo, IMapper mapper)
         {
             _companyRepo = companyRepo;
             _mapper = mapper;
@@ -38,7 +38,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<GetCompanyModel> GetCompanyById(int id)
+        public async Task<GetCompanyModel> GetCompanyById(Guid id)
         {
             try
             {
@@ -63,6 +63,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 var company = await _companyRepo.AddAsync(new Company
                 {
+                    CompanyID = Guid.NewGuid(),
                     Name = model.Name,
                     Status = SD.ACTIVE
                 });
@@ -79,7 +80,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateCompany(int companyId, CreateCompanyModel model)
+        public async Task<int> UpdateCompany(Guid companyId, CreateCompanyModel model)
         {
             try
             {
@@ -113,7 +114,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> ChangeStatus(int companyId, string status)
+        public async Task<int> ChangeStatus(Guid companyId, string status)
         {
             try
             {

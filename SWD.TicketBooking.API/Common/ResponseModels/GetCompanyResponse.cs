@@ -2,7 +2,7 @@
 {
     public class GetCompanyResponse
     {
-        public int CompanyID { get; set; }
+        public Guid CompanyID { get; set; }
         public string Name { get; set; }
         public string? Status { get; set; }
     }

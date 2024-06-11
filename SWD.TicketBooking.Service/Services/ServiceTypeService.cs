@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using SWD.TicketBooking.Service.Utilities;
 using System;
@@ -16,20 +17,22 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class ServiceTypeService
     {
-       /* private readonly IRepository<ServiceType, int> _serviceTypeRepository;
-        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, int> _serviceRepository;
+        private readonly IRepository<ServiceType, Guid> _serviceTypeRepository;
+        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepository;
         public readonly IFirebaseService _firebaseService;
-        private readonly IRepository<Station_Service, int> _stationServiceRepository;
+        private readonly IRepository<Station_Service, Guid> _stationServiceRepository;
+        private readonly IRepository<Station_Route, Guid> _stationRouteRepository;
         private readonly IMapper _mapper;
-        public ServiceTypeService(IRepository<ServiceType, int> serviceTypeRepository, IRepository<SWD.TicketBooking.Repo.Entities.Service, int> serviceRepository, IRepository<Station_Service, int> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
+        public ServiceTypeService(IRepository<Station_Route, Guid> stationRouteRepository, IRepository<ServiceType, Guid> serviceTypeRepository, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
         {
             _serviceRepository = serviceRepository;
             _serviceTypeRepository = serviceTypeRepository;
+            _stationRouteRepository = stationRouteRepository;
             _stationServiceRepository = stationServiceRepository;
             _firebaseService = firebaseService;
             _mapper = mapper;
-        }
-        public async Task<List<ServiceTypeModel>> ServiceTypesFromStation(int stationID)
+        }    
+     /*   public async Task<List<ServiceTypeModel>> ServiceTypesFromStation(Guid stationID)
         {
             try
             {
@@ -49,7 +52,6 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             ServiceID = _.Service.ServiceID,
                             Name = _.Service.Name,
-                            Price = _.Service.Price
                         }).ToList()
                     }).ToList();
 
@@ -59,8 +61,8 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message, ex);
             }
-        }
-        public async Task<ServiceTypeModel> ServicesOfTypeFromStations(int stationID, int serviceTypeID)
+        }*/
+        public async Task<ServiceTypeModel> ServicesOfTypeFromStations(Guid stationID, Guid serviceTypeID)
         {
             try
             {
@@ -74,8 +76,8 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     ServiceID = _.Service.ServiceID,
                     Name = _.Service.Name,
-                    Price = _.Service.Price,
-                    ImageUrl = await _firebaseService.GetUrlImageFromFirebase(_.Service.ImageUrl),
+                    Price = _.Price,
+                    ImageUrl = _.ImageUrl
                 }).ToList();
 
                 var serviceModels = await Task.WhenAll(serviceModelsTasks);
@@ -94,7 +96,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 throw new Exception(ex.Message, ex);
             }
-        }*/
+        }
 
     }
 }

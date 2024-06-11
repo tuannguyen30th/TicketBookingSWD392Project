@@ -1,18 +1,23 @@
-﻿namespace SWD.TicketBooking.API.Common.ResponseModels
+﻿using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
+
+namespace SWD.TicketBooking.API.Common.ResponseModels
 {
     public class ServiceFromStationResponse
     {
         public class ServiceTypeResponse
         {
-            public int ServiceTypeID { get; set; }
-            public string Name { get; set; }
-            public List<ServiceResponse> ServiceResponses { get; set; }
+            public Guid ServiceTypeID { get; set; }
+            public Guid StationID { get; set; }
+            public string? Name { get; set; }
+
+            public List<ServiceModel> ServiceModels { get; set; }
         }
         public class ServiceResponse
         {
-            public int ServiceID { get; set; }
-            public string Name { get; set; }
+            public Guid ServiceID { get; set; }
+            public string? Name { get; set; }
             public double Price { get; set; }
+            public string? ImageUrl { get; set; }
         }
     }
 }

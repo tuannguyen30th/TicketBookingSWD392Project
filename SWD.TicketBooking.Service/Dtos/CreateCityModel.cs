@@ -8,6 +8,6 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class CreateCityModel
     {
-        public string CityName { get; set; }
+        public string? CityName { get; set; }
     }
 }

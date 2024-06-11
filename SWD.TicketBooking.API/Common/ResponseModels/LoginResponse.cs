@@ -9,6 +9,6 @@ namespace SWD.TicketBooking.API.Common.ResponseModels
 {
     public class LoginResponse
     {
-        public string AccessToken { get; set; } = null!;
+        public string? AccessToken { get; set; } = null!;
     }
 }

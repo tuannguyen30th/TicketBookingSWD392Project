@@ -12,16 +12,18 @@ namespace SWD.TicketBooking.Service.Dtos
     {
         public class ServiceTypeModel
         {
-            public int ServiceTypeID { get; set; }
-            public string Name { get; set; }
+            public Guid ServiceTypeID { get; set; }
+            public Guid StationID { get; set; }
+            public string? Name { get; set; }
+         
             public List<ServiceModel> ServiceModels { get; set; }
         }
         public class ServiceModel
         {
-            public int ServiceID { get; set; }         
-            public string Name { get; set; }
+            public Guid ServiceID { get; set; }         
+            public string? Name { get; set; }
             public double Price { get; set; }
-            public string ImageUrl { get; set; }
+            public string? ImageUrl { get; set; }
         }
     }
 }

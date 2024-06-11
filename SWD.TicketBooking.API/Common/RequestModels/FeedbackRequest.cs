@@ -2,11 +2,11 @@
 {
     public class FeedbackRequest
     {
-        public int UserID { get; set; }
-        public int TripID { get; set; }
-        public int Rating { get; set; }
-        public string Description { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
+        public Guid UserID { get; set; }
+        public Guid TripID { get; set; }
+        public Guid Rating { get; set; }
+        public string? Description { get; set; } 
+        public string? Status { get; set; } 
         public List<IFormFile> Files { get; set; }
     }
 }

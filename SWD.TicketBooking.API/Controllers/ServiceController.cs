@@ -14,7 +14,7 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class ServiceController : ControllerBase
     {
-        /*private readonly ServiceTypeService _serviceTypeService;
+        private readonly ServiceTypeService _serviceTypeService;
         private readonly ServiceService _serviceService;
         private readonly IMapper _mapper;
         public ServiceController(ServiceTypeService serviceTypeService, ServiceService serviceService, IMapper mapper)
@@ -23,20 +23,15 @@ namespace SWD.TicketBooking.API.Controllers
             _serviceService = serviceService;
             _mapper = mapper;
         }
-        [HttpGet("service-types-from-station/{stationID}")]
-        public async Task<IActionResult> ServiceFromStations([FromRoute] int stationID)
-        {
-            var serviceTypes = await _serviceTypeService.ServiceTypesFromStation(stationID);
-            var serviceTypeResponses = _mapper.Map<List<ServiceTypeResponse>>(serviceTypes);
-            return Ok(serviceTypeResponses);
-        }
+       
         [HttpGet("services-of-type-from-station/{stationID}/{serviceTypeID}")]
-        public async Task<IActionResult> ServicesOfTypeFromStations([FromRoute] int stationID, [FromRoute] int serviceTypeID)
+        public async Task<IActionResult> ServicesOfTypeFromStations([FromRoute] Guid stationID, [FromRoute] Guid serviceTypeID)
         {
             var serviceTypes = await _serviceTypeService.ServicesOfTypeFromStations(stationID, serviceTypeID);
             var serviceTypeResponses = _mapper.Map<ServiceTypeResponse>(serviceTypes);
             return Ok(serviceTypeResponses);
         }
+
         [HttpPost("new-service")]
         public async Task<IActionResult> CreateService([FromForm] CreateServiceRequest createServiceModel)
         {
@@ -55,10 +50,10 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(updatedService);
         }
         [HttpPut("service-inactive/{serviceID}")]
-        public async Task<IActionResult> UpdateStatus([FromRoute] int serviceID)
+        public async Task<IActionResult> UpdateStatus([FromRoute] Guid serviceID)
         {
             var service = await _serviceService.UpdateStatus(serviceID);
             return Ok(service);
-        }*/
+        }
     }
 }

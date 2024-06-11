@@ -17,7 +17,7 @@ namespace SWD.TicketBooking.API.Controllers
             _utilityService = utilityService;
         }
         [HttpGet("trip/{tripID}")]
-        public async Task<IActionResult> GetUtilityByTripID([FromRoute] int tripID) 
+        public async Task<IActionResult> GetUtilityByTripID([FromRoute] Guid tripID) 
         {
                var rs = _mapper.Map<List<UtilityInTripResponse>>(await _utilityService.GetAllUtilityByTripID(tripID));
            // var rs = _utilityService.GetAllUtilityByTripID(id);

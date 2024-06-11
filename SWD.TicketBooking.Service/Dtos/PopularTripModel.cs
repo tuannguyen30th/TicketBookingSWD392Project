@@ -8,10 +8,10 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class PopularTripModel
     {
-        public int TripId { get; set; }
-        public string FromCity { get; set; }
-        public string ToCity { get; set; }
+        public Guid TripId { get; set; }
+        public string? FromCity { get; set; }
+        public string? ToCity { get; set; }
         public double PriceFrom { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

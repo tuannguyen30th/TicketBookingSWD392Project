@@ -18,19 +18,19 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class TripService
     {
-        private readonly IRepository<Trip, int> _tripRepo;
-        private readonly IRepository<Booking, int> _bookingRepo;
-        private readonly IRepository<TicketDetail, int> _ticketDetailRepo;
-        private readonly IRepository<TripPicture, int> _tripPictureRepo;
-        private readonly IRepository<TicketType_Trip, int> _ticketTypeTripRepo;
-        private readonly IRepository<Route, int> _routeRepo;
-        private readonly IRepository<Route_Company, int> _routeCompanyRepo;
-        private readonly IRepository<Feedback, int> _feedbackRepo;
-        private readonly IRepository<Trip_Utility, int> _tripUtilityRepo;
+        private readonly IRepository<Trip, Guid> _tripRepo;
+        private readonly IRepository<Booking, Guid> _bookingRepo;
+        private readonly IRepository<TicketDetail, Guid> _ticketDetailRepo;
+        private readonly IRepository<TripPicture, Guid> _tripPictureRepo;
+        private readonly IRepository<TicketType_Trip, Guid> _ticketTypeTripRepo;
+        private readonly IRepository<Route, Guid> _routeRepo;
+        private readonly IRepository<Route_Company, Guid> _routeCompanyRepo;
+        private readonly IRepository<Feedback, Guid> _feedbackRepo;
+        private readonly IRepository<Trip_Utility, Guid> _tripUtilityRepo;
         private readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
-        public TripService(IRepository<TicketDetail, int> ticketDetailRepo, IRepository<Route_Company, int> routeCompanyRepo, IRepository<Trip, int> tripRepo, IRepository<Booking, int> bookingRepo, IRepository<TicketType_Trip, int> ticketTypeTripRepo, IRepository<Route, int> routeRepo, IRepository<Feedback, int> feedbackRepo, IMapper mapper, IRepository<TripPicture, int> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, int> tripUtilityRepo)
+        public TripService(IRepository<TicketDetail, Guid> ticketDetailRepo, IRepository<Route_Company, Guid> routeCompanyRepo, IRepository<Trip, Guid> tripRepo, IRepository<Booking, Guid> bookingRepo, IRepository<TicketType_Trip, Guid> ticketTypeTripRepo, IRepository<Route, Guid> routeRepo, IRepository<Feedback, Guid> feedbackRepo, IMapper mapper, IRepository<TripPicture, Guid> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, Guid> tripUtilityRepo)
 
         {
             _tripRepo = tripRepo;
@@ -46,7 +46,7 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<List<PictureModel>> GetPictureOfTrip(int id)
+        public async Task<List<PictureModel>> GetPictureOfTrip(Guid id)
         {
             try
             {
@@ -95,8 +95,8 @@ namespace SWD.TicketBooking.Service.Services
                                             .ToList();
 
                 var trips = await _tripRepo.GetAll()
-                                                .Include(t => t.Route.FromCity)
-                                                .Include(t => t.Route.ToCity)
+                                                .Include(t => t.Route_Company.Route.FromCity)
+                                                .Include(t => t.Route_Company.Route.ToCity)
                                                 .Where(t => t.Status.Trim().Equals(SD.ACTIVE) && topTrips.Select(_ => _.TripID).Contains(t.TripID))
                                                 .ToListAsync();
 
@@ -117,8 +117,8 @@ namespace SWD.TicketBooking.Service.Services
                     var popuTrip = new PopularTripModel
                     {
                         TripId = t.TripID,
-                        FromCity = t.Route.FromCity.Name,
-                        ToCity = t.Route.ToCity.Name,
+                        FromCity = t.Route_Company.Route.FromCity.Name,
+                        ToCity = t.Route_Company.Route.ToCity.Name,
                         /*ImageUrl = t.ImageUrl,*/
                         PriceFrom = minPriceByTrip.GetValueOrDefault(t.TripID, 0),
                     };
@@ -134,16 +134,16 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<PagedResult<SearchTripModel>> SearchTrip(int fromCity, int toCity, DateTime startTime, int pageNumber, int pageSize)
+        public async Task<PagedResult<SearchTripModel>> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber, int pageSize)
         {
             try
             {
                 var startDate = startTime.Date;
 
                 var tripsQuery = _tripRepo.GetAll()
-                    .Include(_ => _.Route)
-                    .Where(_ => _.Route.FromCityID == fromCity
-                                && _.Route.ToCityID == toCity
+                    .Include(_ => _.Route_Company.Route)
+                    .Where(_ => _.Route_Company.Route.FromCityID == fromCity
+                                && _.Route_Company.Route.ToCityID == toCity
                                 && _.StartTime.Date == startDate && _.Status.Trim().Equals(SD.ACTIVE));
 
                 var totalTrips = await tripsQuery.CountAsync();
@@ -181,15 +181,15 @@ namespace SWD.TicketBooking.Service.Services
                     var searchTrip = new SearchTripModel
                     {
                         TripID = trip.TripID,
-                        RouteID = trip.RouteID,
-                        CompanyName = await _routeCompanyRepo.GetAll().Where(_ => _.RouteID == trip.RouteID).Select(_ => _.Company.Name).FirstOrDefaultAsync(),
+                        RouteID = trip.Route_Company.RouteID,
+                        CompanyName = await _routeCompanyRepo.GetAll().Where(_ => _.RouteID == trip.Route_Company.RouteID).Select(_ => _.Company.Name).FirstOrDefaultAsync(),
                         ImageUrl = tripImage,
                         AverageRating = ratingAverage,
                         QuantityRating = ratingQuantity,
                         EmptySeat = remainingSeats,
                         Price = lowestPrice,
-                        StartLocation = trip.Route?.StartLocation,
-                        EndLocation = trip.Route?.EndLocation,
+                        StartLocation = trip.Route_Company.Route?.StartLocation,
+                        EndLocation = trip.Route_Company.Route?.EndLocation,
                         StartDate = trip.StartTime.ToString("yyyy-MM-dd"),
                         EndDate = trip.EndTime.ToString("yyyy-MM-dd"),
                         StartTime = trip.StartTime.ToString("HH:mm"),
@@ -222,7 +222,8 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 var trip = new Trip
                 {
-                    RouteID = createTrip.RouteID,
+                    TripID = Guid.NewGuid(),    
+                    Route_CompanyID = createTrip.Route_CompanyID,
                     IsTemplate = true,
                     StartTime = createTrip.StartTime,
                     EndTime = createTrip.EndTime,
@@ -244,9 +245,9 @@ namespace SWD.TicketBooking.Service.Services
 
                     var newtripImage = new TripPicture
                     {
+                        TripPictureID = Guid.NewGuid(),
                         TripID = trip.TripID,
                         ImageUrl = (string)imageUploadResult.Result,
-                        UrlGuidID = guidPath,
                         Status = SD.ACTIVE
                     };
 
@@ -260,7 +261,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 foreach (var ticketType in createTrip.TicketType_TripModels)
                 {
-                    if (ticketType.TicketTypeID <= 0 || ticketType.Price <= 0 || ticketType.Quantity <= 0)
+                    if (ticketType.Price <= 0 || ticketType.Quantity <= 0)
                     {
                         return false;
                     }
@@ -281,10 +282,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 foreach (var tripUtility in createTrip.Trip_UtilityModels)
                 {
-                    if (tripUtility.UtilityID <= 0)
-                    {
-                        return false;
-                    }
+                  
                     var newTrip_Utility = new Trip_Utility
                     {
                         TripID = trip.TripID,
@@ -329,7 +327,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
             }*/
 
-        public async Task<bool> ChangeStatusTrip(int tripId)
+        public async Task<bool> ChangeStatusTrip(Guid tripId)
         {
             try
             {
@@ -352,7 +350,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        public async Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(int tripID)
+        public async Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(Guid tripID)
         {
             try
             {
@@ -360,10 +358,10 @@ namespace SWD.TicketBooking.Service.Services
                     .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.ACTIVE) && _.TicketType_Trip.Status.Trim().Equals(SD.ACTIVE))
                     .Select(_ => new
                     {
-                        _.Booking.Trip.RouteID,
+                        _.Booking.Trip.Route_Company.RouteID,
                         _.SeatCode,
-                        _.Booking.Trip.Route.StartLocation,
-                        _.Booking.Trip.Route.EndLocation,
+                        _.Booking.Trip.Route_Company.Route.StartLocation,
+                        _.Booking.Trip.Route_Company.Route.EndLocation,
                         _.Booking.Trip.StartTime,
                     })
                     .ToListAsync();
