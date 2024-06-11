@@ -44,36 +44,57 @@ namespace SWD.TicketBooking.Service.Services
             _cityRepo = cityRepo;
         }
 
-        /*public async Task<GetDetailTicketDetailByTicketDetailModel> GetDetailTicketDetailByTicketDetail(int ticketDetailID)
+        public async Task<GetDetailTicketDetailByTicketDetailModel> GetDetailTicketDetailByTicketDetail(int ticketDetailID)
         {
             try
             {
                 var ticketDetail = await _ticketDetailRepo.FindByCondition(_ => _.TicketDetailID == ticketDetailID).FirstOrDefaultAsync();
 
                 var booking = await _bookingRepo.FindByCondition(_ => _.BookingID == ticketDetail.BookingID)
-                    .Include(_ => _.Trip.Route.FromCity).Include(_ => _.Trip.Route.ToCity).Include(_ => _.Trip.Route).FirstOrDefaultAsync();
+                    .Include(_ => _.Trip.Route.FromCity).Include(_ => _.Trip.Route.ToCity).Include(_ => _.Trip.Route).Include(_ => _.User).FirstOrDefaultAsync();
 
                 var company = await _routeCompanyRepo.FindByCondition(_ => _.RouteID == booking.Trip.RouteID).Include(_ => _.Company).FirstOrDefaultAsync();
 
-                var stationsInRoute = await _stationRouteRepo.FindByCondition(_ => _.RouteID == booking.Trip.RouteID).Select(_ => _.Station).ToListAsync();
-
-                var ticketDetailServices = await _ticketDetailServiceRepo.FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID).ToListAsync();
+                var ticketDetailServices = await _ticketDetailServiceRepo.FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID).Include(_ => _.Service).Include(_ => _.Station).ToListAsync();
                 double servicePrice = 0;
-                var serviceInStation = new Station_Service();
+
+                var serviceDetailList = new List<ServiceDetailModel>();
 
                 foreach (TicketDetail_Service ticketDetail_Service in ticketDetailServices)
                 {
-                    servicePrice += ticketDetail_Service.Price * ticketDetail_Service.Quantity;
-                    foreach (Station station in stationsInRoute)
+                    var serviceDetailModel = new ServiceDetailModel
                     {
-                        serviceInStation = await _stationServiceRepo.FindByCondition(_ => _.StationID == station.StationID && _.ServiceID == ticketDetail_Service.ServiceID).FirstOrDefaultAsync();
-                        var serviceDetailModel = new ServiceDetailModel
-                        {
-                            ServiceName
-                        };
-                    }
+                        ServiceName = ticketDetail_Service.Service.Name,
+                        ServicePrice = ticketDetail_Service.Price,
+                        Quantity = ticketDetail_Service.Quantity,
+                        ServiceInStation = ticketDetail_Service.Station.Name
+                    };
+                    serviceDetailList.Add(serviceDetailModel);
+                    servicePrice += ticketDetail_Service.Price * ticketDetail_Service.Quantity;
                 }
 
+                var rs = new GetDetailTicketDetailByTicketDetailModel
+                {
+                    BookingID = booking.BookingID,
+                    CompanyName = company.Company.Name,
+                    CustomerName = booking.User.FullName,
+                    SeatCode = ticketDetail.SeatCode,
+                    StartDate = booking.Trip.StartTime.ToString("yyyy-MM-dd"),
+                    StartTime = booking.Trip.StartTime.ToString("HH:mm"),
+                    EndDate = booking.Trip.EndTime.ToString("yyyy-MM-dd"),
+                    EndTime = booking.Trip.EndTime.ToString("HH:mm"),
+                    StartCity = booking.Trip.Route.FromCity.Name,
+                    EndCity = booking.Trip.Route.ToCity.Name,
+                    TicketPrice = ticketDetail.Price,
+                    TotalServicePrice = servicePrice,
+                    SumOfPrice = servicePrice + ticketDetail.Price,
+                    QrCodeImage = booking.QRCodeImage,
+                    QrCode = booking.QRCode,
+                    Status = ticketDetail.Status,
+                    ServiceDetailList = serviceDetailList,
+                };
+
+                return rs;
             }
             catch (Exception ex)
             {
@@ -133,7 +154,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message, ex);
             }
-        }*/
+        }
 
 
         public async Task<SearchTicketModel> SearchTicket(string QRCode)

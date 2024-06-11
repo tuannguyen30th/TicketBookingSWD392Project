@@ -8,9 +8,9 @@ namespace SWD.TicketBooking.Repo.Entities
     {
         [Key]
         public int TripID { get; set; }
-        public int RouteID { get; set; }
-        [ForeignKey("RouteID")]
-        public Route Route { get; set; }
+        public int Route_CompanyID { get; set; }
+        [ForeignKey("Route_CompanyID")]
+        public Route_Company Route_Company { get; set; }
         public bool IsTemplate { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

@@ -76,6 +76,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new User
                 {
                     UserName = "Nguyen Ngoc Tuan",
+                    FullName = "Nguyen Ngoc Tuan",
                     Address = "Lam Dong",
                     Password = SecurityUtil.Hash("12345"),
                     Email = "tuannnse170112@fpt.edu.vn",
@@ -88,6 +89,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new User
                 {
                     UserName = "Nguyen Ngoc Gia Bao",
+                    FullName = "Nguyen Ngoc Gia Bao",
                     Address = "TP Ho Chi Minh",
                     Password = SecurityUtil.Hash("12345"),
                     Email = "baonngse173536@fpt.edu.vn",
@@ -100,6 +102,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new User
                 {
                     UserName = "Admin",
+                    FullName = "Admin",
                     Address = "TP Ho Chi Minh",
                     Password = SecurityUtil.Hash("12345"),
                     Email = "admin@gmail.com",
@@ -112,6 +115,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new User
                 {
                     UserName = "Staff",
+                    FullName = "Staff",
                     Address = "Ben Tre",
                     Password = SecurityUtil.Hash("12345"),
                     Email = "staff@gmail.com",
@@ -124,6 +128,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new User
                 {
                     UserName = "Customer",
+                    FullName = "Customer",
                     Address = "Binh Thuan",
                     Password = SecurityUtil.Hash("12345"),
                     Email = "customer@gmail.com",
@@ -2323,242 +2328,848 @@ namespace SWD.TicketBooking.Repo.SeedData
                     OrderInRoute = 4
                 }
             };
+            List<Route_Company> route_Companies = new()
+            {
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[0],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[1],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[2],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[3],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[17],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[29],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[41],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[8],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[10],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[32],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[22],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[47],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[6],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[19],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[38],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[13],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[52],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[25],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[11],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[24],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[43],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[7],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[31],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[14],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[27],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[5],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[36],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[18],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[9],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[28],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[40],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[52],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[16],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[34],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[21],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[46],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[12],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[35],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[13],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[37],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[23],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[45],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[8],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[29],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[51],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[15],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[39],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[4],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[53],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[17],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[41],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[26],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[6],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[32],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[48],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[11],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[42],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[22],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[55],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[19],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[38],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[50],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[10],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[44],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[30],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[2],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[47],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[25],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[54],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[20],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[43],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[7],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[33],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[14],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[49],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[3],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[27],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[40],
+                    Status = "ACTIVE"
+                },
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[56],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[24],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[9],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[36],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[5],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[1],
+                    Route = routes[31],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[3],
+                    Route = routes[18],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[0],
+                    Route = routes[47],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[4],
+                    Route = routes[12],
+                    Status = "ACTIVE"
+                },
+
+                new Route_Company
+                {
+                    Company = companies[2],
+                    Route = routes[41],
+                    Status = "ACTIVE"
+                }
+            };
             List<Trip> trips = new()
             {
                 new Trip
                 {
-                    Route=routes[0],
+                    Route_Company = route_Companies[0],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 19, 15, 30, 0),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[0],
+                    Route_Company = route_Companies[0],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
                     EndTime = new DateTime(2024, 7, 6, 18, 45, 1),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[0],
+                    Route_Company = route_Companies[0],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 2),
                     EndTime = new DateTime(2024, 7, 6, 18, 45, 2),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[1],
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 3),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 3),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[1],
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 4),
                     EndTime = new DateTime(2024, 7, 7, 17, 45, 4),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[1],
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
                     EndTime = new DateTime(2024, 7, 1, 23, 59, 59),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[1],
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[1],
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[1],
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 5),
                     EndTime = new DateTime(2024, 7, 7, 17, 45, 5),
                     Status ="ACTIVE",
                 },
                 new Trip
                 {
-                    Route=routes[2],
+                    Route_Company = route_Companies[2],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 15, 0, 0, 5),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[2],
+                    Route_Company = route_Companies[2],
                     StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
                     EndTime = new DateTime(2024, 7, 2, 23, 59, 59),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[2],
+                    Route_Company = route_Companies[2],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
                     EndTime = new DateTime(2024, 7, 8, 17, 45, 1),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[2],
+                    Route_Company = route_Companies[2],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 8, 17, 45, 0),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[3],
+                    Route_Company = route_Companies[3],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 13, 14, 20, 0),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[3],
+                    Route_Company = route_Companies[3],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 17, 17, 30, 0),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[3],
+                    Route_Company = route_Companies[77],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
                     EndTime = new DateTime(2024, 7, 13, 14, 20, 1),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[3],
+                    Route_Company = route_Companies[77],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
                     EndTime = new DateTime(2024, 7, 9, 17, 45, 1),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[3],
+                    Route_Company = route_Companies[77],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 9, 17, 45, 0),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[3],
+                    Route_Company = route_Companies[3],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
                     EndTime = new DateTime(2024, 6, 17, 17, 30, 1),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[4],
+                    Route_Company = route_Companies[70],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
                     EndTime = new DateTime(2024, 6, 15, 18, 30, 1),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[4],
+                    Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 15, 18, 30, 0),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[4],
+                    Route_Company = route_Companies[27],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 23, 9, 0, 0),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    Route=routes[4],
+                    Route_Company = route_Companies[18],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 14, 14, 20, 0),
                     Status ="ACTIVE"
                 },
                  new Trip
                 {
-                    Route=routes[5],
+                    Route_Company = route_Companies[5],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 1),
                     Status ="ACTIVE"
                 },
                   new Trip
                 {
-                    Route=routes[5],
+                    Route_Company = route_Companies[7],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 0),
                     Status ="ACTIVE"
                 },
                    new Trip
                 {
-                    Route=routes[5],
+                    Route_Company = route_Companies[8],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
                     EndTime = new DateTime(2024, 7, 15, 14, 20, 1),
                     Status ="ACTIVE"
                 },
                     new Trip
                 {
-                    Route=routes[5],
+                    Route_Company = route_Companies[9],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 15, 14, 20, 0),
                     Status ="ACTIVE"
                 },
                      new Trip
                 {
-                    Route=routes[5],
+                    Route_Company = route_Companies[10],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 10, 17, 45, 0),
                     Status ="ACTIVE"
                 },
                       new Trip
                 {
-                    Route=routes[6],
+                    Route_Company = route_Companies[11],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 21, 11, 30, 0),
                     Status ="ACTIVE"
                 },
                  new Trip
                 {
-                    Route=routes[6],
+                    Route_Company = route_Companies[12],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
                     EndTime = new DateTime(2024, 7, 14, 14, 20, 1),
                     Status ="ACTIVE"
                 },
                   new Trip
                 {
-                    Route=routes[6],
+                    Route_Company = route_Companies[13],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 14, 14, 20, 0),
                     Status ="ACTIVE"
                 },
                    new Trip
                 {
-                    Route=routes[6],
+                    Route_Company = route_Companies[14],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 21, 11, 30, 0),
                     Status ="ACTIVE"
                 },
                     new Trip
                 {
-                    Route=routes[6],
+                    Route_Company = route_Companies[15],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 23, 9, 0, 0),
                     Status ="ACTIVE"
                 },
                      new Trip
                 {
-                    Route=routes[7],
+                    Route_Company = route_Companies[16],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 18, 11, 30, 0),
                     Status ="ACTIVE"
@@ -2566,964 +3177,964 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                       new Trip
                 {
-                    Route=routes[7],
+                    Route_Company = route_Companies[17],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
                     EndTime = new DateTime(2024, 6, 18, 11, 30, 1),
                     Status ="ACTIVE"
                 },
                        new Trip
                 {
-                    Route=routes[7],
+                    Route_Company = route_Companies[18],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 2),
                     EndTime = new DateTime(2024, 6, 18, 11, 30, 2),
                     Status ="ACTIVE"
                 },
                         new Trip
                 {
-                    Route=routes[7],
+                    Route_Company = route_Companies[19],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 22, 9, 0, 0),
                     Status ="ACTIVE"
                 },
                          new Trip
                 {
-                    Route=routes[7],
+                    Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 11, 17, 45, 0),
                     Status ="ACTIVE"
                 },
                           new Trip
                 {
-                    Route=routes[8],
+                    Route_Company = route_Companies[21],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 21, 9, 0, 0),
                     Status ="ACTIVE"
                 },
                  new Trip
                 {
-                    Route=routes[8],
+                    Route_Company = route_Companies[22],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
                     EndTime = new DateTime(2024, 6, 16, 11, 30, 1),
                     Status ="ACTIVE"
                 },
                   new Trip
                 {
-                    Route=routes[8],
+                    Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 16, 11, 30, 0),
                     Status ="ACTIVE"
                 },
                    new Trip
                 {
-                    Route=routes[8],
+                    Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 21, 9, 0, 0),
                     Status ="ACTIVE"
                 },
                     new Trip
                 {
-                    Route=routes[8],
+                    Route_Company = route_Companies[25],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 16, 11, 30, 0),
                     Status ="ACTIVE"
                 },
                     new Trip
                 {
-                    Route = routes[25], // Assuming routes[25] is a valid route within the 0-50 index range
+                    Route_Company = route_Companies[26],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 6, 17, 45, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[39], // Assuming routes[39] is a valid route within the 0-50 index range
+                    Route_Company = route_Companies[27],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 21, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route within the 0-50 index range
+                    Route_Company = route_Companies[28],
                     StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
                     EndTime = new DateTime(2024, 7, 1, 23, 59, 59),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[32], // Assuming routes[32] is a valid route within the 0-50 index range
+                    Route_Company = route_Companies[28],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 13, 14, 20, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[7], // Assuming routes[7] is a valid route
+                    Route_Company = route_Companies[29],
                     StartTime = new DateTime(2024, 6, 20, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 20, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[19], // Assuming routes[19] is a valid route
+                    Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 7, 10, 17, 30, 0),
                     EndTime = new DateTime(2024, 7, 11, 7, 30, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[34], // Assuming routes[34] is a valid route
+                    Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 8, 1, 11, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[42], // Assuming routes[42] is a valid route
+                    Route_Company = route_Companies[31],
                     StartTime = new DateTime(2024, 6, 25, 14, 0, 0),
                     EndTime = new DateTime(2024, 6, 26, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[28], // Assuming routes[28] is a valid route
+                    Route_Company = route_Companies[32],
                     StartTime = new DateTime(2024, 7, 20, 6, 30, 0),
                     EndTime = new DateTime(2024, 7, 20, 16, 30, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[13], // Assuming routes[13] is a valid route
+                    Route_Company = route_Companies[33],
                     StartTime = new DateTime(2024, 6, 22, 18, 0, 0),
                     EndTime = new DateTime(2024, 6, 23, 6, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[31], // Assuming routes[31] is a valid route
+                    Route_Company = route_Companies[34],
                     StartTime = new DateTime(2024, 7, 15, 10, 30, 0),
                     EndTime = new DateTime(2024, 7, 16, 0, 30, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[46], // Assuming routes[46] is a valid route
+                    Route_Company = route_Companies[35],
                     StartTime = new DateTime(2024, 8, 10, 13, 0, 0),
                     EndTime = new DateTime(2024, 8, 11, 1, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[9], // Assuming routes[9] is a valid route
+                    Route_Company = route_Companies[44],
                     StartTime = new DateTime(2024, 6, 28, 21, 0, 0),
                     EndTime = new DateTime(2024, 6, 29, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[23], // Assuming routes[23] is a valid route
+                    Route_Company = route_Companies[45],
                     StartTime = new DateTime(2024, 7, 25, 7, 0, 0),
                     EndTime = new DateTime(2024, 7, 25, 19, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[46],
                     StartTime = new DateTime(2024, 6, 18, 12, 0, 0),
                     EndTime = new DateTime(2024, 6, 18, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[5], // Assuming routes[5] is a valid route
+                    Route_Company = route_Companies[47],
                     StartTime = new DateTime(2024, 7, 3, 22, 30, 0),
                     EndTime = new DateTime(2024, 7, 4, 6, 30, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[27], // Assuming routes[27] is a valid route
+                    Route_Company = route_Companies[48],
                     StartTime = new DateTime(2024, 8, 5, 15, 0, 0),
                     EndTime = new DateTime(2024, 8, 6, 3, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[16], // Assuming routes[16] is a valid route
+                    Route_Company = route_Companies[49],
                     StartTime = new DateTime(2024, 6, 30, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 30, 16, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[37], // Assuming routes[37] is a valid route
+                    Route_Company = route_Companies[50],
                     StartTime = new DateTime(2024, 7, 18, 19, 0, 0),
                     EndTime = new DateTime(2024, 7, 19, 3, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[51],
                     StartTime = new DateTime(2024, 6, 15, 5, 0, 0),
                     EndTime = new DateTime(2024, 6, 15, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[20], // Assuming routes[20] is a valid route
+                    Route_Company = route_Companies[52],
                     StartTime = new DateTime(2024, 7, 12, 20, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 4, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[39], // Assuming routes[39] is a valid route
+                    Route_Company = route_Companies[53],
                     StartTime = new DateTime(2024, 8, 15, 10, 0, 0),
                     EndTime = new DateTime(2024, 8, 15, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[8], // Assuming routes[8] is a valid route
+                    Route_Company = route_Companies[54],
                     StartTime = new DateTime(2024, 6, 23, 23, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[29], // Assuming routes[29] is a valid route
+                    Route_Company = route_Companies[55],
                     StartTime = new DateTime(2024, 7, 27, 14, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[56],
                     StartTime = new DateTime(2024, 6, 15, 5, 0, 0),
                     EndTime = new DateTime(2024, 6, 15, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[20], // Assuming routes[20] is a valid route
+                    Route_Company = route_Companies[57],
                     StartTime = new DateTime(2024, 7, 12, 20, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 4, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[39], // Assuming routes[39] is a valid route
+                    Route_Company = route_Companies[58],
                     StartTime = new DateTime(2024, 8, 15, 10, 0, 0),
                     EndTime = new DateTime(2024, 8, 15, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[8], // Assuming routes[8] is a valid route
+                    Route_Company = route_Companies[59],
                     StartTime = new DateTime(2024, 6, 23, 23, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[29], // Assuming routes[29] is a valid route
+                    Route_Company = route_Companies[60],
                     StartTime = new DateTime(2024, 7, 27, 14, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[11], // Assuming routes[11] is a valid route
+                    Route_Company = route_Companies[61],
                     StartTime = new DateTime(2024, 6, 20, 0, 0, 0),
                     EndTime = new DateTime(2024, 6, 20, 8, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[25], // Assuming routes[25] is a valid route
+                    Route_Company = route_Companies[62],
                     StartTime = new DateTime(2024, 7, 6, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 20, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[34], // Assuming routes[34] is a valid route
+                    Route_Company = route_Companies[63],
                     StartTime = new DateTime(2024, 8, 1, 6, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[7], // Assuming routes[7] is a valid route
+                    Route_Company = route_Companies[64],
                     StartTime = new DateTime(2024, 6, 26, 18, 0, 0),
                     EndTime = new DateTime(2024, 6, 27, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[19], // Assuming routes[19] is a valid route
+                    Route_Company = route_Companies[65],
                     StartTime = new DateTime(2024, 7, 22, 9, 0, 0),
                     EndTime = new DateTime(2024, 7, 22, 17, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[40], // Assuming routes[40] is a valid route
+                    Route_Company = route_Companies[66],
                     StartTime = new DateTime(2024, 6, 12, 20, 0, 0),
                     EndTime = new DateTime(2024, 6, 13, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[3], // Assuming routes[3] is a valid route
+                    Route_Company = route_Companies[67],
                     StartTime = new DateTime(2024, 7, 3, 11, 0, 0),
                     EndTime = new DateTime(2024, 7, 3, 17, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[32], // Assuming routes[32] is a valid route
+                    Route_Company = route_Companies[68],
                     StartTime = new DateTime(2024, 8, 10, 23, 0, 0),
                     EndTime = new DateTime(2024, 8, 11, 7, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[13], // Assuming routes[13] is a valid route
+                    Route_Company = route_Companies[69],
                     StartTime = new DateTime(2024, 6, 28, 14, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 22, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[23], // Assuming routes[23] is a valid route
+                    Route_Company = route_Companies[70],
                     StartTime = new DateTime(2024, 7, 15, 7, 0, 0),
                     EndTime = new DateTime(2024, 7, 15, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[40], // Assuming routes[40] is a valid route
+                    Route_Company = route_Companies[71],
                     StartTime = new DateTime(2024, 6, 12, 20, 0, 0),
                     EndTime = new DateTime(2024, 6, 13, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[3], // Assuming routes[3] is a valid route
+                    Route_Company = route_Companies[72],
                     StartTime = new DateTime(2024, 7, 3, 11, 0, 0),
                     EndTime = new DateTime(2024, 7, 3, 17, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[32], // Assuming routes[32] is a valid route
+                    Route_Company = route_Companies[73],
                     StartTime = new DateTime(2024, 8, 10, 23, 0, 0),
                     EndTime = new DateTime(2024, 8, 11, 7, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[13], // Assuming routes[13] is a valid route
+                    Route_Company = route_Companies[74],
                     StartTime = new DateTime(2024, 6, 28, 14, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 22, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[23], // Assuming routes[23] is a valid route
+                    Route_Company = route_Companies[75],
                     StartTime = new DateTime(2024, 7, 15, 7, 0, 0),
                     EndTime = new DateTime(2024, 7, 15, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[5], // Assuming routes[5] is a valid route
+                    Route_Company = route_Companies[76],
                     StartTime = new DateTime(2024, 6, 18, 4, 0, 0),
                     EndTime = new DateTime(2024, 6, 18, 12, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[27], // Assuming routes[27] is a valid route
+                    Route_Company = route_Companies[77],
                     StartTime = new DateTime(2024, 7, 9, 18, 0, 0),
                     EndTime = new DateTime(2024, 7, 10, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[36], // Assuming routes[36] is a valid route
+                    Route_Company = route_Companies[78],
                     StartTime = new DateTime(2024, 8, 5, 13, 0, 0),
                     EndTime = new DateTime(2024, 8, 5, 21, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[9], // Assuming routes[9] is a valid route
+                    Route_Company = route_Companies[79],
                     StartTime = new DateTime(2024, 6, 30, 22, 0, 0),
                     EndTime = new DateTime(2024, 7, 1, 6, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[21], // Assuming routes[21] is a valid route
+                    Route_Company = route_Companies[80],
                     StartTime = new DateTime(2024, 7, 19, 15, 0, 0),
                     EndTime = new DateTime(2024, 7, 19, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[5], // Assuming routes[5] is a valid route
+                    Route_Company = route_Companies[81],
                     StartTime = new DateTime(2024, 6, 18, 4, 0, 0),
                     EndTime = new DateTime(2024, 6, 18, 12, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[27], // Assuming routes[27] is a valid route
+                    Route_Company = route_Companies[82],
                     StartTime = new DateTime(2024, 7, 9, 18, 0, 0),
                     EndTime = new DateTime(2024, 7, 10, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[36], // Assuming routes[36] is a valid route
+                    Route_Company = route_Companies[83],
                     StartTime = new DateTime(2024, 8, 5, 13, 0, 0),
                     EndTime = new DateTime(2024, 8, 5, 21, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[9], // Assuming routes[9] is a valid route
+                    Route_Company = route_Companies[84],
                     StartTime = new DateTime(2024, 6, 30, 22, 0, 0),
                     EndTime = new DateTime(2024, 7, 1, 6, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[21], // Assuming routes[21] is a valid route
+                    Route_Company = route_Companies[85],
                     StartTime = new DateTime(2024, 7, 19, 15, 0, 0),
                     EndTime = new DateTime(2024, 7, 19, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[5], // Assuming routes[5] is a valid route
+                    Route_Company = route_Companies[86],
                     StartTime = new DateTime(2024, 6, 18, 4, 0, 0),
                     EndTime = new DateTime(2024, 6, 18, 12, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[27], // Assuming routes[27] is a valid route
+                    Route_Company = route_Companies[86],
                     StartTime = new DateTime(2024, 7, 9, 18, 0, 0),
                     EndTime = new DateTime(2024, 7, 10, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[36], // Assuming routes[36] is a valid route
+                    Route_Company = route_Companies[87],
                     StartTime = new DateTime(2024, 8, 5, 13, 0, 0),
                     EndTime = new DateTime(2024, 8, 5, 21, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[9], // Assuming routes[9] is a valid route
+                    Route_Company = route_Companies[88],
                     StartTime = new DateTime(2024, 6, 30, 22, 0, 0),
                     EndTime = new DateTime(2024, 7, 1, 6, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[21], // Assuming routes[21] is a valid route
+                    Route_Company = route_Companies[89],
                     StartTime = new DateTime(2024, 7, 19, 15, 0, 0),
                     EndTime = new DateTime(2024, 7, 19, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[31],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[32],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[33],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[34],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[35],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[36],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[37],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[38],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[39],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[40],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[41],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[42],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[43],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[44],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[45],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[46],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[47],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[48],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[49],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[50],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[51],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[10],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[11],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[12],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[13],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[14],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[15],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[16],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[17],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[18],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[19],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[21],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[22],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[25],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[26],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[27],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[28],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[29],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[50],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[40],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[14], // Assuming routes[14] is a valid route
+                    Route_Company = route_Companies[41],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[41], // Assuming routes[41] is a valid route
+                    Route_Company = route_Companies[42],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[2], // Assuming routes[2] is a valid route
+                    Route_Company = route_Companies[43],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[33], // Assuming routes[33] is a valid route
+                    Route_Company = route_Companies[44],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[17], // Assuming routes[17] is a valid route
+                    Route_Company = route_Companies[45],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[26], // Assuming routes[26] is a valid route
+                    Route_Company = route_Companies[46],
                     StartTime = new DateTime(2024, 6, 28, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 16, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[39], // Assuming routes[39] is a valid route
+                    Route_Company = route_Companies[47],
                     StartTime = new DateTime(2024, 7, 5, 23, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[11], // Assuming routes[11] is a valid route
+                    Route_Company = route_Companies[48],
                     StartTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[8], // Assuming routes[8] is a valid route
+                    Route_Company = route_Companies[49],
                     StartTime = new DateTime(2024, 6, 21, 2, 0, 0),
                     EndTime = new DateTime(2024, 6, 21, 10, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[29], // Assuming routes[29] is a valid route
+                    Route_Company = route_Companies[50],
                     StartTime = new DateTime(2024, 7, 23, 17, 0, 0),
                     EndTime = new DateTime(2024, 7, 23, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[26], // Assuming routes[26] is a valid route
+                    Route_Company = route_Companies[51],
                     StartTime = new DateTime(2024, 6, 28, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 16, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[39], // Assuming routes[39] is a valid route
+                    Route_Company = route_Companies[52],
                     StartTime = new DateTime(2024, 7, 5, 23, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[11], // Assuming routes[11] is a valid route
+                    Route_Company = route_Companies[53],
                     StartTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[8], // Assuming routes[8] is a valid route
+                    Route_Company = route_Companies[54],
                     StartTime = new DateTime(2024, 6, 21, 2, 0, 0),
                     EndTime = new DateTime(2024, 6, 21, 10, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[29], // Assuming routes[29] is a valid route
+                    Route_Company = route_Companies[55],
                     StartTime = new DateTime(2024, 7, 23, 17, 0, 0),
                     EndTime = new DateTime(2024, 7, 23, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[26], // Assuming routes[26] is a valid route
+                    Route_Company = route_Companies[56],
                     StartTime = new DateTime(2024, 6, 28, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 16, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[39], // Assuming routes[39] is a valid route
+                    Route_Company = route_Companies[57],
                     StartTime = new DateTime(2024, 7, 5, 23, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[11], // Assuming routes[11] is a valid route
+                    Route_Company = route_Companies[58],
                     StartTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[8], // Assuming routes[8] is a valid route
+                    Route_Company = route_Companies[59],
                     StartTime = new DateTime(2024, 6, 21, 2, 0, 0),
                     EndTime = new DateTime(2024, 6, 21, 10, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[29], // Assuming routes[29] is a valid route
+                    Route_Company = route_Companies[60],
                     StartTime = new DateTime(2024, 7, 23, 17, 0, 0),
                     EndTime = new DateTime(2024, 7, 23, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[26], // Assuming routes[26] is a valid route
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 28, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 16, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[39], // Assuming routes[39] is a valid route
+                    Route_Company = route_Companies[0],
                     StartTime = new DateTime(2024, 7, 5, 23, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[11], // Assuming routes[11] is a valid route
+                    Route_Company = route_Companies[2],
                     StartTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[8], // Assuming routes[8] is a valid route
+                    Route_Company = route_Companies[3],
                     StartTime = new DateTime(2024, 6, 21, 2, 0, 0),
                     EndTime = new DateTime(2024, 6, 21, 10, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route = routes[29], // Assuming routes[29] is a valid route
+                    Route_Company = route_Companies[4],
                     StartTime = new DateTime(2024, 7, 23, 17, 0, 0),
                     EndTime = new DateTime(2024, 7, 23, 23, 0, 0),
                     Status = "ACTIVE"
@@ -4514,7 +5125,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 var ticketTypeTrip = new TicketType_Trip();
                 for (int a = 0; a < ticketType_Trips.Count; a++)
                 {
-                    if (ticketType_Trips[a].Trip.Route == bookings[i].Trip.Route 
+                    if (ticketType_Trips[a].Trip.Route_Company == bookings[i].Trip.Route_Company 
                         && ticketType_Trips[a].Trip.StartTime == bookings[i].Trip.StartTime 
                         && ticketType_Trips[a].Trip.EndTime == bookings[i].Trip.EndTime)
                     {
@@ -6285,625 +6896,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Status = "ACTIVE"
                 }
             };*/
-            List<Route_Company> route_Companies = new()
-            {
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[0],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[1],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[2],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[3],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[3],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[3],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[17],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[29],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[41],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[8],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[10],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[32],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[22],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[47],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[6],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[19],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[38],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[13],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[52],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[25],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[11],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[24],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[43],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[7],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[31],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[14],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[27],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[5],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[36],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[18],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[9],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[28],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[40],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[52],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[16],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[34],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[21],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[46],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[12],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[35],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[13],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[37],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[23],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[45],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[8],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[29],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[51],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[15],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[39],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[4],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[53],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[17],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[41],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[26],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[6],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[32],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[48],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[11],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[42],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[22],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[55],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[19],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[38],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[50],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[10],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[44],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[30],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[2],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[47],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[25],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[54],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[20],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[43],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[7],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[33],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[14],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[49],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[3],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[27],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[40],
-                    Status = "ACTIVE"
-                },
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[56],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[24],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[9],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[36],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[5],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[1],
-                    Route = routes[31],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[3],
-                    Route = routes[18],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[0],
-                    Route = routes[47],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[4],
-                    Route = routes[12],
-                    Status = "ACTIVE"
-                },
-
-                new Route_Company
-                {
-                    Company = companies[2],
-                    Route = routes[41],
-                    Status = "ACTIVE"
-                }
-            };
             List<Feedback> feedbacks = new()
             {
                 new Feedback

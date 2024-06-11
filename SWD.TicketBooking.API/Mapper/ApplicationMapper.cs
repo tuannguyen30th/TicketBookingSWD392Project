@@ -88,7 +88,9 @@ namespace SWD.TicketBooking.API.Mapper
 
             /////TicketDetail/////
             CreateMap<GetTicketDetailByUserModel, GetTicketDetailByUserResponse>().ReverseMap();
-            CreateMap<GetDetailTicketDetailByTicketDetailModel, GetDetailTicketDetailByTicketDetailResponse>().ReverseMap();
+            CreateMap<ServiceDetail, ServiceDetailModel>().ReverseMap();
+            CreateMap<GetDetailTicketDetailByTicketDetailModel, GetDetailTicketDetailByTicketDetailResponse>()
+                .ForMember(_ => _.ServiceDetailList, opt => opt.MapFrom(_ => _.ServiceDetailList)).ReverseMap();
             CreateMap<SearchTicketModel, SearchTicketResponse>().ReverseMap();
         }
     }
