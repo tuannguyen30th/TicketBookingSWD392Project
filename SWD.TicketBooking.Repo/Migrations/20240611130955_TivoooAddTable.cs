@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWD.TicketBooking.Repo.Migrations
 {
-    public partial class addTable : Migration
+    public partial class TivoooAddTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -305,8 +305,8 @@ namespace SWD.TicketBooking.Repo.Migrations
                     QRCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TotalBill = table.Column<double>(type: "float", nullable: false),
                     PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

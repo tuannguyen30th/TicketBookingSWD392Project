@@ -179,8 +179,8 @@ namespace SWD.TicketBooking.Service.Services
                     var route = await _tripRepo.GetAll().Where(x => x.TripID == trip.TripID).Select(r => r.Route_Company.Route).FirstOrDefaultAsync();
                     var priceRs = new PriceInSearchTicketModel
                     {
-                        price = ticketDetail.Price,
-                        stations = GetAllStationName(services)
+                        Price = ticketDetail.Price,
+                        Stations = GetAllStationName(services)
                     };
 
                     var rs = new SearchTicketModel
@@ -188,7 +188,8 @@ namespace SWD.TicketBooking.Service.Services
                         Price = priceRs,
                         Trip = GetTripBaseOnModel(trip, booking, route, ticketDetail),
                         TotalBill = booking.TotalBill,
-                        QrCodeImage = booking.QRCodeImage
+                        QrCodeImage = booking.QRCodeImage,
+                        QrCode = booking.QRCode
                     };
                     return rs;
                 }
@@ -219,7 +220,11 @@ namespace SWD.TicketBooking.Service.Services
 
         public TripInSearchTicketModel GetTripBaseOnModel(Trip trip, Booking booking, Route route, TicketDetail ticket)
         {
-            var company = _routeCompanyRepo.FindByCondition(x => x.RouteID == trip.Route_Company.RouteID).Select(c => c.Company).FirstOrDefault();
+            //var company = _routeCompanyRepo.FindByCondition(x => x.RouteID == trip.Route_Company.RouteID).Select(c => c.Company).FirstOrDefault();
+            
+            var route_company = _tripRepo.FindByCondition(t=> t.TripID.Equals(trip.TripID)).Select(c=>c.Route_CompanyID).FirstOrDefault();
+            var company = _routeCompanyRepo.FindByCondition(r=>r.Route_CompanyID.Equals(route_company)).Select(c=>c.Company).FirstOrDefault();
+            
             var user = _userRepo.FindByCondition(u=>u.UserID == booking.UserID).Select(u=>u.UserName).FirstOrDefault();
 
             var fromCity = _cityRepo.FindByCondition(c=>c.CityID == route.FromCityID).Select(c=>c.Name).FirstOrDefault();
