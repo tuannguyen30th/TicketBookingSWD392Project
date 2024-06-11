@@ -2,8 +2,8 @@
 {
     public class GetPictureResponse
     {
-        public int TripId { get; set; }
-        public string ImageUrl { get; set; }
+        public Guid TripId { get; set; }
+        public string? ImageUrl { get; set; }
 
     }
 }

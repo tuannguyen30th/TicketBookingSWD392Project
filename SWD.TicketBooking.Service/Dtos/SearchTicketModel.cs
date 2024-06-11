@@ -8,9 +8,9 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class SearchTicketModel
     {
-        public PriceInSearchTicketModel price { get; set; }
-        public TripInSearchTicketModel trip { get; set; }
+        public PriceInSearchTicketModel Price { get; set; }
+        public TripInSearchTicketModel Trip { get; set; }
         public double TotalBill { get; set; }
-        public string QrCodeImage { get; set; }
+        public string? QrCodeImage { get; set; }
     }
 }

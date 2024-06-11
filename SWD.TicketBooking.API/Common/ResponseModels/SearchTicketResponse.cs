@@ -7,6 +7,6 @@ namespace SWD.TicketBooking.API.Common.ResponseModels
         public PriceInSearchTicketModel price { get; set; }
         public TripInSearchTicketModel trip { get; set; }
         public double TotalBill { get; set; }
-        public string QrCodeImage { get; set; }
+        public string? QrCodeImage { get; set; }
     }
 }

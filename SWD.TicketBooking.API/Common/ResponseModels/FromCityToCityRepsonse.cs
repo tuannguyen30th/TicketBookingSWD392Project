@@ -4,8 +4,8 @@
     {
         public class CityInfo
         {
-            public int CityID { get; set; }
-            public string CityName { get; set; }
+            public Guid CityID { get; set; }
+            public string? CityName { get; set; }
         }
 
         public class CityResponse

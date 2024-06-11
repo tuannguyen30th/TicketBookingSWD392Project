@@ -10,10 +10,10 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class GetStationServiceModel
     {
-        public int ServiceID { get; set; }
+        public Guid ServiceID { get; set; }
         public Route Route { get; set; }
         public ServiceType ServiceType { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public double Price { get; set; }
     }
 }

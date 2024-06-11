@@ -8,11 +8,11 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class FeedbackModel
     {
-        public string userName {  get; set; }
+        public string? UserName {  get; set; } 
         public DateTime Date { get; set; }
-        public string Desciption { get; set; }
-        public List<string> imageUrl { get; set; }
-        public int rating { get; set; }
-        public string avt {  get; set; }
+        public string? Desciption { get; set; }
+        public List<string> ImageUrl { get; set; } = new List<string>();
+        public int Rating { get; set; }
+        public string? Avt {  get; set; }
     }
 }

@@ -12,11 +12,11 @@ namespace SWD.TicketBooking.Repo.Entities
     public class Booking
     {
         [Key]
-        public int BookingID { get; set; }
-        public int UserID { get; set; }
+        public Guid BookingID { get; set; }
+        public Guid UserID { get; set; }
         [ForeignKey("UserID")]
         public User User { get; set; }
-        public int TripID { get; set; }
+        public Guid TripID { get; set; }
         [ForeignKey("TripID")]
         public Trip Trip { get; set; }
         public DateTime BookingTime { get; set; } = DateTime.Now;
@@ -25,8 +25,8 @@ namespace SWD.TicketBooking.Repo.Entities
         public string QRCodeText { get; set; } = string.Empty;
         public string QRCode {  get; set; } = string.Empty;
         public double TotalBill { get; set; }
-        public string? PaymentMethod { get; set; } = string.Empty;
-        public string? PaymentStatus { get; set; } = string.Empty;
-        public string? Status { get; set; } = string.Empty;
+        public string PaymentMethod { get; set; } = string.Empty;
+        public string PaymentStatus { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
     }
 }

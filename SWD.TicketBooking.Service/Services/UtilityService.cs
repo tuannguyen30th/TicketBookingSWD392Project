@@ -17,17 +17,17 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class UtilityService
     {
-        private readonly IRepository<Utility, int> _uRepository;
+        private readonly IRepository<Utility, Guid> _uRepository;
         private readonly IMapper _mapper;
-        private readonly IRepository<Trip_Utility, int> _tripUtilityRepository;
-        public UtilityService(IRepository<Utility, int> uRepository, IMapper mapper, IRepository<Trip_Utility, int> tripUtilityRepository)
+        private readonly IRepository<Trip_Utility, Guid> _tripUtilityRepository;
+        public UtilityService(IRepository<Utility, Guid> uRepository, IMapper mapper, IRepository<Trip_Utility, Guid> tripUtilityRepository)
         {
             _uRepository = uRepository;
             _mapper = mapper;
             _tripUtilityRepository = tripUtilityRepository;
 
         }
-        public async Task<List<UtilityModel>> GetAllUtilityByTripID(int id)
+        public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
         {
             var utilities = await _tripUtilityRepository
                 .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.ACTIVE))

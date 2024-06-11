@@ -8,6 +8,6 @@ namespace SWD.TicketBooking.API.Common.RequestModels
 {
     public class SendOTPCodeEmailReq
     {
-        public string Email { get; set; }
+        public string? Email { get; set; }
     }
 }

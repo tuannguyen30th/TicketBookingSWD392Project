@@ -8,11 +8,11 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class TripInSearchTicketModel
     {
-        public string userName { get; set; }
-        public string route { get; set; }
-        public string company { get; set; }
-        public string date { get; set; }
-        public string time { get; set; }
-        public string position { get; set; }
+        public string? UserName { get; set; }
+        public string? Route { get; set; }
+        public string? Company { get; set; }
+        public string? Date { get; set; }
+        public string? Time { get; set; }
+        public string? Position { get; set; }
     }
 }

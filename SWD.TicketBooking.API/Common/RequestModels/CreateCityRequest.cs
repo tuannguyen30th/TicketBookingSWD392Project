@@ -2,6 +2,6 @@
 {
     public class CreateCityRequest
     {
-        public string CityName { get; set; }
+        public string? CityName { get; set; }
     }
 }

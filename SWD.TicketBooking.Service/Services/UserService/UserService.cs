@@ -17,14 +17,14 @@ namespace SWD.TicketBooking.Service.Services.UserService
     public class UserService
     {
 
-        private readonly IRepository<User, int> _userRepository;
+        private readonly IRepository<User, Guid> _userRepository;
         private readonly IMapper _mapper;
-        private readonly IRepository<UserRole, int> _userRoleRepository;
+        private readonly IRepository<UserRole, Guid> _userRoleRepository;
         public readonly IFirebaseService _firebaseService;
 
         public static int Page_Size { get; set; } = 10;
 
-        public UserService(IRepository<User, int> userRepository, IMapper mapper, IRepository<UserRole, int> userRoleRepository, IFirebaseService firebaseService)
+        public UserService(IRepository<User, Guid> userRepository, IMapper mapper, IRepository<UserRole, Guid> userRoleRepository, IFirebaseService firebaseService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -159,7 +159,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
             }
         }
 
-        public async Task<UserModel> GetUserById(int id)
+        public async Task<UserModel> GetUserById(Guid id)
         {
             try
             {
@@ -172,7 +172,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<(UpdateUserModel returnModel, string message)> UpdateUser(int id, UpdateUserModel updateUser)
+        public async Task<(UpdateUserModel returnModel, string message)> UpdateUser(Guid id, UpdateUserModel updateUser)
         {
             try
             {
@@ -191,15 +191,14 @@ namespace SWD.TicketBooking.Service.Services.UserService
                     {
                         if (!string.IsNullOrEmpty(existedUser.Avatar))
                         {
-                            string url = $"{FirebasePathName.AVATAR}{existedUser.UrlGuidID}";
+                            string url = $"{FirebasePathName.AVATAR}{existedUser.UserID}";
                             var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
                             if (!deleteResult.IsSuccess)
                             {
                                 throw new InternalServerErrorException($"Failed to delete old image");
                             }
                         }
-                        existedUser.UrlGuidID = Guid.NewGuid().ToString();
-                        var imagePath = $"{FirebasePathName.AVATAR}{existedUser.UrlGuidID}";
+                        var imagePath = $"{FirebasePathName.AVATAR}{existedUser.UserID}";
                         var imageUploadResult = await _firebaseService.UploadFileToFirebase(updateUser.Avatar, imagePath);
 
                         if (imageUploadResult.IsSuccess)

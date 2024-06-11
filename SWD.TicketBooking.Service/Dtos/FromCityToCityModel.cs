@@ -10,14 +10,14 @@ namespace SWD.TicketBooking.Service.Dtos
     {
         public class CityInfo
         {
-            public int CityID { get; set; }
-            public string CityName { get; set; }
+            public Guid CityID { get; set; }
+            public string? CityName { get; set; }
         }
 
         public class CityModel
         {
-            public List<CityInfo> FromCities { get; set; }
-            public List<CityInfo> ToCities { get; set; }
+            public List<CityInfo> FromCities { get; set; } 
+            public List<CityInfo> ToCities { get; set; } 
         }
 
     }

@@ -12,11 +12,11 @@ namespace SWD.TicketBooking.Repo.Entities
     public class Feedback
     {
         [Key]
-        public int FeedbackID { get; set; }
-        public int UserID { get; set; }
+        public Guid FeedbackID { get; set; }
+        public Guid UserID { get; set; }
         [ForeignKey("UserID")]
         public User User { get; set; }
-        public int TripID { get; set; }
+        public Guid TripID { get; set; }
         [ForeignKey("TripID")]
         public Trip Trip { get; set; }
         public int Rating { get; set; }

@@ -8,7 +8,7 @@ namespace SWD.TicketBooking.Repo.Entities
     public class Company
     {
         [Key]
-        public int CompanyID { get; set; }
+        public Guid CompanyID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Status { get; set; }
     }

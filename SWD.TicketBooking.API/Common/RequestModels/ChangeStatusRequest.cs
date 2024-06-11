@@ -2,6 +2,6 @@
 {
     public class ChangeStatusRequest
     {
-        public string Status { get; set; }
+        public string? Status { get; set; }
     }
 }

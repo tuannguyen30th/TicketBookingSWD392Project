@@ -8,9 +8,9 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class PictureModel
     {
-        public int TripId { get; set; }
+        public Guid TripId { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
     }
 }

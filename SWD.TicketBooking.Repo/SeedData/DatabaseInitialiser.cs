@@ -62,9 +62,9 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 return;
             }
-            var admin = new UserRole { RoleName = "Admin" };
-            var staff = new UserRole { RoleName = "Staff" };
-            var customer = new UserRole { RoleName = "Customer" };
+            var admin = new UserRole { RoleID = Guid.NewGuid(), RoleName = "Admin" };
+            var staff = new UserRole { RoleID = Guid.NewGuid(), RoleName = "Staff" };
+            var customer = new UserRole { RoleID = Guid.NewGuid(), RoleName = "Customer" };
             List<UserRole> userRoles = new()
              {
                  staff,
@@ -75,6 +75,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new User
                 {
+                    UserID = Guid.NewGuid(),
                     UserName = "Nguyen Ngoc Tuan",
                     FullName = "Nguyen Ngoc Tuan",
                     Address = "Lam Dong",
@@ -88,6 +89,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new User
                 {
+                    UserID = Guid.NewGuid(),
                     UserName = "Nguyen Ngoc Gia Bao",
                     FullName = "Nguyen Ngoc Gia Bao",
                     Address = "TP Ho Chi Minh",
@@ -101,6 +103,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new User
                 {
+                    UserID = Guid.NewGuid(),
                     UserName = "Admin",
                     FullName = "Admin",
                     Address = "TP Ho Chi Minh",
@@ -114,6 +117,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new User
                 {
+                    UserID = Guid.NewGuid(),
                     UserName = "Staff",
                     FullName = "Staff",
                     Address = "Ben Tre",
@@ -127,6 +131,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new User
                 {
+                    UserID = Guid.NewGuid(),
                     UserName = "Customer",
                     FullName = "Customer",
                     Address = "Binh Thuan",
@@ -141,94 +146,99 @@ namespace SWD.TicketBooking.Repo.SeedData
             };
             List<City> cities = new()
             {
-                new City { Name = "An Giang", Status = "ACTIVE" },
-                new City { Name = "Bà Rịa - Vũng Tàu", Status = "ACTIVE" },
-                new City { Name = "Bạc Liêu", Status = "ACTIVE" },
-                new City { Name = "Bắc Giang", Status = "ACTIVE" },
-                new City { Name = "Bắc Kạn", Status = "ACTIVE" },
-                new City { Name = "Bắc Ninh", Status = "ACTIVE" },
-                new City { Name = "Bến Tre", Status = "ACTIVE" },
-                new City { Name = "Bình Định", Status = "ACTIVE" },
-                new City { Name = "Bình Dương", Status = "ACTIVE" },
-                new City { Name = "Bình Phước", Status = "ACTIVE" },
-                new City { Name = "Bình Thuận", Status = "ACTIVE" },
-                new City { Name = "Cà Mau", Status = "ACTIVE" },
-                new City { Name = "Cần Thơ", Status = "ACTIVE" },
-                new City { Name = "Cao Bằng", Status = "ACTIVE" },
-                new City { Name = "Đà Nẵng", Status = "ACTIVE" },
-                new City { Name = "Đắk Lắk", Status = "ACTIVE" },
-                new City { Name = "Đắk Nông", Status = "ACTIVE" },
-                new City { Name = "Điện Biên", Status = "ACTIVE" },
-                new City { Name = "Đồng Nai", Status = "ACTIVE" },
-                new City { Name = "Đồng Tháp", Status = "ACTIVE" },
-                new City { Name = "Gia Lai", Status = "ACTIVE" },
-                new City { Name = "Hà Giang", Status = "ACTIVE" },
-                new City { Name = "Hà Nam", Status = "ACTIVE" },
-                new City { Name = "Hà Nội", Status = "ACTIVE" },
-                new City { Name = "Hà Tĩnh", Status = "ACTIVE" },
-                new City { Name = "Hải Dương", Status = "ACTIVE" },
-                new City { Name = "Hải Phòng", Status = "ACTIVE" },
-                new City { Name = "Hậu Giang", Status = "ACTIVE" },
-                new City { Name = "Hòa Bình", Status = "ACTIVE" },
-                new City { Name = "Hưng Yên", Status = "ACTIVE" },
-                new City { Name = "Khánh Hòa", Status = "ACTIVE" },
-                new City { Name = "Kiên Giang", Status = "ACTIVE" },
-                new City { Name = "Kon Tum", Status = "ACTIVE" },
-                new City { Name = "Lai Châu", Status = "ACTIVE" },
-                new City { Name = "Lâm Đồng", Status = "ACTIVE" },
-                new City { Name = "Lạng Sơn", Status = "ACTIVE" },
-                new City { Name = "Lào Cai", Status = "ACTIVE" },
-                new City { Name = "Long An", Status = "ACTIVE" },
-                new City { Name = "Nam Định", Status = "ACTIVE" },
-                new City { Name = "Nghệ An", Status = "ACTIVE" },
-                new City { Name = "Ninh Bình", Status = "ACTIVE" },
-                new City { Name = "Ninh Thuận", Status = "ACTIVE" },
-                new City { Name = "Phú Thọ", Status = "ACTIVE" },
-                new City { Name = "Phú Yên", Status = "ACTIVE" },
-                new City { Name = "Quảng Bình", Status = "ACTIVE" },
-                new City { Name = "Quảng Nam", Status = "ACTIVE" },
-                new City { Name = "Quảng Ngãi", Status = "ACTIVE" },
-                new City { Name = "Quảng Ninh", Status = "ACTIVE" },
-                new City { Name = "Quảng Trị", Status = "ACTIVE" },
-                new City { Name = "Sóc Trăng", Status = "ACTIVE" },
-                new City { Name = "Sơn La", Status = "ACTIVE" },
-                new City { Name = "Tây Ninh", Status = "ACTIVE" },
-                new City { Name = "Thái Bình", Status = "ACTIVE" },
-                new City { Name = "Thái Nguyên", Status = "ACTIVE" },
-                new City { Name = "Thanh Hóa", Status = "ACTIVE" },
-                new City { Name = "Thừa Thiên Huế", Status = "ACTIVE" },
-                new City { Name = "Tiền Giang", Status = "ACTIVE" },
-                new City { Name = "TP. Hồ Chí Minh", Status = "ACTIVE" },
-                new City { Name = "Trà Vinh", Status = "ACTIVE" },
-                new City { Name = "Tuyên Quang", Status = "ACTIVE" },
-                new City { Name = "Vĩnh Long", Status = "ACTIVE" },
-                new City { Name = "Vĩnh Phúc", Status = "ACTIVE" },
-                new City { Name = "Yên Bái", Status = "ACTIVE" }
+                new City { CityID = Guid.NewGuid(), Name = "An Giang", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bà Rịa - Vũng Tàu", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bạc Liêu", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bắc Giang", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bắc Kạn", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bắc Ninh", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bến Tre", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bình Định", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bình Dương", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bình Phước", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Bình Thuận", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Cà Mau", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Cần Thơ", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Cao Bằng", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Đà Nẵng", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Đắk Lắk", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Đắk Nông", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Điện Biên", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Đồng Nai", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Đồng Tháp", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Gia Lai", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hà Giang", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hà Nam", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hà Nội", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hà Tĩnh", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hải Dương", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hải Phòng", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hậu Giang", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hòa Bình", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Hưng Yên", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Khánh Hòa", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Kiên Giang", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Kon Tum", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Lai Châu", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Lâm Đồng", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Lạng Sơn", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Lào Cai", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Long An", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Nam Định", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Nghệ An", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Ninh Bình", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Ninh Thuận", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Phú Thọ", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Phú Yên", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Quảng Bình", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Quảng Nam", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Quảng Ngãi", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Quảng Ninh", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Quảng Trị", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Sóc Trăng", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Sơn La", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Tây Ninh", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Thái Bình", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Thái Nguyên", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Thanh Hóa", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Thừa Thiên Huế", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Tiền Giang", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "TP. Hồ Chí Minh", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Trà Vinh", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Tuyên Quang", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Vĩnh Long", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Vĩnh Phúc", Status = "ACTIVE" },
+                new City { CityID = Guid.NewGuid(), Name = "Yên Bái", Status = "ACTIVE" }
             };
             List<Company> companies = new()
             {
                 new Company
                 {
+                    CompanyID = Guid.NewGuid(),
                     Name = "Phuong Trang",
                     Status = "ACTIVE"
                 },
                 new Company
                 {
+                     CompanyID = Guid.NewGuid(),
                     Name = "Thanh Buoi",
                     Status = "ACTIVE"
                 },
                 new Company
                 {
+                     CompanyID = Guid.NewGuid(),
                     Name = "Thanh Huy",
                     Status = "ACTIVE"
                 },
                 new Company
                 {
+                     CompanyID = Guid.NewGuid(),
                     Name = "Ngoc Tuan",
                     Status = "ACTIVE"
                 },
                 new Company
                 {
+                     CompanyID = Guid.NewGuid(),
                     Name = "My Thuong",
                     Status = "ACTIVE"
                 }
@@ -237,6 +247,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Station
                 {
+                    StationID = Guid.NewGuid(),
                     Name = "Trạm dừng chân Hưng Lộc",
                     Status = "ACTIVE",
                     City = cities[0],
@@ -244,6 +255,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Trạm dừng chân Lan Rừng",
                     Status = "ACTIVE",
                     City = cities[1],
@@ -251,6 +263,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Nhà Xe Hồng Phượng",
                     Status = "ACTIVE",
                     City = cities[2],
@@ -258,6 +271,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Trại Bò Sữa Long Thành",
                     Status = "ACTIVE",
                     City = cities[3],
@@ -265,6 +279,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Trạm Dừng Chân Sáu Nho",
                     Status = "ACTIVE",
                     City = cities[4],
@@ -272,6 +287,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Trạm Dừng Chân Tâm Châu",
                     Status = "ACTIVE",
                     City = cities[5],
@@ -279,6 +295,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Trạm dừng chân ở Bảo Lộc",
                     Status = "ACTIVE",
                     City = cities[34],
@@ -286,6 +303,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Khu du lịch Đồng Tâm",
                     Status = "ACTIVE",
                     City = cities[5],
@@ -293,6 +311,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Đồng Tháp Resort",
                     Status = "ACTIVE",
                     City = cities[19], // Đồng Tháp
@@ -300,6 +319,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "An Giang Waterpark",
                     Status = "ACTIVE",
                     City = cities[0], // An Giang
@@ -308,6 +328,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Vũng Tàu Beach Resort",
                     Status = "ACTIVE",
                     City = cities[1], // Bà Rịa - Vũng Tàu
@@ -316,6 +337,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Bạc Liêu Nature Reserve",
                     Status = "ACTIVE",
                     City = cities[2], // Bạc Liêu
@@ -324,6 +346,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Bắc Giang Eco-Park",
                     Status = "ACTIVE",
                     City = cities[3], // Bắc Giang
@@ -332,6 +355,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Bắc Kạn Highlands",
                     Status = "ACTIVE",
                     City = cities[4], // Bắc Kạn
@@ -339,6 +363,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Gia Lai Adventure Park",
                     Status = "ACTIVE",
                     City = cities[13], // Gia Lai
@@ -346,6 +371,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Gia Lai Ethnic Village",
                     Status = "ACTIVE",
                     City = cities[13], // Gia Lai
@@ -353,6 +379,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hà Giang Scenic Overlook",
                     Status = "ACTIVE",
                     City = cities[14], // Hà Giang
@@ -360,6 +387,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hà Giang Trekking Trail",
                     Status = "ACTIVE",
                     City = cities[14], // Hà Giang
@@ -367,6 +395,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hải Dương Amusement Park",
                     Status = "ACTIVE",
                     City = cities[6], // Hải Dương
@@ -374,6 +403,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hải Dương Cycling Route",
                     Status = "ACTIVE",
                     City = cities[6], // Hải Dương
@@ -381,6 +411,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hậu Giang Rice Fields",
                     Status = "ACTIVE",
                     City = cities[8], // Hậu Giang
@@ -388,6 +419,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hậu Giang Farmer's Market",
                     Status = "ACTIVE",
                     City = cities[8], // Hậu Giang
@@ -395,6 +427,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hòa Bình Dam",
                     Status = "ACTIVE",
                     City = cities[9], // Hòa Bình
@@ -402,6 +435,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hòa Bình Hiking Trail",
                     Status = "ACTIVE",
                     City = cities[9], // Hòa Bình
@@ -409,6 +443,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Gia Lai Adventure Park",
                     Status = "ACTIVE",
                     City = cities[13], // Gia Lai
@@ -416,6 +451,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Gia Lai Ethnic Village",
                     Status = "ACTIVE",
                     City = cities[13], // Gia Lai
@@ -423,6 +459,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hà Giang Scenic Overlook",
                     Status = "ACTIVE",
                     City = cities[14], // Hà Giang
@@ -430,6 +467,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hà Giang Trekking Trail",
                     Status = "ACTIVE",
                     City = cities[14], // Hà Giang
@@ -437,6 +475,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hải Dương Amusement Park",
                     Status = "ACTIVE",
                     City = cities[6], // Hải Dương
@@ -444,6 +483,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hải Dương Cycling Route",
                     Status = "ACTIVE",
                     City = cities[6], // Hải Dương
@@ -451,6 +491,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hậu Giang Rice Fields",
                     Status = "ACTIVE",
                     City = cities[8], // Hậu Giang
@@ -458,6 +499,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hậu Giang Farmer's Market",
                     Status = "ACTIVE",
                     City = cities[8], // Hậu Giang
@@ -465,6 +507,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hòa Bình Dam",
                     Status = "ACTIVE",
                     City = cities[9], // Hòa Bình
@@ -472,6 +515,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hòa Bình Hiking Trail",
                     Status = "ACTIVE",
                     City = cities[9], // Hòa Bình
@@ -479,6 +523,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Khánh Hòa Beach Resort",
                     Status = "ACTIVE",
                     City = cities[15], // Khánh Hòa
@@ -486,6 +531,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Khánh Hòa Diving Center",
                     Status = "ACTIVE",
                     City = cities[15], // Khánh Hòa
@@ -493,6 +539,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Kiên Giang Floating Market",
                     Status = "ACTIVE",
                     City = cities[16], // Kiên Giang
@@ -500,6 +547,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Kiên Giang Mangrove Tour",
                     Status = "ACTIVE",
                     City = cities[16], // Kiên Giang
@@ -507,6 +555,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Kon Tum Tribal Village",
                     Status = "ACTIVE",
                     City = cities[17], // Kon Tum
@@ -514,6 +563,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Kon Tum Eco-Lodge",
                     Status = "ACTIVE",
                     City = cities[17], // Kon Tum
@@ -521,6 +571,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lai Châu Trekking Adventures",
                     Status = "ACTIVE",
                     City = cities[18], // Lai Châu
@@ -528,6 +579,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lai Châu Minority Cultural Center",
                     Status = "ACTIVE",
                     City = cities[18], // Lai Châu
@@ -535,6 +587,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lâm Đồng Coffee Plantation Tour",
                     Status = "ACTIVE",
                     City = cities[19], // Lâm Đồng
@@ -542,6 +595,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lâm Đồng Flower Gardens",
                     Status = "ACTIVE",
                     City = cities[19], // Lâm Đồng
@@ -549,6 +603,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lạng Sơn Frontier Market",
                     Status = "ACTIVE",
                     City = cities[20], // Lạng Sơn
@@ -556,6 +611,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lạng Sơn Hiking Trails",
                     Status = "ACTIVE",
                     City = cities[20], // Lạng Sơn
@@ -563,6 +619,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lào Cai Sapa Trekking",
                     Status = "ACTIVE",
                     City = cities[21], // Lào Cai
@@ -570,6 +627,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lào Cai Bắc Hà Market",
                     Status = "ACTIVE",
                     City = cities[21], // Lào Cai
@@ -577,6 +635,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Long An Eco-Resort",
                     Status = "ACTIVE",
                     City = cities[22], // Long An
@@ -584,6 +643,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Long An Nature Reserve",
                     Status = "ACTIVE",
                     City = cities[22], // Long An
@@ -591,6 +651,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Nam Định Ancient Citadel",
                     Status = "ACTIVE",
                     City = cities[23], // Nam Định
@@ -598,6 +659,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Nam Định Temple Complex",
                     Status = "ACTIVE",
                     City = cities[23], // Nam Định
@@ -605,6 +667,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Nghệ An Phong Nha Cave",
                     Status = "ACTIVE",
                     City = cities[24], // Nghệ An
@@ -612,6 +675,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Nghệ An Xuan Truong Beach",
                     Status = "ACTIVE",
                     City = cities[24], // Nghệ An
@@ -619,6 +683,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Ninh Bình Trang An Grottoes",
                     Status = "ACTIVE",
                     City = cities[25], // Ninh Bình
@@ -626,6 +691,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Ninh Bình Tam Cốc Boat Tour",
                     Status = "ACTIVE",
                     City = cities[25], // Ninh Bình
@@ -633,6 +699,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Ninh Thuận Sailing Adventures",
                     Status = "ACTIVE",
                     City = cities[26], // Ninh Thuận
@@ -640,6 +707,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Ninh Thuận Kê Gà Beach",
                     Status = "ACTIVE",
                     City = cities[26], // Ninh Thuận
@@ -647,6 +715,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Phú Thọ Đình Bảng Festival",
                     Status = "ACTIVE",
                     City = cities[27], // Phú Thọ
@@ -654,6 +723,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Phú Thọ Hùng Temple",
                     Status = "ACTIVE",
                     City = cities[27], // Phú Thọ
@@ -661,6 +731,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Bình Phong Nha-Kẻ Bàng National Park",
                     Status = "ACTIVE",
                     City = cities[28], // Quảng Bình
@@ -668,6 +739,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Bình Grottoes of Mỹ Đức",
                     Status = "ACTIVE",
                     City = cities[28], // Quảng Bình
@@ -675,6 +747,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Nam Hội An Ancient Town",
                     Status = "ACTIVE",
                     City = cities[29], // Quảng Nam
@@ -682,6 +755,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Nam Mỹ Sơn Sanctuary",
                     Status = "ACTIVE",
                     City = cities[29], // Quảng Nam
@@ -689,6 +763,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Ninh Hạ Long Bay",
                     Status = "ACTIVE",
                     City = cities[30], // Quảng Ninh
@@ -696,6 +771,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Ninh Yên Tử Mountain",
                     Status = "ACTIVE",
                     City = cities[30], // Quảng Ninh
@@ -703,6 +779,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Sóc Trăng Khmer Pagodas",
                     Status = "ACTIVE",
                     City = cities[31], // Sóc Trăng
@@ -710,6 +787,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Sóc Trăng Fruit Gardens",
                     Status = "ACTIVE",
                     City = cities[31], // Sóc Trăng
@@ -717,6 +795,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Sơn La Mộc Châu Plateau",
                     Status = "ACTIVE",
                     City = cities[32], // Sơn La
@@ -724,6 +803,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Sơn La Pha Luông National Park",
                     Status = "ACTIVE",
                     City = cities[32], // Sơn La
@@ -731,6 +811,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Tây Ninh Bà Đen Mountain",
                     Status = "ACTIVE",
                     City = cities[33], // Tây Ninh
@@ -738,6 +819,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Tây Ninh Cao Đài Temple",
                     Status = "ACTIVE",
                     City = cities[33], // Tây Ninh
@@ -745,6 +827,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Thái Bình Ancient Pagodas",
                     Status = "ACTIVE",
                     City = cities[34], // Thái Bình
@@ -752,6 +835,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Thái Bình Lộc Vượn Nature Reserve",
                     Status = "ACTIVE",
                     City = cities[34], // Thái Bình
@@ -759,6 +843,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Thanh Hóa Hồ Sơn Temple",
                     Status = "ACTIVE",
                     City = cities[35], // Thanh Hóa
@@ -766,6 +851,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Thanh Hóa Cửa Lò Beach",
                     Status = "ACTIVE",
                     City = cities[35], // Thanh Hóa
@@ -773,6 +859,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Thừa Thiên Huế Perfume River Cruise",
                     Status = "ACTIVE",
                     City = cities[36], // Thừa Thiên Huế
@@ -780,6 +867,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Thừa Thiên Huế Imperial City",
                     Status = "ACTIVE",
                     City = cities[36], // Thừa Thiên Huế
@@ -787,6 +875,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Tiền Giang Mekong Delta Floating Market",
                     Status = "ACTIVE",
                     City = cities[37], // Tiền Giang
@@ -794,6 +883,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Tiền Giang Gò Công Seafood",
                     Status = "ACTIVE",
                     City = cities[37], // Tiền Giang
@@ -801,6 +891,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Trà Vinh Khmer Minority Villages",
                     Status = "ACTIVE",
                     City = cities[38], // Trà Vinh
@@ -808,6 +899,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Trà Vinh Cồn Phụng Ecotourism Site",
                     Status = "ACTIVE",
                     City = cities[38], // Trà Vinh
@@ -815,6 +907,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Tuyên Quang Ba Bể National Park",
                     Status = "ACTIVE",
                     City = cities[39], // Tuyên Quang
@@ -822,6 +915,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Tuyên Quang Tây Thiên Pagoda",
                     Status = "ACTIVE",
                     City = cities[39], // Tuyên Quang
@@ -829,6 +923,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Vĩnh Long Cái Bè Floating Market",
                     Status = "ACTIVE",
                     City = cities[40], // Vĩnh Long
@@ -836,6 +931,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Vĩnh Long Vườn Xoài",
                     Status = "ACTIVE",
                     City = cities[40], // Vĩnh Long
@@ -843,6 +939,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Vĩnh Phúc Tam Đảo National Park",
                     Status = "ACTIVE",
                     City = cities[41], // Vĩnh Phúc
@@ -850,6 +947,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Vĩnh Phúc Phượng Hoàng Castle",
                     Status = "ACTIVE",
                     City = cities[41], // Vĩnh Phúc
@@ -857,6 +955,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Yên Bái Tú Lệ Rice Terraces",
                     Status = "ACTIVE",
                     City = cities[42], // Yên Bái
@@ -864,6 +963,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Yên Bái Mù Căng Chải Waterfall",
                     Status = "ACTIVE",
                     City = cities[42], // Yên Bái
@@ -871,6 +971,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Bắc Kạn Ba Bể National Park",
                     Status = "ACTIVE",
                     City = cities[43], // Bắc Kạn
@@ -878,6 +979,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Bắc Kạn Cao Bằng Geopark",
                     Status = "ACTIVE",
                     City = cities[43], // Bắc Kạn
@@ -885,6 +987,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Cao Bằng Cao Bằng Caves",
                     Status = "ACTIVE",
                     City = cities[44], // Cao Bằng
@@ -892,6 +995,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Cao Bằng Đồng Đăng Border Gate",
                     Status = "ACTIVE",
                     City = cities[44], // Cao Bằng
@@ -899,6 +1003,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Điện Biên Điện Biên Phu Battlefield",
                     Status = "ACTIVE",
                     City = cities[45], // Điện Biên
@@ -906,6 +1011,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Điện Biên Sapa Terraced Fields",
                     Status = "ACTIVE",
                     City = cities[45], // Điện Biên
@@ -913,6 +1019,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Đắk Lắk Buôn Mê Thuột Coffee Plantations",
                     Status = "ACTIVE",
                     City = cities[46], // Đắk Lắk
@@ -920,6 +1027,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Đắk Lắk Yok Đôn National Park",
                     Status = "ACTIVE",
                     City = cities[46], // Đắk Lắk
@@ -927,6 +1035,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Đắk Nông Đăk Nông Geopark",
                     Status = "ACTIVE",
                     City = cities[47], // Đắk Nông
@@ -934,6 +1043,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Đắk Nông Gia Nghĩa Town",
                     Status = "ACTIVE",
                     City = cities[47], // Đắk Nông
@@ -941,6 +1051,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Gia Lai Kon Tum Ethnic Minority Villages",
                     Status = "ACTIVE",
                     City = cities[48], // Gia Lai
@@ -948,6 +1059,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Gia Lai Pleiku War Remnants Museum",
                     Status = "ACTIVE",
                     City = cities[48], // Gia Lai
@@ -955,6 +1067,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hà Giang Mã Pí Lèng Pass",
                     Status = "ACTIVE",
                     City = cities[49], // Hà Giang
@@ -962,6 +1075,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Hà Giang Lung Củng Village",
                     Status = "ACTIVE",
                     City = cities[49], // Hà Giang
@@ -969,6 +1083,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Kon Tum Kon Tum Cathedral",
                     Status = "ACTIVE",
                     City = cities[50], // Kon Tum
@@ -976,6 +1091,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Kon Tum Ngọc Linh Mountains",
                     Status = "ACTIVE",
                     City = cities[50], // Kon Tum
@@ -983,6 +1099,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lai Châu Sơn La Reservoir",
                     Status = "ACTIVE",
                     City = cities[51], // Lai Châu
@@ -990,6 +1107,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lai Châu Hoàng Liên Sơn Nature Reserve",
                     Status = "ACTIVE",
                     City = cities[51], // Lai Châu
@@ -997,6 +1115,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lâm Đồng Đà Lạt Flower Gardens",
                     Status = "ACTIVE",
                     City = cities[52], // Lâm Đồng
@@ -1004,6 +1123,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lâm Đồng Liên Khương Airbase",
                     Status = "ACTIVE",
                     City = cities[52], // Lâm Đồng
@@ -1011,6 +1131,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lạng Sơn Mẫu Temple",
                     Status = "ACTIVE",
                     City = cities[53], // Lạng Sơn
@@ -1018,6 +1139,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lạng Sơn Đồng Đăng Border Gate",
                     Status = "ACTIVE",
                     City = cities[53], // Lạng Sơn
@@ -1025,6 +1147,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lào Cai Sa Pa Cultural Center",
                     Status = "ACTIVE",
                     City = cities[54], // Lào Cai
@@ -1032,6 +1155,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lào Cai Fansipan Mountain",
                     Status = "ACTIVE",
                     City = cities[54], // Lào Cai
@@ -1039,6 +1163,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Lào Cai Bát Xát District",
                     Status = "ACTIVE",
                     City = cities[54], // Lào Cai
@@ -1046,6 +1171,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Nghệ An Vinh City",
                     Status = "ACTIVE",
                     City = cities[55], // Nghệ An
@@ -1053,6 +1179,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Nghệ An Phong Nha-Kẻ Bàng National Park",
                     Status = "ACTIVE",
                     City = cities[55], // Nghệ An
@@ -1060,6 +1187,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Ninh Bình Tam Cốc Bích Động",
                     Status = "ACTIVE",
                     City = cities[56], // Ninh Bình
@@ -1067,6 +1195,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Ninh Bình Cúc Phương National Park",
                     Status = "ACTIVE",
                     City = cities[56], // Ninh Bình
@@ -1074,6 +1203,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Ninh Thuận Phan Rang-Tháp Chàm",
                     Status = "ACTIVE",
                     City = cities[57], // Ninh Thuận
@@ -1081,6 +1211,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Ninh Thuận Vĩnh Hy Bay",
                     Status = "ACTIVE",
                     City = cities[57], // Ninh Thuận
@@ -1088,6 +1219,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Bình Phong Nha Caves",
                     Status = "ACTIVE",
                     City = cities[58], // Quảng Bình
@@ -1095,6 +1227,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Bình Phong Nha-Kẻ Bàng National Park",
                     Status = "ACTIVE",
                     City = cities[58], // Quảng Bình
@@ -1102,6 +1235,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Nam Hội An Ancient Town",
                     Status = "ACTIVE",
                     City = cities[59], // Quảng Nam
@@ -1109,6 +1243,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Nam Mỹ Sơn Sanctuary",
                     Status = "ACTIVE",
                     City = cities[59], // Quảng Nam
@@ -1116,6 +1251,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Ngãi Lý Sơn Island",
                     Status = "ACTIVE",
                     City = cities[60], // Quảng Ngãi
@@ -1123,6 +1259,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Ngãi Côn Đảo National Park",
                     Status = "ACTIVE",
                     City = cities[60], // Quảng Ngãi
@@ -1130,6 +1267,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Ninh Hạ Long Bay",
                     Status = "ACTIVE",
                     City = cities[61], // Quảng Ninh
@@ -1137,6 +1275,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Ninh Yên Tử Mountain",
                     Status = "ACTIVE",
                     City = cities[61], // Quảng Ninh
@@ -1144,6 +1283,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Trị Citadel of Quảng Trị",
                     Status = "ACTIVE",
                     City = cities[62], // Quảng Trị
@@ -1151,6 +1291,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station
                 {
+                     StationID = Guid.NewGuid(),
                     Name = "Quảng Trị Vinh Moc Tunnels",
                     Status = "ACTIVE",
                     City = cities[62], // Quảng Trị
@@ -1162,6 +1303,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[57],
                     ToCity = cities[55],
                     StartLocation = "Bưu điện trung tâm TP. Hồ Chí Minh",
@@ -1170,6 +1312,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[3],
                     ToCity = cities[57],
                     StartLocation = "Ngã ba Cái Mép",
@@ -1178,6 +1321,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[1],
                     ToCity = cities[57],
                     StartLocation = "Bãi Trước",
@@ -1186,6 +1330,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[57],
                     ToCity = cities[12],
                     StartLocation = " Bến xe miền tây",
@@ -1194,6 +1339,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[57],
                     ToCity = cities[30],
                     StartLocation = "Công viên 23/9, Quận 1",
@@ -1202,6 +1348,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[57],
                     ToCity = cities[15],
                     StartLocation = "Bến Xe Miền Đông",
@@ -1210,6 +1357,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[6],
                     ToCity = cities[57],
                     StartLocation = " Bến Tre Bus Station",
@@ -1218,6 +1366,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[57],
                     ToCity = cities[34],
                     StartLocation = "Bến Xe Miền Đông",
@@ -1226,6 +1375,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[57],
                     ToCity = cities[1],
                     StartLocation = "Bến Xe Miền Đông",
@@ -1234,6 +1384,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[0], // An Giang
                     ToCity = cities[11], // Cà Mau
                     StartLocation = "Bến Xe An Giang",
@@ -1242,7 +1393,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
-                    FromCity = cities[24], // Hà Nội 
+                    RouteID = Guid.NewGuid(),
+                    FromCity = cities[24], // Hà Nội
                     ToCity = cities[14], // Đà Nẵng
                     StartLocation = "Bến Xe Giáp Bát",
                     EndLocation = "Bến Xe Đà Nẵng",
@@ -1250,6 +1402,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[54], // TP. Hồ Chí Minh
                     ToCity = cities[36], // Kiên Giang
                     StartLocation = "Bến Xe Miền Tây",
@@ -1258,6 +1411,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[41], // Lào Cai
                     ToCity = cities[22], // Hà Giang
                     StartLocation = "Bến Xe Lào Cai",
@@ -1266,6 +1420,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[2], // Bạc Liêu
                     ToCity = cities[13], // Cần Thơ
                     StartLocation = "Bến Xe Bạc Liêu",
@@ -1274,6 +1429,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[6], // Bến Tre
                     ToCity = cities[53], // Tiền Giang
                     StartLocation = "Bến Xe Bến Tre",
@@ -1282,14 +1438,16 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[29], // Hải Phòng
-                    ToCity = cities[15], // Đắk Lắk 
+                    ToCity = cities[15], // Đắk Lắk
                     StartLocation = "Bến Xe Hải Phòng",
                     EndLocation = "Bến Xe Buôn Ma Thuột",
                     Status = "ACTIVE"
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[35], // Kon Tum
                     ToCity = cities[21], // Gia Lai
                     StartLocation = "Bến Xe Kon Tum",
@@ -1298,6 +1456,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[46], // Nghệ An
                     ToCity = cities[25], // Hà Tĩnh
                     StartLocation = "Bến Xe Vinh",
@@ -1306,6 +1465,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[10], // Cao Bằng
                     ToCity = cities[41], // Lào Cai
                     StartLocation = "Bến Xe Cao Bằng",
@@ -1314,6 +1474,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[32], // Hòa Bình
                     ToCity = cities[38], // Lai Châu
                     StartLocation = "Bến Xe Hòa Bình",
@@ -1322,6 +1483,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[19], // Đắk Nông
                     ToCity = cities[52], // Tây Ninh
                     StartLocation = "Bến Xe Gia Nghĩa",
@@ -1330,6 +1492,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[9], // Cần Thơ
                     ToCity = cities[36], // Kiên Giang
                     StartLocation = "Bến Xe Cần Thơ",
@@ -1338,6 +1501,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[28], // Hải Dương
                     ToCity = cities[29], // Hải Phòng
                     StartLocation = "Bến Xe Hải Dương",
@@ -1346,6 +1510,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[43], // Ninh Bình
                     ToCity = cities[48], // Phú Thọ
                     StartLocation = "Bến Xe Ninh Bình",
@@ -1354,6 +1519,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[33], // Hưng Yên
                     ToCity = cities[26], // Hải Dương
                     StartLocation = "Bến Xe Hưng Yên",
@@ -1362,6 +1528,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[18], // Đắk Lắk
                     ToCity = cities[35], // Kon Tum
                     StartLocation = "Bến Xe Buôn Ma Thuột",
@@ -1370,6 +1537,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[20], // Điện Biên
                     ToCity = cities[45], // Nghệ An
                     StartLocation = "Bến Xe Điện Biên Phủ",
@@ -1378,6 +1546,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[23], // Hà Nam
                     ToCity = cities[43], // Ninh Bình
                     StartLocation = "Bến Xe Phủ Lý",
@@ -1386,6 +1555,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[12], // Đắk Nông
                     ToCity = cities[31], // Hòa Bình
                     StartLocation = "Bến Xe Gia Nghĩa",
@@ -1394,6 +1564,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[39], // Lâm Đồng
                     ToCity = cities[54], // TP. Hồ Chí Minh
                     StartLocation = "Bến Xe Đà Lạt",
@@ -1402,6 +1573,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[47], // Phú Yên
                     ToCity = cities[51], // Quảng Bình
                     StartLocation = "Bến Xe Tuy Hòa",
@@ -1410,6 +1582,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[50], // Quảng Nam
                     ToCity = cities[14], // Đà Nẵng
                     StartLocation = "Bến Xe Tam Kỳ",
@@ -1418,6 +1591,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[55], // Vĩnh Long
                     ToCity = cities[6], // Bến Tre
                     StartLocation = "Bến Xe Vĩnh Long",
@@ -1426,6 +1600,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[11], // Cà Mau
                     ToCity = cities[37], // Kiên Giang
                     StartLocation = "Bến Xe Cà Mau",
@@ -1434,6 +1609,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[24], // Hà Tĩnh
                     ToCity = cities[27], // Hậu Giang
                     StartLocation = "Bến Xe Hà Tĩnh",
@@ -1442,6 +1618,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[42], // Nam Định
                     ToCity = cities[23], // Hà Nam
                     StartLocation = "Bến Xe Nam Định",
@@ -1450,6 +1627,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[49], // Quảng Ngãi
                     ToCity = cities[50], // Quảng Nam
                     StartLocation = "Bến Xe Quảng Ngãi",
@@ -1458,6 +1636,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[22], // Gia Lai
                     ToCity = cities[12], // Đắk Nông
                     StartLocation = "Bến Xe Gia Lai",
@@ -1466,6 +1645,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[40], // Lạng Sơn
                     ToCity = cities[43], // Ninh Bình
                     StartLocation = "Bến Xe Lạng Sơn",
@@ -1474,6 +1654,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[13], // Đồng Nai
                     ToCity = cities[39], // Lâm Đồng
                     StartLocation = "Bến Xe Biên Hòa",
@@ -1482,6 +1663,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[21], // Đồng Tháp
                     ToCity = cities[8], // Cà Mau
                     StartLocation = "Bến Xe Cao Lãnh",
@@ -1490,6 +1672,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[46], // Phú Thọ
                     ToCity = cities[20], // Điện Biên
                     StartLocation = "Bến Xe Việt Trì",
@@ -1498,6 +1681,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[44], // Ninh Thuận
                     ToCity = cities[47], // Phú Yên
                     StartLocation = "Bến Xe Phan Rang",
@@ -1506,6 +1690,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[28], // Hậu Giang
                     ToCity = cities[55], // Vĩnh Long
                     StartLocation = "Bến Xe Vị Thanh",
@@ -1514,6 +1699,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[38], // Lào Cai
                     ToCity = cities[40], // Lạng Sơn
                     StartLocation = "Bến Xe Lào Cai",
@@ -1522,6 +1708,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[7], // Bình Định
                     ToCity = cities[49], // Quảng Ngãi
                     StartLocation = "Bến Xe Quy Nhơn",
@@ -1530,6 +1717,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[36], // Lai Châu
                     ToCity = cities[5], // Bắc Giang
                     StartLocation = "Bến Xe Lai Châu",
@@ -1538,6 +1726,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[30], // Hà Giang
                     ToCity = cities[19], // Đắk Nông
                     StartLocation = "Bến Xe Hà Giang",
@@ -1546,6 +1735,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[15], // Đắk Lắk
                     ToCity = cities[22], // Gia Lai
                     StartLocation = "Bến Xe Buôn Ma Thuột",
@@ -1554,6 +1744,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[26], // Hải Phòng
                     ToCity = cities[41], // Lạng Sơn
                     StartLocation = "Bến Xe Hải Phòng",
@@ -1562,6 +1753,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[10], // Bình Thuận
                     ToCity = cities[44], // Ninh Thuận
                     StartLocation = "Bến Xe Phan Thiết",
@@ -1570,6 +1762,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[3], // Bắc Kạn
                     ToCity = cities[35], // Kon Tum
                     StartLocation = "Bến Xe Bắc Kạn",
@@ -1578,6 +1771,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[48], // Quảng Ninh
                     ToCity = cities[29], // Hải Dương
                     StartLocation = "Bến Xe Hạ Long",
@@ -1586,6 +1780,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[1], // Bà Rịa - Vũng Tàu
                     ToCity = cities[6], // Bắc Ninh
                     StartLocation = "Bến Xe Vũng Tàu",
@@ -1594,6 +1789,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[25], // Hà Nội
                     ToCity = cities[31], // Hà Nam
                     StartLocation = "Bến Xe Mỹ Đình",
@@ -1602,6 +1798,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[2], // Bắc Giang
                     ToCity = cities[32], // Hà Tĩnh
                     StartLocation = "Bến Xe Bắc Giang",
@@ -1610,6 +1807,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[45], // Phú Thọ
                     ToCity = cities[4], // Bắc Ninh
                     StartLocation = "Bến Xe Việt Trì",
@@ -1618,6 +1816,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Route
                 {
+                    RouteID = Guid.NewGuid(),
                     FromCity = cities[18], // Cao Bằng
                     ToCity = cities[51], // Quảng Trị
                     StartLocation = "Bến Xe Cao Bằng",
@@ -1629,6 +1828,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[0],
                     Station = stations[0],
                     Status = "ACTIVE",
@@ -1636,20 +1836,25 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[0],
+
                     Station = stations[1],
                     Status = "ACTIVE",
                     OrderInRoute = 2
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[0],
+
                     Station = stations[4],
                     Status = "ACTIVE",
                     OrderInRoute =3
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[1],
                     Station = stations[2],
                     Status = "ACTIVE",
@@ -1657,6 +1862,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[1],
                     Station = stations[0],
                     Status = "ACTIVE",
@@ -1664,6 +1870,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[1],
                     Station = stations[1],
                     Status = "ACTIVE",
@@ -1671,6 +1878,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[1],
                     Station = stations[5],
                     Status = "ACTIVE",
@@ -1678,6 +1886,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[1],
                     Station = stations[4],
                     Status = "ACTIVE",
@@ -1685,6 +1894,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[2],
                     Station = stations[0],
                     Status = "ACTIVE",
@@ -1692,6 +1902,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[2],
                     Station = stations[1],
                     Status = "ACTIVE",
@@ -1699,6 +1910,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[2],
                     Station = stations[5],
                     Status = "ACTIVE",
@@ -1706,6 +1918,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[2],
                     Station = stations[3],
                     Status = "ACTIVE",
@@ -1713,6 +1926,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[3],
                     Station = stations[1],
                     Status = "ACTIVE",
@@ -1720,6 +1934,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[3],
                     Station = stations[2],
                     Status = "ACTIVE",
@@ -1727,6 +1942,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[3],
                     Station = stations[5],
                     Status = "ACTIVE",
@@ -1734,6 +1950,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[3],
                     Station = stations[7],
                     Status = "ACTIVE",
@@ -1741,6 +1958,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[4],
                     Station = stations[1],
                     Status = "ACTIVE",
@@ -1748,6 +1966,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[4],
                     Station = stations[2],
                     Status = "ACTIVE",
@@ -1755,6 +1974,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[4],
                     Station = stations[3],
                     Status = "ACTIVE",
@@ -1762,6 +1982,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[4],
                     Station = stations[7],
                     Status = "ACTIVE",
@@ -1769,6 +1990,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[5],
                     Station = stations[1],
                     Status = "ACTIVE",
@@ -1776,6 +1998,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[5],
                     Station = stations[2],
                     Status = "ACTIVE",
@@ -1783,6 +2006,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[5],
                     Station = stations[5],
                     Status = "ACTIVE",
@@ -1790,6 +2014,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[6],
                     Station = stations[0],
                     Status = "ACTIVE",
@@ -1797,6 +2022,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[6],
                     Station = stations[1],
                     Status = "ACTIVE",
@@ -1804,6 +2030,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[6],
                     Station = stations[2],
                     Status = "ACTIVE",
@@ -1811,6 +2038,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[6],
                     Station = stations[4],
                     Status = "ACTIVE",
@@ -1818,6 +2046,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[6],
                     Station = stations[7],
                     Status = "ACTIVE",
@@ -1825,6 +2054,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[6],
                     Station = stations[3],
                     Status = "ACTIVE",
@@ -1832,6 +2062,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[6],
                     Station = stations[5],
                     Status = "ACTIVE",
@@ -1839,6 +2070,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[7],
                     Station = stations[0],
                     Status = "ACTIVE",
@@ -1846,6 +2078,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[7],
                     Station = stations[1],
                     Status = "ACTIVE",
@@ -1853,6 +2086,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[7],
                     Station = stations[2],
                     Status = "ACTIVE",
@@ -1860,6 +2094,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[7],
                     Station = stations[4],
                     Status = "ACTIVE",
@@ -1867,6 +2102,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[7],
                     Station = stations[7],
                     Status = "ACTIVE",
@@ -1874,6 +2110,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[13],
                     Station = stations[20],
                     Status = "ACTIVE",
@@ -1881,6 +2118,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[13],
                     Station = stations[45],
                     Status = "ACTIVE",
@@ -1888,6 +2126,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[13],
                     Station = stations[68],
                     Status = "ACTIVE",
@@ -1895,6 +2134,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[13],
                     Station = stations[92],
                     Status = "ACTIVE",
@@ -1902,6 +2142,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[13],
                     Station = stations[115],
                     Status = "ACTIVE",
@@ -1909,6 +2150,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[16],
                     Station = stations[30],
                     Status = "ACTIVE",
@@ -1916,6 +2158,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[16],
                     Station = stations[48],
                     Status = "ACTIVE",
@@ -1923,6 +2166,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[16],
                     Station = stations[75],
                     Status = "ACTIVE",
@@ -1930,6 +2174,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[16],
                     Station = stations[102],
                     Status = "ACTIVE",
@@ -1937,6 +2182,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[19],
                     Station = stations[11],
                     Status = "ACTIVE",
@@ -1944,6 +2190,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[19],
                     Station = stations[27],
                     Status = "ACTIVE",
@@ -1951,6 +2198,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[19],
                     Station = stations[53],
                     Status = "ACTIVE",
@@ -1958,6 +2206,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[19],
                     Station = stations[89],
                     Status = "ACTIVE",
@@ -1965,6 +2214,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[28],
                     Station = stations[4],
                     Status = "ACTIVE",
@@ -1972,6 +2222,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[28],
                     Station = stations[18],
                     Status = "ACTIVE",
@@ -1979,6 +2230,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[28],
                     Station = stations[41],
                     Status = "ACTIVE",
@@ -1986,6 +2238,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[28],
                     Station = stations[67],
                     Status = "ACTIVE",
@@ -1993,6 +2246,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[18],
                     Station = stations[22],
                     Status = "ACTIVE",
@@ -2000,6 +2254,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[18],
                     Station = stations[49],
                     Status = "ACTIVE",
@@ -2007,6 +2262,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[18],
                     Station = stations[78],
                     Status = "ACTIVE",
@@ -2014,6 +2270,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[18],
                     Station = stations[110],
                     Status = "ACTIVE",
@@ -2021,6 +2278,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[14],
                     Station = stations[8],
                     Status = "ACTIVE",
@@ -2028,6 +2286,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[14],
                     Station = stations[31],
                     Status = "ACTIVE",
@@ -2035,6 +2294,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[14],
                     Station = stations[57],
                     Status = "ACTIVE",
@@ -2042,6 +2302,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[14],
                     Station = stations[94],
                     Status = "ACTIVE",
@@ -2049,6 +2310,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[23],
                     Station = stations[2],
                     Status = "ACTIVE",
@@ -2056,6 +2318,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[23],
                     Station = stations[24],
                     Status = "ACTIVE",
@@ -2063,6 +2326,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[23],
                     Station = stations[46],
                     Status = "ACTIVE",
@@ -2070,6 +2334,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[23],
                     Station = stations[79],
                     Status = "ACTIVE",
@@ -2077,6 +2342,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[20],
                     Station = stations[15],
                     Status = "ACTIVE",
@@ -2084,6 +2350,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[20],
                     Station = stations[36],
                     Status = "ACTIVE",
@@ -2091,6 +2358,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[20],
                     Station = stations[62],
                     Status = "ACTIVE",
@@ -2098,6 +2366,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[20],
                     Station = stations[87],
                     Status = "ACTIVE",
@@ -2105,6 +2374,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[11],
                     Station = stations[5],
                     Status = "ACTIVE",
@@ -2112,6 +2382,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[11],
                     Station = stations[26],
                     Status = "ACTIVE",
@@ -2119,6 +2390,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[11],
                     Station = stations[51],
                     Status = "ACTIVE",
@@ -2126,6 +2398,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[11],
                     Station = stations[81],
                     Status = "ACTIVE",
@@ -2133,6 +2406,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[17],
                     Station = stations[13],
                     Status = "ACTIVE",
@@ -2140,6 +2414,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[17],
                     Station = stations[34],
                     Status = "ACTIVE",
@@ -2147,6 +2422,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[17],
                     Station = stations[59],
                     Status = "ACTIVE",
@@ -2154,6 +2430,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[17],
                     Station = stations[91],
                     Status = "ACTIVE",
@@ -2161,6 +2438,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[8],
                     Station = stations[20],
                     Status = "ACTIVE",
@@ -2168,6 +2446,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[8],
                     Station = stations[42],
                     Status = "ACTIVE",
@@ -2175,6 +2454,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[8],
                     Station = stations[69],
                     Status = "ACTIVE",
@@ -2182,6 +2462,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[8],
                     Station = stations[96],
                     Status = "ACTIVE",
@@ -2189,6 +2470,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[15],
                     Station = stations[9],
                     Status = "ACTIVE",
@@ -2196,6 +2478,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[15],
                     Station = stations[33],
                     Status = "ACTIVE",
@@ -2203,6 +2486,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[15],
                     Station = stations[56],
                     Status = "ACTIVE",
@@ -2210,6 +2494,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[15],
                     Station = stations[89],
                     Status = "ACTIVE",
@@ -2217,6 +2502,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[22],
                     Station = stations[1],
                     Status = "ACTIVE",
@@ -2224,6 +2510,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[22],
                     Station = stations[23],
                     Status = "ACTIVE",
@@ -2231,6 +2518,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[22],
                     Station = stations[45],
                     Status = "ACTIVE",
@@ -2238,6 +2526,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[22],
                     Station = stations[77],
                     Status = "ACTIVE",
@@ -2245,6 +2534,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[21],
                     Station = stations[11],
                     Status = "ACTIVE",
@@ -2252,6 +2542,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[21],
                     Station = stations[32],
                     Status = "ACTIVE",
@@ -2259,6 +2550,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[21],
                     Station = stations[54],
                     Status = "ACTIVE",
@@ -2266,6 +2558,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[21],
                     Station = stations[85],
                     Status = "ACTIVE",
@@ -2273,6 +2566,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[24],
                     Station = stations[16],
                     Status = "ACTIVE",
@@ -2280,6 +2574,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[24],
                     Station = stations[37],
                     Status = "ACTIVE",
@@ -2287,6 +2582,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[24],
                     Station = stations[63],
                     Status = "ACTIVE",
@@ -2294,6 +2590,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[24],
                     Station = stations[88],
                     Status = "ACTIVE",
@@ -2301,6 +2598,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[12],
                     Station = stations[6],
                     Status = "ACTIVE",
@@ -2308,6 +2606,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[12],
                     Station = stations[27],
                     Status = "ACTIVE",
@@ -2315,6 +2614,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[12],
                     Station = stations[52],
                     Status = "ACTIVE",
@@ -2322,6 +2622,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Route
                 {
+                    Station_RouteID = Guid.NewGuid(),
                     Route = routes[12],
                     Station = stations[82],
                     Status = "ACTIVE",
@@ -2332,30 +2633,35 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[0],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[1],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[2],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[3],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[17],
                     Status = "ACTIVE"
@@ -2363,6 +2669,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[29],
                     Status = "ACTIVE"
@@ -2370,6 +2677,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[41],
                     Status = "ACTIVE"
@@ -2377,12 +2685,14 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[8],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[10],
                     Status = "ACTIVE"
@@ -2390,6 +2700,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[32],
                     Status = "ACTIVE"
@@ -2397,6 +2708,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[22],
                     Status = "ACTIVE"
@@ -2404,6 +2716,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[47],
                     Status = "ACTIVE"
@@ -2411,6 +2724,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[6],
                     Status = "ACTIVE"
@@ -2418,6 +2732,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[19],
                     Status = "ACTIVE"
@@ -2425,6 +2740,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[38],
                     Status = "ACTIVE"
@@ -2432,6 +2748,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[13],
                     Status = "ACTIVE"
@@ -2439,6 +2756,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[52],
                     Status = "ACTIVE"
@@ -2446,12 +2764,14 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[25],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[11],
                     Status = "ACTIVE"
@@ -2459,6 +2779,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[24],
                     Status = "ACTIVE"
@@ -2466,6 +2787,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[43],
                     Status = "ACTIVE"
@@ -2473,6 +2795,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[7],
                     Status = "ACTIVE"
@@ -2480,6 +2803,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[31],
                     Status = "ACTIVE"
@@ -2487,6 +2811,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[14],
                     Status = "ACTIVE"
@@ -2494,6 +2819,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[27],
                     Status = "ACTIVE"
@@ -2501,6 +2827,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[5],
                     Status = "ACTIVE"
@@ -2508,6 +2835,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[36],
                     Status = "ACTIVE"
@@ -2515,12 +2843,14 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[18],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[9],
                     Status = "ACTIVE"
@@ -2528,6 +2858,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[28],
                     Status = "ACTIVE"
@@ -2535,6 +2866,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[40],
                     Status = "ACTIVE"
@@ -2542,6 +2874,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[52],
                     Status = "ACTIVE"
@@ -2549,6 +2882,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[16],
                     Status = "ACTIVE"
@@ -2556,6 +2890,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[34],
                     Status = "ACTIVE"
@@ -2563,6 +2898,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[21],
                     Status = "ACTIVE"
@@ -2570,6 +2906,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[46],
                     Status = "ACTIVE"
@@ -2577,6 +2914,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[12],
                     Status = "ACTIVE"
@@ -2584,12 +2922,14 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[35],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[13],
                     Status = "ACTIVE"
@@ -2597,6 +2937,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[37],
                     Status = "ACTIVE"
@@ -2604,6 +2945,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[23],
                     Status = "ACTIVE"
@@ -2611,6 +2953,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[45],
                     Status = "ACTIVE"
@@ -2618,6 +2961,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[8],
                     Status = "ACTIVE"
@@ -2625,6 +2969,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[29],
                     Status = "ACTIVE"
@@ -2632,6 +2977,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[51],
                     Status = "ACTIVE"
@@ -2639,6 +2985,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[15],
                     Status = "ACTIVE"
@@ -2646,6 +2993,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[39],
                     Status = "ACTIVE"
@@ -2653,12 +3001,14 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[4],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[53],
                     Status = "ACTIVE"
@@ -2666,6 +3016,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[17],
                     Status = "ACTIVE"
@@ -2673,6 +3024,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[41],
                     Status = "ACTIVE"
@@ -2680,6 +3032,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[26],
                     Status = "ACTIVE"
@@ -2687,6 +3040,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[6],
                     Status = "ACTIVE"
@@ -2694,6 +3048,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[32],
                     Status = "ACTIVE"
@@ -2701,6 +3056,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[48],
                     Status = "ACTIVE"
@@ -2708,6 +3064,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[11],
                     Status = "ACTIVE"
@@ -2715,6 +3072,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[42],
                     Status = "ACTIVE"
@@ -2722,12 +3080,14 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[22],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[55],
                     Status = "ACTIVE"
@@ -2735,6 +3095,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[19],
                     Status = "ACTIVE"
@@ -2742,6 +3103,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[38],
                     Status = "ACTIVE"
@@ -2749,6 +3111,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[50],
                     Status = "ACTIVE"
@@ -2756,6 +3119,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[10],
                     Status = "ACTIVE"
@@ -2763,6 +3127,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[44],
                     Status = "ACTIVE"
@@ -2770,6 +3135,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[30],
                     Status = "ACTIVE"
@@ -2777,6 +3143,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[2],
                     Status = "ACTIVE"
@@ -2784,6 +3151,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[47],
                     Status = "ACTIVE"
@@ -2791,12 +3159,14 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[25],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[54],
                     Status = "ACTIVE"
@@ -2804,6 +3174,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[20],
                     Status = "ACTIVE"
@@ -2811,6 +3182,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[43],
                     Status = "ACTIVE"
@@ -2818,6 +3190,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[7],
                     Status = "ACTIVE"
@@ -2825,6 +3198,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[33],
                     Status = "ACTIVE"
@@ -2832,6 +3206,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[14],
                     Status = "ACTIVE"
@@ -2839,6 +3214,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[49],
                     Status = "ACTIVE"
@@ -2846,6 +3222,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[3],
                     Status = "ACTIVE"
@@ -2853,6 +3230,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[27],
                     Status = "ACTIVE"
@@ -2860,12 +3238,14 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[40],
                     Status = "ACTIVE"
                 },
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[56],
                     Status = "ACTIVE"
@@ -2873,6 +3253,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[24],
                     Status = "ACTIVE"
@@ -2880,6 +3261,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[9],
                     Status = "ACTIVE"
@@ -2887,6 +3269,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[36],
                     Status = "ACTIVE"
@@ -2894,6 +3277,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[5],
                     Status = "ACTIVE"
@@ -2901,6 +3285,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[1],
                     Route = routes[31],
                     Status = "ACTIVE"
@@ -2908,6 +3293,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[3],
                     Route = routes[18],
                     Status = "ACTIVE"
@@ -2915,6 +3301,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[0],
                     Route = routes[47],
                     Status = "ACTIVE"
@@ -2922,6 +3309,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[4],
                     Route = routes[12],
                     Status = "ACTIVE"
@@ -2929,6 +3317,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Route_Company
                 {
+                    Route_CompanyID = Guid.NewGuid(),
                     Company = companies[2],
                     Route = routes[41],
                     Status = "ACTIVE"
@@ -2938,6 +3327,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 19, 15, 30, 0),
@@ -2945,6 +3335,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
                     EndTime = new DateTime(2024, 7, 6, 18, 45, 1),
@@ -2952,6 +3343,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 2),
                     EndTime = new DateTime(2024, 7, 6, 18, 45, 2),
@@ -2959,6 +3351,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 3),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 3),
@@ -2966,6 +3359,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 4),
                     EndTime = new DateTime(2024, 7, 7, 17, 45, 4),
@@ -2973,6 +3367,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
                     EndTime = new DateTime(2024, 7, 1, 23, 59, 59),
@@ -2980,6 +3375,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
@@ -2987,6 +3383,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
@@ -2994,6 +3391,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 5),
                     EndTime = new DateTime(2024, 7, 7, 17, 45, 5),
@@ -3001,83 +3399,96 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[2],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
-                    EndTime = new DateTime(2024, 6, 15, 0, 0, 5),
-                    Status ="ACTIVE"
+                     TripID = Guid.NewGuid(),
+                     Route_Company = route_Companies[2],
+                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
+                     EndTime = new DateTime(2024, 6, 15, 23, 59, 59), // Fixed end time
+                     Status ="ACTIVE"
                 },
                 new Trip
-                {
-                    Route_Company = route_Companies[2],
-                    StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
-                    EndTime = new DateTime(2024, 7, 2, 23, 59, 59),
-                    Status ="ACTIVE"
-                },
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[2],
+                        StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
+                        EndTime = new DateTime(2024, 7, 2, 23, 59, 59),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[2],
+                        StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
+                        EndTime = new DateTime(2024, 7, 8, 17, 45, 1),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[2],
+                        StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
+                        EndTime = new DateTime(2024, 7, 8, 17, 45, 0),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[3],
+                        StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
+                        EndTime = new DateTime(2024, 7, 13, 14, 20, 0),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[3],
+                        StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
+                        EndTime = new DateTime(2024, 6, 17, 17, 30, 0),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[24],
+                        StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
+                        EndTime = new DateTime(2024, 7, 13, 14, 20, 1),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[23],
+                        StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
+                        EndTime = new DateTime(2024, 7, 9, 17, 45, 1),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[22],
+                        StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
+                        EndTime = new DateTime(2024, 7, 9, 17, 45, 0),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[3],
+                        StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
+                        EndTime = new DateTime(2024, 6, 17, 17, 30, 1),
+                        Status = "ACTIVE"
+                    },
+                new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_Company = route_Companies[20],
+                        StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
+                        EndTime = new DateTime(2024, 6, 15, 18, 30, 1),
+                        Status = "ACTIVE"
+                    },
+
                 new Trip
                 {
-                    Route_Company = route_Companies[2],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
-                    EndTime = new DateTime(2024, 7, 8, 17, 45, 1),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[2],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
-                    EndTime = new DateTime(2024, 7, 8, 17, 45, 0),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[3],
-                    StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
-                    EndTime = new DateTime(2024, 7, 13, 14, 20, 0),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[3],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
-                    EndTime = new DateTime(2024, 6, 17, 17, 30, 0),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[77],
-                    StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
-                    EndTime = new DateTime(2024, 7, 13, 14, 20, 1),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[77],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
-                    EndTime = new DateTime(2024, 7, 9, 17, 45, 1),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[77],
-                    StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
-                    EndTime = new DateTime(2024, 7, 9, 17, 45, 0),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[3],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
-                    EndTime = new DateTime(2024, 6, 17, 17, 30, 1),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[70],
-                    StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
-                    EndTime = new DateTime(2024, 6, 15, 18, 30, 1),
-                    Status ="ACTIVE"
-                },
-                new Trip
-                {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 15, 18, 30, 0),
@@ -3085,6 +3496,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[27],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 23, 9, 0, 0),
@@ -3092,62 +3504,71 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[18],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 14, 14, 20, 0),
                     Status ="ACTIVE"
                 },
-                 new Trip
+                new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[5],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 1),
                     Status ="ACTIVE"
                 },
-                  new Trip
+                new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[7],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 0),
                     Status ="ACTIVE"
                 },
-                   new Trip
+                new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[8],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
                     EndTime = new DateTime(2024, 7, 15, 14, 20, 1),
                     Status ="ACTIVE"
                 },
-                    new Trip
+                new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[9],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 15, 14, 20, 0),
                     Status ="ACTIVE"
                 },
-                     new Trip
+                new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[10],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 10, 17, 45, 0),
                     Status ="ACTIVE"
                 },
-                      new Trip
+                new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[11],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 21, 11, 30, 0),
                     Status ="ACTIVE"
                 },
-                 new Trip
+                new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[12],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 1),
-                    EndTime = new DateTime(2024, 7, 14, 14, 20, 1),
+                    EndTime = new DateTime(2024, 7, 13, 14, 20, 1),
                     Status ="ACTIVE"
                 },
                   new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[13],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 14, 14, 20, 0),
@@ -3155,6 +3576,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                    new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[14],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 21, 11, 30, 0),
@@ -3162,6 +3584,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                     new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[15],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 23, 9, 0, 0),
@@ -3169,14 +3592,15 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                      new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[16],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 18, 11, 30, 0),
                     Status ="ACTIVE"
-
                 },
                       new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[17],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
                     EndTime = new DateTime(2024, 6, 18, 11, 30, 1),
@@ -3184,6 +3608,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                        new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[18],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 2),
                     EndTime = new DateTime(2024, 6, 18, 11, 30, 2),
@@ -3191,6 +3616,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                         new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[19],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 22, 9, 0, 0),
@@ -3198,6 +3624,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                          new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 11, 17, 45, 0),
@@ -3205,6 +3632,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                           new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[21],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 21, 9, 0, 0),
@@ -3212,6 +3640,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                  new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[22],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 1),
                     EndTime = new DateTime(2024, 6, 16, 11, 30, 1),
@@ -3219,6 +3648,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                   new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 16, 11, 30, 0),
@@ -3226,6 +3656,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                    new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 21, 9, 0, 0),
@@ -3233,6 +3664,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                     new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[25],
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 16, 11, 30, 0),
@@ -3240,6 +3672,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                     new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[26],
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 0),
                     EndTime = new DateTime(2024, 7, 6, 17, 45, 0),
@@ -3247,6 +3680,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[27],
                     StartTime = new DateTime(2024, 8, 20, 9, 0, 0),
                     EndTime = new DateTime(2024, 8, 21, 9, 0, 0),
@@ -3254,6 +3688,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[28],
                     StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
                     EndTime = new DateTime(2024, 7, 1, 23, 59, 59),
@@ -3261,6 +3696,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[28],
                     StartTime = new DateTime(2024, 7, 12, 14, 20, 0),
                     EndTime = new DateTime(2024, 7, 13, 14, 20, 0),
@@ -3268,6 +3704,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[29],
                     StartTime = new DateTime(2024, 6, 20, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 20, 15, 0, 0),
@@ -3275,6 +3712,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 7, 10, 17, 30, 0),
                     EndTime = new DateTime(2024, 7, 11, 7, 30, 0),
@@ -3282,6 +3720,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 8, 1, 11, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 18, 0, 0),
@@ -3289,6 +3728,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[31],
                     StartTime = new DateTime(2024, 6, 25, 14, 0, 0),
                     EndTime = new DateTime(2024, 6, 26, 2, 0, 0),
@@ -3296,6 +3736,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[32],
                     StartTime = new DateTime(2024, 7, 20, 6, 30, 0),
                     EndTime = new DateTime(2024, 7, 20, 16, 30, 0),
@@ -3303,6 +3744,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[33],
                     StartTime = new DateTime(2024, 6, 22, 18, 0, 0),
                     EndTime = new DateTime(2024, 6, 23, 6, 0, 0),
@@ -3310,6 +3752,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[34],
                     StartTime = new DateTime(2024, 7, 15, 10, 30, 0),
                     EndTime = new DateTime(2024, 7, 16, 0, 30, 0),
@@ -3317,6 +3760,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[35],
                     StartTime = new DateTime(2024, 8, 10, 13, 0, 0),
                     EndTime = new DateTime(2024, 8, 11, 1, 0, 0),
@@ -3324,335 +3768,383 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[44],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 6, 28, 21, 0, 0),
                     EndTime = new DateTime(2024, 6, 29, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[45],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[32],
                     StartTime = new DateTime(2024, 7, 25, 7, 0, 0),
                     EndTime = new DateTime(2024, 7, 25, 19, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[46],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[33],
                     StartTime = new DateTime(2024, 6, 18, 12, 0, 0),
                     EndTime = new DateTime(2024, 6, 18, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[47],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[12],
                     StartTime = new DateTime(2024, 7, 3, 22, 30, 0),
                     EndTime = new DateTime(2024, 7, 4, 6, 30, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[48],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[13],
                     StartTime = new DateTime(2024, 8, 5, 15, 0, 0),
                     EndTime = new DateTime(2024, 8, 6, 3, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[49],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[12],
                     StartTime = new DateTime(2024, 6, 30, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 30, 16, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[50],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[11],
                     StartTime = new DateTime(2024, 7, 18, 19, 0, 0),
                     EndTime = new DateTime(2024, 7, 19, 3, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[51],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[10],
                     StartTime = new DateTime(2024, 6, 15, 5, 0, 0),
                     EndTime = new DateTime(2024, 6, 15, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[52],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[9],
                     StartTime = new DateTime(2024, 7, 12, 20, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 4, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[53],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[8],
                     StartTime = new DateTime(2024, 8, 15, 10, 0, 0),
                     EndTime = new DateTime(2024, 8, 15, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[54],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[7],
                     StartTime = new DateTime(2024, 6, 23, 23, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[55],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[6],
                     StartTime = new DateTime(2024, 7, 27, 14, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[56],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[5],
                     StartTime = new DateTime(2024, 6, 15, 5, 0, 0),
                     EndTime = new DateTime(2024, 6, 15, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[57],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[4],
                     StartTime = new DateTime(2024, 7, 12, 20, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 4, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[58],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[3],
                     StartTime = new DateTime(2024, 8, 15, 10, 0, 0),
                     EndTime = new DateTime(2024, 8, 15, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[59],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[2],
                     StartTime = new DateTime(2024, 6, 23, 23, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[60],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 7, 27, 14, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[61],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 6, 20, 0, 0, 0),
                     EndTime = new DateTime(2024, 6, 20, 8, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[62],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 7, 6, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 20, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[63],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[22],
                     StartTime = new DateTime(2024, 8, 1, 6, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[64],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[21],
                     StartTime = new DateTime(2024, 6, 26, 18, 0, 0),
                     EndTime = new DateTime(2024, 6, 27, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[65],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 7, 22, 9, 0, 0),
                     EndTime = new DateTime(2024, 7, 22, 17, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[66],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[19],
                     StartTime = new DateTime(2024, 6, 12, 20, 0, 0),
                     EndTime = new DateTime(2024, 6, 13, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[67],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[18],
                     StartTime = new DateTime(2024, 7, 3, 11, 0, 0),
                     EndTime = new DateTime(2024, 7, 3, 17, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[68],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[17],
                     StartTime = new DateTime(2024, 8, 10, 23, 0, 0),
                     EndTime = new DateTime(2024, 8, 11, 7, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[69],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[16],
                     StartTime = new DateTime(2024, 6, 28, 14, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 22, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[70],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[15],
                     StartTime = new DateTime(2024, 7, 15, 7, 0, 0),
                     EndTime = new DateTime(2024, 7, 15, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[71],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[14],
                     StartTime = new DateTime(2024, 6, 12, 20, 0, 0),
                     EndTime = new DateTime(2024, 6, 13, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[72],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[13],
                     StartTime = new DateTime(2024, 7, 3, 11, 0, 0),
                     EndTime = new DateTime(2024, 7, 3, 17, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[73],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[12],
                     StartTime = new DateTime(2024, 8, 10, 23, 0, 0),
                     EndTime = new DateTime(2024, 8, 11, 7, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[74],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[11],
                     StartTime = new DateTime(2024, 6, 28, 14, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 22, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[75],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[10],
                     StartTime = new DateTime(2024, 7, 15, 7, 0, 0),
                     EndTime = new DateTime(2024, 7, 15, 15, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[76],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[9],
                     StartTime = new DateTime(2024, 6, 18, 4, 0, 0),
                     EndTime = new DateTime(2024, 6, 18, 12, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[77],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[8],
                     StartTime = new DateTime(2024, 7, 9, 18, 0, 0),
                     EndTime = new DateTime(2024, 7, 10, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[78],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[7],
                     StartTime = new DateTime(2024, 8, 5, 13, 0, 0),
                     EndTime = new DateTime(2024, 8, 5, 21, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[79],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[6],
                     StartTime = new DateTime(2024, 6, 30, 22, 0, 0),
                     EndTime = new DateTime(2024, 7, 1, 6, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[80],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[5],
                     StartTime = new DateTime(2024, 7, 19, 15, 0, 0),
                     EndTime = new DateTime(2024, 7, 19, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[81],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[4],
                     StartTime = new DateTime(2024, 6, 18, 4, 0, 0),
                     EndTime = new DateTime(2024, 6, 18, 12, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[82],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[3],
                     StartTime = new DateTime(2024, 7, 9, 18, 0, 0),
                     EndTime = new DateTime(2024, 7, 10, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[83],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 8, 5, 13, 0, 0),
                     EndTime = new DateTime(2024, 8, 5, 21, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[84],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[22],
                     StartTime = new DateTime(2024, 6, 30, 22, 0, 0),
                     EndTime = new DateTime(2024, 7, 1, 6, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[85],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[21],
                     StartTime = new DateTime(2024, 7, 19, 15, 0, 0),
                     EndTime = new DateTime(2024, 7, 19, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[86],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 6, 18, 4, 0, 0),
                     EndTime = new DateTime(2024, 6, 18, 12, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[86],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[27],
                     StartTime = new DateTime(2024, 7, 9, 18, 0, 0),
                     EndTime = new DateTime(2024, 7, 10, 2, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[87],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[25],
                     StartTime = new DateTime(2024, 8, 5, 13, 0, 0),
                     EndTime = new DateTime(2024, 8, 5, 21, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[88],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 6, 30, 22, 0, 0),
                     EndTime = new DateTime(2024, 7, 1, 6, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[89],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[25],
                     StartTime = new DateTime(2024, 7, 19, 15, 0, 0),
                     EndTime = new DateTime(2024, 7, 19, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[30],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
@@ -3660,6 +4152,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[31],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
@@ -3667,6 +4160,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[32],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
@@ -3674,6 +4168,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[33],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
@@ -3681,6 +4176,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[34],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
@@ -3688,6 +4184,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[35],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
@@ -3695,146 +4192,87 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[36],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[3],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[37],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[38],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[2],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[39],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[7],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[40],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[41],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[42],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[21],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[43],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[44],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[19],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[45],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[19],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[46],
-                    StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
-                    EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
-                    Status = "INACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[47],
-                    StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
-                    EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
-                    Status = "ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[48],
-                    StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
-                    EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
-                    Status = "INACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[49],
-                    StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
-                    EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
-                    Status = "ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[50],
-                    StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
-                    EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
-                    Status = "ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[51],
-                    StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
-                    EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
-                    Status = "INACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[10],
-                    StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
-                    EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
-                    Status = "ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[11],
-                    StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
-                    EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
-                    Status = "INACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[12],
-                    StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
-                    EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
-                    Status = "ACTIVE"
-                },
-                new Trip
-                {
-                    Route_Company = route_Companies[13],
-                    StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
-                    EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
-                    Status = "ACTIVE"
-                },
-                new Trip
-                {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[14],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
@@ -3842,6 +4280,87 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[13],
+                    StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
+                    EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
+                    Status = "ACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[12],
+                    StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
+                    EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
+                    Status = "INACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[14],
+                    StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
+                    EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
+                    Status = "ACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[13],
+                    StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
+                    EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
+                    Status = "ACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[23],
+                    StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
+                    EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
+                    Status = "INACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[10],
+                    StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
+                    EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
+                    Status = "ACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[11],
+                    StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
+                    EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
+                    Status = "INACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[12],
+                    StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
+                    EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
+                    Status = "ACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[13],
+                    StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
+                    EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
+                    Status = "ACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[14],
+                    StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
+                    EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
+                    Status = "INACTIVE"
+                },
+                new Trip
+                {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[15],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
@@ -3849,6 +4368,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[16],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
@@ -3856,6 +4376,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[17],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
@@ -3863,6 +4384,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[18],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
@@ -3870,6 +4392,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[19],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
@@ -3877,6 +4400,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
@@ -3884,6 +4408,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[21],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
@@ -3891,12 +4416,14 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[22],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
@@ -3904,6 +4431,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
@@ -3911,6 +4439,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[25],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
@@ -3918,6 +4447,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[26],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
@@ -3925,12 +4455,14 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[27],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[28],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
@@ -3938,174 +4470,199 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[29],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[14],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[30],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[50],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[13],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[40],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[5],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[41],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[7],
                     StartTime = new DateTime(2024, 6, 24, 10, 0, 0),
                     EndTime = new DateTime(2024, 6, 24, 18, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[42],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[7],
                     StartTime = new DateTime(2024, 7, 13, 1, 0, 0),
                     EndTime = new DateTime(2024, 7, 13, 9, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[43],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[8],
                     StartTime = new DateTime(2024, 8, 15, 20, 0, 0),
                     EndTime = new DateTime(2024, 8, 16, 4, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[44],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[14],
                     StartTime = new DateTime(2024, 6, 22, 6, 0, 0),
                     EndTime = new DateTime(2024, 6, 22, 14, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[45],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 7, 27, 12, 0, 0),
                     EndTime = new DateTime(2024, 7, 27, 20, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[46],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[20],
                     StartTime = new DateTime(2024, 6, 28, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 16, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[47],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[21],
                     StartTime = new DateTime(2024, 7, 5, 23, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[48],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[24],
                     StartTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[49],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[12],
                     StartTime = new DateTime(2024, 6, 21, 2, 0, 0),
                     EndTime = new DateTime(2024, 6, 21, 10, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[50],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[14],
                     StartTime = new DateTime(2024, 7, 23, 17, 0, 0),
                     EndTime = new DateTime(2024, 7, 23, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[51],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[23],
                     StartTime = new DateTime(2024, 6, 28, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 16, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[52],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[25],
                     StartTime = new DateTime(2024, 7, 5, 23, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[53],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[17],
                     StartTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[54],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[11],
                     StartTime = new DateTime(2024, 6, 21, 2, 0, 0),
                     EndTime = new DateTime(2024, 6, 21, 10, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[55],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[15],
                     StartTime = new DateTime(2024, 7, 23, 17, 0, 0),
                     EndTime = new DateTime(2024, 7, 23, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[56],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[13],
                     StartTime = new DateTime(2024, 6, 28, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 16, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[57],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[12],
                     StartTime = new DateTime(2024, 7, 5, 23, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 7, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[58],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[11],
                     StartTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 22, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[59],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[26],
                     StartTime = new DateTime(2024, 6, 21, 2, 0, 0),
                     EndTime = new DateTime(2024, 6, 21, 10, 0, 0),
                     Status = "INACTIVE"
                 },
                 new Trip
                 {
-                    Route_Company = route_Companies[60],
+                    TripID = Guid.NewGuid(),
+                    Route_Company = route_Companies[25],
                     StartTime = new DateTime(2024, 7, 23, 17, 0, 0),
                     EndTime = new DateTime(2024, 7, 23, 23, 0, 0),
                     Status = "ACTIVE"
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[1],
                     StartTime = new DateTime(2024, 6, 28, 8, 0, 0),
                     EndTime = new DateTime(2024, 6, 28, 16, 0, 0),
@@ -4113,6 +4670,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
                     StartTime = new DateTime(2024, 7, 5, 23, 0, 0),
                     EndTime = new DateTime(2024, 7, 6, 7, 0, 0),
@@ -4120,6 +4678,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[2],
                     StartTime = new DateTime(2024, 8, 1, 14, 0, 0),
                     EndTime = new DateTime(2024, 8, 1, 22, 0, 0),
@@ -4127,6 +4686,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[3],
                     StartTime = new DateTime(2024, 6, 21, 2, 0, 0),
                     EndTime = new DateTime(2024, 6, 21, 10, 0, 0),
@@ -4134,6 +4694,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Trip
                 {
+                    TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[4],
                     StartTime = new DateTime(2024, 7, 23, 17, 0, 0),
                     EndTime = new DateTime(2024, 7, 23, 23, 0, 0),
@@ -4144,56 +4705,65 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new ServiceType
                 {
+                    ServiceTypeID = Guid.NewGuid(),
                     Name = "Đồ ăn",
                     Status = "ACTIVE"
                 },
                 new ServiceType
                 {
+                    ServiceTypeID = Guid.NewGuid(),
                     Name = "Đồ uống",
                     Status = "ACTIVE"
                 },
                 new ServiceType
                 {
-                   Name = "Ăn vặt",
+                   ServiceTypeID = Guid.NewGuid(),
+                    Name = "Ăn vặt",
                     Status = "ACTIVE"
                 },
                 new ServiceType
                 {
-                   Name = "Đồ ăn nhanh",
+                   ServiceTypeID = Guid.NewGuid(),
+                    Name = "Đồ ăn nhanh",
                     Status = "ACTIVE"
                 },
                 new ServiceType
                 {
-                   Name = "ATM",
+                   ServiceTypeID = Guid.NewGuid(),
+                    Name = "ATM",
                     Status = "ACTIVE"
                 },
                 new ServiceType
                 {
-                   Name = "Khu vui chơi trẻ em",
+                   ServiceTypeID = Guid.NewGuid(),
+                    Name = "Khu vui chơi trẻ em",
                     Status = "ACTIVE"
                 },
                 new ServiceType
                 {
-                   Name = "Dịch vụ gửi đồ và hành lý",
+                   ServiceTypeID = Guid.NewGuid(),
+                    Name = "Dịch vụ gửi đồ và hành lý",
                     Status = "ACTIVE"
                 },
                 new ServiceType
                 {
-                   Name = "Xe máy",
+                   ServiceTypeID = Guid.NewGuid(),
+                    Name = "Xe máy",
                     Status = "ACTIVE"
                 }
-
             };
             List<Utility> utilities = new()
             {
                 new Utility
                 {
+                    UtilityID = Guid.NewGuid(),
                     Name="Nhà vệ sinh",
                     Description ="Xe được trang bị nhà vệ sinh sạch sẽ.",
                     Status = "ACTIVE"
                 },
                 new Utility
                 {
+                    UtilityID = Guid.NewGuid(),
                     Name="Chăn",
                     Description ="Xe cung cấp chăn để hành khách có thể giữ ấm trong suốt hành trình, đặc biệt là vào ban đêm hoặc khi điều hòa nhiệt độ lạnh.",
 
@@ -4201,70 +4771,80 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Utility
                 {
+                    UtilityID = Guid.NewGuid(),
                     Name="Wi-Fi miễn phí",
                     Description ="Xe cung cấp dịch vụ Wi-Fi miễn phí để hành khách có thể sử dụng internet trong suốt chuyến đi",
                     Status = "ACTIVE"
                 },
                 new Utility
                 {
+                    UtilityID = Guid.NewGuid(),
                     Name="Ổ cắm điện và cổng USB",
                     Description ="Các ổ cắm điện và cổng USB được trang bị để hành khách có thể sạc điện thoại, máy tính bảng hoặc laptop.",
                     Status = "ACTIVE"
                 },
                 new Utility
                 {
+                    UtilityID = Guid.NewGuid(),
                     Name="Nước uống và khăn lạnh",
                     Description ="Nhà xe cung cấp nước uống đóng chai và khăn lạnh miễn phí cho hành khách.",
                     Status = "ACTIVE"
                 },
                 new Utility
                 {
+                    UtilityID = Guid.NewGuid(),
                     Name="Rèm che riêng tư",
                     Description ="Trên xe có rèm che riêng tư giúp hành khách có không gian riêng tư hơn.",
                     Status = "ACTIVE"
                 },
-
             };
             List<Trip_Utility> utilityInTrips = new()
             {
                 new Trip_Utility
                 {
+                    Trip_UtilityID = Guid.NewGuid(),
                     Utility = utilities[0],
                     Status = "ACTIVE",
                     Trip = trips[0]
                 },
                 new Trip_Utility
                 {
+                    Trip_UtilityID = Guid.NewGuid(),
                     Utility = utilities[1],
                     Status = "ACTIVE",
                     Trip = trips[0]
                 },
                 new Trip_Utility
                 {
+                    Trip_UtilityID = Guid.NewGuid(),
                     Utility = utilities[2],
                     Status = "ACTIVE",
                     Trip = trips[0]
                 },
                 new Trip_Utility
                 {
+                    Trip_UtilityID = Guid.NewGuid(),
                     Utility = utilities[1],
                     Status = "ACTIVE",
                     Trip = trips[2]
                 },
                 new Trip_Utility
                 {
+                    Trip_UtilityID = Guid.NewGuid(),
                     Utility = utilities[1],
                     Status = "ACTIVE",
                     Trip = trips[3]
                 },
                 new Trip_Utility
                 {
+                    Trip_UtilityID = Guid.NewGuid(),
                     Utility = utilities[2],
                     Status = "ACTIVE",
                     Trip = trips[3]
                 },
                 new Trip_Utility
                 {
+                    Trip_UtilityID = Guid.NewGuid(),
                     Utility = utilities[0],
                     Status = "ACTIVE",
                     Trip = trips[3]
@@ -4274,94 +4854,91 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Service
                 {
-                 
+                    ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[0],
                     Name = "Mi tom",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-            
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[0],
                     Name = "Pho",
                     Status = "ACTIVE"
-
                 },
                 new Service
                 {
-                
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[1],
                     Name = "Bun bo",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-             
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[2],
                     Name = "Com xeo",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-                
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[1],
                     Name = "Com phan",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-             
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[0],
                     Name = "Mi tom",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-               
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[3],
                     Name = "Hamburger",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-                
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[3],
                     Name = "Sandwich",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-                   
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[3],
                     Name = "hotdog",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-                   
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[2],
                     Name = "Trái cây",
                     Status = "ACTIVE"
-
                 },
                 new Service
                 {
-                 
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[1],
                     Name = "Cà phê",
                     Status = "ACTIVE"
-
                 },
                 new Service
                 {
-               
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[1],
                     Name = "Nước trái cây",
                     Status = "ACTIVE"
                 },
                 new Service
                 {
-                 
+                     ServiceID = Guid.NewGuid(),
                     ServiceType=serviceTypes[1],
                     Name = "Trà",
                     Status = "ACTIVE"
@@ -4371,16 +4948,19 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new TicketType
                 {
+                    TicketTypeID = Guid.NewGuid(),
                     Name = "Hàng đầu",
                     Status = "ACTIVE"
                 },
                 new TicketType
                 {
+                    TicketTypeID = Guid.NewGuid(),
                     Name = "Hàng giữa",
                     Status = "ACTIVE"
                 },
                 new TicketType
                 {
+                    TicketTypeID = Guid.NewGuid(),
                     Name = "Hàng sau",
                     Status = "ACTIVE"
                 },
@@ -4389,6 +4969,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0],
                     Trip = trips[0],
                     Price = 120000,
@@ -4397,6 +4978,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0],
                     Trip = trips[1],
                     Price = 150000,
@@ -4405,6 +4987,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2],
                     Trip = trips[2],
                     Price = 130000,
@@ -4413,6 +4996,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0],
                     Trip = trips[3],
                     Price = 100000,
@@ -4421,6 +5005,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[10], // Assuming trips[10] is a valid Trip
                     Price = 85000,
@@ -4429,6 +5014,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[27], // Assuming trips[27] is a valid Trip
                     Price = 140000,
@@ -4437,6 +5023,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[89], // Assuming trips[89] is a valid Trip
                     Price = 175000,
@@ -4445,6 +5032,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[17], // Assuming trips[17] is a valid Trip
                     Price = 120000,
@@ -4453,6 +5041,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[42], // Assuming trips[42] is a valid Trip
                     Price = 85000,
@@ -4461,6 +5050,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[68], // Assuming trips[68] is a valid Trip
                     Price = 190000,
@@ -4469,6 +5059,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[99], // Assuming trips[99] is a valid Trip
                     Price = 160000,
@@ -4477,6 +5068,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[51], // Assuming trips[51] is a valid Trip
                     Price = 155000,
@@ -4485,6 +5077,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[80], // Assuming trips[80] is a valid Trip
                     Price = 180000,
@@ -4493,6 +5086,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[7], // Assuming trips[7] is a valid Trip
                     Price = 90000,
@@ -4501,6 +5095,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[92], // Assuming trips[92] is a valid Trip
                     Price = 125000,
@@ -4509,6 +5104,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[15], // Assuming trips[15] is a valid Trip
                     Price = 75000,
@@ -4517,6 +5113,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[38], // Assuming trips[38] is a valid Trip
                     Price = 120000,
@@ -4525,6 +5122,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[62], // Assuming trips[62] is a valid Trip
                     Price = 85000,
@@ -4533,6 +5131,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[84], // Assuming trips[84] is a valid Trip
                     Price = 190000,
@@ -4541,6 +5140,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[23], // Assuming trips[23] is a valid Trip
                     Price = 160000,
@@ -4549,6 +5149,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[65], // Assuming trips[65] is a valid Trip
                     Price = 70000,
@@ -4557,6 +5158,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[42], // Assuming trips[42] is a valid Trip
                     Price = 130000,
@@ -4565,6 +5167,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[91], // Assuming trips[91] is a valid Trip
                     Price = 180000,
@@ -4573,6 +5176,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[12], // Assuming trips[12] is a valid Trip
                     Price = 95000,
@@ -4581,6 +5185,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[77], // Assuming trips[77] is a valid Trip
                     Price = 150000,
@@ -4589,6 +5194,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[30], // Assuming trips[30] is a valid Trip
                     Price = 80000,
@@ -4597,6 +5203,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[58], // Assuming trips[58] is a valid Trip
                     Price = 115000,
@@ -4605,6 +5212,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[83], // Assuming trips[83] is a valid Trip
                     Price = 90000,
@@ -4613,6 +5221,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[45], // Assuming trips[45] is a valid Trip
                     Price = 170000,
@@ -4621,6 +5230,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[72], // Assuming trips[72] is a valid Trip
                     Price = 140000,
@@ -4629,6 +5239,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[11], // Assuming trips[11] is a valid Trip
                     Price = 80000,
@@ -4637,6 +5248,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[34], // Assuming trips[34] is a valid Trip
                     Price = 125000,
@@ -4645,6 +5257,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[69], // Assuming trips[69] is a valid Trip
                     Price = 150000,
@@ -4653,6 +5266,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[92], // Assuming trips[92] is a valid Trip
                     Price = 105000,
@@ -4661,6 +5275,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[55], // Assuming trips[55] is a valid Trip
                     Price = 90000,
@@ -4669,6 +5284,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[18], // Assuming trips[18] is a valid Trip
                     Price = 82000,
@@ -4677,6 +5293,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[41], // Assuming trips[41] is a valid Trip
                     Price = 128000,
@@ -4685,6 +5302,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[74], // Assuming trips[74] is a valid Trip
                     Price = 155000,
@@ -4693,6 +5311,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[62], // Assuming trips[62] is a valid Trip
                     Price = 95000,
@@ -4701,6 +5320,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[29], // Assuming trips[29] is a valid Trip
                     Price = 112000,
@@ -4709,6 +5329,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[3], // Trip with index 3
                     Price = 95000,
@@ -4717,6 +5338,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[4], // Trip with index 4
                     Price = 120000,
@@ -4725,6 +5347,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[5], // Trip with index 5
                     Price = 150000,
@@ -4733,6 +5356,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[6], // Trip with index 6
                     Price = 90000,
@@ -4741,6 +5365,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[8], // Trip with index 8
                     Price = 130000,
@@ -4749,6 +5374,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[9], // Trip with index 9
                     Price = 180000,
@@ -4757,6 +5383,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[13], // Trip with index 13
                     Price = 85000,
@@ -4765,6 +5392,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[14], // Trip with index 14
                     Price = 110000,
@@ -4773,6 +5401,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[16], // Trip with index 16
                     Price = 160000,
@@ -4781,6 +5410,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[19], // Trip with index 19
                     Price = 100000,
@@ -4789,6 +5419,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[1], // Assuming types[1] is a valid TicketType
                     Trip = trips[20], // Trip with index 20
                     Price = 140000,
@@ -4797,6 +5428,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[2], // Assuming types[2] is a valid TicketType
                     Trip = trips[21], // Trip with index 21
                     Price = 170000,
@@ -4805,6 +5437,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketType_Trip
                 {
+                    TicketType_TripID = Guid.NewGuid(),
                     TicketType = types[0], // Assuming types[0] is a valid TicketType
                     Trip = trips[22], // Trip with index 22
                     Price = 92000,
@@ -4816,6 +5449,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = DateTime.Now,
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -4828,6 +5462,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = DateTime.Now,
                     Quantity = 2,
                     Status = "ACTIVE",
@@ -4837,10 +5472,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[1],
                     User = users[1],
                     QRCode = "22222"
-
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = DateTime.Now,
                     Quantity = 2,
                     Status = "ACTIVE",
@@ -4853,6 +5488,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = DateTime.Now,
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -4865,6 +5501,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = DateTime.Now,
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -4877,6 +5514,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 5, 1),
                     Quantity = 2,
                     Status = "ACTIVE",
@@ -4889,6 +5527,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 3, 15),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -4901,6 +5540,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 6, 5),
                     Quantity = 3,
                     Status = "ACTIVE",
@@ -4913,6 +5553,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 20),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -4925,6 +5566,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 5, 10),
                     Quantity = 2,
                     Status = "ACTIVE",
@@ -4937,6 +5579,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 3, 1),
                     Quantity = 1,
                     Status = "INACTIVE",
@@ -4949,6 +5592,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 6, 15),
                     Quantity = 3,
                     Status = "ACTIVE",
@@ -4961,6 +5605,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 30),
                     Quantity = 1,
                     Status = "INACTIVE",
@@ -4973,6 +5618,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 5, 20),
                     Quantity = 2,
                     Status = "ACTIVE",
@@ -4985,6 +5631,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 3, 10),
                     Quantity = 1,
                     Status = "INACTIVE",
@@ -4997,6 +5644,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 6, 5),
                     Quantity = 3,
                     Status = "ACTIVE",
@@ -5009,6 +5657,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 25),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5021,6 +5670,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 24),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5033,6 +5683,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 24),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5045,6 +5696,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 24),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5057,6 +5709,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 24),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5069,6 +5722,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 24),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5081,6 +5735,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 24),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5093,6 +5748,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 24),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5105,6 +5761,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Booking
                 {
+                    BookingID = Guid.NewGuid(),
                     BookingTime = new DateTime(2024, 4, 24),
                     Quantity = 1,
                     Status = "ACTIVE",
@@ -5115,7 +5772,6 @@ namespace SWD.TicketBooking.Repo.SeedData
                     User = users[1],
                     QRCode = "poaay"
                 },
-
             };
             List<TicketDetail> ticketDetails = new List<TicketDetail>();
 
@@ -5125,8 +5781,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                 var ticketTypeTrip = new TicketType_Trip();
                 for (int a = 0; a < ticketType_Trips.Count; a++)
                 {
-                    if (ticketType_Trips[a].Trip.Route_Company == bookings[i].Trip.Route_Company 
-                        && ticketType_Trips[a].Trip.StartTime == bookings[i].Trip.StartTime 
+                    if (ticketType_Trips[a].Trip.TripID == bookings[i].Trip.TripID
+                        && ticketType_Trips[a].Trip.Route_Company == bookings[i].Trip.Route_Company
+                        && ticketType_Trips[a].Trip.StartTime == bookings[i].Trip.StartTime
                         && ticketType_Trips[a].Trip.EndTime == bookings[i].Trip.EndTime)
                     {
                         price = ticketType_Trips[a].Price;
@@ -5144,18 +5801,22 @@ namespace SWD.TicketBooking.Repo.SeedData
                         case 0:
                             status = "UNUSED";
                             break;
+
                         case 1:
                             status = "CANCEL";
                             break;
+
                         case 2:
                             status = "USED";
                             break;
+
                         default:
                             status = "UNUSED";
                             break;
                     }
                     ticketDetails.Add(new TicketDetail
                     {
+                        TicketDetailID = Guid.NewGuid(),
                         Booking = bookings[i],
                         Price = price,
                         Status = status,
@@ -5169,6 +5830,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[1],
                     Service = services[1],
                     Price = 120000,
@@ -5178,6 +5840,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[2],
                     Service = services[2],
                     Price = 150000,
@@ -5187,6 +5850,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[35],
                     Service = services[0],
                     Price = 120000,
@@ -5196,6 +5860,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[0],
                     Service = services[0],
                     Price = 120000,
@@ -5205,6 +5870,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[0],
                     Service = services[3],
                     Price = 80000,
@@ -5214,6 +5880,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[5],
                     Service = services[1],
                     Price = 90000,
@@ -5223,6 +5890,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[10],
                     Service = services[7],
                     Price = 150000,
@@ -5232,6 +5900,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[15],
                     Service = services[9],
                     Price = 200000,
@@ -5241,6 +5910,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[20],
                     Service = services[4],
                     Price = 120000,
@@ -5250,6 +5920,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[25],
                     Service = services[11],
                     Price = 180000,
@@ -5259,6 +5930,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[30],
                     Service = services[6],
                     Price = 100000,
@@ -5268,6 +5940,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[0],
                     Service = services[2],
                     Price = 75000,
@@ -5277,6 +5950,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[10],
                     Service = services[8],
                     Price = 160000,
@@ -5286,6 +5960,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[3],
                     Service = services[5],
                     Price = 130000,
@@ -5295,6 +5970,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[8],
                     Service = services[10],
                     Price = 170000,
@@ -5304,6 +5980,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[13],
                     Service = services[2],
                     Price = 85000,
@@ -5313,6 +5990,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[18],
                     Service = services[8],
                     Price = 160000,
@@ -5322,6 +6000,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[23],
                     Service = services[4],
                     Price = 120000,
@@ -5331,6 +6010,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[28],
                     Service = services[11],
                     Price = 190000,
@@ -5340,6 +6020,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[0],
                     Service = services[6],
                     Price = 110000,
@@ -5349,6 +6030,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[5],
                     Service = services[9],
                     Price = 180000,
@@ -5358,6 +6040,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[10],
                     Service = services[3],
                     Price = 95000,
@@ -5367,6 +6050,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[15],
                     Service = services[7],
                     Price = 150000,
@@ -5376,6 +6060,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[1],
                     Service = services[0],
                     Price = 120000,
@@ -5385,6 +6070,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[2],
                     Service = services[4],
                     Price = 110000,
@@ -5394,6 +6080,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[3],
                     Service = services[8],
                     Price = 160000,
@@ -5403,6 +6090,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[4],
                     Service = services[11],
                     Price = 190000,
@@ -5412,6 +6100,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[5],
                     Service = services[6],
                     Price = 130000,
@@ -5421,6 +6110,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[6],
                     Service = services[2],
                     Price = 90000,
@@ -5430,6 +6120,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[7],
                     Service = services[7],
                     Price = 150000,
@@ -5439,6 +6130,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[8],
                     Service = services[3],
                     Price = 100000,
@@ -5448,6 +6140,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[9],
                     Service = services[9],
                     Price = 170000,
@@ -5457,6 +6150,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[10],
                     Service = services[5],
                     Price = 120000,
@@ -5466,6 +6160,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[11],
                     Service = services[1],
                     Price = 125000,
@@ -5475,6 +6170,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[12],
                     Service = services[5],
                     Price = 115000,
@@ -5484,6 +6180,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[13],
                     Service = services[9],
                     Price = 165000,
@@ -5493,6 +6190,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[14],
                     Service = services[0],
                     Price = 195000,
@@ -5502,6 +6200,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[15],
                     Service = services[7],
                     Price = 135000,
@@ -5511,6 +6210,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[16],
                     Service = services[3],
                     Price = 95000,
@@ -5520,6 +6220,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[17],
                     Service = services[8],
                     Price = 155000,
@@ -5529,6 +6230,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[18],
                     Service = services[4],
                     Price = 105000,
@@ -5538,6 +6240,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[19],
                     Service = services[10],
                     Price = 175000,
@@ -5547,6 +6250,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[20],
                     Service = services[6],
                     Price = 125000,
@@ -5556,6 +6260,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[21],
                     Service = services[2],
                     Price = 130000,
@@ -5565,6 +6270,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[22],
                     Service = services[6],
                     Price = 120000,
@@ -5574,6 +6280,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[23],
                     Service = services[10],
                     Price = 180000,
@@ -5583,6 +6290,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[24],
                     Service = services[1],
                     Price = 200000,
@@ -5592,6 +6300,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[25],
                     Service = services[5],
                     Price = 140000,
@@ -5601,6 +6310,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[26],
                     Service = services[9],
                     Price = 100000,
@@ -5610,6 +6320,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[27],
                     Service = services[3],
                     Price = 160000,
@@ -5619,6 +6330,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[28],
                     Service = services[7],
                     Price = 110000,
@@ -5628,6 +6340,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[29],
                     Service = services[11],
                     Price = 190000,
@@ -5637,6 +6350,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[30],
                     Service = services[4],
                     Price = 130000,
@@ -5646,6 +6360,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[31],
                     Service = services[8],
                     Price = 150000,
@@ -5655,6 +6370,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[32],
                     Service = services[0],
                     Price = 170000,
@@ -5664,6 +6380,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[33],
                     Service = services[6],
                     Price = 120000,
@@ -5673,6 +6390,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[34],
                     Service = services[11],
                     Price = 190000,
@@ -5682,6 +6400,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[35],
                     Service = services[2],
                     Price = 140000,
@@ -5691,6 +6410,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[0],
                     Service = services[7],
                     Price = 160000,
@@ -5700,6 +6420,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[1],
                     Service = services[5],
                     Price = 130000,
@@ -5709,6 +6430,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[2],
                     Service = services[9],
                     Price = 180000,
@@ -5718,6 +6440,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[3],
                     Service = services[1],
                     Price = 110000,
@@ -5727,6 +6450,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[4],
                     Service = services[6],
                     Price = 150000,
@@ -5736,6 +6460,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[5],
                     Service = services[3],
                     Price = 120000,
@@ -5745,6 +6470,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[6],
                     Service = services[8],
                     Price = 160000,
@@ -5754,6 +6480,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[7],
                     Service = services[4],
                     Price = 130000,
@@ -5763,6 +6490,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[8],
                     Service = services[10],
                     Price = 180000,
@@ -5772,6 +6500,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[9],
                     Service = services[2],
                     Price = 140000,
@@ -5781,6 +6510,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[10],
                     Service = services[7],
                     Price = 150000,
@@ -5790,6 +6520,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[11],
                     Service = services[1],
                     Price = 110000,
@@ -5799,6 +6530,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[12],
                     Service = services[6],
                     Price = 170000,
@@ -5808,6 +6540,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[13],
                     Service = services[11],
                     Price = 190000,
@@ -5817,6 +6550,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[14],
                     Service = services[5],
                     Price = 100000,
@@ -5826,6 +6560,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[15],
                     Service = services[9],
                     Price = 160000,
@@ -5835,6 +6570,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[16],
                     Service = services[3],
                     Price = 130000,
@@ -5844,6 +6580,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[17],
                     Service = services[8],
                     Price = 180000,
@@ -5853,6 +6590,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[18],
                     Service = services[0],
                     Price = 120000,
@@ -5862,6 +6600,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[19],
                     Service = services[6],
                     Price = 170000,
@@ -5871,6 +6610,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[20],
                     Service = services[4],
                     Price = 140000,
@@ -5880,6 +6620,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[21],
                     Service = services[11],
                     Price = 190000,
@@ -5889,6 +6630,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[22],
                     Service = services[2],
                     Price = 110000,
@@ -5898,6 +6640,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[23],
                     Service = services[7],
                     Price = 150000,
@@ -5907,6 +6650,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new TicketDetail_Service
                 {
+                    TicketDetail_ServiceID = Guid.NewGuid(),
                     TicketDetail = ticketDetails[24],
                     Service = services[1],
                     Price = 100000,
@@ -5919,6 +6663,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Station_Service
                 {
+                    Station_ServiceID = Guid.NewGuid(),
                     Station = stations[0],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -5927,6 +6672,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[1],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -5935,6 +6681,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[0],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -5943,6 +6690,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[2],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -5951,6 +6699,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[3],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -5959,6 +6708,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[1],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -5967,6 +6717,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[1],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -5975,6 +6726,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[2],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -5983,6 +6735,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[2],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -5991,6 +6744,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[2],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -5999,6 +6753,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[3],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6007,15 +6762,16 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[3],
                     Service = services[3],
                     Status = "ACTIVE",
                     Price = 351000,
                     ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
-
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[4],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6024,6 +6780,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[4],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6032,6 +6789,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[4],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -6040,6 +6798,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[5],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6048,6 +6807,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[5],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -6056,6 +6816,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[5],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6063,6 +6824,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg" },
                     new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[5],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6071,6 +6833,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                     new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[78],
                     Service = services[6],
                     Status = "ACTIVE",
@@ -6080,6 +6843,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[23],
                     Service = services[9],
                     Status = "ACTIVE",
@@ -6089,6 +6853,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[101],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6098,6 +6863,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[42],
                     Service = services[11],
                     Status = "ACTIVE",
@@ -6107,6 +6873,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[89],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6116,6 +6883,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[67],
                     Service = services[8],
                     Status = "ACTIVE",
@@ -6125,6 +6893,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[120],
                     Service = services[5],
                     Status = "ACTIVE",
@@ -6134,6 +6903,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[32],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6143,6 +6913,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[54],
                     Service = services[10],
                     Status = "ACTIVE",
@@ -6152,6 +6923,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[93],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -6160,6 +6932,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[110],
                     Service = services[7],
                     Status = "ACTIVE",
@@ -6169,6 +6942,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[29],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -6178,6 +6952,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[84],
                     Service = services[11],
                     Status = "ACTIVE",
@@ -6187,6 +6962,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[62],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -6196,6 +6972,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[97],
                     Service = services[8],
                     Status = "ACTIVE",
@@ -6205,6 +6982,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[21],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6214,6 +6992,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[73],
                     Service = services[10],
                     Status = "ACTIVE",
@@ -6223,6 +7002,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[116],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6232,6 +7012,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[38],
                     Service = services[6],
                     Status = "ACTIVE",
@@ -6241,6 +7022,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[105],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6249,6 +7031,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[53],
                     Service = services[5],
                     Status = "ACTIVE",
@@ -6258,6 +7041,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[92],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -6267,6 +7051,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[27],
                     Service = services[8],
                     Status = "ACTIVE",
@@ -6276,6 +7061,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[115],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6285,6 +7071,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[71],
                     Service = services[9],
                     Status = "ACTIVE",
@@ -6294,6 +7081,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[41],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -6303,6 +7091,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[126],
                     Service = services[11],
                     Status = "ACTIVE",
@@ -6312,6 +7101,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[18],
                     Service = services[6],
                     Status = "ACTIVE",
@@ -6321,6 +7111,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[87],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6330,6 +7121,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[64],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6338,6 +7130,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[109],
                     Service = services[7],
                     Status = "ACTIVE",
@@ -6347,6 +7140,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[34],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6356,6 +7150,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[79],
                     Service = services[11],
                     Status = "ACTIVE",
@@ -6365,6 +7160,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[58],
                     Service = services[5],
                     Status = "ACTIVE",
@@ -6374,6 +7170,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[103],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -6383,6 +7180,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[25],
                     Service = services[8],
                     Status = "ACTIVE",
@@ -6392,6 +7190,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[121],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6401,6 +7200,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[47],
                     Service = services[9],
                     Status = "ACTIVE",
@@ -6410,6 +7210,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[90],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6419,6 +7220,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[68],
                     Service = services[6],
                     Status = "ACTIVE",
@@ -6427,6 +7229,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[6],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -6436,6 +7239,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[19],
                     Service = services[10],
                     Status = "ACTIVE",
@@ -6445,6 +7249,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[33],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6454,6 +7259,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[46],
                     Service = services[7],
                     Status = "ACTIVE",
@@ -6463,6 +7269,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[59],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6472,6 +7279,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[72],
                     Service = services[9],
                     Status = "ACTIVE",
@@ -6481,6 +7289,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[85],
                     Service = services[5],
                     Status = "ACTIVE",
@@ -6490,6 +7299,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[98],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -6499,6 +7309,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[111],
                     Service = services[11],
                     Status = "ACTIVE",
@@ -6508,6 +7319,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[124],
                     Service = services[6],
                     Status = "ACTIVE",
@@ -6516,6 +7328,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[10],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6525,6 +7338,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[23],
                     Service = services[8],
                     Status = "ACTIVE",
@@ -6534,6 +7348,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[36],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -6543,6 +7358,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[49],
                     Service = services[10],
                     Status = "ACTIVE",
@@ -6552,6 +7368,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[62],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6561,6 +7378,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[75],
                     Service = services[7],
                     Status = "ACTIVE",
@@ -6570,6 +7388,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[88],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6579,6 +7398,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[101],
                     Service = services[9],
                     Status = "ACTIVE",
@@ -6588,6 +7408,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[114],
                     Service = services[5],
                     Status = "ACTIVE",
@@ -6597,6 +7418,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[127],
                     Service = services[11],
                     Status = "ACTIVE",
@@ -6605,6 +7427,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[13],
                     Service = services[6],
                     Status = "ACTIVE",
@@ -6614,6 +7437,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[26],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -6623,6 +7447,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[39],
                     Service = services[11],
                     Status = "ACTIVE",
@@ -6632,6 +7457,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[52],
                     Service = services[5],
                     Status = "ACTIVE",
@@ -6641,6 +7467,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[65],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6650,6 +7477,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[78],
                     Service = services[8],
                     Status = "ACTIVE",
@@ -6659,6 +7487,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[91],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -6668,6 +7497,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[104],
                     Service = services[10],
                     Status = "ACTIVE",
@@ -6677,6 +7507,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[117],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6686,6 +7517,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[129],
                     Service = services[7],
                     Status = "ACTIVE",
@@ -6694,6 +7526,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[16],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6703,6 +7536,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[29],
                     Service = services[9],
                     Status = "ACTIVE",
@@ -6712,6 +7546,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[42],
                     Service = services[6],
                     Status = "ACTIVE",
@@ -6721,6 +7556,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[55],
                     Service = services[0],
                     Status = "ACTIVE",
@@ -6730,6 +7566,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[68],
                     Service = services[11],
                     Status = "ACTIVE",
@@ -6739,6 +7576,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[81],
                     Service = services[5],
                     Status = "ACTIVE",
@@ -6748,6 +7586,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[94],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6757,6 +7596,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[107],
                     Service = services[8],
                     Status = "ACTIVE",
@@ -6766,6 +7606,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[120],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -6775,6 +7616,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[129],
                     Service = services[10],
                     Status = "ACTIVE",
@@ -6783,6 +7625,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[10],
                     Service = services[2],
                     Status = "ACTIVE",
@@ -6791,6 +7634,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[23],
                     Service = services[8],
                     Status = "ACTIVE",
@@ -6799,6 +7643,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[36],
                     Service = services[4],
                     Status = "ACTIVE",
@@ -6807,6 +7652,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[49],
                     Service = services[10],
                     Status = "ACTIVE",
@@ -6815,6 +7661,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[62],
                     Service = services[1],
                     Status = "ACTIVE",
@@ -6823,6 +7670,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[75],
                     Service = services[7],
                     Status = "ACTIVE",
@@ -6831,6 +7679,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[88],
                     Service = services[3],
                     Status = "ACTIVE",
@@ -6839,6 +7688,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[101],
                     Service = services[9],
                     Status = "ACTIVE",
@@ -6847,6 +7697,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[114],
                     Service = services[5],
                     Status = "ACTIVE",
@@ -6855,51 +7706,52 @@ namespace SWD.TicketBooking.Repo.SeedData
                 },
                 new Station_Service
                 {
+                   Station_ServiceID = Guid.NewGuid(),
                     Station = stations[127],
                     Service = services[11],
                     Status = "ACTIVE",
                     Price = 35000,
                     ImageUrl = "https://cdn.tgdd.vn/Files/2019/10/23/1211482/cac-loai-mi-tom-duoc-ua-chuong-nhat-viet-nam-202206041405267719.jpeg"
                 }
-
             };
-          /*  List<Service_Trip> trip_Services = new()
-            {
-                new Service_Trip
-                {
-                    Trip = trips[0],
-                    Service = services[0],
-                    Status = "ACTIVE"
-                },
-                new Service_Trip
-                {
-                    Trip = trips[0],
-                    Service = services[1],
-                    Status = "ACTIVE"
-                },
-                new Service_Trip
-                {
-                    Trip = trips[2],
-                    Service = services[1],
-                    Status = "ACTIVE"
-                },
-                new Service_Trip
-                {
-                    Trip = trips[2],
-                    Service = services[2],
-                    Status = "ACTIVE"
-                },
-                new Service_Trip
-                {
-                    Trip = trips[3],
-                    Service = services[1],
-                    Status = "ACTIVE"
-                }
-            };*/
+            /*  List<Service_Trip> trip_Services = new()
+              {
+                  new Service_Trip
+                  {
+                      Trip = trips[0],
+                      Service = services[0],
+                      Status = "ACTIVE"
+                  },
+                  new Service_Trip
+                  {
+                      Trip = trips[0],
+                      Service = services[1],
+                      Status = "ACTIVE"
+                  },
+                  new Service_Trip
+                  {
+                      Trip = trips[2],
+                      Service = services[1],
+                      Status = "ACTIVE"
+                  },
+                  new Service_Trip
+                  {
+                      Trip = trips[2],
+                      Service = services[2],
+                      Status = "ACTIVE"
+                  },
+                  new Service_Trip
+                  {
+                      Trip = trips[3],
+                      Service = services[1],
+                      Status = "ACTIVE"
+                  }
+              };*/
             List<Feedback> feedbacks = new()
             {
                 new Feedback
                 {
+                    FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[0],
                     Rating = 5,
@@ -6907,6 +7759,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Status = "ACTIVE"
                 }, new Feedback
                 {
+                    FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[1],
                     Rating = 4,
@@ -6914,6 +7767,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Status = "ACTIVE"
                 }, new Feedback
                 {
+                    FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[2],
                     Rating = 4,
@@ -6921,6 +7775,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Status = "ACTIVE"
                 }, new Feedback
                 {
+                    FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[3],
                     Rating = 3,
@@ -6928,6 +7783,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Status = "ACTIVE"
                 }, new Feedback
                 {
+                    FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[4],
                     Rating = 5,
@@ -6939,37 +7795,44 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new Feedback_Image
                 {
+                    Feedback_Image_ID = Guid.NewGuid(),
                     Feedback = feedbacks[0],
                     ImageUrl = "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
                     Status = "ACTIVE"
                 },
                  new Feedback_Image
                 {
+                     Feedback_Image_ID = Guid.NewGuid(),
                     Feedback = feedbacks[0],
                     ImageUrl = "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
                     Status = "ACTIVE"
                 }, new Feedback_Image
                 {
+                    Feedback_Image_ID = Guid.NewGuid(),
                     Feedback = feedbacks[1],
                     ImageUrl = "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
                     Status = "ACTIVE"
                 }, new Feedback_Image
                 {
+                    Feedback_Image_ID = Guid.NewGuid(),
                     Feedback = feedbacks[1],
                     ImageUrl = "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
                     Status = "ACTIVE"
                 }, new Feedback_Image
                 {
+                    Feedback_Image_ID = Guid.NewGuid(),
                     Feedback = feedbacks[2],
                     ImageUrl = "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
                     Status = "ACTIVE"
                 }, new Feedback_Image
                 {
+                    Feedback_Image_ID = Guid.NewGuid(),
                     Feedback = feedbacks[3],
                     ImageUrl = "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
                     Status = "ACTIVE"
                 }, new Feedback_Image
                 {
+                    Feedback_Image_ID = Guid.NewGuid(),
                     Feedback = feedbacks[4],
                     ImageUrl = "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
                     Status = "ACTIVE"
@@ -6980,106 +7843,117 @@ namespace SWD.TicketBooking.Repo.SeedData
             {
                 new TripPicture
                 {
+                    TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://thuexekhach.com/wp-content/uploads/2019/10/xe-giu%CC%9Bo%CC%9B%CC%80ng-na%CC%86%CC%80m-34-giu%CC%9Bo%CC%9B%CC%80ng.jpg",
                     Status = "ACTIVE",
                     Trip = trips[0]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://nhieuxe.vn/upload/images/xe-giuong-nam-co-bao-nhieu-cho--so-ghe-xe-giuong-nam-danh-so-nhu-the-nao2.png",
                     Status = "ACTIVE",
                     Trip = trips[0]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://viptrip.vn/public/upload/service/cho-thue-xe-giuong-nam-di-hai-phong4_800x600_714394588.webp",
                     Status = "ACTIVE",
                     Trip = trips[0]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://storage.googleapis.com/blogvxr-uploads/2023/03/3.jpg",
                     Status = "ACTIVE",
                     Trip = trips[0]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://static.vexere.com/production/images/1662198208436.jpeg",
                     Status = "ACTIVE",
                     Trip = trips[1]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://static.vexere.com/production/images/1662976460604.jpeg",
                     Status = "ACTIVE",
                     Trip = trips[1]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://static.vexere.com/production/images/1662976466001.jpeg",
                     Status = "ACTIVE",
                     Trip = trips[1]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://static.vexere.com/production/images/1702817477891.jpeg",
                     Status = "ACTIVE",
                     Trip = trips[1]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://cdn.kosshop.vn/wp-content/uploads/2022/11/kinh-nghiem-chon-vi-tri-ghe-xe-giuong-nam.jpg",
                     Status = "ACTIVE",
                     Trip = trips[2]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwGHIHBkYG0EkW4B0NNETWKPuMqnvFrDt2YA&s",
                     Status = "ACTIVE",
                     Trip = trips[2]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://mia.vn/media/uploads/blog-du-lich/danh-sach-nha-xe-giuong-nam-tuyen-da-nang-quang-binh-ban-can-bo-tui-03-1653402305.jpg",
                     Status = "ACTIVE",
                     Trip = trips[3]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://xekhachhonghai.com/wp-content/uploads/2018/12/dcar-cung-dien-di-dong-21-phong-1.jpg",
                     Status = "ACTIVE",
                     Trip = trips[3]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://i-vnexpress.vnecdn.net/2018/05/08/dcar-2-3889-1525748221.jpg",
                     Status = "ACTIVE",
                     Trip = trips[3]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSi4Ci_N8RbkPp52dXagxazPW1ylCx1SCINbQ&s",
                     Status = "ACTIVE",
                     Trip = trips[4]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://cdn.alongwalk.info/wp-content/uploads/2022/06/17055236/image-top-6-xe-giuong-nam-binh-duong-di-da-lat-xin-so-nhat-165539475673144.jpg",
                     Status = "ACTIVE",
                     Trip = trips[4]
                 },
                 new TripPicture
                 {
+                     TripPictureID = Guid.NewGuid(),
                     ImageUrl ="https://bookinglimo.vn/wp-content/uploads/2022/06/Xe-gi%C6%B0%E1%BB%9Dng-%C4%91%C3%B4i-B%C3%ACnh-D%C6%B0%C6%A1ng-%C4%91i-%C4%90%C3%A0-L%E1%BA%A1t-Booking-Limo.jpg",
                     Status = "ACTIVE",
                     Trip = trips[4]
                 }
             };
-
-
-
-
-
 
             // Add Range training program
             await _context.Users.AddRangeAsync(users);

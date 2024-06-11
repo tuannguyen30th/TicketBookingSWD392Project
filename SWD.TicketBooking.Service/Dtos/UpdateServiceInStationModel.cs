@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SWD.TicketBooking.Repo.Entities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Dtos
 {
-    public class UpdateServiceModel
+    public class UpdateServiceInStationModel
     {
+        public Guid Station_ServiceID { get; set; }
+
+        public Guid StationID { get; set; }
         public Guid ServiceID { get; set; }
-        public Guid ServiceTypeID { get; set; }
-        public string? Name { get; set; } 
+        public double Price { get; set; }
+        public IFormFile ImageUrl { get; set; }
     }
 }

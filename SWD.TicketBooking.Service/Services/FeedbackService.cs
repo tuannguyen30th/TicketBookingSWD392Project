@@ -17,15 +17,15 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class FeedbackService
     {
-        public readonly IRepository<Feedback, int> _feedbackRepository;
-        public readonly IRepository<Feedback_Image, int> _feedbackImageRepository;
-        public readonly IRepository<Trip, int> _tripRepository;
-        public readonly IRepository<Booking, int> _bookingRepository;
-        public readonly IRepository<Feedback_Image, int> _fbImageRepository; 
-    public readonly IRepository<User, int> _userRepository;
+        public readonly IRepository<Feedback, Guid> _feedbackRepository;
+        public readonly IRepository<Feedback_Image, Guid> _feedbackImageRepository;
+        public readonly IRepository<Trip, Guid> _tripRepository;
+        public readonly IRepository<Booking, Guid> _bookingRepository;
+        public readonly IRepository<Feedback_Image, Guid> _fbImageRepository; 
+    public readonly IRepository<User, Guid> _userRepository;
         public readonly IFirebaseService _firebaseService;
         public readonly IMapper _mapper;
-        public FeedbackService(IRepository<Feedback, int> feedbackRepository, IRepository<Feedback_Image, int> feedbackImageRepository, IRepository<Booking, int> bookingRepository, IFirebaseService firebaseService, IMapper mapper, IRepository<Trip, int> tripRepository, IRepository<Feedback_Image, int> fbImageRepository, IRepository<User, int> userRepository)
+        public FeedbackService(IRepository<Feedback, Guid> feedbackRepository, IRepository<Feedback_Image, Guid> feedbackImageRepository, IRepository<Booking, Guid> bookingRepository, IFirebaseService firebaseService, IMapper mapper, IRepository<Trip, Guid> tripRepository, IRepository<Feedback_Image, Guid> fbImageRepository, IRepository<User, Guid> userRepository)
         {
             _feedbackRepository = feedbackRepository;
             _bookingRepository = bookingRepository;
@@ -56,53 +56,35 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 var newRating = new Feedback
                 {
+                    FeedbackID = Guid.NewGuid(),
                     UserID = ratingModel.UserID,
                     TripID = ratingModel.TripID,
                     Rating = ratingModel.Rating,
                     Description = ratingModel.Description,
-                    Status = "Active",
+                    Status = SD.ACTIVE,
                 };
                 await _feedbackRepository.AddAsync(newRating);
                 await _feedbackRepository.Commit();
-                /*  var guidPath = Guid.NewGuid().ToString();
-                  var imagePath = FirebasePathName.RATING + $"{guidPath}";
-                  var imageUploadResult = await _firebaseService.UploadFilesToFirebase(ratingModel.Files, imagePath);
-                  if (!imageUploadResult.IsSuccess)
-                  {
-                      throw new Exception("Error uploading files to Firebase.");
-                  }
-
-                  foreach ( var imageUrl in (List<string>)imageUploadResult.Result)
-                  {
-                      var newFeedbackImage = new Feedback_Image
-                      {
-                          FeedbackID = newRating.FeedbackID,
-                          ImageUrl = imageUrl,
-                          UrlGuidID = guidPath,
-                      };
-
-                      await _feedbackImageRepository.AddAsync(newFeedbackImage);
-                  }
-                  await _feedbackImageRepository.Commit();*/
+               
                 var imageUrls = ratingModel.Files;
                 foreach (var imageUrl in imageUrls)
                 {
-                    var guidPath = Guid.NewGuid().ToString();
-                    var imagePath = FirebasePathName.RATING + $"{guidPath}";
+                    var newFeedbackImage = new Feedback_Image
+                    {
+                        Feedback_Image_ID = Guid.NewGuid(),
+                    };
+                    await _feedbackImageRepository.AddAsync(newFeedbackImage);
+                    await _feedbackImageRepository.Commit();
+                    var imagePath = FirebasePathName.RATING + $"{newFeedbackImage.Feedback_Image_ID}";
                     var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
                     if (!imageUploadResult.IsSuccess)
                     {
                         throw new InternalServerErrorException("Error uploading files to Firebase.");
                     }
 
-                    var newFeedbackImage = new Feedback_Image
-                    {
-                        FeedbackID = newRating.FeedbackID,
-                        ImageUrl = (string)imageUploadResult.Result,
-                        UrlGuidID = guidPath
-                    };
-
-                    await _feedbackImageRepository.AddAsync(newFeedbackImage);
+                    newFeedbackImage.FeedbackID = newRating.FeedbackID;
+                    newFeedbackImage.ImageUrl = (string)imageUploadResult.Result;
+                    _feedbackImageRepository.Update(newFeedbackImage);
                 }
                 var rs = await _feedbackImageRepository.Commit();
                 if (rs > 0)
@@ -118,26 +100,26 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<TripFeedbackModel> GetAllFeedbackInTrip(int id, int pageNumber, int pageSize, int filter)
+        public async Task<TripFeedbackModel> GetAllFeedbackInTrip(Guid tripID, int pageNumber, int pageSize, int filter)
         {
             try
             {
-                var existedTrip = await _tripRepository.FindByCondition(x=>x.TripID == id && x.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
+                var existedTrip = await _tripRepository.FindByCondition(x=>x.TripID == tripID && x.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (existedTrip != null)
                 {
-                    var feedback = await _feedbackRepository.FindByCondition(x => x.TripID == id)
+                    var feedback = await _feedbackRepository.FindByCondition(x => x.TripID == tripID)
                                  .ToListAsync();
                     var feedbacks = new List<Feedback>();
                     if (filter == 0)
                     {
-                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TripID == id)
+                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TripID == tripID)
                                  .Skip((pageNumber - 1) * pageSize)
                                  .Take(pageSize)
                                  .ToListAsync();
                     }
                     else
                     {
-                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TripID == id && (x.Rating == filter))
+                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TripID == tripID && (x.Rating == filter))
                                  .Skip((pageNumber - 1) * pageSize)
                                  .Take(pageSize)
                                  .ToListAsync();
@@ -146,7 +128,7 @@ namespace SWD.TicketBooking.Service.Services
                     var rs = new List<FeedbackModel>();
 
                     var totalRating = feedback.Sum(fb => fb.Rating);
-                    var averageRating = feedback.Count > 0 ? (double)totalRating / feedback.Count : 0; // Calculate average rating
+                    var averageRating = feedback.Count > 0 ? (double)totalRating / feedback.Count : 0; 
 
                     foreach ( var fb in feedbacks)
                     {
@@ -155,12 +137,12 @@ namespace SWD.TicketBooking.Service.Services
                             var listImage = await _fbImageRepository.GetAll().Where(x => x.FeedbackID == fb.FeedbackID).Select(x => x.ImageUrl).ToListAsync();
                             var fbModel = new FeedbackModel
                             {
-                                avt = user.Avatar,
+                                Avt = user.Avatar,
                                 Date = existedTrip.StartTime,
                                 Desciption = fb.Description,
-                                rating = fb.Rating,
-                                userName = user.UserName,
-                                imageUrl = listImage
+                                Rating = fb.Rating,
+                                UserName = user.UserName,
+                                ImageUrl = listImage
                             };
                             
                         rs.Add(fbModel);

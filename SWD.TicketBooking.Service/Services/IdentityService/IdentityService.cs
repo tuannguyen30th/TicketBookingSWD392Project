@@ -13,6 +13,7 @@ using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using SWD.TicketBooking.Service.Exceptions;
+using CloudinaryDotNet.Actions;
 
 
 namespace SWD.TicketBooking.Service.Services.IdentityService;
@@ -45,6 +46,7 @@ public class IdentityService
 
             var userAdd = await _userRepository.AddAsync(new User
             {
+                UserID = Guid.NewGuid(),
                 Email = req.Email,
                 Password = SecurityUtil.Hash(req.Password),
                 FullName = req.FullName,
@@ -53,10 +55,9 @@ public class IdentityService
                 PhoneNumber = req.PhoneNumber,
                 Status = "Active",
                 IsVerified = false,
-                UrlGuidID = "",
                 Avatar = "https://res.cloudinary.com/dkdl8asci/image/upload/v1711506064/canhcut_zpazas.webp?fbclid=IwZXh0bgNhZW0CMTAAAR27ufM-uhy8i9s-S-aAXmlIyJEt2-qP9EUhcXMzP9TSbdyoA4ifW-t4zzk_aem_AbJfJkMqTauRCYn09gIF1SWycsbwalv7be8u-ufHN4nWqlVljdcG-DAPaC1w0B7RieBjNDYOXJ_mzsLOS4Th4rTQ",
-                RoleID = 2,
-            }) ; ;
+                //RoleID = ,
+            }) ; 
                 var res = await _userRepository.Commit();
               /*  var imagePath = FirebasePathName.AVATAR + $"{userAdd.UrlGuidID}";
                 var imageUploadResult = await _firebaseService.UploadFileToFirebase("https://res.cloudinary.com/dkdl8asci/image/upload/v1711506064/canhcut_zpazas.webp?fbclid=IwZXh0bgNhZW0CMTAAAR27ufM-uhy8i9s-S-aAXmlIyJEt2-qP9EUhcXMzP9TSbdyoA4ifW-t4zzk_aem_AbJfJkMqTauRCYn09gIF1SWycsbwalv7be8u-ufHN4nWqlVljdcG-DAPaC1w0B7RieBjNDYOXJ_mzsLOS4Th4rTQ", imagePath);

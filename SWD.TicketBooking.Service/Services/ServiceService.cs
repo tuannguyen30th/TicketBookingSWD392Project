@@ -19,11 +19,11 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class ServiceService
     {
-        /*private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, int> _serviceRepository;
-        private readonly IRepository<Station_Service, int> _stationServiceRepository;
+        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepository;
+        private readonly IRepository<Station_Service, Guid> _stationServiceRepository;
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
-        public ServiceService(IRepository<SWD.TicketBooking.Repo.Entities.Service, int> serviceRepository, IRepository<Station_Service, int> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
+        public ServiceService(IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
         {
             _serviceRepository = serviceRepository;
             _stationServiceRepository = stationServiceRepository;
@@ -43,24 +43,12 @@ namespace SWD.TicketBooking.Service.Services
 
                 var service = new SWD.TicketBooking.Repo.Entities.Service
                 {
+                    ServiceID = Guid.NewGuid(),
                     Name = createServiceModel.Name,
-                    Price = createServiceModel.Price,
                     ServiceTypeID = createServiceModel.ServiceTypeID,
-                    UrlGuidID = Guid.NewGuid().ToString(),
-                    ImageUrl = "",
                     Status = SD.ACTIVE
                 };
                 await _serviceRepository.AddAsync(service);
-                await _serviceRepository.Commit();
-
-                var imagePath = FirebasePathName.SERVICE + $"{service.UrlGuidID}";
-                var imageUploadResult = await _firebaseService.UploadFileToFirebase(createServiceModel.ImageUrl, imagePath);
-                if (imageUploadResult.IsSuccess)
-                {
-                    service.ImageUrl = (string)imageUploadResult.Result;
-                }
-
-                _serviceRepository.Update(service);
                 var rs = await _serviceRepository.Commit();
                 return rs;
             }
@@ -69,6 +57,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+      
         public async Task<int> UpdateService(UpdateServiceModel updateServiceModel)
         {
             try
@@ -91,34 +80,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
 
                 service.Name = updateServiceModel.Name;
-                service.Price = updateServiceModel.Price;
-                service.ServiceTypeID = updateServiceModel.ServiceTypeID;
-
-                if (updateServiceModel.ImageUrl != null && updateServiceModel.ImageUrl.Length > 0)
-                {
-                    if (!string.IsNullOrEmpty(service.ImageUrl))
-                    {
-                        string url = $"{FirebasePathName.SERVICE}{service.UrlGuidID}";
-                        var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
-                        if (!deleteResult.IsSuccess)
-                        {
-                            throw new InternalServerErrorException($"Failed to delete old image");
-                        }
-                    }
-                    service.UrlGuidID = Guid.NewGuid().ToString();
-                    var imagePath = $"{FirebasePathName.SERVICE}{service.UrlGuidID}";
-                    var imageUploadResult = await _firebaseService.UploadFileToFirebase(updateServiceModel.ImageUrl, imagePath);
-
-                    if (imageUploadResult.IsSuccess)
-                    {
-                        service.ImageUrl = (string)imageUploadResult.Result;
-                    }
-                    else
-                    {
-                        throw new InternalServerErrorException($"Failed to upload new image:");
-                    }
-                }
-
+                service.ServiceTypeID = updateServiceModel.ServiceTypeID;            
                 _serviceRepository.Update(service);
                 var rs = await _serviceRepository.Commit();
                 return rs;
@@ -129,7 +91,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<bool> UpdateStatus(int serviceID)
+        public async Task<bool> UpdateStatus(Guid serviceID)
         {
             try
             {
@@ -138,7 +100,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new NotFoundException("Service not found.");
                 }
-                service.Status = "Inactive";
+                service.Status = SD.INACTIVE;
                 _serviceRepository.Update(service);
                 var rs = await _serviceRepository.Commit();
                 if (rs > 0)
@@ -151,6 +113,6 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message, ex);
             }
-        }*/
+        }
     }
 }

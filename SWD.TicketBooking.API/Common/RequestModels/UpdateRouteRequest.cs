@@ -2,9 +2,9 @@
 {
     public class UpdateRouteRequest
     {
-        public int FromCityID { get; set; }
-        public int ToCityID { get; set; }
-        public string StartLocation { get; set; } = string.Empty;
-        public string EndLocation { get; set; } = string.Empty;
+        public Guid FromCityID { get; set; }
+        public Guid ToCityID { get; set; }
+        public string? StartLocation { get; set; } 
+        public string? EndLocation { get; set; } 
     }
 }

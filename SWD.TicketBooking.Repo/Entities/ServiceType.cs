@@ -12,7 +12,7 @@ namespace SWD.TicketBooking.Repo.Entities
     public class ServiceType
     {
         [Key]
-        public int ServiceTypeID { get; set; }
+        public Guid ServiceTypeID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Status {  get; set; } = string.Empty;
     }

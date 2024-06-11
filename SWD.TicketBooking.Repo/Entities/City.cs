@@ -7,7 +7,7 @@ namespace SWD.TicketBooking.Repo.Entities
     public class City
     {
         [Key]
-        public int CityID { get; set; }
+        public Guid CityID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
     }

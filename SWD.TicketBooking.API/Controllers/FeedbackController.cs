@@ -28,7 +28,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("feedback-in-trip/{tripID}/{filter}")]
-        public async Task<IActionResult> GetAllFeedbackInTrip(int tripID, int filter, int pageNumber =1, int pageSize =5)
+        public async Task<IActionResult> GetAllFeedbackInTrip(Guid tripID, int filter, int pageNumber =1, int pageSize =5)
         {
             var fb = _mapper.Map<FeedbackInTripResponse>(await _feedbackService.GetAllFeedbackInTrip(tripID, pageNumber,pageSize, filter));
             return Ok(fb);

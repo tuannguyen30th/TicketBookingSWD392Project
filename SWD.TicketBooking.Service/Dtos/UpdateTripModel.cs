@@ -9,7 +9,7 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class UpdateTripModel
     {
-        public int RouteID { get; set; }
+        public Guid RouteID { get; set; }
         public bool IsTemplate { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

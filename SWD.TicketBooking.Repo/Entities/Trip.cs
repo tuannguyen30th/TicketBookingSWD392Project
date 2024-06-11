@@ -7,15 +7,15 @@ namespace SWD.TicketBooking.Repo.Entities
     public class Trip
     {
         [Key]
-        public int TripID { get; set; }
-        public int Route_CompanyID { get; set; }
+        public Guid TripID { get; set; }
+        public Guid Route_CompanyID { get; set; }
         [ForeignKey("Route_CompanyID")]
         public Route_Company Route_Company { get; set; }
         public bool IsTemplate { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 /*        public string ImageUrl { get; set; } = string.Empty;*/
-        public string? Status { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
 
 
     }

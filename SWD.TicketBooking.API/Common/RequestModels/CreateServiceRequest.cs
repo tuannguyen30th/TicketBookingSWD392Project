@@ -2,9 +2,8 @@
 {
     public class CreateServiceRequest
     {
-        public int ServiceTypeID { get; set; }
-        public string Name { get; set; }
-        public double Price { get; set; }
-        public IFormFile ImageUrl { get; set; }
+        public Guid ServiceTypeID { get; set; }
+        public string? Name { get; set; }
+      
     }
 }

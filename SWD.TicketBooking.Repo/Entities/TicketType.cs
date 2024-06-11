@@ -7,7 +7,7 @@ namespace SWD.TicketBooking.Repo.Entities
     public class TicketType
     {
         [Key]
-        public int TicketTypeID { get; set; }
+        public Guid TicketTypeID { get; set; }
 /*        public int RouteID { get; set; }
         [ForeignKey("RouteID")]
         public Route Route { get; set; }*/
