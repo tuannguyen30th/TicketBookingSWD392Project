@@ -12,7 +12,7 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class TicketDetailController : ControllerBase
     {
-        private readonly TicketDetailService _ticketDetailService;
+       /* private readonly TicketDetailService _ticketDetailService;
         private readonly IMapper _mapper;
 
         public TicketDetailController(TicketDetailService ticketDetailService, IMapper mapper)
@@ -34,6 +34,6 @@ namespace SWD.TicketBooking.API.Controllers
             {
                 throw new Exception(ex.Message, ex);
             }
-        }
+        }*/
     }
 }

@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
+using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.Services.FirebaseService;
 using System.Net;
 using System.Runtime.CompilerServices;
 
@@ -14,18 +16,20 @@ namespace SWD.TicketBooking.Service.Services.UserService
 {
     public class UserService
     {
-       
+
         private readonly IRepository<User, int> _userRepository;
         private readonly IMapper _mapper;
         private readonly IRepository<UserRole, int> _userRoleRepository;
+        public readonly IFirebaseService _firebaseService;
+
         public static int Page_Size { get; set; } = 10;
 
-        public UserService(IRepository<User, int> userRepository, IMapper mapper, IRepository<UserRole, int> userRoleRepository)
+        public UserService(IRepository<User, int> userRepository, IMapper mapper, IRepository<UserRole, int> userRoleRepository, IFirebaseService firebaseService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _userRoleRepository = userRoleRepository;
-         
+            _firebaseService = firebaseService;
         }
         public async Task<List<UserModel>> GetAllUsers()
         {
@@ -44,28 +48,28 @@ namespace SWD.TicketBooking.Service.Services.UserService
         {
             try
             {
-              
-                    var userEntity = await _userRepository.FindByCondition(x => x.Email == email).FirstOrDefaultAsync();
-                    var result = _mapper.Map<UserModel>(userEntity);
 
-                    if (result == null)
-                    {
-                        throw new NotFoundException("Cannot find user");
-                    }
+                var userEntity = await _userRepository.FindByCondition(x => x.Email == email).FirstOrDefaultAsync();
+                var result = _mapper.Map<UserModel>(userEntity);
 
-                    if (result.OTPCode == "0" && result.IsVerified == true)
-                    {
-                        throw new InternalServerErrorException("Some error occur");
-                    }
+                if (result == null)
+                {
+                    throw new NotFoundException("Cannot find user");
+                }
 
-                    if (result.IsVerified == false)
-                    {
-                        return result;
-                    }
-
+                if (result.OTPCode == "0" && result.IsVerified == true)
+                {
                     throw new InternalServerErrorException("Some error occur");
+                }
+
+                if (result.IsVerified == false)
+                {
+                    return result;
+                }
+
+                throw new InternalServerErrorException("Some error occur");
             }
-            
+
             catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
@@ -119,7 +123,7 @@ namespace SWD.TicketBooking.Service.Services.UserService
                 throw new Exception(ex.Message, ex);
             }
         }
-      
+
         public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
         {
             try
@@ -172,17 +176,41 @@ namespace SWD.TicketBooking.Service.Services.UserService
         {
             try
             {
-                var existedUser = await _userRepository.FindByCondition(x=> x.UserID == id).FirstOrDefaultAsync();
-                if (existedUser != null )
+                var existedUser = await _userRepository.FindByCondition(x => x.UserID == id).FirstOrDefaultAsync();
+                if (existedUser != null)
                 {
-                    if (SecurityUtil.Hash(updateUser.confirmPassword).Equals(existedUser.Password))
+
+                    existedUser.UserName = updateUser.UserName;
+                    existedUser.Password = updateUser.Password;
+                    existedUser.FullName = updateUser.FullName;
+
+                    existedUser.Address = updateUser.Address;
+                    existedUser.PhoneNumber = updateUser.PhoneNumber;
+
+                    if (updateUser.Avatar != null && updateUser.Avatar.Length > 0)
                     {
-                        existedUser.UserName = updateUser.UserName;
-                        existedUser.Password = updateUser.Password;
-                        existedUser.FullName = updateUser.FullName;
-                        existedUser.Avatar = updateUser.Avatar;
-                        existedUser.Address = updateUser.Address;
-                        existedUser.PhoneNumber = updateUser.PhoneNumber;
+                        if (!string.IsNullOrEmpty(existedUser.Avatar))
+                        {
+                            string url = $"{FirebasePathName.AVATAR}{existedUser.UrlGuidID}";
+                            var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
+                            if (!deleteResult.IsSuccess)
+                            {
+                                throw new InternalServerErrorException($"Failed to delete old image");
+                            }
+                        }
+                        existedUser.UrlGuidID = Guid.NewGuid().ToString();
+                        var imagePath = $"{FirebasePathName.AVATAR}{existedUser.UrlGuidID}";
+                        var imageUploadResult = await _firebaseService.UploadFileToFirebase(updateUser.Avatar, imagePath);
+
+                        if (imageUploadResult.IsSuccess)
+                        {
+                            existedUser.Avatar = (string)imageUploadResult.Result;
+                        }
+                        else
+                        {
+                            throw new InternalServerErrorException($"Failed to upload new image:");
+                        }
+
                         _userRepository.Update(existedUser);
                         _userRepository.Commit();
                         var update = _mapper.Map<UpdateUserModel>(existedUser);

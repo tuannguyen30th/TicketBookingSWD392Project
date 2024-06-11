@@ -16,7 +16,7 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class ServiceTypeService
     {
-        private readonly IRepository<ServiceType, int> _serviceTypeRepository;
+       /* private readonly IRepository<ServiceType, int> _serviceTypeRepository;
         private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, int> _serviceRepository;
         public readonly IFirebaseService _firebaseService;
         private readonly IRepository<Station_Service, int> _stationServiceRepository;
@@ -91,10 +91,10 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-              
+
                 throw new Exception(ex.Message, ex);
             }
-        }
+        }*/
 
     }
 }

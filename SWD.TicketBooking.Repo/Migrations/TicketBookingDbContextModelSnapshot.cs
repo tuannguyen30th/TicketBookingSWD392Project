@@ -250,25 +250,14 @@ namespace SWD.TicketBooking.Repo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceID"), 1L, 1);
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
 
                     b.Property<int>("ServiceTypeID")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UrlGuidID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -368,6 +357,13 @@ namespace SWD.TicketBooking.Repo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Station_ServiceID"), 1L, 1);
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
                     b.Property<int>("ServiceID")
                         .HasColumnType("int");
 
@@ -375,6 +371,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlGuidID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -438,6 +438,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.Property<int>("ServiceID")
                         .HasColumnType("int");
 
+                    b.Property<int>("StationID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -448,6 +451,8 @@ namespace SWD.TicketBooking.Repo.Migrations
                     b.HasKey("TicketDetail_ServiceID");
 
                     b.HasIndex("ServiceID");
+
+                    b.HasIndex("StationID");
 
                     b.HasIndex("TicketDetailID");
 
@@ -887,6 +892,12 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("SWD.TicketBooking.Repo.Entities.Station", "Station")
+                        .WithMany()
+                        .HasForeignKey("StationID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SWD.TicketBooking.Repo.Entities.TicketDetail", "TicketDetail")
                         .WithMany()
                         .HasForeignKey("TicketDetailID")
@@ -894,6 +905,8 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .IsRequired();
 
                     b.Navigation("Service");
+
+                    b.Navigation("Station");
 
                     b.Navigation("TicketDetail");
                 });
