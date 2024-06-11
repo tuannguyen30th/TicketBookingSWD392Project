@@ -12,5 +12,7 @@ namespace SWD.TicketBooking.Service.Dtos
         public TripInSearchTicketModel Trip { get; set; }
         public double TotalBill { get; set; }
         public string? QrCodeImage { get; set; }
+        public string? QrCode { get; set; }
+
     }
 }

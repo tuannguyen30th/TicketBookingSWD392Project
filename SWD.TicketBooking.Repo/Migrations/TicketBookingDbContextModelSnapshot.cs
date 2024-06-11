@@ -36,6 +36,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentStatus")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QRCode")
@@ -54,6 +55,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TotalBill")

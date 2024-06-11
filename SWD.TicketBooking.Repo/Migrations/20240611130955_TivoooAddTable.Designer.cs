@@ -12,8 +12,8 @@ using SWD.TicketBooking.Repo.Entities;
 namespace SWD.TicketBooking.Repo.Migrations
 {
     [DbContext(typeof(TicketBookingDbContext))]
-    [Migration("20240611082901_addTable")]
-    partial class addTable
+    [Migration("20240611130955_TivoooAddTable")]
+    partial class TivoooAddTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,6 +38,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentStatus")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QRCode")
@@ -56,6 +57,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TotalBill")
