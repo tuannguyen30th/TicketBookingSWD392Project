@@ -19,7 +19,7 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class ServiceService
     {
-        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, int> _serviceRepository;
+        /*private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, int> _serviceRepository;
         private readonly IRepository<Station_Service, int> _stationServiceRepository;
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
@@ -30,16 +30,17 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
-     
+
         public async Task<int> CreateService(CreateServiceModel createServiceModel)
         {
             try
             {
                 var checkExistedName = await _serviceRepository.GetAll().Where(_ => _.ServiceTypeID == createServiceModel.ServiceTypeID && _.Name.ToLower().Trim().Equals(createServiceModel.Name.ToLower())).FirstOrDefaultAsync();
-                if (checkExistedName != null) {
+                if (checkExistedName != null)
+                {
                     throw new BadRequestException("Service name existed");
                 }
-                
+
                 var service = new SWD.TicketBooking.Repo.Entities.Service
                 {
                     Name = createServiceModel.Name,
@@ -127,7 +128,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception("Error updating service", ex);
             }
         }
-    
+
         public async Task<bool> UpdateStatus(int serviceID)
         {
             try
@@ -140,16 +141,16 @@ namespace SWD.TicketBooking.Service.Services
                 service.Status = "Inactive";
                 _serviceRepository.Update(service);
                 var rs = await _serviceRepository.Commit();
-                if(rs >  0)
+                if (rs > 0)
                 {
                     return true;
                 }
                 return false;
             }
-            catch (Exception  ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
             }
-        }
+        }*/
     }
 }

@@ -20,20 +20,35 @@ namespace SWD.TicketBooking.API.Controllers
             _ticketDetailService = ticketDetailService;
             _mapper = mapper;
         }
+        /*
+                [AllowAnonymous]
+                [HttpGet("ticket-details-by-user/{userID}")]
+                public async Task<IActionResult> GetTicketDetailByUser([FromRoute] int userID)
+                {
+                    try
+                    {
+                        var rs = _mapper.Map<List<GetTicketDetailByUserResponse>>(await _ticketDetailService.GetTicketDetailByUser(userID));
+                        return Ok(rs);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message, ex);
+                    }
+                }*/
 
-        [AllowAnonymous]
-        [HttpGet("ticket-details-by-user/{userID}")]
-        public async Task<IActionResult> GetTicketDetailByUser([FromRoute] int userID)
+        [HttpGet("ticket-detail-by-QRCode/{QRCode}")]
+        public async Task<IActionResult> SearchTicket([FromRoute] string QRCode)
         {
             try
             {
-                var rs = _mapper.Map<List<GetTicketDetailByUserResponse>>(await _ticketDetailService.GetTicketDetailByUser(userID));
+                var rs = _mapper.Map<SearchTicketResponse>(await _ticketDetailService.SearchTicket(QRCode));
                 return Ok(rs);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex);
+                throw new Exception();
             }
         }
+
     }
 }

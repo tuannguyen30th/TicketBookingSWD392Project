@@ -14,7 +14,7 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class ServiceController : ControllerBase
     {
-        private readonly ServiceTypeService _serviceTypeService;
+        /*private readonly ServiceTypeService _serviceTypeService;
         private readonly ServiceService _serviceService;
         private readonly IMapper _mapper;
         public ServiceController(ServiceTypeService serviceTypeService, ServiceService serviceService, IMapper mapper)
@@ -59,6 +59,6 @@ namespace SWD.TicketBooking.API.Controllers
         {
             var service = await _serviceService.UpdateStatus(serviceID);
             return Ok(service);
-        }
+        }*/
     }
 }

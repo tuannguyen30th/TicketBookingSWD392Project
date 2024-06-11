@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWD.TicketBooking.Repo.Migrations
 {
-    public partial class BaoUpdate : Migration
+    public partial class TienvoooAddable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -157,9 +157,6 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ServiceTypeID = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UrlGuidID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -289,6 +286,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StationID = table.Column<int>(type: "int", nullable: false),
                     ServiceID = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UrlGuidID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -505,6 +505,7 @@ namespace SWD.TicketBooking.Repo.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TicketDetailID = table.Column<int>(type: "int", nullable: false),
                     ServiceID = table.Column<int>(type: "int", nullable: false),
+                    StationID = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -517,6 +518,12 @@ namespace SWD.TicketBooking.Repo.Migrations
                         column: x => x.ServiceID,
                         principalTable: "Service",
                         principalColumn: "ServiceID");
+                    table.ForeignKey(
+                        name: "FK_TicketDetail_Service_Station_StationID",
+                        column: x => x.StationID,
+                        principalTable: "Station",
+                        principalColumn: "StationID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TicketDetail_Service_TicketDetail_TicketDetailID",
                         column: x => x.TicketDetailID,
@@ -621,6 +628,11 @@ namespace SWD.TicketBooking.Repo.Migrations
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TicketDetail_Service_StationID",
+                table: "TicketDetail_Service",
+                column: "StationID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TicketDetail_Service_TicketDetailID",
                 table: "TicketDetail_Service",
                 column: "TicketDetailID");
@@ -688,10 +700,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Feedback");
 
             migrationBuilder.DropTable(
-                name: "Station");
+                name: "Service");
 
             migrationBuilder.DropTable(
-                name: "Service");
+                name: "Station");
 
             migrationBuilder.DropTable(
                 name: "TicketDetail");
@@ -700,10 +712,10 @@ namespace SWD.TicketBooking.Repo.Migrations
                 name: "Utility");
 
             migrationBuilder.DropTable(
-                name: "Company");
+                name: "ServiceType");
 
             migrationBuilder.DropTable(
-                name: "ServiceType");
+                name: "Company");
 
             migrationBuilder.DropTable(
                 name: "Booking");
