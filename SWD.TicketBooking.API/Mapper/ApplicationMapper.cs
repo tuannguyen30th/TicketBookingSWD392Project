@@ -25,7 +25,7 @@ namespace SWD.TicketBooking.API.Mapper
 
             CreateMap<User, CreateUserReq>().ReverseMap();
 
-            CreateMap<UpdateUserModel, UpdateUserReq>().ReverseMap();
+            CreateMap<UpdateUserModel, UpdateUserRequest>().ReverseMap();
             CreateMap<User, UpdateUserModel>().ReverseMap();
 
             ///////Route////////
@@ -89,6 +89,7 @@ namespace SWD.TicketBooking.API.Mapper
             /////TicketDetail/////
             CreateMap<GetTicketDetailByUserModel, GetTicketDetailByUserResponse>().ReverseMap();
             CreateMap<GetDetailTicketDetailByTicketDetailModel, GetDetailTicketDetailByTicketDetailResponse>().ReverseMap();
+            CreateMap<SearchTicketModel, SearchTicketResponse>().ReverseMap();
         }
     }
 }

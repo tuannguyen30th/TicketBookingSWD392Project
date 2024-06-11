@@ -5075,7 +5075,8 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Service = services[2],
                     Price = 140000,
                     Quantity = 1,
-                    Status = "ACTIVE"
+                    Status = "ACTIVE",
+                    Station = stations[20]
                 },
                 new TicketDetail_Service
                 {
@@ -6074,7 +6075,7 @@ namespace SWD.TicketBooking.Repo.SeedData
 
                 new Station_Service
                 {
-                    Station = stations[130],
+                    Station = stations[129],
                     Service = services[7],
                     Status = "ACTIVE",
                     Price = 35000,

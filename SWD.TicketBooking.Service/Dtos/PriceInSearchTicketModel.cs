@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Dtos
 {
-    internal class PriceInSearchTicketModel
+    public class PriceInSearchTicketModel
     {
+        public double price { get; set; }
+        public List<StationInSearchTicket> stations { get; set; }
     }
 }
