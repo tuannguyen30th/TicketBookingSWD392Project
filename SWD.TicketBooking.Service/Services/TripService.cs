@@ -46,7 +46,7 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<List<PictureModel>> GetPictureOfTrip(Guid id)
+        public async Task<List<string>> GetPictureOfTrip(Guid id)
         {
             try
             {
@@ -59,16 +59,12 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     var pics = await _tripPictureRepo.GetAll().Where(x => x.TripID == id).Select(p => p.TripPictureID).ToListAsync();
 
-                    var rs = new List<PictureModel>();
+                    var rs = new List<string>();
                     foreach (var p in pics)
                     {
                         var tripPic = await _tripPictureRepo.GetByIdAsync(p);
-                        var tripPicModel = new PictureModel
-                        {
-                            ImageUrl = tripPic.ImageUrl,
-                            TripId = tripPic.TripID
-                        };
-                        rs.Add(tripPicModel);
+                        
+                        rs.Add(tripPic.ImageUrl);
                     }
                     return rs;
                 }

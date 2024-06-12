@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,9 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpGet("trip-picture-detail/{tripId}")]
         public async Task<IActionResult> GetTripPictureDetail(Guid tripId)
         {
-            var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
+            //   var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
+            var rs = new List<string>();
+            rs = await _tripService.GetPictureOfTrip(tripId);
             return Ok(rs);
         }
         [HttpGet("list-trip-fromCity-toCity/{fromCity}/{toCity}/{startTime}/{pageNumber}/{pageSize}")]
@@ -78,3 +81,4 @@ namespace SWD.TicketBooking.API.Controllers
 
     }
 }
+
