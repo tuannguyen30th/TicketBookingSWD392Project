@@ -164,11 +164,10 @@ namespace SWD.TicketBooking.Service.Services
                     var feedbacks = await _feedbackRepo.FindByCondition(_ => _.TripID == trip.TripID).ToListAsync();
                     var ratingAverage = feedbacks.Select(_ => _.Rating).DefaultIfEmpty(0).Average();
                     var ratingQuantity = feedbacks.Count;
-
                     var totalSeatsInTrip = await _ticketTypeTripRepo.FindByCondition(_ => _.TripID == trip.TripID).SumAsync(_ => (int?)_.Quantity) ?? 0;
-                    var seatsBookedInTrip = await _bookingRepo.FindByCondition(_ => _.TripID == trip.TripID && _.BookingTime < startTime).CountAsync();
-                    var remainingSeats = totalSeatsInTrip - seatsBookedInTrip;
-
+                    var bookings = await _bookingRepo.GetAll().Where(_ => _.TripID == trip.TripID).Select(_ => _.BookingID).ToListAsync();
+                    var totalUnusedSeats = await _ticketDetailRepo.FindByCondition(_ => bookings.Contains(_.BookingID) && _.Status.ToUpper().Equals("UNUSED")).CountAsync();
+                    var remainingSeats = totalSeatsInTrip - totalUnusedSeats;
                     var tripImage = await _tripPictureRepo.GetAll()
                         .Where(_ => _.TripID == trip.TripID)
                         .Select(_ => _.ImageUrl)
