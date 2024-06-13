@@ -24,4 +24,8 @@
     <ProjectReference Include="..\SWD.TicketBooking.Service\SWD.TicketBooking.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\RequestModels\Booking\" />
+  </ItemGroup>
+
 </Project>

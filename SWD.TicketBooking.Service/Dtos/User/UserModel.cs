@@ -5,7 +5,7 @@ namespace SWD.TicketBooking.Service.Dtos.User
 {
     public class UserModel
     {
-        public int UserID { get; set; }
+        public Guid UserID { get; set; }
 
         [MaxLength(255)]
         public string? UserName { get; set; } = string.Empty;
@@ -34,6 +34,6 @@ namespace SWD.TicketBooking.Service.Dtos.User
         public bool? IsVerified { get; set; }
 
         public string? Status { get; set; } = string.Empty;
-        public int RoleID { get; set; }
+        public Guid RoleID { get; set; }
     }
 }

@@ -46,9 +46,9 @@ namespace SWD.TicketBooking.Repo.Entities
 
         public DbSet<Utility> Utility { get; set; }
 
-        public DbSet<Trip_Utility> utilityInTrips { get; set; }
+        public DbSet<Trip_Utility> UtilityInTrips { get; set; }
 
-        public DbSet<TripPicture> tripPictures { get; set; }
+        public DbSet<TripPicture> TripPictures { get; set; }
 
         #endregion Dbset
 
@@ -103,6 +103,10 @@ namespace SWD.TicketBooking.Repo.Entities
        .WithMany() // Adjust as necessary
        .HasForeignKey(td => td.TicketDetailID)
        .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Feedback>()
+              .HasOne(vr => vr.Trip)
+              .WithMany()
+              .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

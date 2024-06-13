@@ -8,7 +8,7 @@ namespace SWD.TicketBooking.Service.Dtos.Auth
 {
     public class CreateUserReq
     {
-        public int UserID { get; set; }
+        public Guid UserID { get; set; }
         public string? UserName { get; set; }
 
 
@@ -37,6 +37,6 @@ namespace SWD.TicketBooking.Service.Dtos.Auth
         public bool? IsVerified { get; set; }
 
         public string? Status { get; set; }
-        public int RoleID { get; set; }
+        public Guid RoleID { get; set; }
     }
 }

@@ -56,7 +56,7 @@ public class IdentityService
                 Status = "Active",
                 IsVerified = false,
                 Avatar = "https://res.cloudinary.com/dkdl8asci/image/upload/v1711506064/canhcut_zpazas.webp?fbclid=IwZXh0bgNhZW0CMTAAAR27ufM-uhy8i9s-S-aAXmlIyJEt2-qP9EUhcXMzP9TSbdyoA4ifW-t4zzk_aem_AbJfJkMqTauRCYn09gIF1SWycsbwalv7be8u-ufHN4nWqlVljdcG-DAPaC1w0B7RieBjNDYOXJ_mzsLOS4Th4rTQ",
-                //RoleID = ,
+                RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387"),
             }) ; 
                 var res = await _userRepository.Commit();
               /*  var imagePath = FirebasePathName.AVATAR + $"{userAdd.UrlGuidID}";
