@@ -3323,20 +3323,60 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Status = "ACTIVE"
                 }
             };
+            List<Trip> trips1 = new List<Trip>();
+            Trip firstTrip1 = new Trip
+            {
+                TripID = Guid.NewGuid(),
+                Route_Company = route_Companies[0],
+                IsTemplate = true,
+                StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
+                EndTime = new DateTime(2024, 6, 19, 15, 30, 0),
+                Status = "ACTIVE"
+            };
+            Trip firstTrip2 = new Trip
+            {
+                TripID = Guid.NewGuid(),
+                Route_Company = route_Companies[0],
+                IsTemplate = true,
+                StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
+                EndTime = new DateTime(2024, 6, 19, 15, 30, 0),
+                Status = "ACTIVE"
+            };
+
+            // Add the first trip to the list
+            Trip firstTrip3 = new Trip
+            {
+                TripID = Guid.NewGuid(),
+                Route_Company = route_Companies[0],
+                IsTemplate = true,
+                StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
+                EndTime = new DateTime(2024, 6, 19, 15, 30, 0),
+                Status = "ACTIVE"
+            };
+
+            // Add the first trip to the list
+            trips1.Add(firstTrip1);
+            // Ad1d the first trip to the list
+            trips1.Add(firstTrip2);
+            trips1.Add(firstTrip3);
             List<Trip> trips = new()
             {
                 new Trip
                 {
                     TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
+                    IsTemplate = false,
+                    TemplateID = trips1[0].TemplateID,
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 19, 15, 30, 0),
                     Status ="ACTIVE"
                 },
                 new Trip
                 {
-                    TripID = Guid.NewGuid(),
+                    TripID = Guid.NewGuid(),                  
                     Route_Company = route_Companies[0],
+                     IsTemplate = false,
+                    TemplateID = trips1[0].TemplateID,
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
                     EndTime = new DateTime(2024, 7, 6, 18, 45, 1),
                     Status ="ACTIVE"
@@ -3344,7 +3384,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     TripID = Guid.NewGuid(),
-                    Route_Company = route_Companies[0],
+                     Route_Company = route_Companies[0],
+                     IsTemplate = false,
+                    TemplateID = trips1[0].TemplateID,
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 2),
                     EndTime = new DateTime(2024, 7, 6, 18, 45, 2),
                     Status ="ACTIVE"
@@ -3352,7 +3394,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     TripID = Guid.NewGuid(),
-                    Route_Company = route_Companies[1],
+                     Route_Company = route_Companies[0],
+                     IsTemplate = false,
+                    TemplateID = trips1[0].TemplateID,
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 3),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 3),
                     Status ="ACTIVE"
@@ -3360,7 +3404,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     TripID = Guid.NewGuid(),
-                    Route_Company = route_Companies[1],
+                     Route_Company = route_Companies[0],
+                     IsTemplate = false,
+                    TemplateID = trips1[0].TemplateID,
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 4),
                     EndTime = new DateTime(2024, 7, 7, 17, 45, 4),
                     Status ="ACTIVE"
@@ -3368,7 +3414,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     TripID = Guid.NewGuid(),
-                    Route_Company = route_Companies[1],
+                    Route_Company = route_Companies[0],
+                     IsTemplate = false,
+                    TemplateID = trips1[0].TemplateID,
                     StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
                     EndTime = new DateTime(2024, 7, 1, 23, 59, 59),
                     Status ="ACTIVE"
@@ -3376,7 +3424,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     TripID = Guid.NewGuid(),
-                    Route_Company = route_Companies[1],
+                    Route_Company = route_Companies[0],
+                    IsTemplate = false,
+                    TemplateID = trips1[0].TemplateID,
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
                     Status ="ACTIVE"
@@ -3384,7 +3434,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                 new Trip
                 {
                     TripID = Guid.NewGuid(),
-                    Route_Company = route_Companies[1],
+                    Route_Company = route_Companies[0],
+                     IsTemplate = false,
+                    TemplateID = trips1[0].TemplateID,
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
                     Status ="ACTIVE"
@@ -7754,6 +7806,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[0],
+                    TripTemplate = trips[0],
                     Rating = 5,
                     Description = "Dịch vụ tốt",
                     Status = "ACTIVE"
@@ -7762,6 +7815,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[1],
+                    TripTemplate = trips1[1],
                     Rating = 4,
                     Description = "Dịch vụ khá tốt",
                     Status = "ACTIVE"
@@ -7770,6 +7824,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[2],
+                    TripTemplate = trips[2],
                     Rating = 4,
                     Description = "Dịch vụ rất tốt",
                     Status = "ACTIVE"
@@ -7778,6 +7833,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[3],
+                    TripTemplate = trips[3],
                     Rating = 3,
                     Description = "Dịch vụ tạm",
                     Status = "ACTIVE"
@@ -7786,6 +7842,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     FeedbackID = Guid.NewGuid(),
                     User = users[0],
                     Trip = trips[4],
+                    TripTemplate = trips[4],
                     Rating = 5,
                     Description = "Dịch vụ tốt",
                     Status = "ACTIVE"
@@ -7975,8 +8032,9 @@ namespace SWD.TicketBooking.Repo.SeedData
             //await _context.Service_Trip.AddRangeAsync(trip_Services);
             await _context.Route_Company.AddRangeAsync(route_Companies);
             await _context.Utility.AddRangeAsync(utilities);
-            await _context.utilityInTrips.AddRangeAsync(utilityInTrips);
-            await _context.tripPictures.AddRangeAsync(tripPictures);
+            await _context.UtilityInTrips.AddRangeAsync(utilityInTrips);
+            await _context.Feedback.AddRangeAsync(feedbacks);
+            await _context.TripPictures.AddRangeAsync(tripPictures);
             // Save to DB
             await _context.SaveChangesAsync();
         }

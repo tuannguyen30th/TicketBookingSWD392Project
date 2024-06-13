@@ -34,12 +34,14 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var fromCities = await _routeRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.FromCity )
                                                        .Distinct()
-                                                       .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })
+                                                       .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })   
+                                                       .OrderBy(x => x.CityName)
                                                        .ToListAsync();
 
                 var toCities = await _routeRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.ToCity)
                                                        .Distinct()
                                                        .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })
+                                                       .OrderBy(x => x.CityName)
                                                        .ToListAsync();
 
                 var rs =  new CityModel

@@ -19,6 +19,9 @@ namespace SWD.TicketBooking.Repo.Entities
         public Guid TripID { get; set; }
         [ForeignKey("TripID")]
         public Trip Trip { get; set; }
+        public Guid TemplateID { get; set; }
+        [ForeignKey("TemplateID")]
+        public Trip TripTemplate { get; set; }
         public int Rating { get; set; }
         public string Description { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;

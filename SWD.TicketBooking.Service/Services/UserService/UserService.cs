@@ -11,6 +11,7 @@ using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Transactions;
 
 namespace SWD.TicketBooking.Service.Services.UserService
 {
@@ -91,40 +92,68 @@ namespace SWD.TicketBooking.Service.Services.UserService
 
         public async Task<(CreateUserReq returnModel, string message)> SendOTPCode(CreateUserReq req)
         {
-            try
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                var userEntity = _mapper.Map<User>(req);
-                var user = _userRepository.FindByCondition(x => x.Email == req.Email).FirstOrDefault();
-
-                if (user != null && user.IsVerified == false)
+                try
                 {
-                    user.CreateDate = DateTimeOffset.Now;
-                    user.OTPCode = req.OTPCode;
-                    user = _userRepository.Update(user);
-                    int rs = await _userRepository.Commit();
-                    if (rs > 0)
+                    var user = _userRepository.FindByCondition(x => x.Email == req.Email).FirstOrDefault();
+
+                    if (user != null)
                     {
-                        return (_mapper.Map<CreateUserReq>(user), "Send OTP successfully");
+                        if (user.IsVerified == false)
+                        {
+                            // User exists but not verified, update OTP code
+                            user.CreateDate = DateTimeOffset.Now;
+                            user.OTPCode = req.OTPCode;
+                            _userRepository.Update(user);
+                            int rs = await _userRepository.Commit();
+
+                            if (rs > 0)
+                            {
+                                scope.Complete();
+                                return (_mapper.Map<CreateUserReq>(user), "Send OTP successfully");
+                            }
+                            else
+                            {
+                                return (null, "Failed to send OTP");
+                            }
+                        }
+                        else
+                        {
+                            // User is already verified
+                            throw new BadRequestException("Email is already existed!");
+                        }
+                    }
+
+                    // If user does not exist, create a new user and send OTP
+                    var userEntity = _mapper.Map<User>(req);
+                    _userRepository.AddAsync(userEntity);
+                    int commitResult = await _userRepository.Commit();
+
+                    if (commitResult > 0)
+                    {
+                        scope.Complete();
+                        return (_mapper.Map<CreateUserReq>(userEntity), "Send OTP successfully");
                     }
                     else
                     {
-                        return (null, "Fail");
+                        return (null, "Failed to send OTP");
                     }
                 }
-                var existedUser = _userRepository.FindByCondition(x => x.Email == req.Email && x.IsVerified == true).FirstOrDefault();
-                if (existedUser != null)
+                catch (BadRequestException ex)
                 {
-                    throw new BadRequestException("Email is already existed!");
+                    throw ex; // Re-throw custom exceptions without wrapping
                 }
-                return (null, "Fail");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
+                catch (Exception ex)
+                {
+                    throw new Exception("An error occurred while sending OTP.", ex);
+                }
             }
         }
 
-        public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
+    
+
+    public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
         {
             try
             {

@@ -4,6 +4,7 @@ using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Auth;
+using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.Dtos.User;
 using static SWD.TicketBooking.API.Common.RequestModels.CreateTripRequest;
 using static SWD.TicketBooking.API.Common.ResponseModels.GetSeatBookedFromTripResponse;
@@ -78,6 +79,10 @@ namespace SWD.TicketBooking.API.Mapper
             ///////Station_Service///////
             CreateMap<CreateServiceInStationModel, CreateServiceInStationRequest>().ReverseMap();
             CreateMap<UpdateServiceInStationModel, UpdateServiceInStationRequest>().ReverseMap();
+            //////Booking//////
+            CreateMap<AddOrUpdateBookingModel, SWD.TicketBooking.Repo.Entities.Booking>().ReverseMap();
+            CreateMap<AddOrUpdateTicketModel, TicketDetail>().ReverseMap();
+            CreateMap<AddOrUpdateServiceModel, TicketDetail_Service>().ReverseMap();
 
         }
     }
