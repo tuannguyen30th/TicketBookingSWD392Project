@@ -52,12 +52,12 @@ namespace SWD.TicketBooking.API.Controllers
             }
         }
 
-        [HttpGet("ticket-detail-by-QRCode/{qrCode}")]
-        public async Task<IActionResult> SearchTicket([FromRoute] string qrCode)
+        [HttpGet("ticket-detail-by-QRCode/{qrCode}/{email}")]
+        public async Task<IActionResult> SearchTicket([FromRoute] string qrCode, [FromRoute] string email)
         {
             try
             {
-                var rs = _mapper.Map<SearchTicketResponse>(await _ticketDetailService.SearchTicket(qrCode));
+                var rs = _mapper.Map<SearchTicketResponse>(await _ticketDetailService.SearchTicket(qrCode, email));
                 return Ok(rs);
             }
             catch (Exception ex)

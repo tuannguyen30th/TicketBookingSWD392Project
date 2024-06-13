@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
@@ -157,41 +158,49 @@ namespace SWD.TicketBooking.Service.Services
         }
 
 
-        public async Task<SearchTicketModel> SearchTicket(string QRCode)
+        public async Task<SearchTicketModel> SearchTicket(string QRCode, string email)
         {
             try
             {
-                var check = await _bookingRepo.GetAll().Where(b=> b.QRCode.Equals(QRCode)).Select(b=>b.BookingID).FirstAsync();
-
-                if (check == null)
+                var checkUser = await _userRepo.GetAll().Where(u => u.Email.Equals(email)).Select(u => u.UserID).FirstOrDefaultAsync();
+                if (checkUser == Guid.Empty)
                 {
-                    throw new Exception("QR Code not found!");
+                    throw new NotFoundException("Not found user!");
                 }
                 else
                 {
-                    var booking = await _bookingRepo.GetByIdAsync(check);
-                    var trip = await _bookingRepo.GetAll().Where(t => t.QRCode.Equals(QRCode)).Select(t => t.Trip).FirstOrDefaultAsync();
-                    var ticketDetail = await _ticketDetailRepo.FindByCondition(b => b.BookingID == booking.BookingID).FirstOrDefaultAsync();
-                    var services = await _ticketDetailServiceRepo.GetAll().
-                        Where(t => t.TicketDetailID == ticketDetail.TicketDetailID).
-                                        Select(ts => ts.ServiceID).ToListAsync();
-
-                    var route = await _tripRepo.GetAll().Where(x => x.TripID == trip.TripID).Select(r => r.Route_Company.Route).FirstOrDefaultAsync();
-                    var priceRs = new PriceInSearchTicketModel
+                    var check = await _bookingRepo.GetAll().Where(b => b.QRCode.Equals(QRCode) && b.UserID.Equals(checkUser)).Select(b => b.BookingID).FirstAsync();
+                    if (check == null)
                     {
-                        Price = ticketDetail.Price,
-                        Stations = GetAllStationName(services)
-                    };
-
-                    var rs = new SearchTicketModel
+                        throw new NotFoundException("Not found qr code!");
+                    }
+                    else
                     {
-                        Price = priceRs,
-                        Trip = GetTripBaseOnModel(trip, booking, route, ticketDetail),
-                        TotalBill = booking.TotalBill,
-                        QrCodeImage = booking.QRCodeImage,
-                        QrCode = booking.QRCode
-                    };
-                    return rs;
+                        var booking = await _bookingRepo.GetByIdAsync(check);
+                        var trip = await _bookingRepo.GetAll().Where(t => t.QRCode.Equals(QRCode)).Select(t => t.Trip).FirstOrDefaultAsync();
+                        var ticketDetail = await _ticketDetailRepo.FindByCondition(b => b.BookingID == booking.BookingID).FirstOrDefaultAsync();
+                        var services = await _ticketDetailServiceRepo.GetAll().
+                            Where(t => t.TicketDetailID == ticketDetail.TicketDetailID).
+                                            Select(ts => ts.ServiceID).ToListAsync();
+
+                        var route = await _tripRepo.GetAll().Where(x => x.TripID == trip.TripID).Select(r => r.Route_Company.Route).FirstOrDefaultAsync();
+                        var priceRs = new PriceInSearchTicketModel
+                        {
+                            Price = ticketDetail.Price,
+                            Stations = GetAllStationName(services)
+                        };
+
+                        var rs = new SearchTicketModel
+                        {
+                            Price = priceRs,
+                            Trip = GetTripBaseOnModel(trip, booking, route, ticketDetail),
+                            TotalBill = booking.TotalBill,
+                            QrCodeImage = booking.QRCodeImage,
+                            QrCode = booking.QRCode
+                        };
+                        return rs;
+                    }
+                
                 }
             }
             catch (Exception ex)
