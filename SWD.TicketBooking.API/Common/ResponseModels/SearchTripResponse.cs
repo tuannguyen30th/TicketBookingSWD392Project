@@ -4,6 +4,7 @@
     {
         public Guid TripID { get; set; }
         public Guid RouteID { get; set; }
+        public Guid TemplateID { get; set; }
         public string? CompanyName { get; set; }
         public string? ImageUrl { get; set; }
         public double AverageRating { get; set; }
