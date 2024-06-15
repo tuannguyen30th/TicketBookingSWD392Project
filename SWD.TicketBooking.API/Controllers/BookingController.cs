@@ -1,4 +1,4 @@
-﻿/*using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.Service.Dtos.Booking;
@@ -46,7 +46,7 @@ namespace SWD.TicketBooking.API.Controllers
                 if (response.VnPayResponseCode == "00")
                 {
                     var orderId = response.BookingId.ToString().Split(" ");
-                                      
+
                 }
             }
             catch (Exception ex)
@@ -61,4 +61,3 @@ namespace SWD.TicketBooking.API.Controllers
         }
     }
 }
-*/
