@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.Service.Dtos.Booking;
@@ -61,3 +61,4 @@ namespace SWD.TicketBooking.API.Controllers
         }
     }
 }
+*/

@@ -22,7 +22,7 @@ namespace SWD.TicketBooking.Service.Services
         public readonly IRepository<Trip, Guid> _tripRepository;
         public readonly IRepository<Booking, Guid> _bookingRepository;
         public readonly IRepository<Feedback_Image, Guid> _fbImageRepository; 
-    public readonly IRepository<User, Guid> _userRepository;
+        public readonly IRepository<User, Guid> _userRepository;
         public readonly IFirebaseService _firebaseService;
         public readonly IMapper _mapper;
         public FeedbackService(IRepository<Feedback, Guid> feedbackRepository, IRepository<Feedback_Image, Guid> feedbackImageRepository, IRepository<Booking, Guid> bookingRepository, IFirebaseService firebaseService, IMapper mapper, IRepository<Trip, Guid> tripRepository, IRepository<Feedback_Image, Guid> fbImageRepository, IRepository<User, Guid> userRepository)
@@ -40,7 +40,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkHadBooked = await _bookingRepository.FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID).FirstOrDefaultAsync();
+                var checkHadBooked = _bookingRepository.FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID).FirstOrDefaultAsync();
                 if (checkHadBooked == null)
                 {
                     throw new BadRequestException("Not had booked this Trip yet!");
@@ -75,6 +75,7 @@ namespace SWD.TicketBooking.Service.Services
                     var newFeedbackImage = new Feedback_Image
                     {
                         Feedback_Image_ID = Guid.NewGuid(),
+                        FeedbackID = newRating.FeedbackID,
                     };
                     await _feedbackImageRepository.AddAsync(newFeedbackImage);
                     await _feedbackImageRepository.Commit();
