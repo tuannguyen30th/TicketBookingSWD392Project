@@ -159,6 +159,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     var feedbacks = await _feedbackRepo.FindByCondition(_ => _.TemplateID == trip.TemplateID).ToListAsync();
                     var ratingAverage = feedbacks.Select(_ => _.Rating).DefaultIfEmpty(0).Average();
+                    var roundedRatingAverage = Math.Round(ratingAverage, 1);
                     var ratingQuantity = feedbacks.Count;
                     var totalSeatsInTrip = await _ticketTypeTripRepo.FindByCondition(_ => _.TripID == trip.TripID).SumAsync(_ => (int?)_.Quantity) ?? 0;
                     var bookings = await _bookingRepo.GetAll().Where(_ => _.TripID == trip.TripID).Select(_ => _.BookingID).ToListAsync();
@@ -180,7 +181,7 @@ namespace SWD.TicketBooking.Service.Services
                         TemplateID = trip.TemplateID,
                         CompanyName = await _routeCompanyRepo.GetAll().Where(_ => _.RouteID == trip.Route_Company.RouteID).Select(_ => _.Company.Name).FirstOrDefaultAsync(),
                         ImageUrl = tripImage,
-                        AverageRating = ratingAverage,
+                        AverageRating = roundedRatingAverage,
                         QuantityRating = ratingQuantity,
                         EmptySeat = remainingSeats,
                         Price = lowestPrice,

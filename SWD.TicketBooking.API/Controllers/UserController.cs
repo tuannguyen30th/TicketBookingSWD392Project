@@ -12,6 +12,7 @@ using SWD.TicketBooking.API.Common;
 using SWD.TicketBooking.API.Common.ResponseModels;
 using AutoMapper;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.IServices;
 
 namespace SWD.TicketBooking.Controllers
 {
@@ -20,13 +21,13 @@ namespace SWD.TicketBooking.Controllers
     public class UserController : ControllerBase
     {
         private ResponseDto _response;
-        private UserService _userService;
+        private IUserService _userService;
         private readonly IdentityService _identityService;
         private readonly EmailService _emailService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IMapper _mapper;
 
-        public UserController(UserService userService, IdentityService identityService, EmailService emailService, IWebHostEnvironment webHostEnvironment, IMapper mapper)
+        public UserController(IUserService userService, IdentityService identityService, EmailService emailService, IWebHostEnvironment webHostEnvironment, IMapper mapper)
         {
             _userService = userService;
             _identityService = identityService;
@@ -58,13 +59,13 @@ namespace SWD.TicketBooking.Controllers
             try
             {
                 var resultFail = new SignUpResponse();
-                             
+
                 var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
 
                 if (userResponse == null)
                 {
-                    
-                     resultFail = new SignUpResponse
+
+                    resultFail = new SignUpResponse
                     {
                         Messages = "Account does not exist!"
                     };
@@ -73,7 +74,7 @@ namespace SWD.TicketBooking.Controllers
 
                 if (userResponse.OTPCode == "0" && userResponse.IsVerified == true)
                 {
-                   
+
                     resultFail = new SignUpResponse
                     {
                         Messages = "Account does not exist!"
@@ -127,13 +128,13 @@ namespace SWD.TicketBooking.Controllers
 
                         }
                     }
-                    
+
                     return Ok(new SignUpResponse
                     {
                         Messages = "Check your email and verify the OTP."
                     });
                 }
-                 resultFail = new SignUpResponse
+                resultFail = new SignUpResponse
                 {
                     Messages = "Error."
                 };
@@ -142,7 +143,7 @@ namespace SWD.TicketBooking.Controllers
 
             catch (Exception ex)
             {
-               
+
                 var resultFail = new SignUpResponse
                 {
                     Messages = "An error occurred while sending OTP."
@@ -183,7 +184,7 @@ namespace SWD.TicketBooking.Controllers
             }
 
         }
-        
+
         [HttpGet("all-users")]
         public async Task<ActionResult> GetALlUsers()
         {
@@ -283,6 +284,62 @@ namespace SWD.TicketBooking.Controllers
 
     ";
         }
+        private string BookingSend()
+        {
+            return $@"<body style=""font-size: 14px; background: #f5f5f5; padding: 20px;"">
+  <h1 style=""text-align: center;"">Xác nhận hoàn thành đặt vé</h1>
+  <table style=""width: 100%; max-width: 600px; margin: 0 auto; background: white; box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px; border-collapse: collapse;"">
+    <tr>
+      <td style=""width: 50%; vertical-align: top; border-right: 1px dashed #404040; padding: 20px;"">
+        <div style=""margin-bottom: 20px;"">
+          <p style=""font-size: large; font-weight: 600;"">Giá vé: <span style=""font-size: x-large; font-weight: 600;color: #ea7019;"">170.000đ</span></p>
+          <p style=""font-size: medium; font-weight: 600;"">Giá dịch vụ:</p>
+        </div>
+        <p style=""font-size: medium; margin: 0;"">
+          <span style=""color: dimgray;"">Dịch vụ 1:</span>
+          <span style=""font-weight: bold;color: #ea7019;"">20.000đ</span>
+          <span style=""font-style: italic; font-weight: bold;"">Trạm A</span>
+        </p>
+        <p style=""font-size: medium; margin: 0;"">
+          <span style=""color: dimgray;"">Dịch vụ 2:</span>
+          <span style=""font-weight: bold;color: #ea7019;"">30.000đ</span>
+          <span style=""font-style: italic; font-weight: bold;"">Trạm B</span>
+        </p>
+        <p style=""font-size: medium; margin: 0;"">
+          <span style=""color: dimgray;"">Dịch vụ 3:</span>
+          <span style=""font-weight: bold;color: #ea7019;"">30.000đ</span>
+          <span style=""font-style: italic; font-weight: bold;"">Trạm C</span>
+        </p>
+      </td>
+      <td style=""width: 50%; padding: 20px; text-align: center;"">
+        <p style=""border-top: 1px solid gray; border-bottom: 1px solid gray; padding: 5px 0; font-weight: 700; margin: 20px 0;"">
+          <span style=""color: #ea7019;"">THE BUS JOURNEY</span>
+        </p>
+        <div>
+          <h3>Nguyễn Ngọc Quân</h3>
+          <h4>Chặng đi: Hà Nội - Bến Tre</h4>
+        </div>
+        <div>
+          <p>Khởi hành: <span style=""font-size: larger; font-weight: 700"">15:30</span></p>
+          <p>Ngày: <span style=""font-size: larger; font-weight: 700"">24/07/2023</span></p>
+        </div>
+        <p>Vị trí vé: <span style=""font-size: larger; font-weight: 700"">A15</span></p>
+      </td>
+    </tr>
+    <tr>
+      <td colspan=""2"" style=""padding: 20px; text-align: center; background: #F5B642;"">
+        <h1 style=""font-size: 18px;"">Tổng hóa đơn</h1>
+        <h1>650.000đ</h1>
+        <div style=""height: 100px; margin: 20px 0;"">
+          <img src=""https://external-preview.redd.it/cg8k976AV52mDvDb5jDVJABPrSZ3tpi1aXhPjgcDTbw.png?auto=webp&s=1c205ba303c1fa0370b813ea83b9e1bddb7215eb"" alt=""QR code"" style=""height: 100%;"" />
+        </div>
+        <p>Cảm ơn quý khách đã tin tưởng</p>
+      </td>
+    </tr>
+  </table>
+</body>
+";
+        } 
 
     }
 }
