@@ -12,6 +12,7 @@ using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.API.Common;
 using AutoMapper;
 using SWD.TicketBooking.Service.Exceptions;
+using Microsoft.AspNetCore.Identity;
 
 namespace SWD.TicketBooking.Booking.API;
 
@@ -126,7 +127,7 @@ public class AuthController : ControllerBase
         var loginResult = await _identityService.Login(req.Email, req.Password);
         if (!loginResult.Authenticated)
         {
-            var result = ApiResult<Dictionary<string, string[]>>.Fail(new Exception("Username or password is invalid"));
+            var result = ApiResult<Dictionary<string, string[]>>.Fail(new Exception("Tên đăng nhập hoặc mật khẩu không hợp lệ"));
             return BadRequest(result);
         }
 

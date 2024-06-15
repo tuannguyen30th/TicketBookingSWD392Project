@@ -8,6 +8,7 @@ using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -15,7 +16,7 @@ using System.Transactions;
 
 namespace SWD.TicketBooking.Service.Services.UserService
 {
-    public class UserService
+    public class UserService : IUserService
     {
 
         private readonly IRepository<User, Guid> _userRepository;

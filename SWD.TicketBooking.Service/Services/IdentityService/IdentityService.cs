@@ -1,4 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
@@ -79,36 +79,45 @@ public class IdentityService
 
     public async Task<LoginResponse> Login(string email, string password)
     {
-        var user = await  _userRepository.FindByCondition(u => u.Email == email && u.IsVerified == true).FirstOrDefaultAsync();
-
-
-        if (user is null)
+        try
         {
+            var user = await _userRepository.FindByCondition(u => u.Email == email).FirstOrDefaultAsync();
+            if (user is null)
+            {
+                return new LoginResponse
+                {
+                    Authenticated = false,
+                    Token = null,
+                };
+            }
+            if (user.IsVerified == false)
+            {
+                throw new BadRequestException("Email đã đăng kí nhưng chưa xác thực!");
+            }
+            var userRole = _userRoleRepository.FindByCondition(ur => ur.RoleID == user.RoleID).FirstOrDefault();
+
+            user.UserRole = userRole!;
+
+            var hash = SecurityUtil.Hash(password);
+            if (!user.Password.Equals(hash))
+            {
+                return new LoginResponse
+                {
+                    Authenticated = false,
+                    Token = null,
+                };
+            }
+
             return new LoginResponse
             {
-                Authenticated = false,
-                Token = null,
+                Authenticated = true,
+                Token = CreateJwtToken(user),
             };
         }
-        var userRole = _userRoleRepository.FindByCondition(ur => ur.RoleID == user.RoleID).FirstOrDefault();
-
-        user.UserRole = userRole!;
-
-        var hash = SecurityUtil.Hash(password);
-        if (!user.Password.Equals(hash))
+        catch(Exception ex)
         {
-            return new LoginResponse
-            {
-                Authenticated = false,
-                Token = null,
-            };
+            throw new Exception(ex.Message, ex);
         }
-
-        return new LoginResponse
-        {
-            Authenticated = true,
-            Token = CreateJwtToken(user),
-        };
     }
 
     private SecurityToken CreateJwtToken(User user)
