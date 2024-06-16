@@ -64,7 +64,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             }
             var admin = new UserRole { RoleID = Guid.NewGuid(), RoleName = "Admin" };
             var staff = new UserRole { RoleID = Guid.NewGuid(), RoleName = "Staff" };
-            var customer = new UserRole { RoleID = Guid.NewGuid(), RoleName = "Customer" };
+            var customer = new UserRole { RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387"), RoleName = "Customer" };
             List<UserRole> userRoles = new()
              {
                  staff,
@@ -3327,6 +3327,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             Trip firstTrip1 = new Trip
             {
                 TripID = Guid.NewGuid(),
+                TemplateID = Guid.NewGuid(),
                 Route_Company = route_Companies[0],
                 IsTemplate = true,
                 StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
@@ -3336,6 +3337,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             Trip firstTrip2 = new Trip
             {
                 TripID = Guid.NewGuid(),
+                TemplateID = Guid.NewGuid(),
                 Route_Company = route_Companies[0],
                 IsTemplate = true,
                 StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
@@ -3347,6 +3349,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             Trip firstTrip3 = new Trip
             {
                 TripID = Guid.NewGuid(),
+                TemplateID = Guid.NewGuid(),
                 Route_Company = route_Companies[0],
                 IsTemplate = true,
                 StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
@@ -3366,7 +3369,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
                     IsTemplate = false,
-                    TemplateID = trips1[0].TemplateID,
+                    TemplateID = trips1[0].TripID,
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 0),
                     EndTime = new DateTime(2024, 6, 19, 15, 30, 0),
                     Status ="ACTIVE"
@@ -3376,7 +3379,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TripID = Guid.NewGuid(),                  
                     Route_Company = route_Companies[0],
                      IsTemplate = false,
-                    TemplateID = trips1[0].TemplateID,
+                    TemplateID = trips1[0].TripID,
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 1),
                     EndTime = new DateTime(2024, 7, 6, 18, 45, 1),
                     Status ="ACTIVE"
@@ -3386,7 +3389,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TripID = Guid.NewGuid(),
                      Route_Company = route_Companies[0],
                      IsTemplate = false,
-                    TemplateID = trips1[0].TemplateID,
+                    TemplateID = trips1[0].TripID,
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 2),
                     EndTime = new DateTime(2024, 7, 6, 18, 45, 2),
                     Status ="ACTIVE"
@@ -3396,7 +3399,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TripID = Guid.NewGuid(),
                      Route_Company = route_Companies[0],
                      IsTemplate = false,
-                    TemplateID = trips1[0].TemplateID,
+                    TemplateID = trips1[0].TripID,
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 3),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 3),
                     Status ="ACTIVE"
@@ -3406,7 +3409,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TripID = Guid.NewGuid(),
                      Route_Company = route_Companies[0],
                      IsTemplate = false,
-                    TemplateID = trips1[0].TemplateID,
+                    TemplateID = trips1[0].TripID,
                     StartTime = new DateTime(2024, 7, 5, 17, 45, 4),
                     EndTime = new DateTime(2024, 7, 7, 17, 45, 4),
                     Status ="ACTIVE"
@@ -3416,7 +3419,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
                      IsTemplate = false,
-                    TemplateID = trips1[0].TemplateID,
+                    TemplateID = trips1[0].TripID,
                     StartTime = new DateTime(2024, 6, 30, 23, 59, 59),
                     EndTime = new DateTime(2024, 7, 1, 23, 59, 59),
                     Status ="ACTIVE"
@@ -3426,7 +3429,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
                     IsTemplate = false,
-                    TemplateID = trips1[0].TemplateID,
+                    TemplateID = trips1[0].TripID,
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
                     Status ="ACTIVE"
@@ -3436,7 +3439,7 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TripID = Guid.NewGuid(),
                     Route_Company = route_Companies[0],
                      IsTemplate = false,
-                    TemplateID = trips1[0].TemplateID,
+                    TemplateID = trips1[0].TripID,
                     StartTime = new DateTime(2024, 6, 15, 11, 30, 5),
                     EndTime = new DateTime(2024, 6, 25, 11, 30, 5),
                     Status ="ACTIVE"
@@ -8097,6 +8100,7 @@ namespace SWD.TicketBooking.Repo.SeedData
             await _context.Route.AddRangeAsync(routes);
             await _context.Station_Route.AddRangeAsync(station_Routes);
             await _context.Trip.AddRangeAsync(trips);
+            await _context.Trip.AddRangeAsync(trips1);
             await _context.ServiceType.AddRangeAsync(serviceTypes);
             await _context.Service.AddRangeAsync(services);
             await _context.TicketType.AddRangeAsync(types);

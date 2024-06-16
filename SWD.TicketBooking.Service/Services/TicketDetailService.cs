@@ -61,7 +61,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 var serviceDetailList = new List<ServiceDetailModel>();
 
-                foreach (TicketDetail_Service ticketDetail_Service in ticketDetailServices)
+                foreach (var ticketDetail_Service in ticketDetailServices)
                 {
                     var serviceDetailModel = new ServiceDetailModel
                     {
@@ -107,21 +107,21 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var bookings = await _bookingRepo.FindByCondition(_ => _.UserID == userID && _.Status.Equals(SD.ACTIVE))
+                var bookings = await _bookingRepo.FindByCondition(_ => _.UserID == userID)
                     .Include(_ => _.Trip.Route_Company.Route.FromCity).Include(_ => _.Trip.Route_Company.Route.ToCity).Include(_ => _.Trip.Route_Company.Route).ToListAsync();
 
                 var rsList = new List<GetTicketDetailByUserModel>();
 
-                foreach (Booking booking in bookings)
+                foreach (var booking in bookings)
                 {
                     var ticketDetails = await _ticketDetailRepo.GetAll().Where(_ => _.BookingID == booking.BookingID).ToListAsync();
 
-                    foreach (TicketDetail ticketDetail in ticketDetails)
+                    foreach (var ticketDetail in ticketDetails)
                     {
                         var ticketDetailServices = await _ticketDetailServiceRepo.FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID).ToListAsync();
                         double servicePrice = 0;
 
-                        foreach (TicketDetail_Service ticketDetail_Service in ticketDetailServices)
+                        foreach (var ticketDetail_Service in ticketDetailServices)
                         {
                             servicePrice += ticketDetail_Service.Price * ticketDetail_Service.Quantity;
                         }
