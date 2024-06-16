@@ -5511,6 +5511,9 @@ namespace SWD.TicketBooking.Repo.SeedData
                     Trip = trips[0],
                     User = users[0],
                     QRCode = "11111",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5523,7 +5526,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[1],
                     User = users[1],
-                    QRCode = "22222"
+                    QRCode = "22222",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5536,7 +5542,11 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[2],
                     User = users[3],
-                    QRCode = "33333"
+                    QRCode = "33333",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
+
                 },
                 new Booking
                 {
@@ -5549,7 +5559,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 100000,
                     Trip = trips[3],
                     User = users[0],
-                    QRCode = "44444"
+                    QRCode = "44444",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5562,7 +5575,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 120000,
                     Trip = trips[4],
                     User = users[3],
-                    QRCode = "55555"
+                    QRCode = "55555",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5575,7 +5591,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[5],
                     User = users[1],
-                    QRCode = "12345"
+                    QRCode = "12345",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5588,7 +5607,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 120000,
                     Trip = trips[6],
                     User = users[2],
-                    QRCode = "67890"
+                    QRCode = "67890",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5601,7 +5623,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 360000,
                     Trip = trips[7],
                     User = users[0],
-                    QRCode = "abcde"
+                    QRCode = "abcde",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5614,7 +5639,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 120000,
                     Trip = trips[8],
                     User = users[3],
-                    QRCode = "fghij"
+                    QRCode = "fghij",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5627,7 +5655,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[9],
                     User = users[1],
-                    QRCode = "qwert"
+                    QRCode = "qwert",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5640,7 +5671,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 120000,
                     Trip = trips[10],
                     User = users[2],
-                    QRCode = "yuiop"
+                    QRCode = "yuiop",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5653,7 +5687,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 360000,
                     Trip = trips[11],
                     User = users[0],
-                    QRCode = "asdfg"
+                    QRCode = "asdfg",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5666,7 +5703,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 120000,
                     Trip = trips[12],
                     User = users[3],
-                    QRCode = "hjkl"
+                    QRCode = "hjkl",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5679,7 +5719,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[13],
                     User = users[1],
-                    QRCode = "zxcvb"
+                    QRCode = "zxcvb",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5692,7 +5735,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 120000,
                     Trip = trips[14],
                     User = users[3],
-                    QRCode = "mnbvc"
+                    QRCode = "mnbvc",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5705,7 +5751,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 360000,
                     Trip = trips[15],
                     User = users[2],
-                    QRCode = "lkjhg"
+                    QRCode = "lkjhg",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5718,7 +5767,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 120000,
                     Trip = trips[16],
                     User = users[0],
-                    QRCode = "poiuy"
+                    QRCode = "poiuy",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5731,7 +5783,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[16],
                     User = users[1],
-                    QRCode = "poauy"
+                    QRCode = "poauy",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5744,7 +5799,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[17],
                     User = users[1],
-                    QRCode = "podsf"
+                    QRCode = "podsf",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5757,7 +5815,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[18],
                     User = users[1],
-                    QRCode = "qweuy"
+                    QRCode = "qweuy",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5770,7 +5831,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[19],
                     User = users[1],
-                    QRCode = "poaqw"
+                    QRCode = "poaqw",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5783,7 +5847,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[20],
                     User = users[1],
-                    QRCode = "poaut"
+                    QRCode = "poaut",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5796,7 +5863,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[21],
                     User = users[1],
-                    QRCode = "qoauy"
+                    QRCode = "qoauy",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5809,7 +5879,10 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[22],
                     User = users[1],
-                    QRCode = "poasy"
+                    QRCode = "poasy",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
                 },
                 new Booking
                 {
@@ -5822,8 +5895,11 @@ namespace SWD.TicketBooking.Repo.SeedData
                     TotalBill = 240000,
                     Trip = trips[23],
                     User = users[1],
-                    QRCode = "poaay"
-                },
+                    QRCode = "poaay",
+                    FullName = "Tuan",
+                    PhoneNumber = "1234567898",
+                    Email ="tuan@gmail.com"
+                }
             };
             List<TicketDetail> ticketDetails = new List<TicketDetail>();
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SWD.TicketBooking.Repo.Migrations
 {
-    public partial class addTable : Migration
+    public partial class tivooAddTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -299,6 +299,9 @@ namespace SWD.TicketBooking.Repo.Migrations
                     BookingID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TripID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BookingTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     QRCodeImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
