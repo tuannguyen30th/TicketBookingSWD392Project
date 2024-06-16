@@ -33,7 +33,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpPost("new-service")]
-        public async Task<IActionResult> CreateService([FromForm] CreateServiceRequest createServiceModel)
+        public async Task<IActionResult> CreateService([FromBody] CreateServiceRequest createServiceModel)
         {
             var serviceToUpdate = _mapper.Map<CreateServiceModel>(createServiceModel);
 
@@ -41,7 +41,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(service);
         }
         [HttpPut("service")]
-        public async Task<IActionResult> UpdateService([FromForm] UpdateServiceRequest updateServiceModel)
+        public async Task<IActionResult> UpdateService([FromBody] UpdateServiceRequest updateServiceModel)
         {
             var serviceToUpdate = _mapper.Map<UpdateServiceModel>(updateServiceModel);
 
