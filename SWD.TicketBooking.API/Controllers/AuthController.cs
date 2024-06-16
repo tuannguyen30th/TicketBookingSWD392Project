@@ -127,17 +127,16 @@ public class AuthController : ControllerBase
     {
         var loginResult = await _identityService.Login(req.Email, req.Password);
         if (!loginResult.Authenticated)
-        {
-            var result = ApiResult<Dictionary<string, string[]>>.Fail(new Exception("Tên đăng nhập hoặc mật khẩu không hợp lệ"));
-            return BadRequest(result);
+        {          
+            return BadRequest(loginResult);
         }
-
+        
         var handler = new JwtSecurityTokenHandler();
         var res = new SWD.TicketBooking.API.Common.ResponseModels.LoginResponse
         {
             AccessToken = handler.WriteToken(loginResult.Token),
         };
-        return Ok(ApiResult<SWD.TicketBooking.API.Common.ResponseModels.LoginResponse>.Succeed(res));
+        return Ok(res);
     }
 
     [Authorize]

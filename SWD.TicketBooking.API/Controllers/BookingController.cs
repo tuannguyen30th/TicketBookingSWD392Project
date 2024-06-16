@@ -1,9 +1,20 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Ocsp;
+using SWD.TicketBooking.API.Common.RequestModels.Booking;
+using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.Repo.Helpers;
+using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.Services;
+using SWD.TicketBooking.Service.Services.EmailService;
 using SWD.TicketBooking.Service.Services.PaymentService;
+using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static SWD.TicketBooking.API.Common.ResponseModels.SendMailBookingResponse;
+using static SWD.TicketBooking.Service.Dtos.SendMailBookingModel;
+using static System.Net.WebRequestMethods;
 
 namespace SWD.TicketBooking.API.Controllers
 {
@@ -13,17 +24,23 @@ namespace SWD.TicketBooking.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly BookingService _bookingService;
-        public BookingController(BookingService bookingService, IMapper mapper)
+        private readonly EmailService _emailService;
+
+        public BookingController(EmailService emailService, BookingService bookingService, IMapper mapper)
         {
             _mapper = mapper;
+            _emailService = emailService;
             _bookingService = bookingService;
         }
-        [HttpPost]
-        public async Task<IActionResult> AddOrUpdateBooking(BookingModel bookingModel)
+
+        [HttpPost("new-booking")]
+        public async Task<IActionResult> AddOrUpdateBooking(BookingRequest bookingRequest)
         {
-            var rs = await _bookingService.AddOrUpdateBooking(bookingModel, HttpContext);
+            var map = _mapper.Map<BookingModel>(bookingRequest);
+            var rs = await _bookingService.AddOrUpdateBooking(map, HttpContext);
             return Ok(rs);
         }
+
         [HttpGet("vnpay-ipn")]
         public async Task<IActionResult> VNPayIPN()
         {
@@ -45,19 +62,109 @@ namespace SWD.TicketBooking.API.Controllers
 
                 if (response.VnPayResponseCode == "00")
                 {
-                    var orderId = response.BookingId.ToString().Split(" ");
+                    Guid bookingId;
+                    if (Guid.TryParse(response.BookingId, out bookingId))
+                    {
+                        var result = await _bookingService.UpdateStatusBooking(bookingId);
+                        var getEmail = await _bookingService.GetEmailBooking(bookingId);
+                        var mailUpdateData = new MailData()
+                        {
+                            EmailToId = getEmail,
+                            EmailToName = "TicketBookingWebSite",
+                            EmailBody = BookingSend(result),
+                            EmailSubject = "Ticket Information!"
+                        };
 
+                        var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
+                        if (!rsUpdate)
+                        {
+                            return BadRequest("Something wrong email!");
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("Invalid booking ID format.");
+                    }
                 }
+
+                return Ok(new
+                {
+                    RspCode = "00",
+                    Message = "Confirm Success"
+                });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-            return Ok(new
+        }
+
+        [HttpGet("booking-by-id/{bookingID}")]
+        public async Task<IActionResult> GetBooking(Guid bookingID)
+        { 
+            var rs = await _bookingService.GetBooking(bookingID);
+            return Ok(rs);
+        }
+
+        private string BookingSend(List<MailBookingModel> mailBookingResponses)
+        {
+            StringBuilder emailBody = new StringBuilder();
+
+            foreach (var bookingResponse in mailBookingResponses)
             {
-                RspCode = "00",
-                Message = "Confirm Success"
-            });
+                StringBuilder serviceDetails = new StringBuilder();
+                foreach (var service in bookingResponse.MailBookingServices)
+                {
+                    serviceDetails.AppendLine($@"
+                   <p style=""font-size: medium; margin: 0;"">
+                       <span style=""color: dimgray;"">Dịch vụ:</span>
+                       <span style=""font-weight: bold;color: #ea7019;"">{service.ServicePrice:N0}đ</span>
+                       <span style=""font-style: italic; font-weight: bold;"">{service.AtStation}</span>
+                   </p>");
+                }
+                emailBody.AppendLine($@"
+               <body style=""font-size: 14px; background: #f5f5f5; padding: 20px;"">
+                   <h1 style=""text-align: center;"">Xác nhận hoàn thành đặt vé</h1>
+                   <table style=""width: 100%; max-width: 600px; margin: 0 auto; background: white; box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px; border-collapse: collapse;"">
+                       <tr>
+                           <td style=""width: 50%; vertical-align: top; border-right: 1px dashed #404040; padding: 20px;"">
+                               <div style=""margin-bottom: 20px;"">
+                                   <p style=""font-size: large; font-weight: 600;"">Giá vé: <span style=""font-size: x-large; font-weight: 600;color: #ea7019;"">{bookingResponse.Price:N0}đ</span></p>
+                                   <p style=""font-size: medium; font-weight: 600;"">Giá dịch vụ:</p>
+                               </div>
+                               {serviceDetails}
+                           </td>
+                           <td style=""width: 50%; padding: 20px; text-align: center;"">
+                               <p style=""border-top: 1px solid gray; border-bottom: 1px solid gray; padding: 5px 0; font-weight: 700; margin: 20px 0;"">
+                                   <span style=""color: #ea7019;"">THE BUS JOURNEY</span>
+                               </p>
+                               <div>
+                                   <h3>{bookingResponse.FullName}</h3>
+                                   <h4>Chặng đi: {bookingResponse.FromTo}</h4>
+                               </div>
+                               <div>
+                                   <p>Khởi hành: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.StartTime}</span></p>
+                                   <p>Ngày: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.StartDate}</span></p>
+                               </div>
+                               <p>Vị trí vé: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.SeatCode}</span></p>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td colspan=""2"" style=""padding: 20px; text-align: center; background: #F5B642;"">
+                               <h1 style=""font-size: 18px;"">Tổng hóa đơn</h1>
+                               <h1>{bookingResponse.TotalBill}</h1>
+                               <div style=""height: 100px; margin: 20px 0;"">
+                                   <img src=""{bookingResponse.QrCodeImage}"" alt=""QR code"" style=""height: 100%;"" />
+                               </div>
+                               <p>Cảm ơn quý khách đã tin tưởng</p>
+                           </td>
+                       </tr>
+                   </table>
+               </body>
+                ");
+            }
+
+            return emailBody.ToString();
         }
     }
 }

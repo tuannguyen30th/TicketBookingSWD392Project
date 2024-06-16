@@ -6,8 +6,8 @@
         public const string CANCEL_TICKET = "CANCEL";
         public const string USED_TICKET = "USED";
         public const string NOTPAYING_TICKET = "NOTPAYING";
-        public const string NOTPAYING_TICKETSERVICE = "NOTPAYING_TICKETSERVICE";
-        public const string PAYING_TICKETSERVICE = "PAYING_TICKETSERVICE";
+        public const string NOTPAYING_TICKETSERVICE = "NOTPAYING";
+        public const string PAYING_TICKETSERVICE = "PAYING";
         public const string ACTIVE = "ACTIVE";
         public const string INACTIVE = "INACTIVE";
         public const string PM_CASH = "CASH";

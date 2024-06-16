@@ -14,6 +14,7 @@ using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Services.FirebaseService;
 using SWD.TicketBooking.Service.Exceptions;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 
 namespace SWD.TicketBooking.Service.Services.IdentityService;
@@ -82,43 +83,50 @@ public class IdentityService
         try
         {
             var user = await _userRepository.FindByCondition(u => u.Email == email).FirstOrDefaultAsync();
+            var hash = SecurityUtil.Hash(password);
+            if (user != null && user.Password.Equals(hash) && user.IsVerified == false)
+            {
+                return new LoginResponse
+                {
+                    Verified = user.IsVerified,
+                    Message = "Email đã đăng kí nhưng chưa xác thực!"
+                };
+            }
             if (user is null)
             {
                 return new LoginResponse
                 {
-                    Authenticated = false,
-                    Token = null,
+                    Verified = user.IsVerified,
+                    Message = "Không tìm thấy user!"
                 };
             }
-            if (user.IsVerified == false)
-            {
-                throw new BadRequestException("Email đã đăng kí nhưng chưa xác thực!");
-            }
-            var userRole = _userRoleRepository.FindByCondition(ur => ur.RoleID == user.RoleID).FirstOrDefault();
-
+           
+            var userRole = await _userRoleRepository.FindByCondition(ur => ur.RoleID == user.RoleID).FirstOrDefaultAsync();
             user.UserRole = userRole!;
 
-            var hash = SecurityUtil.Hash(password);
             if (!user.Password.Equals(hash))
             {
                 return new LoginResponse
                 {
-                    Authenticated = false,
-                    Token = null,
+                    Verified = user.IsVerified,
+                    Message = "Email hoặc Password không đúng!"
                 };
             }
-
+        
             return new LoginResponse
             {
                 Authenticated = true,
                 Token = CreateJwtToken(user),
+                Verified = user.IsVerified,
+                Message = "Đăng nhập thành công"
             };
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             throw new Exception(ex.Message, ex);
         }
     }
+
 
     private SecurityToken CreateJwtToken(User user)
     {
