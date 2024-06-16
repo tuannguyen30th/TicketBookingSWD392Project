@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SWD.TicketBooking.API.Common.RequestModels;
+using SWD.TicketBooking.API.Common.RequestModels.Booking;
 using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
@@ -83,6 +84,9 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<AddOrUpdateBookingModel, SWD.TicketBooking.Repo.Entities.Booking>().ReverseMap();
             CreateMap<AddOrUpdateTicketModel, TicketDetail>().ReverseMap();
             CreateMap<AddOrUpdateServiceModel, TicketDetail_Service>().ReverseMap();
+            CreateMap<AddOrUpdateServiceModel, AddOrUpdateServiceRequest>().ReverseMap();
+            CreateMap<AddOrUpdateTicketModel, AddOrUpdateTicketRequest>().ReverseMap();
+            CreateMap<AddOrUpdateBookingModel, AddOrUpdateBookingRequest>().ReverseMap();
 
         }
     }
