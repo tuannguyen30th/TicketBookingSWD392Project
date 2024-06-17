@@ -5,6 +5,7 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class StationService
+    public class StationService : IStationService
     {
         private readonly IRepository<Station_Route, Guid> _stationRouteRepository;
         private readonly IRepository<Station, Guid> _stationRepository;

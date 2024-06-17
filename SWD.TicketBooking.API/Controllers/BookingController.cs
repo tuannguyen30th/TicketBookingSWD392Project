@@ -1,20 +1,13 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Ocsp;
 using SWD.TicketBooking.API.Common.RequestModels.Booking;
-using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.Repo.Helpers;
-using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Booking;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
-using SWD.TicketBooking.Service.Services.EmailService;
 using SWD.TicketBooking.Service.Services.PaymentService;
 using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static SWD.TicketBooking.API.Common.ResponseModels.SendMailBookingResponse;
 using static SWD.TicketBooking.Service.Dtos.SendMailBookingModel;
-using static System.Net.WebRequestMethods;
 
 namespace SWD.TicketBooking.API.Controllers
 {
@@ -23,10 +16,10 @@ namespace SWD.TicketBooking.API.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly BookingService _bookingService;
-        private readonly EmailService _emailService;
+        private readonly IBookingService _bookingService;
+        private readonly IEmailService _emailService;
 
-        public BookingController(EmailService emailService, BookingService bookingService, IMapper mapper)
+        public BookingController(IEmailService emailService, IBookingService bookingService, IMapper mapper)
         {
             _mapper = mapper;
             _emailService = emailService;
@@ -152,7 +145,7 @@ namespace SWD.TicketBooking.API.Controllers
                        <tr>
                            <td colspan=""2"" style=""padding: 20px; text-align: center; background: #F5B642;"">
                                <h1 style=""font-size: 18px;"">Tổng hóa đơn</h1>
-                               <h1>{bookingResponse.TotalBill}</h1>
+                               <h1>{bookingResponse.TotalBill:N0}đ</h1>
                                <div style=""height: 100px; margin: 20px 0;"">
                                    <img src=""{bookingResponse.QrCodeImage}"" alt=""QR code"" style=""height: 100%;"" />
                                </div>

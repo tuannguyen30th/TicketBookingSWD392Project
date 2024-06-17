@@ -5,17 +5,12 @@ using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
-using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class Station_ServiceService
+    public class Station_ServiceService : IStation_ServiceService
     {
         private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepository;
         private readonly IRepository<Station_Service, Guid> _stationServiceRepository;

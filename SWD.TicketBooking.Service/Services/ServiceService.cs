@@ -1,23 +1,16 @@
 ﻿using SWD.TicketBooking.Repo.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SWD.TicketBooking.Repo.Entities;
 using AutoMapper;
 using SWD.TicketBooking.Service.Dtos;
 using Microsoft.EntityFrameworkCore;
-using SWD.TicketBooking.Repo.Helpers;
-using SWD.TicketBooking.Service.Services.FirebaseService;
-using Microsoft.IdentityModel.Tokens;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Utilities;
+using SWD.TicketBooking.Service.IServices;
 
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class ServiceService
+    public class ServiceService : IServiceService
     {
         private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepository;
         private readonly IRepository<Station_Service, Guid> _stationServiceRepository;

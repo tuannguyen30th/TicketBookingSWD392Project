@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.TicketBooking.Service.Services.FirebaseService
+namespace SWD.TicketBooking.Service.IServices
 {
     public interface IFirebaseService
     {

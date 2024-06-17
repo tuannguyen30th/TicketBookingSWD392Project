@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
@@ -13,8 +14,8 @@ namespace SWD.TicketBooking.API.Controllers
     public class FeedbackController : ControllerBase
     {
         private readonly IMapper _mapper;
-        public readonly FeedbackService _feedbackService;
-        public FeedbackController(FeedbackService feedbackService, IMapper mapper)
+        public readonly IFeedbackService _feedbackService;
+        public FeedbackController(IFeedbackService feedbackService, IMapper mapper)
         {
             _feedbackService = feedbackService;
             _mapper = mapper;

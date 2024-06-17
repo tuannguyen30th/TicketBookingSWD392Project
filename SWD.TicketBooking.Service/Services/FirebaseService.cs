@@ -8,8 +8,9 @@ using Microsoft.Extensions.Configuration;
 using SWD.TicketBooking.Repo.Repositories;
 using static SWD.TicketBooking.Service.Configuration.ConfigurationModel;
 using SWD.TicketBooking.Service.Dtos.BackendService;
+using SWD.TicketBooking.Service.IServices;
 
-namespace SWD.TicketBooking.Service.Services.FirebaseService
+namespace SWD.TicketBooking.Service.Services
 {
     public class FirebaseService : GenericBackendService, IFirebaseService
     {

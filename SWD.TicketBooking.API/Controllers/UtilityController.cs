@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
@@ -9,9 +10,9 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class UtilityController : Controller
     {
-        private readonly UtilityService _utilityService;
+        private readonly IUtilityService _utilityService;
         private readonly IMapper _mapper;
-        public UtilityController(UtilityService utilityService, IMapper mapper)
+        public UtilityController(IUtilityService utilityService, IMapper mapper)
         {
             _mapper = mapper;
             _utilityService = utilityService;

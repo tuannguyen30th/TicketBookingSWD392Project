@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
@@ -12,10 +13,10 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class RouteController : ControllerBase
     {
-        private readonly RouteService _routeService;
+        private readonly IRouteService _routeService;
         private readonly IMapper _mapper;
 
-        public RouteController(RouteService routeService, IMapper mapper) 
+        public RouteController(IRouteService routeService, IMapper mapper) 
         {
             _routeService = routeService;
             _mapper = mapper;

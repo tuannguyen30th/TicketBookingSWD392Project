@@ -3,19 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
-using SWD.TicketBooking.Service.Exceptions;
-using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class ServiceTypeService
+    public class ServiceTypeService : IServiceTypeService
     {
         private readonly IRepository<ServiceType, Guid> _serviceTypeRepository;
         private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepository;

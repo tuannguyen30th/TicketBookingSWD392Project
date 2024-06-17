@@ -2,16 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using SWD.TicketBooking.Repo.Helpers;
-using SWD.TicketBooking.Service.Services.IdentityService;
-using SWD.TicketBooking.Service.Services.EmailService;
 using SWD.TicketBooking.Service.Dtos.User;
-using SWD.TicketBooking.Service.Services.UserService;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common;
 using SWD.TicketBooking.API.Common.ResponseModels;
 using AutoMapper;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.Services;
 using SWD.TicketBooking.Service.IServices;
 
 namespace SWD.TicketBooking.Controllers
@@ -20,20 +18,18 @@ namespace SWD.TicketBooking.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private ResponseDto _response;
-        private IUserService _userService;
+        private readonly IUserService _userService;
         private readonly IdentityService _identityService;
-        private readonly EmailService _emailService;
+        private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IMapper _mapper;
 
-        public UserController(IUserService userService, IdentityService identityService, EmailService emailService, IWebHostEnvironment webHostEnvironment, IMapper mapper)
+        public UserController(IUserService userService, IdentityService identityService, IEmailService emailService, IWebHostEnvironment webHostEnvironment, IMapper mapper)
         {
             _userService = userService;
             _identityService = identityService;
             _emailService = emailService;
             _webHostEnvironment = webHostEnvironment;
-            _response = new ResponseDto();
             _mapper = mapper;
 
         }
@@ -186,7 +182,7 @@ namespace SWD.TicketBooking.Controllers
         }
 
         [HttpGet("all-users")]
-        public async Task<ActionResult> GetALlUsers()
+        public async Task<IActionResult> GetALlUsers()
         {
             var user = await _userService.GetAllUsers();
             var rs = _mapper.Map<List<UserResponse>>(user);

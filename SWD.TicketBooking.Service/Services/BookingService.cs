@@ -9,7 +9,7 @@ using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.BackendService;
 using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.Exceptions;
-using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services.PaymentService;
 using SWD.TicketBooking.Service.Utilities;
 using System.Text.RegularExpressions;
@@ -17,7 +17,7 @@ using System.Transactions;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class BookingService
+    public class BookingService : IBookingService
     {
         private readonly IRepository<Booking, Guid> _bookingRepository;
         private readonly IRepository<TicketDetail, Guid> _ticketDetailRepository;

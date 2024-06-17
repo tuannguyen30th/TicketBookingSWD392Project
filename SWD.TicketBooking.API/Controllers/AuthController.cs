@@ -3,16 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using SWD.TicketBooking.Repo.Helpers;
-using SWD.TicketBooking.Service.Services.IdentityService;
-using SWD.TicketBooking.Service.Services.EmailService;
 using SWD.TicketBooking.Service.Dtos.Auth;
-using SWD.TicketBooking.Service.Services.UserService;
 using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.API.Common;
 using AutoMapper;
 using SWD.TicketBooking.Service.Exceptions;
 using Microsoft.AspNetCore.Identity;
+using SWD.TicketBooking.Service.Services;
 using SWD.TicketBooking.Service.IServices;
 
 namespace SWD.TicketBooking.Booking.API;
@@ -22,11 +20,11 @@ namespace SWD.TicketBooking.Booking.API;
 public class AuthController : ControllerBase
 {
     private readonly IdentityService _identityService;
-    private readonly EmailService _emailService;
+    private readonly IEmailService _emailService;
     private readonly IUserService _userService;
     private readonly IMapper _mapper;
 
-    public AuthController(IdentityService identityService, IUserService userService, EmailService emailService, IMapper mapper)
+    public AuthController(IdentityService identityService, IUserService userService, IEmailService emailService, IMapper mapper)
     {
         _identityService = identityService;
         _userService = userService;

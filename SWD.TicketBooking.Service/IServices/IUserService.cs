@@ -1,4 +1,5 @@
 ﻿using SWD.TicketBooking.Service.Dtos.Auth;
+using SWD.TicketBooking.Service.Dtos.BackendService;
 using SWD.TicketBooking.Service.Dtos.User;
 using System;
 using System.Collections.Generic;

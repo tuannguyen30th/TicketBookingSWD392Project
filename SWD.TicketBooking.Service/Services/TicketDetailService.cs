@@ -4,16 +4,10 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
-using SWD.TicketBooking.Service.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class TicketDetailService
+    public class TicketDetailService : ITicketDetailService
     {
         private readonly IMapper _mapper;
         private readonly IRepository<TicketDetail, Guid> _ticketDetailRepo;
@@ -21,10 +15,7 @@ namespace SWD.TicketBooking.Service.Services
         private readonly IRepository<Trip, Guid> _tripRepo;
         private readonly IRepository<User, Guid> _userRepo;
         private readonly IRepository<City, Guid> _cityRepo;
-
-
         private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepo;
-
         private readonly IRepository<Station_Service, Guid> _stationServiceRepo;
         private readonly IRepository<Station_Route, Guid> _stationRouteRepo;
         private readonly IRepository<Route_Company, Guid> _routeCompanyRepo;

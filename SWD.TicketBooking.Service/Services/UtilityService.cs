@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using Utility = SWD.TicketBooking.Repo.Entities.Utility;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class UtilityService
+    public class UtilityService : IUtilityService
     {
         private readonly IRepository<Utility, Guid> _uRepository;
         private readonly IMapper _mapper;

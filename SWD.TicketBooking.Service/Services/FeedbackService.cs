@@ -1,21 +1,17 @@
 ﻿
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MimeKit.Encodings;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
-using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
-using static SWD.TicketBooking.Service.Dtos.FeedbackRequestModel;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class FeedbackService
+    public class FeedbackService : IFeedbackService
     {
         public readonly IRepository<Feedback, Guid> _feedbackRepository;
         public readonly IRepository<Feedback_Image, Guid> _feedbackImageRepository;

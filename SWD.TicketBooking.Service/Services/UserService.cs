@@ -1,20 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
-using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
-using SWD.TicketBooking.Service.Services.FirebaseService;
-using System.Net;
-using System.Runtime.CompilerServices;
 using System.Transactions;
 
-namespace SWD.TicketBooking.Service.Services.UserService
+namespace SWD.TicketBooking.Service.Services
 {
     public class UserService : IUserService
     {
@@ -152,9 +147,9 @@ namespace SWD.TicketBooking.Service.Services.UserService
             }
         }
 
-    
 
-    public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
+
+        public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
         {
             try
             {

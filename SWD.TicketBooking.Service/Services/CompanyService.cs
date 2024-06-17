@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class CompanyService
+    public class CompanyService : ICompanyService
     {
         private readonly IRepository<Company, Guid> _companyRepo;
         private readonly IMapper _mapper;

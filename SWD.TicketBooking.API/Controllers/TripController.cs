@@ -7,6 +7,7 @@ using SWD.TicketBooking.API.Common.RequestModels;
 using SWD.TicketBooking.API.Common.ResponseModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 using static SWD.TicketBooking.Service.Dtos.CreateTripModel;
 
@@ -16,10 +17,10 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class TripController : ControllerBase
     {
-        private readonly TripService _tripService;
+        private readonly ITripService _tripService;
         private readonly IMapper _mapper;
 
-        public TripController(TripService tripService, IMapper mapper)
+        public TripController(ITripService tripService, IMapper mapper)
         {
             _tripService = tripService;
             _mapper = mapper;

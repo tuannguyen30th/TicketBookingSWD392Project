@@ -5,18 +5,12 @@ using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
-using SWD.TicketBooking.Service.Services.FirebaseService;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static SWD.TicketBooking.Service.Dtos.CreateTripModel;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class TripService
+    public class TripService : ITripService
     {
         private readonly IRepository<Trip, Guid> _tripRepo;
         private readonly IRepository<Booking, Guid> _bookingRepo;

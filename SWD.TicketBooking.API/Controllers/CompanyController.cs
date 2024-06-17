@@ -13,10 +13,10 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private readonly CompanyService _companyService;
+        private readonly ICompanyService _companyService;
         private readonly IMapper _mapper;
 
-        public CompanyController(CompanyService companyService, IMapper mapper)
+        public CompanyController(ICompanyService companyService, IMapper mapper)
         {
             _companyService = companyService;
             _mapper = mapper;

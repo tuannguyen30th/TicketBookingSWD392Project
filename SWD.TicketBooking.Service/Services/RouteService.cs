@@ -1,23 +1,16 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using Route = SWD.TicketBooking.Repo.Entities.Route;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class RouteService
+    public class RouteService : IRouteService
     {
         private readonly IRepository<Route, Guid> _routeRepo;
         private readonly IRepository<Company, Guid> _companyRepo;

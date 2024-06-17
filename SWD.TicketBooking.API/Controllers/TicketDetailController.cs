@@ -13,10 +13,10 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class TicketDetailController : ControllerBase
     {
-        private readonly TicketDetailService _ticketDetailService;
+        private readonly ITicketDetailService _ticketDetailService;
         private readonly IMapper _mapper;
 
-        public TicketDetailController(TicketDetailService ticketDetailService, IMapper mapper)
+        public TicketDetailController(ITicketDetailService ticketDetailService, IMapper mapper)
         {
             _ticketDetailService = ticketDetailService;
             _mapper = mapper;

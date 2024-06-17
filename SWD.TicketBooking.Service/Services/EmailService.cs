@@ -3,9 +3,9 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using SWD.TicketBooking.Repo.Helpers;
 
-namespace SWD.TicketBooking.Service.Services.EmailService
+namespace SWD.TicketBooking.Service.Services
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
         private readonly MailSettings _mailSettings;
 
