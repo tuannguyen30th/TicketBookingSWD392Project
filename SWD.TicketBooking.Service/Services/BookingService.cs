@@ -180,6 +180,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new NotFoundException("Not Found!");
                 }
                 findBooking.BookingTime = DateTime.Now;
+                findBooking.Status = SD.ACTIVE;
                 findBooking.PaymentMethod = SD.PM_CASH;
                 findBooking.Status = SD.BOOKING_COMPLETED;
                 findBooking.QRCode = qr;
@@ -204,43 +205,41 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 await _bookingRepository.Commit();
                 await _ticketDetailRepository.Commit();
-                var rs = await _ticketDetailServiceRepository.Commit();
-
-             
-                    foreach (var ticket in findTicket)
+                await _ticketDetailServiceRepository.Commit();
+                foreach (var ticket in findTicket)
+                {
+                    var mailBookingServices = await _ticketDetailServiceRepository
+                                                    .GetAll()
+                                                    .Where(_ => _.TicketDetailID == ticket.TicketDetailID)
+                                                    .Select(_ => new SendMailBookingModel.MailBookingServiceModel
+                                                    {
+                                                        ServicePrice = _.Price,
+                                                        AtStation = _.Station.Name
+                                                    }).ToListAsync();
+                    var mailBookingModel = new SendMailBookingModel.MailBookingModel
                     {
-                        var mailBookingServices = await _ticketDetailServiceRepository
-                                                        .GetAll()
-                                                        .Where(_ => _.TicketDetailID == ticket.TicketDetailID)
-                                                        .Select(_ => new SendMailBookingModel.MailBookingServiceModel
-                                                        {
-                                                            ServicePrice = _.Price,
-                                                            AtStation = _.Station.Name
-                                                        }).ToListAsync();
-                        var mailBookingModel = new SendMailBookingModel.MailBookingModel
-                        {
-                            Email = findBooking.Email,
-                            Price = ticket.Price,
-                            FullName = findBooking.FullName,
-                            FromTo = $"{findBooking.Trip.Route_Company.Route.StartLocation} - {findBooking.Trip.Route_Company.Route.EndLocation}",
-                            StartTime = findBooking.Trip.StartTime.ToString("HH:mm"),
-                            StartDate = findBooking.Trip.StartTime.ToString("yyyy-MM-dd"),
-                            SeatCode = ticket.SeatCode,
-                            TotalBill = findBooking.TotalBill.ToString("C"),
-                            QrCodeImage = findBooking.QRCodeImage,
-                            MailBookingServices = mailBookingServices
-                        };
-                        mailBooking.Add(mailBookingModel);
-                    }
+                        Email = findBooking.Email,
+                        Price = ticket.Price,
+                        FullName = findBooking.FullName,
+                        FromTo = $"{findBooking.Trip.Route_Company.Route.StartLocation} - {findBooking.Trip.Route_Company.Route.EndLocation}",
+                        StartTime = findBooking.Trip.StartTime.ToString("HH:mm"),
+                        StartDate = findBooking.Trip.StartTime.ToString("yyyy-MM-dd"),
+                        SeatCode = ticket.SeatCode,
+                        TotalBill = findBooking.TotalBill.ToString("C"),
+                        QrCodeImage = findBooking.QRCodeImage,
+                        MailBookingServices = mailBookingServices
+                    };
+                    mailBooking.Add(mailBookingModel);
+                }
 
-                    return mailBooking;
-               
+                return mailBooking;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
             }
         }
+
         public async Task<Booking> GetBooking(Guid bookingID)
         {
             try
@@ -255,14 +254,14 @@ namespace SWD.TicketBooking.Service.Services
             catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
-
             }
         }
+
         public async Task<string> GetEmailBooking(Guid bookingID)
         {
             try
             {
-                var getEmail = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).Select( _ => _.Email).FirstOrDefaultAsync();
+                var getEmail = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).Select(_ => _.Email).FirstOrDefaultAsync();
                 if (getEmail == null)
                 {
                     throw new NotFoundException("Not Found!");
@@ -272,7 +271,6 @@ namespace SWD.TicketBooking.Service.Services
             catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
-
             }
         }
 
@@ -314,6 +312,6 @@ namespace SWD.TicketBooking.Service.Services
             Random random = new Random();
             int code = random.Next(10000000, 100000000);
             return code.ToString();
-        }  
+        }
     }
 }
