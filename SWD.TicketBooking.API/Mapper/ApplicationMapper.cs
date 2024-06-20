@@ -89,7 +89,7 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<AddOrUpdateServiceModel, AddOrUpdateServiceRequest>().ReverseMap();
             CreateMap<AddOrUpdateTicketModel, AddOrUpdateTicketRequest>().ReverseMap();
             CreateMap<AddOrUpdateBookingModel, AddOrUpdateBookingRequest>().ReverseMap();
-
+            CreateMap(typeof(PagedResult<>), typeof(PagedResultResponse<>));
         }
     }
 }
