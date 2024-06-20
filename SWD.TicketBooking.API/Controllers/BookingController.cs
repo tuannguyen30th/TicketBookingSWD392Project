@@ -63,7 +63,7 @@ namespace SWD.TicketBooking.API.Controllers
                         var getEmail = await _bookingService.GetEmailBooking(bookingId);
                         var mailUpdateData = new MailData()
                         {
-                            EmailToId = getEmail,
+                            EmailToId = getEmail.Value,
                             EmailToName = "TicketBookingWebSite",
                             EmailBody = BookingSend(result),
                             EmailSubject = "Ticket Information!"

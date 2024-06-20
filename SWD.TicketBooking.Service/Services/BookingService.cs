@@ -259,17 +259,19 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<string> GetEmailBooking(Guid bookingID)
+        public async Task<ActionOutcome> GetEmailBooking(Guid bookingID)
         {
             try
-            {
+            {   
+               
                 var result = new ActionOutcome();
                 var getEmail = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).Select(_ => _.Email).FirstOrDefaultAsync();
                 if (getEmail == null)
                 {
                     throw new NotFoundException("Not Found!");
                 }
-                return getEmail;
+                result.Value = getEmail;
+                return result;
             }
             catch (Exception ex)
             {

@@ -29,12 +29,16 @@ namespace SWD.TicketBooking.Service.Services
             _routeRepository = routeRepository;
             _mapper = mapper;
         }
-        
-        public async Task<ActionOutcome> GetFromCityToCity()
+        public async Task<List<CitiesModel>> GetAllCities()
+        {
+            var cityEntities = await _cityRepository.GetAll().ToListAsync();
+            var cityModels = _mapper.Map<List<CitiesModel>>(cityEntities);
+            return cityModels;
+        }
+        public async Task<CityModel> GetFromCityToCity()
         {
             try
             {
-                var result = new ActionOutcome();
                 var fromCities = await _routeRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.FromCity )
                                                        .Distinct()
                                                        .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })   
@@ -52,8 +56,7 @@ namespace SWD.TicketBooking.Service.Services
                     FromCities = fromCities,
                     ToCities = toCities
                 };
-                result.Result = rs;
-                return result;
+                return rs;
             }
             catch (Exception ex)
             {
@@ -61,11 +64,11 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<ActionOutcome> CreateCity(CreateCityModel model)
+        public async Task<int> CreateCity(CreateCityModel model)
         {
             try
             {
-                var result = new ActionOutcome();
+                
 
                 var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (checkExisted != null)
@@ -85,10 +88,9 @@ namespace SWD.TicketBooking.Service.Services
                 var rs = await _cityRepository.Commit();
                 if(rs >  0)
                 {
-                    result.IsSuccess = true;
+                   return rs;
                 }
                 else throw new BadRequestException("Fail!");
-                return result;
             }
             catch (Exception ex)
             {
@@ -96,11 +98,11 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<ActionOutcome> UpdateCity(Guid cityId, CreateCityModel model)
+        public async Task<int> UpdateCity(Guid cityId, CreateCityModel model)
         {
             try
             {
-                var result = new ActionOutcome();
+                
 
                 var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (checkExisted != null)
@@ -126,11 +128,10 @@ namespace SWD.TicketBooking.Service.Services
                 var rs = await _cityRepository.Commit();
                 if(rs > 0)
                 {
-                    result.IsSuccess = true;
+                    return rs;
                 }
                 else throw new BadRequestException("Fail!");
 
-                return result;
             }
             catch (Exception ex)
             {
@@ -138,11 +139,11 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<ActionOutcome> ChangeStatus(Guid cityId, string status)
+        public async Task<int> ChangeStatus(Guid cityId, string status)
         {
             try
             {
-                var result = new ActionOutcome();
+                
                 var entity = await _cityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
 
                 if (entity == null)
@@ -161,11 +162,10 @@ namespace SWD.TicketBooking.Service.Services
                 var rs = await _cityRepository.Commit();
                 if (rs > 0)
                 {
-                    result.IsSuccess = true;
+                    return rs;
                 }
                 else throw new BadRequestException("Fail!");
 
-                return result;
             }
             catch (Exception ex)
             {
