@@ -52,7 +52,7 @@ public class IdentityService
                 PhoneNumber = req.PhoneNumber,
                 Status = "Active",
                 IsVerified = false,
-                Avatar = "https://res.cloudinary.com/dkdl8asci/image/upload/v1711506064/canhcut_zpazas.webp?fbclid=IwZXh0bgNhZW0CMTAAAR27ufM-uhy8i9s-S-aAXmlIyJEt2-qP9EUhcXMzP9TSbdyoA4ifW-t4zzk_aem_AbJfJkMqTauRCYn09gIF1SWycsbwalv7be8u-ufHN4nWqlVljdcG-DAPaC1w0B7RieBjNDYOXJ_mzsLOS4Th4rTQ",
+                Avatar = "https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o/AVATAR_DEFAULT%2Fdc5551cc-b063-45d8-86e0-84ec6b7d2af6?alt=media&token=8f897d9b-bc83-45e2-9102-f0056f93a914",
                 RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387"),
             });
             var res = await _userRepository.Commit();
@@ -90,11 +90,7 @@ public class IdentityService
             }
             if (user is null)
             {
-                return new LoginResponse
-                {
-                    Verified = user.IsVerified,
-                    Message = "Không tìm thấy user!"
-                };
+                throw new NotFoundException("Không tìm thấy user!");
             }
 
             var userRole = await _userRoleRepository.FindByCondition(ur => ur.RoleID == user.RoleID).FirstOrDefaultAsync();

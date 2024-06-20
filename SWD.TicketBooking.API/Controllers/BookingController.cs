@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.RequestModels.Booking;
+using SWD.TicketBooking.API.RequestModels.Booking;
 using SWD.TicketBooking.Repo.Helpers;
+using SWD.TicketBooking.Service.Dtos.BackendService;
 using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
@@ -11,7 +12,7 @@ using static SWD.TicketBooking.Service.Dtos.SendMailBookingModel;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("booking")]
+    [Route("booking-management")]
     [ApiController]
     public class BookingController : ControllerBase
     {
@@ -26,7 +27,7 @@ namespace SWD.TicketBooking.API.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpPost("new-booking")]
+        [HttpPost("managed-bookings")]
         public async Task<IActionResult> AddOrUpdateBooking(BookingRequest bookingRequest)
         {
             var map = _mapper.Map<BookingModel>(bookingRequest);
@@ -34,7 +35,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
-        [HttpGet("vnpay-ipn")]
+        [HttpGet("managed-bookings/vnpay-ipn")]
         public async Task<IActionResult> VNPayIPN()
         {
             try
@@ -78,12 +79,17 @@ namespace SWD.TicketBooking.API.Controllers
                     {
                         return BadRequest("Invalid booking ID format.");
                     }
+                    return Ok(new
+                    {
+                        RspCode = "00",
+                        Message = "Confirm Success"
+                    });
                 }
 
-                return Ok(new
+                return BadRequest(new
                 {
-                    RspCode = "00",
-                    Message = "Confirm Success"
+                    RspCode = response.VnPayResponseCode,
+                    Message = "Fail!"
                 });
             }
             catch (Exception ex)
@@ -92,7 +98,7 @@ namespace SWD.TicketBooking.API.Controllers
             }
         }
 
-        [HttpGet("booking-by-id/{bookingID}")]
+        [HttpGet("managed-bookings/{bookingID}")]
         public async Task<IActionResult> GetBooking(Guid bookingID)
         { 
             var rs = await _bookingService.GetBooking(bookingID);

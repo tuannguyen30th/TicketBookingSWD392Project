@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("utility")]
+    [Route("utility-management")]
     [ApiController]
     public class UtilityController : Controller
     {
@@ -17,12 +17,12 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
             _utilityService = utilityService;
         }
-        [HttpGet("trip/{tripID}")]
+      /*  [HttpGet("managedtrip/{tripID}")]
         public async Task<IActionResult> GetUtilityByTripID([FromRoute] Guid tripID) 
         {
                var rs = _mapper.Map<List<UtilityInTripResponse>>(await _utilityService.GetAllUtilityByTripID(tripID));
            // var rs = _utilityService.GetAllUtilityByTripID(id);
             return Ok(rs);
-        }
+        }*/
     }
 }

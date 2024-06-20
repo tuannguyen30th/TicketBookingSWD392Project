@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Dtos.BackendService;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
@@ -29,10 +30,11 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
         }
         
-        public async Task<CityModel> GetFromCityToCity()
+        public async Task<ActionOutcome> GetFromCityToCity()
         {
             try
             {
+                var result = new ActionOutcome();
                 var fromCities = await _routeRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.FromCity )
                                                        .Distinct()
                                                        .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })   
@@ -50,7 +52,8 @@ namespace SWD.TicketBooking.Service.Services
                     FromCities = fromCities,
                     ToCities = toCities
                 };
-                return rs;
+                result.Result = rs;
+                return result;
             }
             catch (Exception ex)
             {
@@ -58,10 +61,12 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> CreateCity(CreateCityModel model)
+        public async Task<ActionOutcome> CreateCity(CreateCityModel model)
         {
             try
             {
+                var result = new ActionOutcome();
+
                 var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
@@ -78,7 +83,12 @@ namespace SWD.TicketBooking.Service.Services
                     throw new InternalServerErrorException("Cannot create");
                 }
                 var rs = await _cityRepository.Commit();
-                return rs;
+                if(rs >  0)
+                {
+                    result.IsSuccess = true;
+                }
+                else throw new BadRequestException("Fail!");
+                return result;
             }
             catch (Exception ex)
             {
@@ -86,10 +96,12 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateCity(Guid cityId, CreateCityModel model)
+        public async Task<ActionOutcome> UpdateCity(Guid cityId, CreateCityModel model)
         {
             try
             {
+                var result = new ActionOutcome();
+
                 var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
@@ -112,7 +124,13 @@ namespace SWD.TicketBooking.Service.Services
                     throw new InternalServerErrorException("Cannot update");
                 }
                 var rs = await _cityRepository.Commit();
-                return rs;
+                if(rs > 0)
+                {
+                    result.IsSuccess = true;
+                }
+                else throw new BadRequestException("Fail!");
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -120,10 +138,11 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> ChangeStatus(Guid cityId, string status)
+        public async Task<ActionOutcome> ChangeStatus(Guid cityId, string status)
         {
             try
             {
+                var result = new ActionOutcome();
                 var entity = await _cityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
 
                 if (entity == null)
@@ -140,7 +159,13 @@ namespace SWD.TicketBooking.Service.Services
                     throw new Exception("Cannot update");
                 }
                 var rs = await _cityRepository.Commit();
-                return rs;
+                if (rs > 0)
+                {
+                    result.IsSuccess = true;
+                }
+                else throw new BadRequestException("Fail!");
+
+                return result;
             }
             catch (Exception ex)
             {

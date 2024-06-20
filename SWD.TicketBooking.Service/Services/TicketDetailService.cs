@@ -7,7 +7,7 @@ using SWD.TicketBooking.Service.Exceptions;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class TicketDetailService : ITicketDetailService
+    public class TicketDetailService 
     {
         private readonly IMapper _mapper;
         private readonly IRepository<TicketDetail, Guid> _ticketDetailRepo;
@@ -94,11 +94,11 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid userID)
+        public async Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid customerID)
         {
             try
             {
-                var bookings = await _bookingRepo.FindByCondition(_ => _.UserID == userID)
+                var bookings = await _bookingRepo.FindByCondition(_ => _.UserID == customerID)
                     .Include(_ => _.Trip.Route_Company.Route.FromCity).Include(_ => _.Trip.Route_Company.Route.ToCity).Include(_ => _.Trip.Route_Company.Route).ToListAsync();
 
                 var rsList = new List<GetTicketDetailByUserModel>();

@@ -36,9 +36,9 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<AppActionResult> AddOrUpdateBooking(BookingModel bookingModel, HttpContext context)
+        public async Task<ActionOutcome> AddOrUpdateBooking(BookingModel bookingModel, HttpContext context)
         {
-            var result = new AppActionResult();
+            var result = new ActionOutcome();
             bool isValid = true;
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -172,6 +172,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
+                var result = new ActionOutcome();
                 var mailBooking = new List<SendMailBookingModel.MailBookingModel>();
                 string qr = GenerateCode();
                 var findBooking = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).Include(_ => _.Trip.Route_Company.Route).FirstOrDefaultAsync();
@@ -229,9 +230,8 @@ namespace SWD.TicketBooking.Service.Services
                         QrCodeImage = findBooking.QRCodeImage,
                         MailBookingServices = mailBookingServices
                     };
-                    mailBooking.Add(mailBookingModel);
+                   mailBooking.Add(mailBookingModel);
                 }
-
                 return mailBooking;
             }
             catch (Exception ex)
@@ -240,16 +240,18 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<Booking> GetBooking(Guid bookingID)
+        public async Task<ActionOutcome> GetBooking(Guid bookingID)
         {
             try
             {
+                var result = new ActionOutcome();
                 var getEmail = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).FirstOrDefaultAsync();
                 if (getEmail == null)
                 {
                     throw new NotFoundException("Not Found!");
                 }
-                return getEmail;
+                result.Result = getEmail;
+                return result;
             }
             catch (Exception ex)
             {
@@ -261,6 +263,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
+                var result = new ActionOutcome();
                 var getEmail = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).Select(_ => _.Email).FirstOrDefaultAsync();
                 if (getEmail == null)
                 {

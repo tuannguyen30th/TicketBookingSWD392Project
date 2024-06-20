@@ -100,26 +100,26 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<TripFeedbackModel> GetAllFeedbackInTrip(Guid templateID, int pageNumber, int pageSize, int filter)
+        public async Task<TripFeedbackModel> GetAllFeedbackInTrip(Guid tripID, int pageNumber, int pageSize, int filter)
         {
             try
             {
-                var existedTrip = await _tripRepository.FindByCondition(x=>x.TemplateID == templateID && x.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
+                var existedTrip = await _tripRepository.FindByCondition(x=>x.TemplateID == tripID && x.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (existedTrip != null)
                 {
-                    var feedback = await _feedbackRepository.FindByCondition(x => x.TemplateID == templateID)
+                    var feedback = await _feedbackRepository.FindByCondition(x => x.TemplateID == tripID)
                                  .ToListAsync();
                     var feedbacks = new List<Feedback>();
                     if (filter == 0)
                     {
-                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TemplateID == templateID)
+                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TemplateID == tripID)
                                  .Skip((pageNumber - 1) * pageSize)                                
                                  .Take(pageSize)                                                   
                                  .ToListAsync();                                                   
                     }                                                                              
                     else                                                                           
                     {                                                                              
-                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TemplateID == templateID && (x.Rating == filter))
+                         feedbacks = await _feedbackRepository.FindByCondition(x => x.TemplateID == tripID && (x.Rating == filter))
                                  .Skip((pageNumber - 1) * pageSize)
                                  .Take(pageSize)
                                  .ToListAsync();

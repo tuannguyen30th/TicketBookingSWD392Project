@@ -3,8 +3,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.RequestModels;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.RequestModels;
+using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.IServices;
@@ -13,7 +13,7 @@ using static SWD.TicketBooking.Service.Dtos.CreateTripModel;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("trip")]
+    [Route("trip-management")]
     [ApiController]
     public class TripController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("popular-trips")]
+        [HttpGet("manage-trips/populars")]
         public async Task<IActionResult> GetPopularTrips()
         {
             var rs = _mapper.Map<List<PopularTripResponse>>(await _tripService.GetPopularTrips());
@@ -35,7 +35,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("trip-picture-detail/{tripId}")]
+        [HttpGet("manage-trips/{tripId}/pictures")]
         public async Task<IActionResult> GetTripPictureDetail(Guid tripId)
         {
             //   var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
@@ -43,7 +43,7 @@ namespace SWD.TicketBooking.API.Controllers
             rs = await _tripService.GetPictureOfTrip(tripId);
             return Ok(rs);
         }
-        [HttpGet("list-trip-fromCity-toCity/{fromCity}/{toCity}/{startTime}/{pageNumber}/{pageSize}")]
+        [HttpGet("managed-trips/from-city/{fromCity}/to-city/{toCity}/start-time/{startTime}/page-number/{pageNumber}/page-size/{pageSize}")]
         public async Task<IActionResult> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber = 1, int pageSize = 10)
         {
             var rs = await _tripService.SearchTrip(fromCity, toCity, startTime, pageNumber, pageSize);
@@ -57,7 +57,7 @@ namespace SWD.TicketBooking.API.Controllers
 
             return Ok(paginatedResult);
         }
-        [HttpPost("new-trip")]
+        [HttpPost("managed-trips")]
         public async Task<IActionResult> CreateTrip([FromForm] CreateTripModel createTripRequest)
         {
             //var createTrip = _mapper.Map<CreateTripModel>(createTripRequest);
@@ -66,17 +66,23 @@ namespace SWD.TicketBooking.API.Controllers
 
             return Ok(updatedService);
         }
-        [HttpPut("trip/{tripID}")]
+        [HttpPut("managed-trips/{tripID}")]
         public async Task<IActionResult> ChangeStatusTrip([FromRoute] Guid tripID)
         {
 
             var updatedService = await _tripService.ChangeStatusTrip(tripID);
             return Ok(updatedService);
         }
-        [HttpGet("seat-booked-from-trip/{tripID}")]
+        [HttpGet("managed-trips/{tripID}/booked-seats")]
         public async Task<IActionResult> GetSeatBookedFromTrip(Guid tripID)
         {
             var rs = await _tripService.GetSeatBookedFromTrip(tripID);
+            return Ok(rs);
+        }
+        [HttpGet("managed-trips/{tripID}/utilities")]
+        public async Task<IActionResult> GetUtilityByTripID([FromRoute] Guid tripID)
+        {
+            var rs = _mapper.Map<List<UtilityInTripResponse>>(await _tripService.GetAllUtilityByTripID(tripID));
             return Ok(rs);
         }
 

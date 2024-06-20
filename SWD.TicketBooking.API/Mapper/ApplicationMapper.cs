@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
-using SWD.TicketBooking.API.Common.RequestModels;
-using SWD.TicketBooking.API.Common.RequestModels.Booking;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.Dtos.User;
-using static SWD.TicketBooking.API.Common.RequestModels.CreateTripRequest;
-using static SWD.TicketBooking.API.Common.ResponseModels.GetSeatBookedFromTripResponse;
-using static SWD.TicketBooking.API.Common.ResponseModels.ServiceFromStationResponse;
+using static SWD.TicketBooking.API.RequestModels.CreateTripRequest;
+using static SWD.TicketBooking.API.ResponseModels.GetSeatBookedFromTripResponse;
+using static SWD.TicketBooking.API.ResponseModels.ServiceFromStationResponse;
 using static SWD.TicketBooking.Service.Dtos.CreateTripModel;
 using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
+using SWD.TicketBooking.API.RequestModels.Booking;
+using SWD.TicketBooking.API.ResponseModels;
 
 
 namespace SWD.TicketBooking.API.Mapper

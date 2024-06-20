@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.RequestModels;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.RequestModels;
+using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("company")]
+    [Route("company-management")]
     [ApiController]
     public class CompanyController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("all-active-companies")]
+        [HttpGet("managed-companies")]
         public async Task<IActionResult> GetAllActiveCompanies()
         {
             var companies = await _companyService.GetAllActiveCompanies();
@@ -32,7 +32,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("company-by-id/{companyID}")]
+        [HttpGet("managed-companies/{companyID}")]
         public async Task<IActionResult> GetCompanyById([FromRoute] Guid companyID)
         {
             var company = await _companyService.GetCompanyById(companyID);
@@ -41,7 +41,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("new-company")]
+        [HttpPost("managed-companies")]
         public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyRequest req)
         {
             var map = _mapper.Map<CreateCompanyModel>(req);
@@ -54,7 +54,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("company/{companyID}")]
+        [HttpPut("managed-companies/{companyID}")]
         public async Task<IActionResult> UpdateCompany([FromRoute] Guid companyID, [FromBody] CreateCompanyRequest req)
         {
             /*if (companyID <= 0)
@@ -71,7 +71,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("company-status/{companyID}")]
+        [HttpPut("managed-companies/{companyID}/status")]
         public async Task<IActionResult> ChangeStatus([FromRoute] Guid companyID, [FromBody] ChangeStatusRequest req)
         {
             /*if (companyID <= 0)

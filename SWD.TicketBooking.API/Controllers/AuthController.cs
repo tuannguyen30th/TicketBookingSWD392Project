@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Service.Dtos.Auth;
-using SWD.TicketBooking.API.Common.RequestModels;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.API.Common;
 using AutoMapper;
 using SWD.TicketBooking.Service.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using SWD.TicketBooking.Service.Services;
 using SWD.TicketBooking.Service.IServices;
+using SWD.TicketBooking.API.RequestModels;
 
 namespace SWD.TicketBooking.Booking.API;
 
-[Route("auth")]
+[Route("auth-management")]
 [ApiController]
 public class AuthController : ControllerBase
 {
@@ -33,7 +33,7 @@ public class AuthController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("signup")]
+    [HttpPost("managed-auths/sign-ups")]
     public async Task<IActionResult> Signup([FromBody] SignUpRequest req)
     {
         try
@@ -120,7 +120,7 @@ public class AuthController : ControllerBase
 
 
     [AllowAnonymous]
-    [HttpPost("login")]
+    [HttpPost("managed-auths/sign-ins")]
     public async Task<IActionResult> Login([FromBody] LoginRequest req)
     {
         var loginResult = await _identityService.Login(req.Email, req.Password);
@@ -130,7 +130,7 @@ public class AuthController : ControllerBase
         }
         
         var handler = new JwtSecurityTokenHandler();
-        var res = new SWD.TicketBooking.API.Common.ResponseModels.LoginResponse
+        var res = new SWD.TicketBooking.API.ResponseModels.LoginResponse
         {
             AccessToken = handler.WriteToken(loginResult.Token),
         };
@@ -138,7 +138,7 @@ public class AuthController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("check-token")]
+    [HttpGet("managed-auths/token-verification")]
     public async Task<IActionResult> CheckToken()
     {
         Request.Headers.TryGetValue("Authorization", out var token);

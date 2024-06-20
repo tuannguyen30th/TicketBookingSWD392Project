@@ -2,28 +2,28 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("ticketDetail")]
+    [Route("ticket-detail-management")]
     [ApiController]
     public class TicketDetailController : ControllerBase
     {
-        private readonly ITicketDetailService _ticketDetailService;
+        private readonly TicketDetailService _ticketDetailService;
         private readonly IMapper _mapper;
 
-        public TicketDetailController(ITicketDetailService ticketDetailService, IMapper mapper)
+        public TicketDetailController(TicketDetailService ticketDetailService, IMapper mapper)
         {
             _ticketDetailService = ticketDetailService;
             _mapper = mapper;
         }
 
         [AllowAnonymous]
-        [HttpGet("ticket-details/{ticketDetailID}")]
+        [HttpGet("managed-ticket-details/{ticketDetailID}")]
         public async Task<IActionResult> GetDetailTicketDetailByTicketDetail([FromRoute] Guid ticketDetailID)
         {
             try
@@ -38,12 +38,12 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("ticket-details-by-user/{userID}")]
-        public async Task<IActionResult> GetTicketDetailByUser([FromRoute] Guid userID)
+        [HttpGet("managed-ticket-details/customers/{customerID}")]
+        public async Task<IActionResult> GetTicketDetailByUser([FromRoute] Guid customerID)
         {
             try
             {
-                var rs = _mapper.Map<List<GetTicketDetailByUserResponse>>(await _ticketDetailService.GetTicketDetailByUser(userID));
+                var rs = _mapper.Map<List<GetTicketDetailByUserResponse>>(await _ticketDetailService.GetTicketDetailByUser(customerID));
                 return Ok(rs);
             }
             catch (Exception ex)
@@ -52,7 +52,7 @@ namespace SWD.TicketBooking.API.Controllers
             }
         }
 
-        [HttpGet("ticket-detail-by-QRCode/{qrCode}/{email}")]
+        [HttpGet("managed-ticket-details/qrCodes/{qrCode}/emails/{email}")]
         public async Task<IActionResult> SearchTicket([FromRoute] string qrCode, [FromRoute] string email)
         {
             try

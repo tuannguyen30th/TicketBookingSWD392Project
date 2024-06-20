@@ -15,5 +15,6 @@ namespace SWD.TicketBooking.Service.IServices
         Task<bool> CreateTrip(CreateTripModel createTrip);
         Task<bool> ChangeStatusTrip(Guid tripId);
         Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(Guid tripID);
+        Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id);
     }
 }

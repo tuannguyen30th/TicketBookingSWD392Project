@@ -1,4 +1,5 @@
-﻿using SWD.TicketBooking.Service.Dtos.Auth;
+﻿using Microsoft.AspNetCore.Http;
+using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.BackendService;
 using SWD.TicketBooking.Service.Dtos.User;
 using System;
@@ -18,5 +19,6 @@ namespace SWD.TicketBooking.Service.IServices
         Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req);
         Task<UserModel> GetUserById(Guid id);
         Task<(UpdateUserModel returnModel, string message)> UpdateUser(Guid id, UpdateUserModel updateUser);
+        Task<bool> UploadAvatar(IFormFile file);
     }
 }

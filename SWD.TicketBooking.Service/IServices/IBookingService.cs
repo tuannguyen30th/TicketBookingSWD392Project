@@ -13,9 +13,9 @@ namespace SWD.TicketBooking.Service.IServices
 {
     public interface IBookingService
     {
-        Task<AppActionResult> AddOrUpdateBooking(BookingModel bookingModel, HttpContext context);
+        Task<ActionOutcome> AddOrUpdateBooking(BookingModel bookingModel, HttpContext context);
         Task<List<SendMailBookingModel.MailBookingModel>> UpdateStatusBooking(Guid bookingID);
-        Task<Booking> GetBooking(Guid bookingID);
+        Task<ActionOutcome> GetBooking(Guid bookingID);
         Task<string> GetEmailBooking(Guid bookingID);
     }
 }

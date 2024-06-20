@@ -21,10 +21,11 @@ namespace SWD.TicketBooking.Service.Services
         private readonly IRepository<Route_Company, Guid> _routeCompanyRepo;
         private readonly IRepository<Feedback, Guid> _feedbackRepo;
         private readonly IRepository<Trip_Utility, Guid> _tripUtilityRepo;
+        private readonly IRepository<Utility, Guid> _utilityRepository;
         private readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
-        public TripService(IRepository<TicketDetail, Guid> ticketDetailRepo, IRepository<Route_Company, Guid> routeCompanyRepo, IRepository<Trip, Guid> tripRepo, IRepository<Booking, Guid> bookingRepo, IRepository<TicketType_Trip, Guid> ticketTypeTripRepo, IRepository<Route, Guid> routeRepo, IRepository<Feedback, Guid> feedbackRepo, IMapper mapper, IRepository<TripPicture, Guid> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, Guid> tripUtilityRepo)
+        public TripService(IRepository<Utility, Guid> utilityRepository, IRepository<TicketDetail, Guid> ticketDetailRepo, IRepository<Route_Company, Guid> routeCompanyRepo, IRepository<Trip, Guid> tripRepo, IRepository<Booking, Guid> bookingRepo, IRepository<TicketType_Trip, Guid> ticketTypeTripRepo, IRepository<Route, Guid> routeRepo, IRepository<Feedback, Guid> feedbackRepo, IMapper mapper, IRepository<TripPicture, Guid> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, Guid> tripUtilityRepo)
 
         {
             _tripRepo = tripRepo;
@@ -37,6 +38,7 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
             _tripUtilityRepo = tripUtilityRepo;
             _routeCompanyRepo = routeCompanyRepo;
+            _utilityRepository = utilityRepository;
             _mapper = mapper;
         }
 
@@ -209,7 +211,11 @@ namespace SWD.TicketBooking.Service.Services
             {
                 if (createTrip.StartTime == null || createTrip.EndTime == null || createTrip.ImageUrls == null)
                 {
-                    throw new Exception("Not empty in any fields");
+                    throw new BadRequestException("Not empty in any fields");
+                }
+                if(createTrip.StartTime > createTrip.EndTime)
+                {
+                    throw new BadRequestException("StartTime must greater than EndTime!");
                 }
                 var trip = new Trip
                 {
@@ -248,13 +254,13 @@ namespace SWD.TicketBooking.Service.Services
                 rs = await _tripPictureRepo.Commit();
                 if (rs < 0)
                 {
-                    return false;
+                    throw new BadRequestException("Fail!");
                 }
                 foreach (var ticketType in createTrip.TicketType_TripModels)
                 {
                     if (ticketType.Price <= 0 || ticketType.Quantity <= 0)
                     {
-                        return false;
+                        throw new BadRequestException("Error format in Price or Quantity of TicketType_Trip!");
                     }
                     var newTicketType_Trip = new TicketType_Trip
                     {
@@ -400,6 +406,24 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-
+        public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
+        {
+            var utilities = await _tripUtilityRepo
+               .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.ACTIVE))
+               .Select(tu => tu.Utility)
+               .ToListAsync();
+            var result = new List<UtilityModel>();
+            foreach (var trip in utilities)
+            {
+                var newModel = new UtilityModel
+                {
+                    Name = trip.Name,
+                    Description = trip.Description,
+                    Status = trip.Status,
+                };
+                result.Add(newModel);
+            }
+            return result;
+        }
     }
 }

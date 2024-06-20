@@ -11,7 +11,6 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class UpdateServiceModel
     {
-        public Guid ServiceID { get; set; }
         public Guid ServiceTypeID { get; set; }
         public string? Name { get; set; } 
     }
