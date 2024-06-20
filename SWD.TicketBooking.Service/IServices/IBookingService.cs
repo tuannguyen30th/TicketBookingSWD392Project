@@ -16,6 +16,6 @@ namespace SWD.TicketBooking.Service.IServices
         Task<ActionOutcome> AddOrUpdateBooking(BookingModel bookingModel, HttpContext context);
         Task<List<SendMailBookingModel.MailBookingModel>> UpdateStatusBooking(Guid bookingID);
         Task<ActionOutcome> GetBooking(Guid bookingID);
-        Task<string> GetEmailBooking(Guid bookingID);
+        Task<ActionOutcome> GetEmailBooking(Guid bookingID);
     }
 }

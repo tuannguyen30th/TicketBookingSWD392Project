@@ -23,7 +23,7 @@ namespace SWD.TicketBooking.Service.Configuration
         }
         public class RedisCacheConfiguration
         {
-            public string CacheConnectionString { get; set; }
+            public string RedisCacheConnection { get; set; }
         }
     }
 }

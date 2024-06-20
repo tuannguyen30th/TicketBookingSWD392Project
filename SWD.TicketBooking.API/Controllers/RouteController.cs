@@ -43,7 +43,7 @@ namespace SWD.TicketBooking.API.Controllers
                 var dataFromService = await _cityService.GetFromCityToCity();
                 var response = _mapper.Map<FromCityToCityRepsonse.CityResponse>(dataFromService);
                 DistributedCacheEntryOptions options = new();
-                options.SetAbsoluteExpiration(new TimeSpan(0, 0, 30));
+                options.SetAbsoluteExpiration(new TimeSpan(0, 5, 0));
                 _cache.SetString(cacheKey, JsonConvert.SerializeObject(response), options);
 
                 return Ok(response);

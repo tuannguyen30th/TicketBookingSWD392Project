@@ -11,5 +11,6 @@ namespace SWD.TicketBooking.Service.Dtos.BackendService
         public object? Result { get; set; }
         public bool IsSuccess { get; set; } = true;
         public List<string>? Messages { get; set; } = new();
+        public string Value { get; set; } = string.Empty;
     }
 }
