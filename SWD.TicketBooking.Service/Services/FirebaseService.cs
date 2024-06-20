@@ -15,7 +15,7 @@ namespace SWD.TicketBooking.Service.Services
     public class FirebaseService : GenericBackendService, IFirebaseService
     {
         ///private readonly IConverter _pdfConverter;
-        private AppActionResult _result;
+        private ActionOutcome _result;
         private FirebaseConfiguration _firebaseConfiguration;
         private readonly IConfiguration _configuration;
         public FirebaseService(IServiceProvider serviceProvider, IConfiguration configuration, FirebaseConfiguration firebaseConfiguration) : base(serviceProvider)
@@ -26,9 +26,9 @@ namespace SWD.TicketBooking.Service.Services
             _configuration = configuration;
         }
 
-        public async Task<AppActionResult> DeleteFileFromFirebase(string pathFileName)
+        public async Task<ActionOutcome> DeleteFileFromFirebase(string pathFileName)
         {
-            var _result = new AppActionResult();
+            var _result = new ActionOutcome();
             try
             {
                 var auth = new FirebaseAuthProvider(new FirebaseConfig(_firebaseConfiguration.ApiKey));
@@ -78,9 +78,9 @@ namespace SWD.TicketBooking.Service.Services
             return string.Empty;
         }
 
-        public async Task<AppActionResult> UploadFileToFirebase(IFormFile file, string pathFileName)
+        public async Task<ActionOutcome> UploadFileToFirebase(IFormFile file, string pathFileName)
         {
-            var _result = new AppActionResult();
+            var _result = new ActionOutcome();
             bool isValid = true;
             if (file == null || file.Length == 0)
             {
@@ -117,9 +117,9 @@ namespace SWD.TicketBooking.Service.Services
             }
             return _result;
         }
-        public async Task<AppActionResult> UploadFilesToFirebase(List<IFormFile> files, string basePath)
+        public async Task<ActionOutcome> UploadFilesToFirebase(List<IFormFile> files, string basePath)
         {
-            var _result = new AppActionResult();
+            var _result = new ActionOutcome();
             var uploadResults = new List<string>();
 
             var auth = new FirebaseAuthProvider(new FirebaseConfig(_firebaseConfiguration.ApiKey));

@@ -21,5 +21,9 @@ namespace SWD.TicketBooking.Service.Configuration
             public string? Bucket { get; set; }
 
         }
+        public class RedisCacheConfiguration
+        {
+            public string CacheConnectionString { get; set; }
+        }
     }
 }

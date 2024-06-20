@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.RequestModels;
+using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("station_service")]
+    [Route("station-service-management")]
     [ApiController]
     public class StationServiceController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace SWD.TicketBooking.API.Controllers
             _stationServiceService = stationServiceService;
             _mapper = mapper;
         }
-        [HttpPost("new-service-in-station")]
+        [HttpPost("managed-station-services")]
         public async Task<IActionResult> CreateServiceStation([FromForm] CreateServiceInStationRequest createServiceInStationRequest)
         {
             var serviceStationCreate = _mapper.Map<CreateServiceInStationModel>(createServiceInStationRequest);
@@ -28,11 +28,11 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = await _stationServiceService.CreateServiceStation(serviceStationCreate);
             return Ok(rs);
         }
-        [HttpPut("service-in-station")]
-        public async Task<IActionResult> UpdateServiceStation([FromForm] UpdateServiceInStationRequest updateServiceInStationRequest)
+        [HttpPut("managed-station-services/{stationServiceID}")]
+        public async Task<IActionResult> UpdateServiceStation([FromForm] UpdateServiceInStationRequest updateServiceInStationRequest, [FromRoute] Guid stationServiceID)
         {
             var serviceStationUpdate = _mapper.Map<UpdateServiceInStationModel>(updateServiceInStationRequest);
-            var rs = await _stationServiceService.UpdateServiceStation(serviceStationUpdate);
+            var rs = await _stationServiceService.UpdateServiceStation(serviceStationUpdate, stationServiceID);
             return Ok(rs);
         }
     }

@@ -14,6 +14,7 @@ namespace SWD.TicketBooking.Repo.Helpers
         public static string RATING = "RATING/";
         public static string SERVICE_STATION = "SERVICE_STATION/";
         public static string AVATAR = "AVATAR/";
+        public static string AVATAR_DEFAULT = "AVATAR_DEFAULT/";
 
     }
 }

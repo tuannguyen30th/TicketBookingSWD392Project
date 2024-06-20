@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.RequestModels;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.RequestModels;
+using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("rating")]
+    [Route("feedback-management")]
     [ApiController]
     public class FeedbackController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace SWD.TicketBooking.API.Controllers
             _feedbackService = feedbackService;
             _mapper = mapper;
         }
-        [HttpPost("feedback-trip")]
+        [HttpPost("managed-feedbacks")]
         public async Task<IActionResult> CreateRating([FromForm] FeedbackRequest feedbackRequest)
         {
             var feedback = _mapper.Map<FeedbackRequestModel>(feedbackRequest);
@@ -28,11 +28,11 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok();
         }
 
-        [HttpGet("feedback-in-trip/{templateID}/{filter}")]
-        public async Task<IActionResult> GetAllFeedbackInTrip(Guid templateID, int filter, int pageNumber =1, int pageSize =5)
+        [HttpGet("managed-feedbacks/trips/{tripID}/rate-scales/{filter}")]
+        public async Task<IActionResult> GetAllFeedbackInTrip(Guid tripID, int filter, int pageNumber =1, int pageSize =5)
         {
-            var fb = _mapper.Map<FeedbackInTripResponse>(await _feedbackService.GetAllFeedbackInTrip(templateID, pageNumber,pageSize, filter));
-            return Ok(fb);
+            var fb = _mapper.Map<FeedbackInTripResponse>(await _feedbackService.GetAllFeedbackInTrip(tripID, pageNumber,pageSize, filter));
+            return Ok(fb);  
         }
     }
 }

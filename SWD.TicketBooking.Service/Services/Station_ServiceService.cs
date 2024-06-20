@@ -63,11 +63,11 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        public async Task<bool> UpdateServiceStation(UpdateServiceInStationModel updateServiceInStationModel)
+        public async Task<bool> UpdateServiceStation(UpdateServiceInStationModel updateServiceInStationModel, Guid stationServiceID)
         {
             try
             {
-                var serviceStation = await _stationServiceRepository.GetByIdAsync(updateServiceInStationModel.Station_ServiceID);
+                var serviceStation = await _stationServiceRepository.GetByIdAsync(stationServiceID);
                 var checkExisted = await _stationServiceRepository.FindByCondition(_ =>
                                          _.ServiceID == updateServiceInStationModel.ServiceID &&
                                          _.StationID == updateServiceInStationModel.StationID)

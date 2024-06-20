@@ -28,7 +28,7 @@ namespace SWD.TicketBooking.Service.Services
             _tripUtilityRepository = tripUtilityRepository;
 
         }
-        public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
+       /* public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
         {
             var utilities = await _tripUtilityRepository
                 .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.ACTIVE))
@@ -46,6 +46,6 @@ namespace SWD.TicketBooking.Service.Services
                 result.Add(newModel);
             }
             return result;
-        }
+        }*/
     }
 }

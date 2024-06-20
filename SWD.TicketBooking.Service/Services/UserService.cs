@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
@@ -85,7 +86,6 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-
         public async Task<(CreateUserReq returnModel, string message)> SendOTPCode(CreateUserReq req)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -146,9 +146,6 @@ namespace SWD.TicketBooking.Service.Services
                 }
             }
         }
-
-
-
         public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
         {
             try
@@ -183,7 +180,6 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-
         public async Task<UserModel> GetUserById(Guid id)
         {
             try
@@ -255,6 +251,22 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-
+        public async Task<bool> UploadAvatar(IFormFile file)
+        {
+            try
+            {
+                var imagePath = FirebasePathName.AVATAR_DEFAULT + $"{Guid.NewGuid().ToString()}";
+                var imageUploadResult = await _firebaseService.UploadFileToFirebase(file, imagePath);
+                if (!imageUploadResult.IsSuccess)
+                {
+                    throw new InternalServerErrorException("Error uploading files to Firebase.");
+                }
+                return true;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
     }
 }

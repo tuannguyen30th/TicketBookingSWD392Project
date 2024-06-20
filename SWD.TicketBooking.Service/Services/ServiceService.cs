@@ -51,11 +51,11 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
       
-        public async Task<int> UpdateService(UpdateServiceModel updateServiceModel)
+        public async Task<int> UpdateService(UpdateServiceModel updateServiceModel, Guid serviceID)
         {
             try
             {
-                var service = await _serviceRepository.GetByIdAsync(updateServiceModel.ServiceID);
+                var service = await _serviceRepository.GetByIdAsync(serviceID);
                 if (service == null)
                 {
                     throw new NotFoundException("Service not found.");
@@ -64,7 +64,7 @@ namespace SWD.TicketBooking.Service.Services
                 var checkExistedName = await _serviceRepository.GetAll()
                                       .Where(_ => _.ServiceTypeID == updateServiceModel.ServiceTypeID
                                        && _.Name.ToLower().Trim().Equals(updateServiceModel.Name.ToLower())
-                                       && _.ServiceID != updateServiceModel.ServiceID)
+                                       && _.ServiceID != serviceID)
                                       .FirstOrDefaultAsync();
 
                 if (checkExistedName != null)

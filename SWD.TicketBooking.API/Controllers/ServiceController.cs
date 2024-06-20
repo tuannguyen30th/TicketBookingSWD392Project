@@ -1,17 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.RequestModels;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
-using static SWD.TicketBooking.API.Common.ResponseModels.ServiceFromStationResponse;
+using static SWD.TicketBooking.API.ResponseModels.ServiceFromStationResponse;
 using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("service")]
+    [Route("service-management")]
     [ApiController]
     public class ServiceController : ControllerBase
     {
@@ -25,7 +24,7 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
         }
        
-        [HttpGet("services-of-type-from-station/{stationID}/{serviceTypeID}")]
+        [HttpGet("managed-services/stations/{stationID}/types/{serviceTypeID}")]
         public async Task<IActionResult> ServicesOfTypeFromStations([FromRoute] Guid stationID, [FromRoute] Guid serviceTypeID)
         {
             var serviceTypes = await _serviceTypeService.ServicesOfTypeFromStations(stationID, serviceTypeID);
@@ -33,7 +32,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(serviceTypeResponses);
         }
 
-        [HttpPost("new-service")]
+        [HttpPost("managed-services")]
         public async Task<IActionResult> CreateService([FromBody] CreateServiceRequest createServiceModel)
         {
             var serviceToUpdate = _mapper.Map<CreateServiceModel>(createServiceModel);
@@ -41,16 +40,16 @@ namespace SWD.TicketBooking.API.Controllers
             var service = await _serviceService.CreateService(serviceToUpdate);
             return Ok(service);
         }
-        [HttpPut("service")]
-        public async Task<IActionResult> UpdateService([FromBody] UpdateServiceRequest updateServiceModel)
+        [HttpPut("managed-services/{serviceID}")]
+        public async Task<IActionResult> UpdateService([FromBody] UpdateServiceRequest updateServiceModel, [FromRoute] Guid serviceID)
         {
             var serviceToUpdate = _mapper.Map<UpdateServiceModel>(updateServiceModel);
 
-            var updatedService = await _serviceService.UpdateService(serviceToUpdate);
+            var updatedService = await _serviceService.UpdateService(serviceToUpdate, serviceID);
 
             return Ok(updatedService);
         }
-        [HttpPut("service-inactive/{serviceID}")]
+        [HttpPut("managed-services/{serviceID}/status")]
         public async Task<IActionResult> UpdateStatus([FromRoute] Guid serviceID)
         {
             var service = await _serviceService.UpdateStatus(serviceID);

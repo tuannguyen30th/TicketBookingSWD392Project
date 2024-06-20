@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.Common.RequestModels;
-using SWD.TicketBooking.API.Common.ResponseModels;
+using SWD.TicketBooking.API.RequestModels;
+using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
 {
-    [Route("station")]
+    [Route("station-management")]
     [ApiController]
     public class StationController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace SWD.TicketBooking.API.Controllers
             _stationService = stationService;
             _mapper = mapper;
         }
-        [HttpGet("stations-from-route/{routeID}")]
+        [HttpGet("managed-stations/routes/{routeID}")]
         public async Task<IActionResult> GetStationsFromRoute(Guid routeID)
         {
             var stations = await _stationService.GetStationsFromRoute(routeID);
@@ -28,7 +28,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(stationResponses);
         }
 
-        [HttpGet("stations-from-trip/{tripID}")]
+        [HttpGet("managed-stations/trips/{tripID}")]
         public async Task<IActionResult> GetStationsInTrip(Guid tripID)
         {
             var stations = await _stationService.GetAllStationInRoute(tripID);
@@ -36,7 +36,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(stationResponses);
         }
 
-        [HttpGet("all-stations")]
+        [HttpGet("managed-stations")]
         public async Task<IActionResult> GetAllStations()
         {
             var stations = await _stationService.GetAllStationActive();
@@ -44,7 +44,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
-        [HttpGet("station-by-id/{stationID}")]
+        [HttpGet("managed-stations/{stationID}")]
         public async Task<IActionResult> GetStationById(Guid stationID)
         {
             var station = await _stationService.GetStationById(stationID);
@@ -52,15 +52,15 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
-        [HttpPost("new-staion")]
+        [HttpPost("managed-stations")]
         public async Task<IActionResult> CreateNewStation([FromBody] CreateStationRequest request)
         {
             var map = _mapper.Map<CreateStationModel>(request);
             var rs = await _stationService.CreateStation(map);
             return Ok(rs);
         }
-        [HttpPut("station/{stationID}")]
-        public async Task<IActionResult> UpdateStaion([FromRoute] Guid stationID, [FromBody] CreateStationRequest req)
+        [HttpPut("managed-stations/{stationID}")]
+        public async Task<IActionResult> UpdateStation([FromRoute] Guid stationID, [FromBody] CreateStationRequest req)
         {
             var map = _mapper.Map<CreateStationModel>(req);
             var rs = await _stationService.UpdateStation(stationID, map);

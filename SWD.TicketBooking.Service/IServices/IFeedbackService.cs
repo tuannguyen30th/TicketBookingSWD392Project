@@ -10,6 +10,6 @@ namespace SWD.TicketBooking.Service.IServices
     public interface IFeedbackService
     {
         Task<bool> CreateRating(FeedbackRequestModel ratingModel);
-        Task<TripFeedbackModel> GetAllFeedbackInTrip(Guid templateID, int pageNumber, int pageSize, int filter);
+        Task<TripFeedbackModel> GetAllFeedbackInTrip(Guid tripID, int pageNumber, int pageSize, int filter);
     }
 }
