@@ -156,7 +156,7 @@ namespace SWD.TicketBooking.Service.Services
                 var checkUser = await _userRepo.GetAll().Where(u => u.Email.Equals(email)).Select(u => u.UserID).FirstOrDefaultAsync();
                 if (checkUser == Guid.Empty)
                 {
-                    throw new NotFoundException("Not found user!");
+                    return null;
                 }
                 else
                 {
