@@ -154,17 +154,17 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var checkUser = await _userRepo.GetAll().Where(u => u.Email.Equals(email)).Select(u => u.UserID).FirstOrDefaultAsync();
+                var searchTicket = new SearchTicketModel();
                 if (checkUser == Guid.Empty)
                 {
-                    return null;
+                    return searchTicket;
                 }
                 else
                 {
                     var check = await _bookingRepo.GetAll().Where(b => b.QRCode.Equals(QRCode) && b.UserID.Equals(checkUser)).Select(b => b.BookingID).FirstOrDefaultAsync();
                     if (check == Guid.Empty)
                     {
-                        //throw new NotFoundException("Not found qr code!");
-                        return null;
+                        return searchTicket;
                     }
                     else
                     {
