@@ -161,8 +161,8 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 else
                 {
-                    var check = await _bookingRepo.GetAll().Where(b => b.QRCode.Equals(QRCode) && b.UserID.Equals(checkUser)).Select(b => b.BookingID).FirstAsync();
-                    if (check == null)
+                    var check = await _bookingRepo.GetAll().Where(b => b.QRCode.Equals(QRCode) && b.UserID.Equals(checkUser)).Select(b => b.BookingID).FirstOrDefaultAsync();
+                    if (check == Guid.Empty)
                     {
                         return searchTicket;
                     }
