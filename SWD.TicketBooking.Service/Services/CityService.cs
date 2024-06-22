@@ -1,18 +1,11 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
-using SWD.TicketBooking.Service.Dtos.BackendService;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static SWD.TicketBooking.Service.Dtos.FromCityToCityModel;
 
 namespace SWD.TicketBooking.Service.Services

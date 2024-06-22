@@ -1,11 +1,4 @@
-﻿using SWD.TicketBooking.Repo.Entities;
-using SWD.TicketBooking.Service.Dtos;
-using SWD.TicketBooking.Service.Dtos.BackendService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SWD.TicketBooking.Service.Dtos;
 using static SWD.TicketBooking.Service.Dtos.FromCityToCityModel;
 
 namespace SWD.TicketBooking.Service.IServices

@@ -7,8 +7,8 @@ using RestSharp;
 using Microsoft.Extensions.Configuration;
 using SWD.TicketBooking.Repo.Repositories;
 using static SWD.TicketBooking.Service.Configuration.ConfigurationModel;
-using SWD.TicketBooking.Service.Dtos.BackendService;
 using SWD.TicketBooking.Service.IServices;
+using SWD.TicketBooking.Service.Dtos;
 
 namespace SWD.TicketBooking.Service.Services
 {

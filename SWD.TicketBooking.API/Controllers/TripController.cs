@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using SWD.TicketBooking.API.Installer;
 using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Repo.Entities;
@@ -22,6 +23,7 @@ namespace SWD.TicketBooking.API.Controllers
         private readonly ITripService _tripService;
         private readonly IMapper _mapper;
         private readonly IDistributedCache _cache;
+        private const string SearchTripCacheKey = "SearchTrip";
         public TripController(IDistributedCache cache, ITripService tripService, IMapper mapper)
         {
             _cache = cache;
@@ -47,45 +49,24 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
         [HttpGet("managed-trips/from-city/{fromCity}/to-city/{toCity}/start-time/{startTime}/page-number/{pageNumber}/page-size/{pageSize}")]
+        [Cache(600)]
         public async Task<IActionResult> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber = 1, int pageSize = 10)
         {
-            string cacheKey = $"SearchTrip_{fromCity}_{toCity}_{startTime:yyyyMMddHHmm}_{pageNumber}_{pageSize}";
-            var cachedData = _cache.GetString(cacheKey);
-
-            if (!string.IsNullOrEmpty(cachedData))
-            {
-                var cachedResponse = JsonConvert.DeserializeObject<PagedResultResponse<SearchTripResponse>>(cachedData);
-                return Ok(cachedResponse);
-            }
-
+         
             var dataFromService = await _tripService.SearchTrip(fromCity, toCity, startTime, pageNumber, pageSize);
             var response = _mapper.Map<PagedResultResponse<SearchTripResponse>>(dataFromService);
-            DistributedCacheEntryOptions options = new();
-            options.SetAbsoluteExpiration(new TimeSpan(0, 5, 0));
-            _cache.SetString(cacheKey, JsonConvert.SerializeObject(response), options);
-
             return Ok(response);
         }
-       /* var rs = await _tripService.SearchTrip(fromCity, toCity, startTime, pageNumber, pageSize);
-            var rsMapper = _mapper.Map<List<SearchTripResponse>>(rs.Items);
 
-            var paginatedResult = new
-            {
-                Data = rsMapper,
-                TotalPages = rs.TotalCount,
-            };
 
-            return Ok(paginatedResult);*/
-        
         [HttpPost("managed-trips")]
+        [RemoveCache("managed-trips/from-city/{fromCity}/to-city/{toCity}/start-time/{startTime}/page-number/{pageNumber}/page-size/{pageSize}")]
         public async Task<IActionResult> CreateTrip([FromForm] CreateTripModel createTripRequest)
         {
-            //var createTrip = _mapper.Map<CreateTripModel>(createTripRequest);
-
             var updatedService = await _tripService.CreateTrip(createTripRequest);
-
             return Ok(updatedService);
         }
+
         [HttpPut("managed-trips/{tripID}")]
         public async Task<IActionResult> ChangeStatusTrip([FromRoute] Guid tripID)
         {

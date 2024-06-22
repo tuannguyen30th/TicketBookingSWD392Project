@@ -6,7 +6,6 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Service.Dtos;
-using SWD.TicketBooking.Service.Dtos.BackendService;
 using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
@@ -20,6 +19,7 @@ namespace SWD.TicketBooking.Service.Services
     public class BookingService : IBookingService
     {
         private readonly IRepository<Booking, Guid> _bookingRepository;
+        private readonly IRepository<User, Guid> _userRepository;
         private readonly IRepository<TicketDetail, Guid> _ticketDetailRepository;
         private readonly IRepository<TicketDetail_Service, Guid> _ticketDetailServiceRepository;
         private readonly IPaymentGatewayService _paymentGatewayService;
@@ -78,7 +78,7 @@ namespace SWD.TicketBooking.Service.Services
                             }
                         }
                     }
-
+                 
                     if (bookingModel.AddOrUpdateBookingModel.Quantity != totalQuantity ||
                         bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
                     {
@@ -151,7 +151,7 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     await _bookingRepository.Commit();
                     scope.Complete();
-                    var payment = new PaymentInformationRequest
+                    var payment = new PaymentInformationModel
                     {
                         AccountID = newBooking.UserID.ToString(),
                         Amount = (double)newBooking.TotalBill,
