@@ -12,7 +12,6 @@ namespace SWD.TicketBooking.Repo.Entities
         public Guid FromCityID { get; set; }
         [ForeignKey("FromCityID")]
         public City FromCity { get; set; }
-
         public Guid ToCityID { get; set; }
         [ForeignKey("ToCityID")]
         public City ToCity { get; set; }

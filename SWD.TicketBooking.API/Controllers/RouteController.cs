@@ -45,7 +45,6 @@ namespace SWD.TicketBooking.API.Controllers
                 DistributedCacheEntryOptions options = new();
                 options.SetAbsoluteExpiration(new TimeSpan(0, 5, 0));
                 _cache.SetString(cacheKey, JsonConvert.SerializeObject(response), options);
-
                 return Ok(response);
             }
             catch (Exception ex)
