@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using SWD.TicketBooking.API.Installer;
 using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
@@ -17,7 +18,7 @@ namespace SWD.TicketBooking.API.Controllers
         private readonly ICityService _cityService;
         private readonly IMapper _mapper;
         private readonly IDistributedCache _cache;
-
+        private const string GetAllCitiesCacheKey = "GetAllCities";
         public CityController(ICityService cityService, IMapper mapper, IDistributedCache cache)
         {
             _cityService = cityService;
@@ -26,27 +27,16 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-cities")]
+        [Cache(600, GetAllCitiesCacheKey)]
         public async Task<IActionResult> GetAllCities()
         {
-            string cacheKey = "GetAllCities";
-            var cachedData = _cache.GetString(cacheKey);
-            if (!string.IsNullOrEmpty(cachedData))
-            {
-                var cachedResponse = JsonConvert.DeserializeObject<List<CitiesResponse>>(cachedData);
-                return Ok(cachedResponse);
-            }
-
             var dataFromService = await _cityService.GetAllCities();
             var response = _mapper.Map<List<CitiesResponse>>(dataFromService);
-            DistributedCacheEntryOptions options = new();
-            options.SetAbsoluteExpiration(new TimeSpan(0, 5, 0));
-            _cache.SetString(cacheKey, JsonConvert.SerializeObject(response), options);
-
             return Ok(response);
         }
-
         [AllowAnonymous]
         [HttpPost("managed-cities")]
+        [RemoveCache(GetAllCitiesCacheKey)]
         public async Task<IActionResult> CreateCompany([FromBody] CreateCityRequest req)
         {
             var map = _mapper.Map<CreateCityModel>(req);
@@ -55,8 +45,8 @@ namespace SWD.TicketBooking.API.Controllers
             {
                 return BadRequest("Create failed");
             }
-            string cacheKey = "GetAllCities";
-            await _cache.RemoveAsync(cacheKey);
+         /*   string cacheKey = "GetAllCities";
+            await _cache.RemoveAsync(cacheKey);*/
             return Ok("Create successfully");
         }
 

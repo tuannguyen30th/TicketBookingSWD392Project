@@ -28,6 +28,8 @@ namespace SWD.TicketBooking.Repo.Entities
         public string QRCodeText { get; set; } = string.Empty;
         public string QRCode {  get; set; } = string.Empty;
         public double TotalBill { get; set; }
+      /*  public double? TotalVnPayPayments { get; set; }
+        public double? TotalRemainingBalance { get; set; }*/
         public string PaymentMethod { get; set; } = string.Empty;
         public string PaymentStatus { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;

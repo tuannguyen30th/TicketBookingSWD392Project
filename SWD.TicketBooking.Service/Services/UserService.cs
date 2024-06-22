@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
 using SWD.TicketBooking.Service.Exceptions;

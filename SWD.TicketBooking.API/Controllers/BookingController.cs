@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SWD.TicketBooking.API.RequestModels.Booking;
 using SWD.TicketBooking.Repo.Helpers;
-using SWD.TicketBooking.Service.Dtos.BackendService;
+using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
-using SWD.TicketBooking.Service.Services.PaymentService;
 using System.Text;
 using static SWD.TicketBooking.Service.Dtos.SendMailBookingModel;
 
@@ -28,10 +26,10 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpPost("managed-bookings")]
-        public async Task<IActionResult> AddOrUpdateBooking(BookingRequest bookingRequest)
+        public async Task<IActionResult> AddOrUpdateBooking(BookingModel bookingRequest)
         {
-            var map = _mapper.Map<BookingModel>(bookingRequest);
-            var rs = await _bookingService.AddOrUpdateBooking(map, HttpContext);
+          /*  var map = _mapper.Map<BookingModel>(bookingRequest);*/
+            var rs = await _bookingService.AddOrUpdateBooking(bookingRequest, HttpContext);
             return Ok(rs);
         }
 
@@ -40,7 +38,7 @@ namespace SWD.TicketBooking.API.Controllers
         {
             try
             {
-                var response = new VNPayResponseDto
+                var response = new VNPayModel
                 {
                     PaymentMethod = Request.Query["vnp_BankCode"],
                     BookingDescription = Request.Query["vnp_OrderInfo"],

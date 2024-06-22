@@ -8,8 +8,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using SWD.TicketBooking.Service.Dtos;
 
-namespace SWD.TicketBooking.Service.Services.PaymentService
+namespace SWD.TicketBooking.Service.Services
 {
     public class VNPayLibrary
     {
@@ -18,7 +19,7 @@ namespace SWD.TicketBooking.Service.Services.PaymentService
         private readonly SortedList<string, string> _requestData = new(new VnPayCompare());
         private readonly SortedList<string, string> _responseData = new(new VnPayCompare());
 
-        public VNPayResponseDto GetFullResponseData(IQueryCollection collection, string hashSecret)
+        public VNPayModel GetFullResponseData(IQueryCollection collection, string hashSecret)
         {
             var vnPay = new VNPayLibrary();
 
@@ -37,12 +38,12 @@ namespace SWD.TicketBooking.Service.Services.PaymentService
                 vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
             if (!checkSignature)
-                return new VNPayResponseDto
+                return new VNPayModel
                 {
                     Success = false
                 };
 
-            return new VNPayResponseDto
+            return new VNPayModel
             {
                 Success = true,
                 PaymentMethod = "VnPay",

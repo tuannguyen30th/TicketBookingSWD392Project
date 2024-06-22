@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.TicketBooking.Service.Dtos.BackendService
+namespace SWD.TicketBooking.Service.Dtos
 {
     public class ActionOutcome
     {

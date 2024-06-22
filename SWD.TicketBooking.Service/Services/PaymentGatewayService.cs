@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using SWD.TicketBooking.Service.IServices;
+using SWD.TicketBooking.Service.Services.PaymentService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.TicketBooking.Service.Services.PaymentService
+namespace SWD.TicketBooking.Service.Services
 {
     public class PaymentGatewayService : IPaymentGatewayService
     {
@@ -15,10 +17,10 @@ namespace SWD.TicketBooking.Service.Services.PaymentService
         {
             _configuration = configuration;
         }
-        public async Task<string> CreatePaymentUrlVnpay(PaymentInformationRequest requestDto, HttpContext httpContext)
+        public async Task<string> CreatePaymentUrlVnpay(PaymentInformationModel requestDto, HttpContext httpContext)
         {
             var paymentUrl = "";
-            var momo = new PaymentInformationRequest
+            var momo = new PaymentInformationModel
             {
                 AccountID = requestDto.AccountID,
                 Amount = requestDto.Amount,

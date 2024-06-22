@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.TicketBooking.Service.Services.PaymentService
+namespace SWD.TicketBooking.Service.Dtos
 {
-    public class VNPayResponseDto
+    public class VNPayModel
     {
         public string BookingDescription { get; set; }
         public string TransactionId { get; set; }

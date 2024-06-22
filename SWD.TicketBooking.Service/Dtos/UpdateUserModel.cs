@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.TicketBooking.Service.Dtos.User
+namespace SWD.TicketBooking.Service.Dtos
 {
     public class UpdateUserModel
     {

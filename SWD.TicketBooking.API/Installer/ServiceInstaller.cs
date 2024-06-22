@@ -2,7 +2,6 @@
 using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
-using SWD.TicketBooking.Service.Services.PaymentService;
 
 namespace SWD.TicketBooking.API.Installer
 {
@@ -27,7 +26,7 @@ namespace SWD.TicketBooking.API.Installer
             services.AddScoped<IServiceService, ServiceService>();
             services.AddScoped<TicketDetailService>();
             services.AddScoped<IStation_ServiceService, Station_ServiceService>();
-            services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<IBookingService ,BookingService>();
             services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
         }
     }

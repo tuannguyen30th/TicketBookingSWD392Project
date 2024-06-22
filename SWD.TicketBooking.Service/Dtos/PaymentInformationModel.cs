@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Services.PaymentService
 {
-    public class PaymentInformationRequest
+    public class PaymentInformationModel
     {
         public string BookingID { get; set; }
         public string AccountID { get; set; } = null!;
