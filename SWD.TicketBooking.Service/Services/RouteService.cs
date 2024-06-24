@@ -138,8 +138,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new InternalServerErrorException("Cannot update");
                 }
-                //var rs = await _unitOfWork.RouteRepository.Commit();
-                var rs = _unitOfWork.Complete();
+                var rs = _unitOfWork.Complete(); 
                 return rs;
             }
             catch (Exception ex)
