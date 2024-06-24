@@ -52,7 +52,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 var serviceDetailList = new List<ServiceDetailModel>();
 
-                foreach (var ticketDetail_Service in ticketDetailServices)
+                Parallel.ForEach(ticketDetailServices, async (ticketDetail_Service) =>
                 {
                     var serviceDetailModel = new ServiceDetailModel
                     {
@@ -63,7 +63,7 @@ namespace SWD.TicketBooking.Service.Services
                     };
                     serviceDetailList.Add(serviceDetailModel);
                     servicePrice += ticketDetail_Service.Price * ticketDetail_Service.Quantity;
-                }
+                });
 
                 var rs = new GetDetailTicketDetailByTicketDetailModel
                 {

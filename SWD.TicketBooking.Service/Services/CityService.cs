@@ -15,14 +15,10 @@ namespace SWD.TicketBooking.Service.Services
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<City, Guid> _unitOfWork.CityRepository;
-        //private readonly IRepository<Route, Guid> _unitOfWork.RouteRepository;
-
-        public CityService(IUnitOfWork unitOfWork, IRepository<City, Guid> cityRepository, IRepository<Route, Guid> routeRepository, IMapper mapper)
+     
+        public CityService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            //_unitOfWork.CityRepository = cityRepository;
-            //_unitOfWork.RouteRepository = routeRepository;
             _mapper = mapper;
         }
         public async Task<List<CitiesModel>> GetAllCities()

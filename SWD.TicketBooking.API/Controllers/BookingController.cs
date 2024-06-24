@@ -25,20 +25,27 @@ namespace SWD.TicketBooking.API.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpPost("managed-bookings")]
-        public async Task<IActionResult> AddOrUpdateBooking(BookingModel bookingRequest)
+        [HttpPost("managed-bookings/vnpay-payment")]
+        public async Task<IActionResult> AddOrUpdateBookingVNPayPayment(BookingModel bookingRequest)
         {
           /*  var map = _mapper.Map<BookingModel>(bookingRequest);*/
-            var rs = await _bookingService.AddOrUpdateBooking(bookingRequest, HttpContext);
+            var rs = await _bookingService.AddOrUpdateBookingVNPayPayment(bookingRequest, HttpContext);
+            return Ok(rs);
+        }
+        [HttpPost("managed-bookings/balance-payment")]
+        public async Task<IActionResult> AddOrUpdateBookingBalancePayment(BookingModel bookingRequest)
+        {
+            /*  var map = _mapper.Map<BookingModel>(bookingRequest);*/
+            var rs = await _bookingService.AddOrUpdateBookingBalancePayment(bookingRequest);
             return Ok(rs);
         }
 
         [HttpGet("managed-bookings/vnpay-ipn")]
-        public async Task<IActionResult> VNPayIPN()
+        public async Task<IActionResult> VNPayIPN(Guid bookingId)
         {
             try
             {
-                var response = new VNPayModel
+               /* var response = new VNPayModel
                 {
                     PaymentMethod = Request.Query["vnp_BankCode"],
                     BookingDescription = Request.Query["vnp_OrderInfo"],
@@ -53,10 +60,10 @@ namespace SWD.TicketBooking.API.Controllers
                 };
 
                 if (response.VnPayResponseCode == "00")
-                {
-                    Guid bookingId;
-                    if (Guid.TryParse(response.BookingId, out bookingId))
-                    {
+                {*/
+                    /*Guid bookingId*/;
+                 /*   if (Guid.TryParse(response.BookingId, out bookingId))
+                    {*/
                         var result = await _bookingService.UpdateStatusBooking(bookingId);
                         var getEmail = await _bookingService.GetEmailBooking(bookingId);
                         var mailUpdateData = new MailData()
@@ -72,23 +79,23 @@ namespace SWD.TicketBooking.API.Controllers
                         {
                             return BadRequest("Something wrong email!");
                         }
-                    }
+                /*    }
                     else
                     {
                         return BadRequest("Invalid booking ID format.");
-                    }
+                    }*/
                     return Ok(new
                     {
                         RspCode = "00",
                         Message = "Confirm Success"
                     });
-                }
+              /*  }
 
                 return BadRequest(new
                 {
                     RspCode = response.VnPayResponseCode,
                     Message = "Fail!"
-                });
+                });*/
             }
             catch (Exception ex)
             {

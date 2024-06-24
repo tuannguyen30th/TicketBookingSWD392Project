@@ -19,21 +19,11 @@ namespace SWD.TicketBooking.Service.Services
     public class StationService : IStationService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<Station_Route, Guid> _unitOfWork.Station_RouteRepository;
-        //private readonly IRepository<Station, Guid> _unitOfWork.StationRepository;
-        //private readonly IRepository<Company, Guid> _unitOfWork.CompanyRepository;
-        //private readonly IRepository<City, Guid> _unitOfWork.CityRepository;
-        //private readonly IRepository<Trip, Guid> _unitOfWork.TripRepository;
         private readonly IMapper _mapper;
-        public StationService(IUnitOfWork unitOfWork, IRepository<Station_Route, Guid> stationRouteRepository, IRepository<Station, Guid> stationRepository, IMapper mapper, IRepository<Company, Guid> companyRepository, IRepository<City, Guid> cityRepository, IRepository<Trip, Guid> tripRepository)
+        public StationService(IUnitOfWork unitOfWork,  IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            //_unitOfWork.Station_RouteRepository = stationRouteRepository;
-            //_unitOfWork.StationRepository = stationRepository;
             _mapper = mapper;
-            //_unitOfWork.CompanyRepository = companyRepository;
-            //_unitOfWork.CityRepository = cityRepository;
-            //_unitOfWork.TripRepository = tripRepository;
         }
         public async Task<List<StationFromRouteModel>> GetStationsFromRoute(Guid routeID)
         {

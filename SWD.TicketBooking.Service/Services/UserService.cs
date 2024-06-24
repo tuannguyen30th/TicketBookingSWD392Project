@@ -17,19 +17,15 @@ namespace SWD.TicketBooking.Service.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<User, Guid> _unitOfWork.UserRepository;
         private readonly IMapper _mapper;
-        //private readonly IRepository<UserRole, Guid> _unitOfWork.UserRoleRepository;
         public readonly IFirebaseService _firebaseService;
 
         public static int Page_Size { get; set; } = 10;
 
-        public UserService(IUnitOfWork unitOfWork, IRepository<User, Guid> userRepository, IMapper mapper, IRepository<UserRole, Guid> userRoleRepository, IFirebaseService firebaseService)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseService firebaseService)
         {
             _unitOfWork = unitOfWork;
-            //_unitOfWork.UserRepository = userRepository;
             _mapper = mapper;
-            //_unitOfWork.UserRoleRepository = userRoleRepository;
             _firebaseService = firebaseService;
         }
         public async Task<List<UserModel>> GetAllUsers()

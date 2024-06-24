@@ -17,13 +17,11 @@ namespace SWD.TicketBooking.Service.Services
     public class CompanyService : ICompanyService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<Company, Guid> _unitOfWork.CompanyRepository;
         private readonly IMapper _mapper;
 
-        public CompanyService(IUnitOfWork unitOfWork, IRepository<Company, Guid> companyRepo, IMapper mapper)
+        public CompanyService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            //_unitOfWork.CompanyRepository = companyRepo;
             _mapper = mapper;
         }
 
@@ -31,7 +29,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var companies = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).ToListAsync();
+                var companies = await _unitOfWork.CompanyRepository.GetAll().ToListAsync();
                 var rs = _mapper.Map<List<GetCompanyModel>>(companies);
                 return rs;
             }

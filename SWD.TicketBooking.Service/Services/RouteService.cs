@@ -14,17 +14,11 @@ namespace SWD.TicketBooking.Service.Services
     public class RouteService : IRouteService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<Route, Guid> _unitOfWork.RouteRepository;
-        //private readonly IRepository<Company, Guid> _unitOfWork.CompanyRepository;
-        //private readonly IRepository<Route_Company, Guid> _unitOfWork.Route_CompanyRepository;
         private readonly IMapper _mapper;
 
-        public RouteService(IUnitOfWork unitOfWork, IRepository<Route, Guid> routeRepo, IRepository<Company, Guid> companyRepo, IRepository<Route_Company, Guid> routeCompanyRepo, IMapper mapper)
+        public RouteService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            //_unitOfWork.RouteRepository = routeRepo;
-            //_unitOfWork.CompanyRepository = companyRepo;
-            //_unitOfWork.Route_CompanyRepository = routeCompanyRepo;
             _mapper = mapper;
         }
 

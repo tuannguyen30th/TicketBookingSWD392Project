@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Common;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
@@ -8,39 +9,20 @@ using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
+using System.Net.Sockets;
 
 namespace SWD.TicketBooking.Service.Services
 {
     public class TripService : ITripService
     {
         private IUnitOfWork _unitOfWork;
-        //private readonly IRepository<Trip, Guid> _unitOfWork.TripRepository;
-        //private readonly IRepository<Booking, Guid> _unitOfWork.BookingRepository;
-        //private readonly IRepository<TicketDetail, Guid> _unitOfWork.TicketDetailRepository;
-        //private readonly IRepository<TripPicture, Guid> _unitOfWork.TripPictureRepository;
-        //private readonly IRepository<TicketType_Trip, Guid> _unitOfWork.TicketType_TripRepository;
-        //private readonly IRepository<Route, Guid> _unitOfWork.RouteRepository;
-        //private readonly IRepository<Route_Company, Guid> _unitOfWork.Route_CompanyRepository;
-        //private readonly IRepository<Feedback, Guid> _unitOfWork.FeedbackRepository;
-        //private readonly IRepository<Trip_Utility, Guid> _unitOfWork.Trip_UtilityRepository;
-        //private readonly IRepository<Utility, Guid> _unitOfWork.UtilityRepository;
         private readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
-        public TripService(IUnitOfWork unitOfWork, IRepository<Utility, Guid> utilityRepository, IRepository<TicketDetail, Guid> ticketDetailRepo, IRepository<Route_Company, Guid> routeCompanyRepo, IRepository<Trip, Guid> tripRepo, IRepository<Booking, Guid> bookingRepo, IRepository<TicketType_Trip, Guid> ticketTypeTripRepo, IRepository<Route, Guid> routeRepo, IRepository<Feedback, Guid> feedbackRepo, IMapper mapper, IRepository<TripPicture, Guid> tripPictureRepo, IFirebaseService firebaseService, IRepository<Trip_Utility, Guid> tripUtilityRepo)
+        public TripService(IUnitOfWork unitOfWork, IFirebaseService firebaseService, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            //_unitOfWork.TripRepository = tripRepo;
-            //_unitOfWork.BookingRepository = bookingRepo;
-            //_unitOfWork.TicketDetailRepository = ticketDetailRepo;
-            //_unitOfWork.TicketType_TripRepository = ticketTypeTripRepo;
-            //_unitOfWork.TripPictureRepository = tripPictureRepo;
-            //_unitOfWork.RouteRepository = routeRepo;
-            //_unitOfWork.FeedbackRepository = feedbackRepo;
+            _unitOfWork = unitOfWork;       
             _firebaseService = firebaseService;
-            //_unitOfWork.Trip_UtilityRepository = tripUtilityRepo;
-            //_unitOfWork.Route_CompanyRepository = routeCompanyRepo;
-            //_unitOfWork.UtilityRepository = utilityRepository;
             _mapper = mapper;
         }
 
@@ -58,12 +40,12 @@ namespace SWD.TicketBooking.Service.Services
                     var pics = await _unitOfWork.TripPictureRepository.GetAll().Where(x => x.TripID == id).Select(p => p.TripPictureID).ToListAsync();
 
                     var rs = new List<string>();
-                    foreach (var p in pics)
+                    Parallel.ForEach(pics, async (p) =>
                     {
                         var tripPic = await _unitOfWork.TripPictureRepository.GetByIdAsync(p);
-                        
+
                         rs.Add(tripPic.ImageUrl);
-                    }
+                    });
                     return rs;
                 }
             }
@@ -96,7 +78,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 var rs = new List<PopularTripModel>();
 
-                foreach (var t in trips)
+                Parallel.ForEach(trips, async (t) =>
                 {
                      var listImg = await GetPictureOfTrip(t.TripID);
 
@@ -120,7 +102,7 @@ namespace SWD.TicketBooking.Service.Services
                     };
 
                     rs.Add(popuTrip);
-                }
+                });
 
                 return rs;
             }
@@ -155,7 +137,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 var searchTripModels = new List<SearchTripModel>();
 
-                foreach (var trip in trips)
+                Parallel.ForEach(trips, async (trip) =>
                 {
                     var feedbacks = await _unitOfWork.FeedbackRepository.FindByCondition(_ => _.TemplateID == trip.TemplateID).ToListAsync();
                     var ratingAverage = feedbacks.Select(_ => _.Rating).DefaultIfEmpty(0).Average();
@@ -193,7 +175,7 @@ namespace SWD.TicketBooking.Service.Services
                         EndTime = trip.EndTime.ToString("HH:mm")
                     };
                     searchTripModels.Add(searchTrip);
-                }
+                });
          
                     return new PagedResult<SearchTripModel>
                     {
@@ -231,10 +213,8 @@ namespace SWD.TicketBooking.Service.Services
                     Status = SD.GeneralStatus.ACTIVE
                 };
                 await _unitOfWork.TripRepository.AddAsync(trip);
-                //await _unitOfWork.TripRepository.Commit();
-                //var rs = 0;
                 var imageUrls = createTrip.ImageUrls;
-                foreach (var imageUrl in imageUrls)
+                Parallel.ForEach(imageUrls, async (imageUrl) =>
                 {
                     var guidPath = Guid.NewGuid().ToString();
                     var imagePath = FirebasePathName.TRIP + $"{guidPath}";
@@ -253,14 +233,8 @@ namespace SWD.TicketBooking.Service.Services
                     };
 
                     await _unitOfWork.TripPictureRepository.AddAsync(newtripImage);
-                }
-
-                //rs = await _unitOfWork.TripPictureRepository.Commit();
-                //if (rs < 0)
-                //{
-                //    throw new BadRequestException("Fail!");
-                //}
-                foreach (var ticketType in createTrip.TicketType_TripModels)
+                });        
+                Parallel.ForEach(createTrip.TicketType_TripModels, async (ticketType) =>
                 {
                     if (ticketType.Price <= 0 || ticketType.Quantity <= 0)
                     {
@@ -275,15 +249,10 @@ namespace SWD.TicketBooking.Service.Services
                         Status = SD.GeneralStatus.ACTIVE
                     };
                     await _unitOfWork.TicketType_TripRepository.AddAsync(newTicketType_Trip);
-                }
-                //rs = await _unitOfWork.TicketType_TripRepository.Commit();
-                //if (rs < 0)
-                //{
-                //    return false;
-                //}
-                foreach (var tripUtility in createTrip.Trip_UtilityModels)
+                });         
+                Parallel.ForEach(createTrip.Trip_UtilityModels, async (tripUtility) =>
                 {
-                  
+
                     var newTrip_Utility = new Trip_Utility
                     {
                         TripID = trip.TripID,
@@ -291,8 +260,7 @@ namespace SWD.TicketBooking.Service.Services
                         Status = SD.GeneralStatus.ACTIVE
                     };
                     await _unitOfWork.Trip_UtilityRepository.AddAsync(newTrip_Utility);
-                }
-                //var rs = await _unitOfWork.Trip_UtilityRepository.Commit();
+                });
                 var rs = _unitOfWork.Complete();
                 if (rs < 0)
                 {
@@ -340,7 +308,6 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 trip.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.TripRepository.Update(trip);
-                //var rs = await _unitOfWork.TripPictureRepository.Commit();
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
@@ -358,7 +325,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var bookingDetails = await _unitOfWork.TicketDetailRepository
-                    .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.TicketType_Trip.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                    .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.Booking_TicketStatus.UNUSED_TICKET) && _.TicketType_Trip.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                     .Select(_ => new
                     {
                         _.Booking.Trip.Route_Company.RouteID,
@@ -371,7 +338,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (bookingDetails == null || !bookingDetails.Any())
                 {
-                    throw new BadRequestException("Not Found!");
+                    throw new NotFoundException(SD.Notification.NotFound("Booking Details"));
                 }
 
                 var ticketTypeTrips = await _unitOfWork.TicketType_TripRepository
@@ -386,7 +353,7 @@ namespace SWD.TicketBooking.Service.Services
                     .ToListAsync();
                 if (ticketTypeTrips == null || !ticketTypeTrips.Any())
                 {
-                    throw new BadRequestException("Not Found!");
+                    throw new NotFoundException(SD.Notification.NotFound("Ticket Details"));
                 }
                 var totalSeat = await _unitOfWork.TicketType_TripRepository.FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).SumAsync(_ => _.Quantity);
                 var firstBooking = bookingDetails.First();
@@ -419,7 +386,7 @@ namespace SWD.TicketBooking.Service.Services
                .Select(tu => tu.Utility)
                .ToListAsync();
             var result = new List<UtilityModel>();
-            foreach (var trip in utilities)
+            Parallel.ForEach(utilities, async (trip) =>
             {
                 var newModel = new UtilityModel
                 {
@@ -428,7 +395,7 @@ namespace SWD.TicketBooking.Service.Services
                     Status = trip.Status,
                 };
                 result.Add(newModel);
-            }
+            });
             return result;
         }
     }

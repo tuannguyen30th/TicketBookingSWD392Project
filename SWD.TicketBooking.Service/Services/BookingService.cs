@@ -20,26 +20,20 @@ namespace SWD.TicketBooking.Service.Services
     public class BookingService : IBookingService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<Booking, Guid> _unitOfWork.BookingRepository;
-        //private readonly IRepository<User, Guid> _unitOfWork.UserRepository;
-        //private readonly IRepository<TicketDetail, Guid> _unitOfWork.TicketDetailRepository;
-        //private readonly IRepository<TicketDetail_Service, Guid> _unitOfWork.TicketDetail_ServiceRepository;
         private readonly IPaymentGatewayService _paymentGatewayService;
+
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
-        public BookingService(IUnitOfWork unitOfWork, IFirebaseService firebaseService, IPaymentGatewayService paymentGatewayService, IRepository<Booking, Guid> bookingRepository, IRepository<TicketDetail, Guid> ticketDetailRepository, IRepository<TicketDetail_Service, Guid> ticketDetailServiceRepository, IMapper mapper)
+        public BookingService(IUnitOfWork unitOfWork, IFirebaseService firebaseService, IPaymentGatewayService paymentGatewayService, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            //_unitOfWork.TicketDetailRepository = ticketDetailRepository;
-            //_unitOfWork.TicketDetail_ServiceRepository = ticketDetailServiceRepository;
-            //_unitOfWork.BookingRepository = bookingRepository;
+            _unitOfWork = unitOfWork;       
             _paymentGatewayService = paymentGatewayService;
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
 
-        public async Task<ActionOutcome> AddOrUpdateBooking(BookingModel bookingModel, HttpContext context)
+        public async Task<ActionOutcome> AddOrUpdateBookingVNPayPayment(BookingModel bookingModel, HttpContext context)
         {
             var result = new ActionOutcome();
             bool isValid = true;
@@ -68,7 +62,8 @@ namespace SWD.TicketBooking.Service.Services
 
                     var totalQuantity = bookingModel.AddOrUpdateTicketModels.Select(_ => _.SeatCode).Count();
                     double totalPrice = 0;
-
+                    double totalBalance = 0;
+                    var newBooking = new Booking();
                     foreach (var ticket in bookingModel.AddOrUpdateTicketModels)
                     {
                         totalPrice += ticket.Price;
@@ -81,29 +76,54 @@ namespace SWD.TicketBooking.Service.Services
                             }
                         }
                     }
-                 
                     if (bookingModel.AddOrUpdateBookingModel.Quantity != totalQuantity ||
-                        bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
+                      bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
                     {
                         throw new BadRequestException("Mismatch in quantity or total bill.");
                     }
-
-                    var newBooking = new Booking
+                    if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
                     {
-                        BookingID = Guid.NewGuid(),
-                        UserID = bookingModel.AddOrUpdateBookingModel.UserID,
-                        TripID = bookingModel.AddOrUpdateBookingModel.TripID,
-                        FullName = bookingModel.AddOrUpdateBookingModel.FullName,
-                        PhoneNumber = bookingModel.AddOrUpdateBookingModel.PhoneNumber,
-                        Email = bookingModel.AddOrUpdateBookingModel.Email,
-                        Quantity = bookingModel.AddOrUpdateBookingModel.Quantity,
-                        TotalBill = bookingModel.AddOrUpdateBookingModel.TotalBill,
-                        //Status = SD.BookingStatus.PAYING_BOOKING,
-                    };
 
+                       
+                        totalBalance = await _unitOfWork.UserRepository.FindByCondition(_ => _.UserID == bookingModel.AddOrUpdateBookingModel.UserID).Select(_ => _.Balance).FirstOrDefaultAsync();
+                        if (totalBalance > 0)
+                        {
+                            newBooking = new Booking
+                            {
+                                BookingID = Guid.NewGuid(),
+                                UserID = bookingModel.AddOrUpdateBookingModel.UserID,
+                                TripID = bookingModel.AddOrUpdateBookingModel.TripID,
+                                FullName = bookingModel.AddOrUpdateBookingModel.FullName,
+                                PhoneNumber = bookingModel.AddOrUpdateBookingModel.PhoneNumber,
+                                Email = bookingModel.AddOrUpdateBookingModel.Email,
+                                Quantity = bookingModel.AddOrUpdateBookingModel.Quantity,
+                                TotalBill = bookingModel.AddOrUpdateBookingModel.TotalBill,
+                                TotalVnpayPayment = bookingModel.AddOrUpdateBookingModel.TotalBill - totalBalance,
+                                TotalBalancePayment = totalBalance,
+                                PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
+                            };
+                        }
+                        else throw new BadRequestException("Blance does not enough to serve this service!");
+                    }
+                    if (bookingModel.AddOrUpdateBookingModel.IsBalance == false)
+                    {
+                        newBooking = new Booking
+                        {
+                            BookingID = Guid.NewGuid(),
+                            UserID = bookingModel.AddOrUpdateBookingModel.UserID,
+                            TripID = bookingModel.AddOrUpdateBookingModel.TripID,
+                            FullName = bookingModel.AddOrUpdateBookingModel.FullName,
+                            PhoneNumber = bookingModel.AddOrUpdateBookingModel.PhoneNumber,
+                            Email = bookingModel.AddOrUpdateBookingModel.Email,
+                            Quantity = bookingModel.AddOrUpdateBookingModel.Quantity,
+                            TotalBill = bookingModel.AddOrUpdateBookingModel.TotalBill,
+                            TotalVnpayPayment = bookingModel.AddOrUpdateBookingModel.TotalBill,
+                            TotalBalancePayment = 0,
+                            PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
+                        };
+                    }
                     await _unitOfWork.BookingRepository.AddAsync(newBooking);
-                    //await _unitOfWork.BookingRepository.Commit();
-                    foreach (var ticketDetailItem in bookingModel.AddOrUpdateTicketModels)
+                    Parallel.ForEach(bookingModel.AddOrUpdateTicketModels, async (ticketDetailItem) =>
                     {
                         if (ticketDetailItem.TicketType_TripID == null
                             || ticketDetailItem.Price <= 0
@@ -124,7 +144,7 @@ namespace SWD.TicketBooking.Service.Services
 
                         if (ticketDetailItem.AddOrUpdateServiceModels != null && ticketDetailItem.AddOrUpdateServiceModels.Any())
                         {
-                            foreach (var ticketService in ticketDetailItem.AddOrUpdateServiceModels)
+                            Parallel.ForEach(ticketDetailItem.AddOrUpdateServiceModels, async (ticketService) =>
                             {
                                 if (ticketService.StationID == null
                                     || ticketService.ServiceID == null
@@ -144,21 +164,19 @@ namespace SWD.TicketBooking.Service.Services
                                     Status = SD.Booking_ServiceStatus.NOTPAYING_TICKETSERVICE
                                 };
                                 await _unitOfWork.TicketDetail_ServiceRepository.AddAsync(newTicketService);
-                            }
-                            await _unitOfWork.TicketDetail_ServiceRepository.Commit();
+                            });
                         }
                         else
                         {
                             isValid = false;
                         }
-                    }
-                    //await _unitOfWork.BookingRepository.Commit();
+                    });
                     _unitOfWork.Complete();
                     scope.Complete();
                     var payment = new PaymentInformationModel
                     {
                         AccountID = newBooking.UserID.ToString(),
-                        Amount = (double)newBooking.TotalBill,
+                        Amount = (double)newBooking.TotalVnpayPayment,
                         CustomerName = newBooking.FullName,
                         BookingID = newBooking.BookingID.ToString(),
                     };
@@ -171,48 +189,191 @@ namespace SWD.TicketBooking.Service.Services
             }
             return result;
         }
+        public async Task<ActionOutcome> AddOrUpdateBookingBalancePayment(BookingModel bookingModel)
+        {
+            var result = new ActionOutcome();
+            bool isValid = true;
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    if (bookingModel.AddOrUpdateBookingModel == null || bookingModel.AddOrUpdateTicketModels == null)
+                    {
+                        throw new BadRequestException("BookingModel or TicketModels cannot be null!");
+                    }
+                    if (bookingModel.AddOrUpdateBookingModel.UserID == null
+                        || bookingModel.AddOrUpdateBookingModel.TripID == null
+                        || bookingModel.AddOrUpdateBookingModel.Quantity <= 0
+                        || bookingModel.AddOrUpdateBookingModel.TotalBill <= 0
+                        || bookingModel.AddOrUpdateBookingModel.FullName == null
+                        || bookingModel.AddOrUpdateBookingModel.PhoneNumber == null
+                        || bookingModel.AddOrUpdateBookingModel.Email == null)
+                    {
+                        throw new BadRequestException("Field in BookingModel cannot be null!");
+                    }
+                    if (!IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
+                    {
+                        throw new BadRequestException("Email or PhoneNumber does not correct format!");
+                    }
 
+                    var totalQuantity = bookingModel.AddOrUpdateTicketModels.Select(_ => _.SeatCode).Count();
+                    double totalPrice = 0;
+                    double totalBalance = 0;
+                    var newBooking = new Booking();
+                    Parallel.ForEach(bookingModel.AddOrUpdateTicketModels, async (ticket) =>
+                    {
+                        totalPrice += ticket.Price;
+
+                        if (ticket.AddOrUpdateServiceModels != null && ticket.AddOrUpdateServiceModels.Any())
+                        {
+                            foreach (var service in ticket.AddOrUpdateServiceModels)
+                            {
+                                totalPrice += service.Price * service.Quantity;
+                            }
+                        }
+                    });
+                    if (bookingModel.AddOrUpdateBookingModel.Quantity != totalQuantity ||
+                      bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
+                    {
+                        throw new BadRequestException("Mismatch in quantity or total bill.");
+                    }
+                    if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
+                    {
+
+                        totalBalance = await _unitOfWork.UserRepository.FindByCondition(_ => _.UserID == bookingModel.AddOrUpdateBookingModel.UserID).Select(_ => _.Balance).FirstOrDefaultAsync();
+                        if (totalBalance >= bookingModel.AddOrUpdateBookingModel.TotalBill)
+                        {
+                            newBooking = new Booking
+                            {
+                                BookingID = Guid.NewGuid(),
+                                UserID = bookingModel.AddOrUpdateBookingModel.UserID,
+                                TripID = bookingModel.AddOrUpdateBookingModel.TripID,
+                                FullName = bookingModel.AddOrUpdateBookingModel.FullName,
+                                PhoneNumber = bookingModel.AddOrUpdateBookingModel.PhoneNumber,
+                                Email = bookingModel.AddOrUpdateBookingModel.Email,
+                                Quantity = bookingModel.AddOrUpdateBookingModel.Quantity,
+                                TotalBill = bookingModel.AddOrUpdateBookingModel.TotalBill,
+                                TotalVnpayPayment = 0,
+                                TotalBalancePayment = bookingModel.AddOrUpdateBookingModel.TotalBill,
+                                PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
+                            };
+                        }
+                        else throw new BadRequestException("Blance does not enough to serve this service!");
+                    }            
+                    await _unitOfWork.BookingRepository.AddAsync(newBooking);
+                    Parallel.ForEach(bookingModel.AddOrUpdateTicketModels, async (ticketDetailItem) =>
+                    {
+                        if (ticketDetailItem.TicketType_TripID == null
+                            || ticketDetailItem.Price <= 0
+                            || ticketDetailItem.SeatCode == null)
+                        {
+                            throw new BadRequestException("Field in TicketDetail cannot be null!");
+                        }
+                        var newTicketDetail = new TicketDetail
+                        {
+                            TicketDetailID = Guid.NewGuid(),
+                            TicketType_TripID = ticketDetailItem.TicketType_TripID,
+                            BookingID = newBooking.BookingID,
+                            Price = ticketDetailItem.Price,
+                            SeatCode = ticketDetailItem.SeatCode,
+                            Status = SD.Booking_TicketStatus.NOTPAYING_TICKET
+                        };
+                        var ticketRs = await _unitOfWork.TicketDetailRepository.AddAsync(newTicketDetail);
+
+                        if (ticketDetailItem.AddOrUpdateServiceModels != null && ticketDetailItem.AddOrUpdateServiceModels.Any())
+                        {
+                            Parallel.ForEach(ticketDetailItem.AddOrUpdateServiceModels, async (ticketService) =>
+                            {
+                                if (ticketService.StationID == null
+                                    || ticketService.ServiceID == null
+                                    || ticketService.Quantity <= 0
+                                    || ticketService.Price <= 0)
+                                {
+                                    throw new BadRequestException("Field in Service cannot be null!");
+                                }
+                                var newTicketService = new TicketDetail_Service
+                                {
+                                    TicketDetail_ServiceID = Guid.NewGuid(),
+                                    TicketDetailID = ticketRs.TicketDetailID,
+                                    StationID = ticketService.StationID,
+                                    ServiceID = ticketService.ServiceID,
+                                    Quantity = ticketService.Quantity,
+                                    Price = ticketService.Price,
+                                    Status = SD.Booking_ServiceStatus.NOTPAYING_TICKETSERVICE
+                                };
+                                await _unitOfWork.TicketDetail_ServiceRepository.AddAsync(newTicketService);
+                            });
+                        }
+                        else
+                        {
+                            isValid = false;
+                        }
+                    });
+                    _unitOfWork.Complete();
+                    await UpdateStatusBooking(newBooking.BookingID);
+                    scope.Complete();
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message, ex);
+                }
+            }
+            return result;
+        }
         public async Task<List<SendMailBookingModel.MailBookingModel>> UpdateStatusBooking(Guid bookingID)
         {
             try
             {
                 var result = new ActionOutcome();
                 var mailBooking = new List<SendMailBookingModel.MailBookingModel>();
-                string qr = GenerateCode();
-                var findBooking = await _unitOfWork.BookingRepository.FindByCondition(_ => _.BookingID == bookingID).Include(_ => _.Trip.Route_Company.Route).FirstOrDefaultAsync();
+
+                var findBooking = await _unitOfWork.BookingRepository.FindByCondition(_ => _.BookingID == bookingID).Include(_ => _.Trip.Route_Company.Route).Include(_ => _.User).FirstOrDefaultAsync();
                 if (findBooking == null)
                 {
-                    throw new NotFoundException("Not Found!");
+                    throw new NotFoundException(SD.Notification.NotFound("Booking"));
                 }
                 findBooking.BookingTime = DateTime.Now;
-                //findBooking.Status = SD.GeneralStatus.ACTIVE;
-                //findBooking.PaymentMethod = SD.BookingStatus.PM_VNPAY;
                 findBooking.PaymentStatus = SD.BookingStatus.PAYING_BOOKING;
-                //findBooking.QRCode = qr;
-                var imagePathQr = FirebasePathName.BOOKINGQR + $"{findBooking.BookingID}";
-                var imageUploadQrResult = await _firebaseService.UploadFileToFirebase(GenerateQRCode(qr), imagePathQr);
-                //if (imageUploadQrResult.IsSuccess)
-                //{
-                //    findBooking.QRCodeImage = (string)imageUploadQrResult.Result;
-                //}
                 _unitOfWork.BookingRepository.Update(findBooking);
                 var findTicket = await _unitOfWork.TicketDetailRepository.GetAll().Include(_ => _.Booking).Where(_ => _.BookingID == bookingID).ToListAsync();
-                foreach (var ticket in findTicket)
+                Parallel.ForEach(findTicket, async (ticket) =>
                 {
+                    string qr = GenerateCode();
                     ticket.Status = SD.Booking_TicketStatus.UNUSED_TICKET;
+                    var checkQRCodeExisted = await _unitOfWork.TicketDetailRepository.GetAll().FirstOrDefaultAsync(_ => _.QRCode == qr);
+                    while (checkQRCodeExisted != null)
+                    {
+                        qr = GenerateCode();
+                        checkQRCodeExisted = await _unitOfWork.TicketDetailRepository.GetAll().FirstOrDefaultAsync(_ => _.QRCode == qr);
+                    }
+
+                    ticket.QRCode = qr;
+                    var imagePathQr = FirebasePathName.TICKET_BOOKINGQR + $"{ticket.TicketDetailID}";
+                    var imageUploadQrResult = await _firebaseService.UploadFileToFirebase(GenerateQRCode(qr), imagePathQr);
+                    if (imageUploadQrResult.IsSuccess)
+                    {
+                        ticket.QRCodeImage = (string)imageUploadQrResult.Result;
+                    }
                     _unitOfWork.TicketDetailRepository.Update(ticket);
                     var findService = await _unitOfWork.TicketDetail_ServiceRepository.GetAll().Where(_ => _.TicketDetailID == ticket.TicketDetailID).ToListAsync();
-                    foreach (var service in findService)
+                    Parallel.ForEach(findService, async (service) =>
                     {
                         service.Status = SD.Booking_ServiceStatus.PAYING_TICKETSERVICE;
                         _unitOfWork.TicketDetail_ServiceRepository.Update(service);
+                    });
+                });
+                if (findBooking.TotalBalancePayment > 0)
+                {
+                    findBooking.User.Balance -= findBooking.TotalBalancePayment;
+                    if(findBooking.User.Balance < 0)
+                    {
+                        findBooking.User.Balance = 0;
                     }
+                    _unitOfWork.UserRepository.Update(findBooking.User);
                 }
-                //await _unitOfWork.BookingRepository.Commit();
-                //await _unitOfWork.TicketDetailRepository.Commit();
-                //await _unitOfWork.TicketDetail_ServiceRepository.Commit();
                 _unitOfWork.Complete();
-                foreach (var ticket in findTicket)
+                Parallel.ForEach(findTicket, async (ticket) =>
                 {
                     var mailBookingServices = await _unitOfWork.TicketDetail_ServiceRepository
                                                     .GetAll()
@@ -232,11 +393,11 @@ namespace SWD.TicketBooking.Service.Services
                         StartDate = findBooking.Trip.StartTime.ToString("yyyy-MM-dd"),
                         SeatCode = ticket.SeatCode,
                         TotalBill = findBooking.TotalBill.ToString("C"),
-                        //QrCodeImage = findBooking.QRCodeImage,
+                        QrCodeImage = ticket.QRCodeImage,
                         MailBookingServices = mailBookingServices
                     };
-                   mailBooking.Add(mailBookingModel);
-                }
+                    mailBooking.Add(mailBookingModel);
+                });
                 return mailBooking;
             }
             catch (Exception ex)
@@ -267,8 +428,7 @@ namespace SWD.TicketBooking.Service.Services
         public async Task<ActionOutcome> GetEmailBooking(Guid bookingID)
         {
             try
-            {   
-               
+            {
                 var result = new ActionOutcome();
                 var getEmail = await _unitOfWork.BookingRepository.FindByCondition(_ => _.BookingID == bookingID).Select(_ => _.Email).FirstOrDefaultAsync();
                 if (getEmail == null)
@@ -323,5 +483,9 @@ namespace SWD.TicketBooking.Service.Services
             int code = random.Next(10000000, 100000000);
             return code.ToString();
         }
+
+      
+
+      
     }
 }

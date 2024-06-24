@@ -20,16 +20,12 @@ public class IdentityService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly JwtSettings _jwtSettings;
-    //private readonly IRepository<User, int> _unitOfWork.UserRepository;
-    //private readonly IRepository<UserRole, int> _unitOfWork.UserRoleRepository;
     private readonly IFirebaseService _firebaseService;
 
-    public IdentityService(IUnitOfWork unitOfWork, IOptions<JwtSettings> jwtSettingsOptions, IRepository<User, int> userRepository, IRepository<UserRole, int> userRoleRepository, IFirebaseService firebaseService)
+    public IdentityService(IUnitOfWork unitOfWork, IOptions<JwtSettings> jwtSettingsOptions, IFirebaseService firebaseService)
     {
         _unitOfWork = unitOfWork;
-        //_unitOfWork.UserRepository = userRepository;
         _jwtSettings = jwtSettingsOptions.Value;
-        //_unitOfWork.UserRoleRepository = userRoleRepository;
         _firebaseService = firebaseService;
     }
 

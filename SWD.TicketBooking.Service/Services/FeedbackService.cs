@@ -14,26 +14,14 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class FeedbackService : IFeedbackService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        //public readonly IRepository<Feedback, Guid> _unitOfWork.FeedbackRepository;
-        //public readonly IRepository<Feedback_Image, Guid> _unitOfWork.Feedback_ImageRepository;
-        //public readonly IRepository<Trip, Guid> _unitOfWork.TripRepository;
-        //public readonly IRepository<Booking, Guid> _unitOfWork.BookingRepository;
-        //public readonly IRepository<Feedback_Image, Guid> _unitOfWork.Feedback_ImageRepository; 
-        //public readonly IRepository<User, Guid> _unitOfWork.UserRepository;
+        private readonly IUnitOfWork _unitOfWork;   
         public readonly IFirebaseService _firebaseService;
         public readonly IMapper _mapper;
-        public FeedbackService(IUnitOfWork unitOfWork, IRepository<Feedback, Guid> feedbackRepository, IRepository<Feedback_Image, Guid> feedbackImageRepository, IRepository<Booking, Guid> bookingRepository, IFirebaseService firebaseService, IMapper mapper, IRepository<Trip, Guid> tripRepository, IRepository<Feedback_Image, Guid> fbImageRepository, IRepository<User, Guid> userRepository)
+        public FeedbackService(IUnitOfWork unitOfWork, IFirebaseService firebaseService, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            //_unitOfWork.FeedbackRepository = feedbackRepository;
-            //_unitOfWork.BookingRepository = bookingRepository;
-            //_unitOfWork.Feedback_ImageRepository = feedbackImageRepository;
+            _unitOfWork = unitOfWork;        
             _firebaseService = firebaseService;
             _mapper = mapper;
-            //_unitOfWork.TripRepository = tripRepository;
-            //_unitOfWork.Feedback_ImageRepository = fbImageRepository;
-            //_unitOfWork.UserRepository = userRepository;
         }
         public async Task<bool> CreateRating(FeedbackRequestModel ratingModel)
         {
@@ -66,10 +54,9 @@ namespace SWD.TicketBooking.Service.Services
                     Status = SD.GeneralStatus.ACTIVE,
                 };
                 await _unitOfWork.FeedbackRepository.AddAsync(newRating);
-                //await _unitOfWork.FeedbackRepository.Commit();
                
                 var imageUrls = ratingModel.Files;
-                foreach (var imageUrl in imageUrls)
+                Parallel.ForEach(imageUrls, async (imageUrl) =>
                 {
                     var newFeedbackImage = new Feedback_Image
                     {
@@ -77,7 +64,6 @@ namespace SWD.TicketBooking.Service.Services
                         FeedbackID = newRating.FeedbackID,
                     };
                     await _unitOfWork.Feedback_ImageRepository.AddAsync(newFeedbackImage);
-                    //await _unitOfWork.Feedback_ImageRepository.Commit();
                     var imagePath = FirebasePathName.RATING + $"{newFeedbackImage.Feedback_Image_ID}";
                     var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
                     if (!imageUploadResult.IsSuccess)
@@ -88,8 +74,7 @@ namespace SWD.TicketBooking.Service.Services
                     newFeedbackImage.FeedbackID = newRating.FeedbackID;
                     newFeedbackImage.ImageUrl = (string)imageUploadResult.Result;
                     _unitOfWork.Feedback_ImageRepository.Update(newFeedbackImage);
-                }
-                //var rs = await _unitOfWork.Feedback_ImageRepository.Commit();
+                });
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
@@ -132,25 +117,25 @@ namespace SWD.TicketBooking.Service.Services
                     var rs = new List<FeedbackModel>();
 
                     var totalRating = feedback.Sum(fb => fb.Rating);
-                    var averageRating = feedback.Count > 0 ? (double)totalRating / feedback.Count : 0; 
+                    var averageRating = feedback.Count > 0 ? (double)totalRating / feedback.Count : 0;
 
-                    foreach ( var fb in feedbacks)
+                    Parallel.ForEach(feedbacks, async (fb) =>
                     {
                         var user = await _unitOfWork.UserRepository.GetByIdAsync(fb.UserID);
-                        
-                            var listImage = await _unitOfWork.Feedback_ImageRepository.GetAll().Where(x => x.FeedbackID == fb.FeedbackID).Select(x => x.ImageUrl).ToListAsync();
-                            var fbModel = new FeedbackModel
-                            {
-                                Avt = user.Avatar,
-                                Date = existedTrip.StartTime,
-                                Desciption = fb.Description,
-                                Rating = fb.Rating,
-                                UserName = user.UserName,
-                                ImageUrl = listImage
-                            };
-                            
+
+                        var listImage = await _unitOfWork.Feedback_ImageRepository.GetAll().Where(x => x.FeedbackID == fb.FeedbackID).Select(x => x.ImageUrl).ToListAsync();
+                        var fbModel = new FeedbackModel
+                        {
+                            Avt = user.Avatar,
+                            Date = existedTrip.StartTime,
+                            Desciption = fb.Description,
+                            Rating = fb.Rating,
+                            UserName = user.UserName,
+                            ImageUrl = listImage
+                        };
+
                         rs.Add(fbModel);
-                    }
+                    });
                     return new TripFeedbackModel
                     {
                         Feedbacks = rs,
