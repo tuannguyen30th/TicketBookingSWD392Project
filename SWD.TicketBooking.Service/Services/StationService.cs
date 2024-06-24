@@ -52,7 +52,8 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var station = await _unitOfWork.StationRepository.GetAll().Where(s => s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).ToListAsync();
+                //var station = await _unitOfWork.StationRepository.GetAll().Where(s => s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).ToListAsync();
+                var station = await _unitOfWork.StationRepository.GetAll().ToListAsync();
                 var rs = _mapper.Map<List<GetStationModel>>(station);
                 return rs;
             } catch (Exception ex)
@@ -139,7 +140,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var route = await _unitOfWork.TripRepository.FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && s.Route_Company.Route.Status.ToLower().Trim().Equals("active")).Include(_ => _.Route_Company).Select(s=>s.Route_Company.RouteID).FirstOrDefaultAsync();
+                var route = await _unitOfWork.TripRepository.FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && s.Route_Company.Route.Status.Equals(SD.GeneralStatus.ACTIVE)).Include(_ => _.Route_Company).Select(s=>s.Route_Company.RouteID).FirstOrDefaultAsync();
                 var stations = await _unitOfWork.Station_RouteRepository
                                     .FindByCondition(_ => _.RouteID == route)
                                     .Include(_ => _.Station)

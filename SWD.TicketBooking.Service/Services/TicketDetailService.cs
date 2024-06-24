@@ -80,8 +80,8 @@ namespace SWD.TicketBooking.Service.Services
                     TicketPrice = ticketDetail.Price,
                     TotalServicePrice = servicePrice,
                     SumOfPrice = servicePrice + ticketDetail.Price,
-                    //QrCodeImage = booking.QRCodeImage,
-                    //QrCode = booking.QRCode,
+                    QrCodeImage = ticketDetail.QRCodeImage,
+                    QrCode = ticketDetail.QRCode,
                     Status = ticketDetail.Status,
                     ServiceDetailList = serviceDetailList,
                 };

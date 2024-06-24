@@ -83,6 +83,7 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
                     {
+
                        
                         totalBalance = await _unitOfWork.UserRepository.FindByCondition(_ => _.UserID == bookingModel.AddOrUpdateBookingModel.UserID).Select(_ => _.Balance).FirstOrDefaultAsync();
                         if (totalBalance > 0)
@@ -104,7 +105,6 @@ namespace SWD.TicketBooking.Service.Services
                         }
                         else throw new BadRequestException("Blance does not enough to serve this service!");
                     }
-
                     if (bookingModel.AddOrUpdateBookingModel.IsBalance == false)
                     {
                         newBooking = new Booking
