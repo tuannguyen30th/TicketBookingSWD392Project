@@ -98,7 +98,9 @@ namespace SWD.TicketBooking.Service.Services
 
                 foreach (var t in trips)
                 {
-                    var minPriceByTrip = await _unitOfWork.TicketType_TripRepository.GetAll()
+                     var listImg = await GetPictureOfTrip(t.TripID);
+
+                     var minPriceByTrip = await _unitOfWork.TicketType_TripRepository.GetAll()
                      .Where(_ => _.TripID == t.TripID)
                      .GroupBy(_ => _.TripID)
                      .Select(g => new
@@ -113,7 +115,7 @@ namespace SWD.TicketBooking.Service.Services
                         TripId = t.TripID,
                         FromCity = t.Route_Company.Route.FromCity.Name,
                         ToCity = t.Route_Company.Route.ToCity.Name,
-                        /*ImageUrl = t.ImageUrl,*/
+                        ImageUrl = listImg.ToList(),
                         PriceFrom = minPriceByTrip.GetValueOrDefault(t.TripID, 0),
                     };
 

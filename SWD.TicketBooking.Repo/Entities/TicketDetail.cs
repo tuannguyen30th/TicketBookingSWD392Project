@@ -15,7 +15,6 @@ namespace SWD.TicketBooking.Repo.Entities
         [ForeignKey("TicketType_TripID")]
         public TicketType_Trip TicketType_Trip { get; set; }
         public string QRCodeImage { get; set; } = string.Empty;
-        public string QRCodeText { get; set; } = string.Empty;
         public string QRCode { get; set; } = string.Empty;
         public double Price { get; set; }
         public string SeatCode { get; set; } = string.Empty;
