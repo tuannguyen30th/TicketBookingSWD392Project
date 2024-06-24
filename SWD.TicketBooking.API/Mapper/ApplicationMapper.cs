@@ -48,12 +48,16 @@ namespace SWD.TicketBooking.API.Mapper
 
             /////Utility/////
             CreateMap<UtilityInTripResponse,UtilityModel > ().ReverseMap();
+            CreateMap<CreateNewUtilityRequest, CreateUtilityModel>().ReverseMap();
+            CreateMap<UtilityReponse,Utility>().ReverseMap();
+
             CreateMap<FromCityToCityModel.CityModel, FromCityToCityRepsonse.CityResponse>().ReverseMap();
             CreateMap<FromCityToCityModel.CityInfo, FromCityToCityRepsonse.CityInfo>().ReverseMap();
             CreateMap<FeedbackRequestModel, FeedbackRequest>().ReverseMap();
             CreateMap<FeedbackRequestModel, Feedback>().ReverseMap();
             CreateMap<ServiceModel, ServiceResponse>().ReverseMap();
             CreateMap<ServiceTypeModel, ServiceTypeResponse>().ReverseMap();
+
             /*        CreateMap<ServiceTypeModel, ServiceFromStationResponse.ServiceTypeResponse>()
                         .ForMember(dest => dest.ServiceResponse, opt => opt.MapFrom(src => src.ServiceModels)).ReverseMap();*/
             CreateMap<StationFromRouteModel, StationFromRouteResponse>().ReverseMap();
@@ -91,6 +95,10 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<AddOrUpdateBookingModel, AddOrUpdateBookingRequest>().ReverseMap();
             CreateMap<BookingModel, BookingRequest>().ReverseMap();
             CreateMap(typeof(PagedResult<>), typeof(PagedResultResponse<>));
+
+
+            /////TicketType/////
+            CreateMap<TicketTypeResponse,TicketType>().ReverseMap();
         }
     }
 }

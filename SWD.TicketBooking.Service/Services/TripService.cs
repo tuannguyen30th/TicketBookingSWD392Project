@@ -101,9 +101,23 @@ namespace SWD.TicketBooking.Service.Services
                     };
 
                     rs.Add(popuTrip);
+                    //haha
                 });
 
                 return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<List<TicketType>> GetAllTicketType()
+        {
+            try
+            {
+                var ticketTypes = await _unitOfWork.TicketTypeRepository.GetAll().ToListAsync();
+                return ticketTypes;
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
-﻿using SWD.TicketBooking.Service.Dtos;
+﻿using SWD.TicketBooking.Repo.Entities;
+using SWD.TicketBooking.Service.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<bool> ChangeStatusTrip(Guid tripId);
         Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(Guid tripID);
         Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id);
+        Task<List<TicketType>> GetAllTicketType();
+
     }
 }

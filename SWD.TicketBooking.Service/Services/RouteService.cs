@@ -46,10 +46,12 @@ namespace SWD.TicketBooking.Service.Services
                                                            .GetAll()
                                                            .Where(_ => _.CompanyID == model.CompanyID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                            .FirstOrDefaultAsync();
+
                 if (checkCompanyExisted == null)
                 {
                     throw new NotFoundException("Company does not exist!");
                 }
+
 
                 var checkRouteExisted = await _unitOfWork.RouteRepository
                                                          .GetAll()
@@ -98,14 +100,38 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new BadRequestException("Route already existed");
                     }
+
                 }
                 else if (!checkRouteExisted.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                 {
                     throw new BadRequestException("Route is not available");
                 }
+
+                var checkRouteCompanyExisted = await _unitOfWork.Route_CompanyRepository.GetAll().Where( _=> _.RouteID == checkRouteExisted.RouteID && _.CompanyID == model.CompanyID).FirstOrDefaultAsync();
+
+                if (checkRouteCompanyExisted == null && checkRouteExisted != null)
+                {
+                    var routeCompany = await _unitOfWork.Route_CompanyRepository.AddAsync(new Route_Company
+                    {
+                        Route_CompanyID = Guid.NewGuid(),
+                        RouteID = checkRouteExisted.RouteID,
+                        CompanyID = model.CompanyID,
+                        Status = SD.GeneralStatus.ACTIVE
+                    });
+
+                    if (routeCompany == null)
+                    {
+                        throw new InternalServerErrorException("Cannot create");
+                    }
+
+                    //var rs = await _unitOfWork.Route_CompanyRepository.Commit();
+                    var rs = _unitOfWork.Complete();
+
+                    return rs;
+                }
                 else
                 {
-                    throw new BadRequestException("Route is existed");
+                    throw new BadRequestException("Route of this company already existed");
                 }
             }
             catch (Exception ex)
