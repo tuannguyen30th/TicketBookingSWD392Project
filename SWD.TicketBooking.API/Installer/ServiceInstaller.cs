@@ -1,5 +1,6 @@
 ﻿using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.SeedData;
+using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
@@ -11,7 +12,7 @@ namespace SWD.TicketBooking.API.Installer
         {
             services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddScoped(typeof(IRepository<,>), typeof(GenericRepository<,>));
-            services.AddScoped<DatabaseInitialiser>();
+            //services.AddScoped<DatabaseInitialiser>();
             services.AddScoped<IdentityService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService,EmailService>();

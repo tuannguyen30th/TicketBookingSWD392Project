@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
@@ -18,19 +19,21 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class UtilityService : IUtilityService
     {
-        private readonly IRepository<Utility, Guid> _uRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IRepository<Utility, Guid> _unitOfWork.UtilityRepository;
         private readonly IMapper _mapper;
-        private readonly IRepository<Trip_Utility, Guid> _tripUtilityRepository;
-        public UtilityService(IRepository<Utility, Guid> uRepository, IMapper mapper, IRepository<Trip_Utility, Guid> tripUtilityRepository)
+        //private readonly IRepository<Trip_Utility, Guid> _unitOfWork.Trip_UtilityRepository;
+        public UtilityService(IUnitOfWork unitOfWork, IRepository<Utility, Guid> uRepository, IMapper mapper, IRepository<Trip_Utility, Guid> tripUtilityRepository)
         {
-            _uRepository = uRepository;
+            _unitOfWork = unitOfWork;
+            //_unitOfWork.UtilityRepository = uRepository;
             _mapper = mapper;
-            _tripUtilityRepository = tripUtilityRepository;
+            //_unitOfWork.Trip_UtilityRepository = tripUtilityRepository;
 
         }
        /* public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
         {
-            var utilities = await _tripUtilityRepository
+            var utilities = await _unitOfWork.Trip_UtilityRepository
                 .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.ACTIVE))
                 .Select(tu => tu.Utility)
                 .ToListAsync();

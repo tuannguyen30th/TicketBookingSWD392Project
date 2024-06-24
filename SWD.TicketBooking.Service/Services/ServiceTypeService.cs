@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
 using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
@@ -11,18 +12,20 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class ServiceTypeService : IServiceTypeService
     {
-        private readonly IRepository<ServiceType, Guid> _serviceTypeRepository;
-        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IRepository<ServiceType, Guid> _unitOfWork.ServiceTypeRepository;
+        //private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _unitOfWork.ServiceRepository;
         public readonly IFirebaseService _firebaseService;
-        private readonly IRepository<Station_Service, Guid> _stationServiceRepository;
-        private readonly IRepository<Station_Route, Guid> _stationRouteRepository;
+        //private readonly IRepository<Station_Service, Guid> _unitOfWork.Station_ServiceRepository;
+        //private readonly IRepository<Station_Route, Guid> _unitOfWork.Station_RouteRepository;
         private readonly IMapper _mapper;
-        public ServiceTypeService(IRepository<Station_Route, Guid> stationRouteRepository, IRepository<ServiceType, Guid> serviceTypeRepository, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
+        public ServiceTypeService(IUnitOfWork unitOfWork, IRepository<Station_Route, Guid> stationRouteRepository, IRepository<ServiceType, Guid> serviceTypeRepository, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
         {
-            _serviceRepository = serviceRepository;
-            _serviceTypeRepository = serviceTypeRepository;
-            _stationRouteRepository = stationRouteRepository;
-            _stationServiceRepository = stationServiceRepository;
+            _unitOfWork = unitOfWork;
+            //_unitOfWork.ServiceRepository = serviceRepository;
+            //_unitOfWork.ServiceTypeRepository = serviceTypeRepository;
+            //_unitOfWork.Station_RouteRepository = stationRouteRepository;
+            //_unitOfWork.Station_ServiceRepository = stationServiceRepository;
             _firebaseService = firebaseService;
             _mapper = mapper;
         }    
@@ -30,7 +33,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var stationServices = await _stationServiceRepository
+                var stationServices = await _unitOfWork.Station_ServiceRepository
                     .FindByCondition(_ => _.StationID == stationID && _.Service.Status.Trim().Equals(SD.ACTIVE))
                     .Include(_ => _.Service)
                     .ThenInclude(_ => _.ServiceType)
@@ -60,7 +63,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var stationServices = await _stationServiceRepository
+                var stationServices = await _unitOfWork.Station_ServiceRepository
                                         .FindByCondition(_ => _.StationID == stationID && _.Service.ServiceTypeID == serviceTypeID && _.Service.Status.Trim().Equals(SD.ACTIVE))
                                         .Include(_ => _.Service)
                                         .ThenInclude(_ => _.ServiceType)

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
@@ -13,18 +14,20 @@ namespace SWD.TicketBooking.Service.Services
     public class CityService : ICityService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<City, Guid> _cityRepository;
-        private readonly IRepository<Route, Guid> _routeRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IRepository<City, Guid> _unitOfWork.CityRepository;
+        //private readonly IRepository<Route, Guid> _unitOfWork.RouteRepository;
 
-        public CityService(IRepository<City, Guid> cityRepository, IRepository<Route, Guid> routeRepository, IMapper mapper)
+        public CityService(IUnitOfWork unitOfWork, IRepository<City, Guid> cityRepository, IRepository<Route, Guid> routeRepository, IMapper mapper)
         {
-            _cityRepository = cityRepository;
-            _routeRepository = routeRepository;
+            _unitOfWork = unitOfWork;
+            //_unitOfWork.CityRepository = cityRepository;
+            //_unitOfWork.RouteRepository = routeRepository;
             _mapper = mapper;
         }
         public async Task<List<CitiesModel>> GetAllCities()
         {
-            var cityEntities = await _cityRepository.GetAll().ToListAsync();
+            var cityEntities = await _unitOfWork.CityRepository.GetAll().ToListAsync();
             var cityModels = _mapper.Map<List<CitiesModel>>(cityEntities);
             return cityModels;
         }
@@ -32,13 +35,13 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var fromCities = await _routeRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.FromCity )
+                var fromCities = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.FromCity )
                                                        .Distinct()
                                                        .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })   
                                                        .OrderBy(x => x.CityName)
                                                        .ToListAsync();
 
-                var toCities = await _routeRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.ToCity)
+                var toCities = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).Select(_ => _.ToCity)
                                                        .Distinct()
                                                        .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })
                                                        .OrderBy(x => x.CityName)
@@ -61,14 +64,12 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                
-
-                var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.CityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("Company name existed");
                 }
-                var company = await _cityRepository.AddAsync(new City
+                var company = await _unitOfWork.CityRepository.AddAsync(new City
                 {
                     CityID = Guid.NewGuid(),
                     Name = model.CityName,
@@ -78,7 +79,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new InternalServerErrorException("Cannot create");
                 }
-                var rs = await _cityRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 if(rs >  0)
                 {
                    return rs;
@@ -95,15 +96,13 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                
-
-                var checkExisted = await _cityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.CityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("City name already existed");
                 }
 
-                var entity = await _cityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.CityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -112,13 +111,13 @@ namespace SWD.TicketBooking.Service.Services
 
                 entity.Name = model.CityName;
 
-                var companyUpdate = _cityRepository.Update(entity);
+                var companyUpdate = _unitOfWork.CityRepository.Update(entity);
 
                 if (companyUpdate == null)
                 {
                     throw new InternalServerErrorException("Cannot update");
                 }
-                var rs = await _cityRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 if(rs > 0)
                 {
                     return rs;
@@ -135,9 +134,8 @@ namespace SWD.TicketBooking.Service.Services
         public async Task<int> ChangeStatus(Guid cityId, string status)
         {
             try
-            {
-                
-                var entity = await _cityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
+            {                
+                var entity = await _unitOfWork.CityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -146,13 +144,13 @@ namespace SWD.TicketBooking.Service.Services
 
                 entity.Status = status;
 
-                var companyUpdate = _cityRepository.Update(entity);
+                var companyUpdate = _unitOfWork.CityRepository.Update(entity);
 
                 if (companyUpdate == null)
                 {
                     throw new Exception("Cannot update");
                 }
-                var rs = await _cityRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
                     return rs;
