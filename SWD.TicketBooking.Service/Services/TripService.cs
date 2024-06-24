@@ -102,6 +102,7 @@ namespace SWD.TicketBooking.Service.Services
                     };
 
                     rs.Add(popuTrip);
+                    //haha
                 });
 
                 return rs;
