@@ -37,9 +37,9 @@
         }
         public class Notification
         {
-            public static string NotFound(object id, string entity)
+            public static string NotFound(string entity)
             {
-                return $"The {entity} with ID {id} was not found".ToUpper();
+                return $"The {entity} was not found".ToUpper();
             }
             public static string NotFoundByField(string fieldName, string entity)
             {

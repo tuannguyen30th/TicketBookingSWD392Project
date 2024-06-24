@@ -12,6 +12,6 @@ namespace SWD.TicketBooking.Service.Dtos
         public string? FromCity { get; set; }
         public string? ToCity { get; set; }
         public double PriceFrom { get; set; }
-        public string? ImageUrl { get; set; }
+        public List<string>? ImageUrl { get; set; }
     }
 }

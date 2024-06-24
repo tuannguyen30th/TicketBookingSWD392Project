@@ -98,7 +98,7 @@ namespace SWD.TicketBooking.Service.Services
                         Email = bookingModel.AddOrUpdateBookingModel.Email,
                         Quantity = bookingModel.AddOrUpdateBookingModel.Quantity,
                         TotalBill = bookingModel.AddOrUpdateBookingModel.TotalBill,
-                        Status = SD.BookingStatus.PAYING_BOOKING,
+                        //Status = SD.BookingStatus.PAYING_BOOKING,
                     };
 
                     await _unitOfWork.BookingRepository.AddAsync(newBooking);
@@ -185,8 +185,8 @@ namespace SWD.TicketBooking.Service.Services
                     throw new NotFoundException("Not Found!");
                 }
                 findBooking.BookingTime = DateTime.Now;
-                findBooking.Status = SD.GeneralStatus.ACTIVE;
-                findBooking.PaymentMethod = SD.BookingStatus.PM_VNPAY;
+                //findBooking.Status = SD.GeneralStatus.ACTIVE;
+                //findBooking.PaymentMethod = SD.BookingStatus.PM_VNPAY;
                 findBooking.PaymentStatus = SD.BookingStatus.PAYING_BOOKING;
                 //findBooking.QRCode = qr;
                 var imagePathQr = FirebasePathName.BOOKINGQR + $"{findBooking.BookingID}";
