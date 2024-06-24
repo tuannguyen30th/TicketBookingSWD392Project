@@ -31,7 +31,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var companies = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE)).ToListAsync();
+                var companies = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).ToListAsync();
                 var rs = _mapper.Map<List<GetCompanyModel>>(companies);
                 return rs;
             }
@@ -68,7 +68,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     CompanyID = Guid.NewGuid(),
                     Name = model.Name,
-                    Status = SD.ACTIVE
+                    Status = SD.GeneralStatus.ACTIVE
                 });
                 if (company == null)
                 {
@@ -93,7 +93,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new BadRequestException("Company name already existed");
                 }
 
-                var entity = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CompanyID == companyId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CompanyID == companyId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -122,7 +122,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var entity = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.CompanyID == companyId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CompanyID == companyId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {

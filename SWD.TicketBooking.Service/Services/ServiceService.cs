@@ -42,7 +42,7 @@ namespace SWD.TicketBooking.Service.Services
                     ServiceID = Guid.NewGuid(),
                     Name = createServiceModel.Name,
                     ServiceTypeID = createServiceModel.ServiceTypeID,
-                    Status = SD.ACTIVE
+                    Status = SD.GeneralStatus.ACTIVE
                 };
                 await _unitOfWork.ServiceRepository.AddAsync(service);
                 //var rs = await _unitOfWork.ServiceRepository.Commit();
@@ -98,7 +98,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new NotFoundException("Service not found.");
                 }
-                service.Status = SD.INACTIVE;
+                service.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.ServiceRepository.Update(service);
                 //var rs = await _unitOfWork.ServiceRepository.Commit();
                 var rs = _unitOfWork.Complete();

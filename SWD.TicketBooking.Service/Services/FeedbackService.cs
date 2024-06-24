@@ -63,7 +63,7 @@ namespace SWD.TicketBooking.Service.Services
                     Rating = ratingModel.Rating,
                     TemplateID = getTemplateID,
                     Description = ratingModel.Description,
-                    Status = SD.ACTIVE,
+                    Status = SD.GeneralStatus.ACTIVE,
                 };
                 await _unitOfWork.FeedbackRepository.AddAsync(newRating);
                 //await _unitOfWork.FeedbackRepository.Commit();
@@ -108,7 +108,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var existedTrip = await _unitOfWork.TripRepository.FindByCondition(x=>x.TemplateID == tripID && x.Status.Trim().Equals(SD.ACTIVE)).FirstOrDefaultAsync();
+                var existedTrip = await _unitOfWork.TripRepository.FindByCondition(x=>x.TemplateID == tripID && x.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).FirstOrDefaultAsync();
                 if (existedTrip != null)
                 {
                     var feedback = await _unitOfWork.FeedbackRepository.FindByCondition(x => x.TemplateID == tripID)

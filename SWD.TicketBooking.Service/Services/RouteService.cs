@@ -32,7 +32,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var routes = await _unitOfWork.RouteRepository.FindByCondition(_ => _.Status.Trim().Equals(SD.ACTIVE)).ToListAsync();
+                var routes = await _unitOfWork.RouteRepository.FindByCondition(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).ToListAsync();
                 var rs = _mapper.Map<List<RouteModel>>(routes);
                 return rs;
             }
@@ -46,7 +46,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkCompanyExisted = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.CompanyID == model.CompanyID && _.Status.ToLower().Trim().Equals("active")).FirstOrDefaultAsync();
+                var checkCompanyExisted = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.CompanyID == model.CompanyID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).FirstOrDefaultAsync();
                 if (checkCompanyExisted == null)
                 {
                     throw new BadRequestException("Company does not exist!");
@@ -64,7 +64,7 @@ namespace SWD.TicketBooking.Service.Services
                         ToCityID = model.ToCityID,
                         StartLocation = model.StartLocation,
                         EndLocation = model.EndLocation,
-                        Status = SD.ACTIVE
+                        Status = SD.GeneralStatus.ACTIVE
                     });
                     if (route == null)
                     {
@@ -72,7 +72,7 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     //await _unitOfWork.RouteRepository.Commit();
                 }
-                else if (!checkRouteExisted.Status.Trim().Equals(SD.ACTIVE))
+                else if (!checkRouteExisted.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                 {
                     throw new BadRequestException("Route is not available");
                 }
@@ -95,7 +95,7 @@ namespace SWD.TicketBooking.Service.Services
                         Route_CompanyID = Guid.NewGuid(),
                         RouteID = getRoute.RouteID,
                         CompanyID = model.CompanyID,
-                        Status = SD.ACTIVE
+                        Status = SD.GeneralStatus.ACTIVE
                     });
 
                     if (routeCompany == null)
@@ -131,7 +131,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new BadRequestException("Route already existed");
                 }
 
-                var entity = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.RouteID == routeId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -163,7 +163,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var entity = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.ACTIVE) && _.RouteID == routeId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId).FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
