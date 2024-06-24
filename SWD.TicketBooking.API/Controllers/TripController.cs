@@ -87,6 +87,14 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
+        [HttpGet("managed-trips/ticket-type")]
+        public async Task<IActionResult> GetAllTicketType()
+        {
+            var ticketType = await _tripService.GetAllTicketType();
+            var rs = _mapper.Map<List<TicketTypeResponse>>(ticketType);
+            return Ok(rs);
+        }
+
     }
 }
 

@@ -113,6 +113,19 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
+        public async Task<List<TicketType>> GetAllTicketType()
+        {
+            try
+            {
+                var ticketTypes = await _unitOfWork.TicketTypeRepository.GetAll().ToListAsync();
+                return ticketTypes;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
         public async Task<PagedResult<SearchTripModel>> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber, int pageSize)
         {
             try

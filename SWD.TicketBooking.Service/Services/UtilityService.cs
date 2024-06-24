@@ -6,6 +6,7 @@ using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
 using System;
@@ -27,10 +28,10 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
 
         }
-       /* public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
+        public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
         {
             var utilities = await _unitOfWork.Trip_UtilityRepository
-                .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.ACTIVE))
+                .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                 .Select(tu => tu.Utility)
                 .ToListAsync();
             var result = new List<UtilityModel>();
@@ -45,6 +46,45 @@ namespace SWD.TicketBooking.Service.Services
                 result.Add(newModel);
             }
             return result;
-        }*/
+        }
+
+        public async Task<List<Utility>> GetAllUtility()
+        {
+
+            var result = await _unitOfWork.UtilityRepository.GetAll().ToListAsync();
+            return result;
+        }
+
+        public async Task<int> CreateNewUtility(CreateUtilityModel utility)
+        {
+            try
+            {
+                var checkUtility = await _unitOfWork.UtilityRepository.GetAll().Where(u => u.Name.Equals(utility.Name)).FirstOrDefaultAsync();
+                if (checkUtility != null)
+                {
+                    throw new BadRequestException("Utility name is existed!");
+                }
+                var newUtility = await _unitOfWork.UtilityRepository.AddAsync
+                    (
+                        new Utility
+                        {
+                            Name = utility.Name,
+                            Description = utility.Description,
+                            Status = SD.GeneralStatus.ACTIVE
+                        }
+                    );
+                if (newUtility == null)
+                {
+                    throw new InternalServerErrorException("Cannot create");
+                }
+                var result = await _unitOfWork.UtilityRepository.Commit();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            
+        }
     }
 }
