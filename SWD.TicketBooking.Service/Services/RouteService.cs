@@ -46,7 +46,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new NotFoundException("Company does not exist!");
                 }
 
-                var checkRouteExisted = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.FromCityID == model.FromCityID 
+                var checkRouteExisted = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.FromCityID == model.FromCityID
                                                                 && _.ToCityID == model.ToCityID
                                                                 && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
                 if (checkRouteExisted == null)
@@ -65,41 +65,37 @@ namespace SWD.TicketBooking.Service.Services
                         throw new InternalServerErrorException("Cannot create!");
                     }
 
-                    var checkRouteCompanyExisted = await _unitOfWork.Route_CompanyRepository.GetAll().Where(_ => _.RouteID == route.RouteID && _.CompanyID == model.CompanyID).FirstOrDefaultAsync();
-
-                    if (checkRouteCompanyExisted == null && route != null)
-                    {
-                        var routeCompany = await _unitOfWork.Route_CompanyRepository.AddAsync(new Route_Company
-                        {
-                            Route_CompanyID = Guid.NewGuid(),
-                            RouteID = route.RouteID,
-                            CompanyID = model.CompanyID,
-                            Status = SD.GeneralStatus.ACTIVE
-                        });
-
-                        if (routeCompany == null)
-                        {
-                            throw new InternalServerErrorException("Cannot create");
-                        }
-
-                        //var rs = await _unitOfWork.Route_CompanyRepository.Commit();
-                        var rs = _unitOfWork.Complete();
-
-                        return rs;
-                    }
-                    else
-                    {
-                        throw new BadRequestException("Route already existed");
-                    }
-                    //await _unitOfWork.RouteRepository.Commit();
+                    checkRouteExisted = route;
                 }
                 else if (!checkRouteExisted.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                 {
                     throw new BadRequestException("Route is not available");
                 }
+
+                var checkRouteCompanyExisted = await _unitOfWork.Route_CompanyRepository.GetAll().Where(_ => _.RouteID == checkRouteExisted.RouteID && _.CompanyID == model.CompanyID).FirstOrDefaultAsync();
+
+                if (checkRouteCompanyExisted == null && checkRouteExisted != null)
+                {
+                    var routeCompany = await _unitOfWork.Route_CompanyRepository.AddAsync(new Route_Company
+                    {
+                        Route_CompanyID = Guid.NewGuid(),
+                        RouteID = checkRouteExisted.RouteID,
+                        CompanyID = model.CompanyID,
+                        Status = SD.GeneralStatus.ACTIVE
+                    });
+
+                    if (routeCompany == null)
+                    {
+                        throw new InternalServerErrorException("Cannot create");
+                    }
+
+                    var rs = _unitOfWork.Complete();
+
+                    return rs;
+                }
                 else
                 {
-                    throw new BadRequestException("Route is existed");
+                    throw new BadRequestException("Route of this company already existed");
                 }
             }
             catch (Exception ex)
