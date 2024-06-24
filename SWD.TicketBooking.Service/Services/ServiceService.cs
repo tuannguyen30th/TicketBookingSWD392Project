@@ -14,15 +14,11 @@ namespace SWD.TicketBooking.Service.Services
     public class ServiceService : IServiceService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _unitOfWork.ServiceRepository;
-        //private readonly IRepository<Station_Service, Guid> _unitOfWork.Station_ServiceRepository;
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
-        public ServiceService(IUnitOfWork unitOfWork, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
+        public ServiceService(IUnitOfWork unitOfWork, IFirebaseService firebaseService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            //_unitOfWork.ServiceRepository = serviceRepository;
-            //_unitOfWork.Station_ServiceRepository = stationServiceRepository;
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
@@ -45,7 +41,6 @@ namespace SWD.TicketBooking.Service.Services
                     Status = SD.GeneralStatus.ACTIVE
                 };
                 await _unitOfWork.ServiceRepository.AddAsync(service);
-                //var rs = await _unitOfWork.ServiceRepository.Commit();
                 var rs = _unitOfWork.Complete();
                 return rs;
             }
@@ -79,7 +74,6 @@ namespace SWD.TicketBooking.Service.Services
                 service.Name = updateServiceModel.Name;
                 service.ServiceTypeID = updateServiceModel.ServiceTypeID;            
                 _unitOfWork.ServiceRepository.Update(service);
-                //var rs = await _unitOfWork.ServiceRepository.Commit();
                 var rs = _unitOfWork.Complete();
                 return rs;
             }

@@ -14,15 +14,11 @@ namespace SWD.TicketBooking.Service.Services
     public class Station_ServiceService : IStation_ServiceService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _unitOfWork.ServiceRepository;
-        //private readonly IRepository<Station_Service, Guid> _unitOfWork.Station_ServiceRepository;
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
-        public Station_ServiceService(IUnitOfWork unitOfWork, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
+        public Station_ServiceService(IUnitOfWork unitOfWork, IFirebaseService firebaseService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            //_unitOfWork.ServiceRepository = serviceRepository;
-            //_unitOfWork.Station_ServiceRepository = stationServiceRepository;
             _firebaseService = firebaseService;
             _mapper = mapper;
         }

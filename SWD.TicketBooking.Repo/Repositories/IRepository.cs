@@ -16,7 +16,6 @@ namespace SWD.TicketBooking.Repo.Repositories
         Task<TEntity?> GetByIdCompositeKeyAsync(TKey id1, TKey id2);
         Task<TEntity> AddAsync(TEntity entity);
         Task AddRangeAsync(IEnumerable<TEntity> entities);
-
         TEntity Update(TEntity entity);
         TEntity Remove(TKey id);
         public TEntity RemoveCompositeKey(TKey id1, TKey id2);

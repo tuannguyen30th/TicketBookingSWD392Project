@@ -20,15 +20,11 @@ namespace SWD.TicketBooking.Service.Services
     public class UtilityService : IUtilityService
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IRepository<Utility, Guid> _unitOfWork.UtilityRepository;
         private readonly IMapper _mapper;
-        //private readonly IRepository<Trip_Utility, Guid> _unitOfWork.Trip_UtilityRepository;
-        public UtilityService(IUnitOfWork unitOfWork, IRepository<Utility, Guid> uRepository, IMapper mapper, IRepository<Trip_Utility, Guid> tripUtilityRepository)
+        public UtilityService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            //_unitOfWork.UtilityRepository = uRepository;
             _mapper = mapper;
-            //_unitOfWork.Trip_UtilityRepository = tripUtilityRepository;
 
         }
        /* public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)

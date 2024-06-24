@@ -14,13 +14,11 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class FirebaseService : GenericBackendService, IFirebaseService
     {
-        ///private readonly IConverter _pdfConverter;
         private ActionOutcome _result;
         private FirebaseConfiguration _firebaseConfiguration;
         private readonly IConfiguration _configuration;
         public FirebaseService(IServiceProvider serviceProvider, IConfiguration configuration, FirebaseConfiguration firebaseConfiguration) : base(serviceProvider)
         {
-            //_pdfConverter = pdfConverter;
             _result = new();
             _firebaseConfiguration = firebaseConfiguration;
             _configuration = configuration;
@@ -55,9 +53,7 @@ namespace SWD.TicketBooking.Service.Services
 
         public async Task<string> GetUrlImageFromFirebase(string pathFileName)
         {
-            //var a = pathFileName.Split("/");
             var a = pathFileName.Split("/o/")[1];
-            //pathFileName = $"{a[0]}%2F{a[1]}";
             var api = $"https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o?name={a}";
             if (string.IsNullOrEmpty(pathFileName))
             {
