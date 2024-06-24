@@ -25,7 +25,7 @@ namespace SWD.TicketBooking.API.Installer
             services.AddScoped<IStationService, StationService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IServiceService, ServiceService>();
-            services.AddScoped<TicketDetailService>();
+            services.AddScoped<ITicketDetailService ,TicketDetailService>();
             services.AddScoped<IStation_ServiceService, Station_ServiceService>();
             services.AddScoped<IBookingService ,BookingService>();
             services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();

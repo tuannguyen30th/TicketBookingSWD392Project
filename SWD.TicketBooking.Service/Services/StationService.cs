@@ -30,14 +30,14 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var stations = await _unitOfWork.Station_RouteRepository
-                                    .FindByCondition(_ => _.RouteID == routeID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-                                    .Include(_ => _.Station)
-                                    .Select(_ => new StationFromRouteModel
-                                     {
-                                        StationID = _.StationID,
-                                        Name = _.Station.Name
-                                     })
-                                     .ToListAsync();
+                                                .FindByCondition(_ => _.RouteID == routeID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                .Include(_ => _.Station)
+                                                .Select(_ => new StationFromRouteModel
+                                                 {
+                                                    StationID = _.StationID,
+                                                    Name = _.Station.Name
+                                                 })
+                                                .ToListAsync();
 
                 return stations;
 
@@ -52,7 +52,6 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                //var station = await _unitOfWork.StationRepository.GetAll().Where(s => s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).ToListAsync();
                 var station = await _unitOfWork.StationRepository.GetAll().ToListAsync();
                 var rs = _mapper.Map<List<GetStationModel>>(station);
                 return rs;
@@ -79,7 +78,9 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var check = await _unitOfWork.StationRepository.GetAll().Where(s =>s.Name.Equals(stationModel.StationName)).FirstOrDefaultAsync();
+                var check = await _unitOfWork.StationRepository
+                                             .GetAll().Where(s =>s.Name.Equals(stationModel.StationName))
+                                             .FirstOrDefaultAsync();
                 if (check == null)
                 {
                     var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
@@ -96,7 +97,6 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new BadRequestException("Cannot add new station");
                     }
-                    //await _unitOfWork.StationRepository.Commit();
                     _unitOfWork.Complete();
                     return "OK";
                 }
@@ -112,19 +112,24 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var check  = await _unitOfWork.StationRepository.GetAll().Where(s=> s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && s.StationID == stationId).FirstOrDefaultAsync();
+                var check  = await _unitOfWork.StationRepository
+                                              .GetAll()
+                                              .Where(s=> s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && s.StationID == stationId)
+                                              .FirstOrDefaultAsync();
                 if (check == null)
                 {
                     throw new NotFoundException("Station not found!");
                 }
                 else
                 {
-                    var checkName = await _unitOfWork.StationRepository.GetAll().Where(s => s.Name.ToLower().Equals(stationModel.StationName)).FirstOrDefaultAsync();
+                    var checkName = await _unitOfWork.StationRepository
+                                                     .GetAll()
+                                                     .Where(s => s.Name.ToLower().Equals(stationModel.StationName))
+                                                     .FirstOrDefaultAsync();
                     if (checkName == null)
                     {
                         check.Name = stationModel.StationName;
                         _unitOfWork.StationRepository.Update(check);
-                        //await _unitOfWork.StationRepository.Commit();
                         _unitOfWork.Complete();
                     }
                     return "OK";
@@ -140,17 +145,20 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var route = await _unitOfWork.TripRepository.FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && s.Route_Company.Route.Status.Equals(SD.GeneralStatus.ACTIVE)).Include(_ => _.Route_Company).Select(s=>s.Route_Company.RouteID).FirstOrDefaultAsync();
+                var route = await _unitOfWork.TripRepository
+                                             .FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) 
+                                                               && s.Route_Company.Route.Status.Equals(SD.GeneralStatus.ACTIVE)).Include(_ => _.Route_Company)
+                                             .Select(s=>s.Route_Company.RouteID).FirstOrDefaultAsync();
                 var stations = await _unitOfWork.Station_RouteRepository
-                                    .FindByCondition(_ => _.RouteID == route)
-                                    .Include(_ => _.Station)
-                                    .OrderBy(_ => _.OrderInRoute)
-                                    .Select(_ => new StationFromRouteModel
-                                    {
-                                        StationID = _.StationID,
-                                        Name = _.Station.Name
-                                    })
-                                     .ToListAsync();
+                                                .FindByCondition(_ => _.RouteID == route)
+                                                .Include(_ => _.Station)
+                                                .OrderBy(_ => _.OrderInRoute)
+                                                .Select(_ => new StationFromRouteModel
+                                                {
+                                                    StationID = _.StationID,
+                                                    Name = _.Station.Name
+                                                })
+                                                .ToListAsync();
                 return stations;
             }
             catch (Exception ex)

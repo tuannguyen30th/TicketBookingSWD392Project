@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
+using SWD.TicketBooking.Service.Dtos.Booking;
+using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API.Controllers
@@ -13,10 +15,10 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class TicketDetailController : ControllerBase
     {
-        private readonly TicketDetailService _ticketDetailService;
+        private readonly ITicketDetailService _ticketDetailService;
         private readonly IMapper _mapper;
 
-        public TicketDetailController(TicketDetailService ticketDetailService, IMapper mapper)
+        public TicketDetailController(ITicketDetailService ticketDetailService, IMapper mapper)
         {
             _ticketDetailService = ticketDetailService;
             _mapper = mapper;
@@ -51,7 +53,13 @@ namespace SWD.TicketBooking.API.Controllers
                 throw new Exception(ex.Message, ex);
             }
         }
-
+        [HttpPut("managed-ticket-details/cancel-tickets/{ticketDetailID}")]
+        public async Task<ActionOutcome> CancelTicket(Guid ticketDetailID)
+        {
+            /*  var map = _mapper.Map<BookingModel>(bookingRequest);*/
+            var rs = await _ticketDetailService.CancelTicket(ticketDetailID);
+            return rs;
+        }
         //[HttpGet("managed-ticket-details/qrCodes/{qrCode}/emails/{email}")]
         //public async Task<IActionResult> SearchTicket([FromRoute] string qrCode, [FromRoute] string email)
         //{
