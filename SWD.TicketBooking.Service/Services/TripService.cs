@@ -127,7 +127,7 @@ namespace SWD.TicketBooking.Service.Services
                 var totalTrips = await tripsQuery.CountAsync();
                 if (totalTrips == 0)
                 {
-                    throw new NotFoundException("No trips found!");
+                    throw new NotFoundException(SD.Notification.NotFound("Trips"));
                 }
                 var totalPages = (int)Math.Ceiling((double)totalTrips / pageSize);
 
