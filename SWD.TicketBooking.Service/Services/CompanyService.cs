@@ -57,7 +57,10 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Name ==  model.Name).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.CompanyRepository
+                                                    .GetAll()
+                                                    .Where(_ => _.Name ==  model.Name)
+                                                    .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("Company name existed");
@@ -85,13 +88,19 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Name == model.Name).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.CompanyRepository
+                                                    .GetAll()
+                                                    .Where(_ => _.Name == model.Name)
+                                                    .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("Company name already existed");
                 }
 
-                var entity = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CompanyID == companyId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.CompanyRepository
+                                              .GetAll()
+                                              .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CompanyID == companyId)
+                                              .FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -120,7 +129,10 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var entity = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CompanyID == companyId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.CompanyRepository
+                                              .GetAll()
+                                              .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CompanyID == companyId)
+                                              .FirstOrDefaultAsync();
 
                 if (entity == null)
                 {

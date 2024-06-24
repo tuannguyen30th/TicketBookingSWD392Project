@@ -26,7 +26,9 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _unitOfWork.Station_ServiceRepository.FindByCondition(_ => _.ServiceID == createServiceInStationModel.ServiceID && _.StationID == createServiceInStationModel.StationID).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.Station_ServiceRepository
+                                                    .FindByCondition(_ => _.ServiceID == createServiceInStationModel.ServiceID && _.StationID == createServiceInStationModel.StationID)
+                                                    .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("This Service had existed in this Station");
@@ -41,7 +43,6 @@ namespace SWD.TicketBooking.Service.Services
                     Status = SD.GeneralStatus.ACTIVE
                 };
                 await _unitOfWork.Station_ServiceRepository.AddAsync(serviceStation);
-                //await _unitOfWork.Station_ServiceRepository.Commit();
                 var imagePath = FirebasePathName.SERVICE_STATION + $"{serviceStation.Station_ServiceID}";
                 var imageUploadResult = await _firebaseService.UploadFileToFirebase(createServiceInStationModel.ImageUrl, imagePath);
                 if (imageUploadResult.IsSuccess)
@@ -50,7 +51,6 @@ namespace SWD.TicketBooking.Service.Services
                 }
 
                 _unitOfWork.Station_ServiceRepository.Update(serviceStation);
-                //var rs = await _unitOfWork.Station_ServiceRepository.Commit();
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
@@ -68,18 +68,18 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var serviceStation = await _unitOfWork.Station_ServiceRepository.GetByIdAsync(stationServiceID);
-                var checkExisted = await _unitOfWork.Station_ServiceRepository.FindByCondition(_ =>
-                                         _.ServiceID == updateServiceInStationModel.ServiceID &&
-                                         _.StationID == updateServiceInStationModel.StationID)
-                                           .FirstOrDefaultAsync();              
+                var checkExisted = await _unitOfWork.Station_ServiceRepository
+                                                    .FindByCondition(_ => _.ServiceID == updateServiceInStationModel.ServiceID &&
+                                                                          _.StationID == updateServiceInStationModel.StationID)
+                                                    .FirstOrDefaultAsync();              
 
                 if (checkExisted.Station_ServiceID != updateServiceInStationModel.Station_ServiceID)
                 {
-                    var checkDuplicate = await _unitOfWork.Station_ServiceRepository.FindByCondition(_ =>
-                        _.ServiceID == updateServiceInStationModel.ServiceID &&
-                        _.StationID == updateServiceInStationModel.StationID &&
-                        _.Station_ServiceID != updateServiceInStationModel.Station_ServiceID)
-                        .AnyAsync();
+                    var checkDuplicate = await _unitOfWork.Station_ServiceRepository
+                                                          .FindByCondition(_ => _.ServiceID == updateServiceInStationModel.ServiceID &&
+                                                                                _.StationID == updateServiceInStationModel.StationID &&
+                                                                                _.Station_ServiceID != updateServiceInStationModel.Station_ServiceID)
+                                                          .AnyAsync();
 
                     if (checkDuplicate)
                     {
@@ -91,7 +91,6 @@ namespace SWD.TicketBooking.Service.Services
                 serviceStation.ServiceID = updateServiceInStationModel.ServiceID;
                 serviceStation.Price = updateServiceInStationModel.Price;
                 _unitOfWork.Station_ServiceRepository.Update(serviceStation);
-                //await _unitOfWork.Station_ServiceRepository.Commit();
                 if (updateServiceInStationModel.ImageUrl != null && updateServiceInStationModel.ImageUrl.Length > 0)
                 {
                     if (!string.IsNullOrEmpty(serviceStation.ImageUrl))
@@ -117,7 +116,6 @@ namespace SWD.TicketBooking.Service.Services
 
                     _unitOfWork.Station_ServiceRepository.Update(serviceStation);
                 }
-                //var rs = await _unitOfWork.Station_ServiceRepository.Commit();
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
@@ -134,14 +132,14 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var serviceStation = await _unitOfWork.Station_ServiceRepository.GetByIdAsync(Station_ServiceID);
+                var serviceStation = await _unitOfWork.Station_ServiceRepository
+                                                      .GetByIdAsync(Station_ServiceID);
                 if (serviceStation == null)
                 {
                     throw new NotFoundException("Service not found.");
                 }
                 serviceStation.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.Station_ServiceRepository.Update(serviceStation);
-                //var rs = await _unitOfWork.Station_ServiceRepository.Commit();
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {

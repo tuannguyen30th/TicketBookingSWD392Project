@@ -2,52 +2,50 @@
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
+using SWD.TicketBooking.Service.Utilities;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class TicketDetailService 
+    public class TicketDetailService : ITicketDetailService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<TicketDetail, Guid> _ticketDetailRepo;
-        private readonly IRepository<Booking, Guid> _bookingRepo;
-        private readonly IRepository<Trip, Guid> _tripRepo;
-        private readonly IRepository<User, Guid> _userRepo;
-        private readonly IRepository<City, Guid> _cityRepo;
-        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepo;
-        private readonly IRepository<Station_Service, Guid> _stationServiceRepo;
-        private readonly IRepository<Station_Route, Guid> _stationRouteRepo;
-        private readonly IRepository<Route_Company, Guid> _routeCompanyRepo;
-        private readonly IRepository<TicketDetail_Service, Guid> _ticketDetailServiceRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TicketDetailService(IRepository<TicketDetail, Guid> ticketDetailRepo, IRepository<Station_Route, Guid> stationRouteRepo, IRepository<Station_Service, Guid> stationServiceRepo, IRepository<Route_Company, Guid> routeCompanyRepo, IRepository<Booking, Guid> bookingRepo, IRepository<TicketDetail_Service, Guid> ticketDetailServiceRepo, IMapper mapper, IRepository<Trip, Guid> tripRepo, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepo, IRepository<User, Guid> userRepo, IRepository<City, Guid> cityRepo)
+        public TicketDetailService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _ticketDetailRepo = ticketDetailRepo;
-            _bookingRepo = bookingRepo;
-            _ticketDetailServiceRepo = ticketDetailServiceRepo;
-            _stationServiceRepo = stationServiceRepo;
-            _stationRouteRepo = stationRouteRepo;
-            _routeCompanyRepo = routeCompanyRepo;
             _mapper = mapper;
-            _tripRepo = tripRepo;
-            _serviceRepo = serviceRepo;
-            _userRepo = userRepo;
-            _cityRepo = cityRepo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<GetDetailTicketDetailByTicketDetailModel> GetDetailTicketDetailByTicketDetail(Guid ticketDetailID)
         {
             try
             {
-                var ticketDetail = await _ticketDetailRepo.FindByCondition(_ => _.TicketDetailID == ticketDetailID).FirstOrDefaultAsync();
+                var ticketDetail = await _unitOfWork.TicketDetailRepository
+                                                    .FindByCondition(_ => _.TicketDetailID == ticketDetailID)
+                                                    .FirstOrDefaultAsync();
 
-                var booking = await _bookingRepo.FindByCondition(_ => _.BookingID == ticketDetail.BookingID)
-                    .Include(_ => _.Trip.Route_Company.Route.FromCity).Include(_ => _.Trip.Route_Company.Route.ToCity).Include(_ => _.Trip.Route_Company.Route).Include(_ => _.User).FirstOrDefaultAsync();
+                var booking = await _unitOfWork.BookingRepository
+                                               .FindByCondition(_ => _.BookingID == ticketDetail.BookingID)
+                                               .Include(_ => _.Trip.Route_Company.Route.FromCity)
+                                               .Include(_ => _.Trip.Route_Company.Route.ToCity)
+                                               .Include(_ => _.Trip.Route_Company.Route)
+                                               .Include(_ => _.User)
+                                               .FirstOrDefaultAsync();
 
-                var company = await _routeCompanyRepo.FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID).Include(_ => _.Company).FirstOrDefaultAsync();
+                var company = await _unitOfWork.Route_CompanyRepository
+                                               .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
+                                               .Include(_ => _.Company)
+                                               .FirstOrDefaultAsync();
 
-                var ticketDetailServices = await _ticketDetailServiceRepo.FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID).Include(_ => _.Service).Include(_ => _.Station).ToListAsync();
+                var ticketDetailServices = await _unitOfWork.TicketDetail_ServiceRepository
+                                                            .FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID)
+                                                            .Include(_ => _.Service)
+                                                            .Include(_ => _.Station)
+                                                            .ToListAsync();
                 double servicePrice = 0;
 
                 var serviceDetailList = new List<ServiceDetailModel>();
@@ -98,18 +96,27 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var bookings = await _bookingRepo.FindByCondition(_ => _.UserID == customerID)
-                    .Include(_ => _.Trip.Route_Company.Route.FromCity).Include(_ => _.Trip.Route_Company.Route.ToCity).Include(_ => _.Trip.Route_Company.Route).ToListAsync();
+                var bookings = await _unitOfWork.BookingRepository
+                                                .FindByCondition(_ => _.UserID == customerID)
+                                                .Include(_ => _.Trip.Route_Company.Route.FromCity)
+                                                .Include(_ => _.Trip.Route_Company.Route.ToCity)
+                                                .Include(_ => _.Trip.Route_Company.Route)
+                                                .ToListAsync();
 
                 var rsList = new List<GetTicketDetailByUserModel>();
 
                 foreach (var booking in bookings)
                 {
-                    var ticketDetails = await _ticketDetailRepo.GetAll().Where(_ => _.BookingID == booking.BookingID).ToListAsync();
+                    var ticketDetails = await _unitOfWork.TicketDetailRepository
+                                                         .GetAll()
+                                                         .Where(_ => _.BookingID == booking.BookingID)
+                                                         .ToListAsync();
 
                     foreach (var ticketDetail in ticketDetails)
                     {
-                        var ticketDetailServices = await _ticketDetailServiceRepo.FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID).ToListAsync();
+                        var ticketDetailServices = await _unitOfWork.TicketDetail_ServiceRepository
+                                                                    .FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID)
+                                                                    .ToListAsync();
                         double servicePrice = 0;
 
                         foreach (var ticketDetail_Service in ticketDetailServices)
@@ -117,7 +124,10 @@ namespace SWD.TicketBooking.Service.Services
                             servicePrice += ticketDetail_Service.Price * ticketDetail_Service.Quantity;
                         }
 
-                        var company = await _routeCompanyRepo.FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID).Include(_ => _.Company).FirstOrDefaultAsync();
+                        var company = await _unitOfWork.Route_CompanyRepository
+                                                       .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
+                                                       .Include(_ => _.Company)
+                                                       .FirstOrDefaultAsync();
 
                         var rs = new GetTicketDetailByUserModel
                         {
@@ -147,7 +157,71 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+        public async Task<ActionOutcome> CancelTicket(Guid ticketDetailID)
+        {
+            try
+            {
+                var result = new ActionOutcome();
+                double totalBillCancel = 0;
+                DateTime currentTime = DateTime.Now;
+                var findTicket = await _unitOfWork.TicketDetailRepository
+                                                  .GetAll()
+                                                  .Where(_ => _.TicketDetailID == ticketDetailID)
+                                                  .Include(_ => _.Booking)
+                                                  .ThenInclude(b => b.Trip)
+                                                  .Include(_ => _.Booking)
+                                                  .ThenInclude(b => b.User)
+                                                  .FirstOrDefaultAsync();
+                if (findTicket == null)
+                {
+                    throw new NotFoundException(SD.Notification.NotFound("Ticket"));
+                }            
+                var startTime = findTicket.Booking.Trip.StartTime;
+                if (currentTime <= startTime.AddHours(-6))
+                {
+                    findTicket.Status = SD.Booking_TicketStatus.CANCEL_TICKET;
+                    totalBillCancel += findTicket.Price;
+                    _unitOfWork.TicketDetailRepository.Update(findTicket);
+                    var findService = await _unitOfWork.TicketDetail_ServiceRepository
+                                                       .GetAll()
+                                                       .Where(_ => _.TicketDetailID == ticketDetailID)
+                                                       .ToListAsync();
+                    foreach (var ticket in findService)
+                    {
+                        ticket.Status = SD.Booking_ServiceStatus.CANCEL_TICKETSERVICE;
+                        totalBillCancel += ticket.Quantity * ticket.Price;
+                        _unitOfWork.TicketDetail_ServiceRepository.Update(ticket);
+                    }
+                    var findUser = findTicket.Booking.User;
+                    findUser.Balance += totalBillCancel * 0.7;
+                    _unitOfWork.UserRepository.Update(findUser);
+                    var otherTickets = await _unitOfWork.TicketDetailRepository
+                                                        .FindByCondition(_ => _.BookingID == findTicket.BookingID && _.TicketDetailID != ticketDetailID && _.Status.Trim() != SD.Booking_TicketStatus.CANCEL_TICKET)
+                                                        .ToListAsync();
 
+                    if (otherTickets == null || !otherTickets.Any())
+                    {
+                        var findBooking = findTicket.Booking;
+                        if (findBooking != null)
+                        {
+                            findBooking.PaymentStatus = SD.BookingStatus.CANCEL_BOOKING;
+                            _unitOfWork.BookingRepository.Update(findBooking);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new BadRequestException("Thời gian hủy vé đã quá hạn, xin lỗi vì sự bất tiện này!");
+                }
+                _unitOfWork.Complete();
+                result.Message = "Hủy vé thành công!";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
 
         //public async Task<SearchTicketModel> SearchTicket(string QRCode, string email)
         //{
@@ -192,7 +266,7 @@ namespace SWD.TicketBooking.Service.Services
         //                };
         //                return rs;
         //            }
-                
+
         //        }
         //    }
         //    catch (Exception ex)
@@ -202,13 +276,19 @@ namespace SWD.TicketBooking.Service.Services
 
         //}
 
-        public List<StationInSearchTicket> GetAllStationName(List<Guid> serviceID)
+        public async Task<List<StationInSearchTicket>> GetAllStationName(List<Guid> serviceID)
         {
             var rs = new List<StationInSearchTicket>();
             foreach (var item in serviceID)
             {
-                var priceInService = _ticketDetailServiceRepo.FindByCondition(t => t.ServiceID == item).Select(t=>t.Price).FirstOrDefault();
-                var name  = _serviceRepo.FindByCondition(t => t.ServiceID == item).Select(s=>s.Name).FirstOrDefault();
+                var priceInService = await _unitOfWork.TicketDetail_ServiceRepository
+                                                      .FindByCondition(t => t.ServiceID == item)
+                                                      .Select(t=>t.Price)
+                                                      .FirstOrDefaultAsync();
+                var name  = await _unitOfWork.ServiceRepository
+                                             .FindByCondition(t => t.ServiceID == item)
+                                             .Select(s=>s.Name)
+                                             .FirstOrDefaultAsync();
                 var stationModel = new StationInSearchTicket
                 {
                     Price = priceInService,
@@ -219,17 +299,31 @@ namespace SWD.TicketBooking.Service.Services
             return rs;
         }
 
-        public TripInSearchTicketModel GetTripBaseOnModel(Trip trip, Booking booking, Route route, TicketDetail ticket)
+        public async Task<TripInSearchTicketModel> GetTripBaseOnModel(Trip trip, Booking booking, Route route, TicketDetail ticket)
         {
-            //var company = _routeCompanyRepo.FindByCondition(x => x.RouteID == trip.Route_Company.RouteID).Select(c => c.Company).FirstOrDefault();
             
-            var route_company = _tripRepo.FindByCondition(t=> t.TripID.Equals(trip.TripID)).Select(c=>c.Route_CompanyID).FirstOrDefault();
-            var company = _routeCompanyRepo.FindByCondition(r=>r.Route_CompanyID.Equals(route_company)).Select(c=>c.Company).FirstOrDefault();
+            var route_company = await _unitOfWork.TripRepository
+                                                 .FindByCondition(t=> t.TripID.Equals(trip.TripID))
+                                                 .Select(c=>c.Route_CompanyID)
+                                                 .FirstOrDefaultAsync();
+            var company = await _unitOfWork.Route_CompanyRepository
+                                           .FindByCondition(r=>r.Route_CompanyID.Equals(route_company))
+                                           .Select(c=>c.Company)
+                                           .FirstOrDefaultAsync();
             
-            var user = _userRepo.FindByCondition(u=>u.UserID == booking.UserID).Select(u=>u.UserName).FirstOrDefault();
+            var user = await _unitOfWork.UserRepository
+                                        .FindByCondition(u=>u.UserID == booking.UserID)
+                                        .Select(u=>u.UserName)
+                                        .FirstOrDefaultAsync();
 
-            var fromCity = _cityRepo.FindByCondition(c=>c.CityID == route.FromCityID).Select(c=>c.Name).FirstOrDefault();
-            var toCity = _cityRepo.FindByCondition(c => c.CityID == route.ToCityID).Select(c => c.Name).FirstOrDefault();
+            var fromCity = await _unitOfWork.CityRepository
+                                            .FindByCondition(c=>c.CityID == route.FromCityID)
+                                            .Select(c=>c.Name)
+                                            .FirstOrDefaultAsync();
+            var toCity = await _unitOfWork.CityRepository
+                                          .FindByCondition(c => c.CityID == route.ToCityID)
+                                          .Select(c => c.Name)
+                                          .FirstOrDefaultAsync();
 
             var rs = new TripInSearchTicketModel
             {
@@ -242,11 +336,6 @@ namespace SWD.TicketBooking.Service.Services
             };
             return rs;
         }
-
-
-
-
-
     }
 }
 

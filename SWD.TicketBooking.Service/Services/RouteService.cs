@@ -26,7 +26,9 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var routes = await _unitOfWork.RouteRepository.FindByCondition(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).ToListAsync();
+                var routes = await _unitOfWork.RouteRepository
+                                              .FindByCondition(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                              .ToListAsync();
                 var rs = _mapper.Map<List<RouteModel>>(routes);
                 return rs;
             }
@@ -40,15 +42,28 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkCompanyExisted = await _unitOfWork.CompanyRepository.GetAll().Where(_ => _.CompanyID == model.CompanyID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).FirstOrDefaultAsync();
+                var checkCompanyExisted = await _unitOfWork.CompanyRepository
+                                                           .GetAll()
+                                                           .Where(_ => _.CompanyID == model.CompanyID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                           .FirstOrDefaultAsync();
+
                 if (checkCompanyExisted == null)
                 {
                     throw new NotFoundException("Company does not exist!");
                 }
 
+<<<<<<< HEAD
                 var checkRouteExisted = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.FromCityID == model.FromCityID
                                                                 && _.ToCityID == model.ToCityID
                                                                 && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
+=======
+
+                var checkRouteExisted = await _unitOfWork.RouteRepository
+                                                         .GetAll()
+                                                         .Where(_ => _.FromCityID == model.FromCityID 
+                                                                  && _.ToCityID == model.ToCityID
+                                                                  && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
+>>>>>>> 4b68c957a6d3aca21164199c11bec11591c72399
                 if (checkRouteExisted == null)
                 {
                     var route = await _unitOfWork.RouteRepository.AddAsync(new Route
@@ -66,6 +81,35 @@ namespace SWD.TicketBooking.Service.Services
                     }
 
                     checkRouteExisted = route;
+=======
+                    var checkRouteCompanyExisted = await _unitOfWork.Route_CompanyRepository
+                                                                    .GetAll()
+                                                                    .Where(_ => _.RouteID == route.RouteID && _.CompanyID == model.CompanyID)
+                                                                    .FirstOrDefaultAsync();
+
+                    if (checkRouteCompanyExisted == null && route != null)
+                    {
+                        var routeCompany = await _unitOfWork.Route_CompanyRepository.AddAsync(new Route_Company
+                        {
+                            Route_CompanyID = Guid.NewGuid(),
+                            RouteID = route.RouteID,
+                            CompanyID = model.CompanyID,
+                            Status = SD.GeneralStatus.ACTIVE
+                        });
+
+                        if (routeCompany == null)
+                        {
+                            throw new InternalServerErrorException("Cannot create");
+                        }
+                        var rs = _unitOfWork.Complete();
+                        return rs;
+                    }
+                    else
+                    {
+                        throw new BadRequestException("Route already existed");
+                    }
+
+>>>>>>> 4b68c957a6d3aca21164199c11bec11591c72399
                 }
                 else if (!checkRouteExisted.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                 {
@@ -88,7 +132,6 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new InternalServerErrorException("Cannot create");
                     }
-
                     var rs = _unitOfWork.Complete();
 
                     return rs;
@@ -108,15 +151,20 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.FromCityID == model.FromCityID
-                                                                && _.ToCityID == model.ToCityID
-                                                                && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.RouteRepository
+                                                    .GetAll()
+                                                    .Where(_ => _.FromCityID == model.FromCityID
+                                                             && _.ToCityID == model.ToCityID
+                                                             && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("Route already existed");
                 }
 
-                var entity = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.RouteRepository
+                                              .GetAll()
+                                              .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId)
+                                              .FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -134,7 +182,8 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new InternalServerErrorException("Cannot update");
                 }
-                var rs = _unitOfWork.Complete(); 
+                var rs = _unitOfWork.Complete();
+>>>>>>> 4b68c957a6d3aca21164199c11bec11591c72399
                 return rs;
             }
             catch (Exception ex)
@@ -147,7 +196,10 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var entity = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.RouteRepository
+                                              .GetAll()
+                                              .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId)
+                                              .FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
@@ -162,7 +214,6 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new InternalServerErrorException("Cannot update");
                 }
-                //var rs = await _unitOfWork.RouteRepository.Commit();
                 var rs = _unitOfWork.Complete();
                 return rs;
             }

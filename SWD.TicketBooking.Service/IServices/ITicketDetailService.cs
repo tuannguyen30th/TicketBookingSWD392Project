@@ -10,7 +10,8 @@ namespace SWD.TicketBooking.Service.Services
     public interface ITicketDetailService
     {
         Task<GetDetailTicketDetailByTicketDetailModel> GetDetailTicketDetailByTicketDetail(Guid ticketDetailID);
-        Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid userID);
-        Task<SearchTicketModel> SearchTicket(string QRCode, string email);
+        Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid customerID);
+        //Task<SearchTicketModel> SearchTicket(string QRCode, string email);
+        Task<ActionOutcome> CancelTicket(Guid ticketDetailID);
     }
 }
