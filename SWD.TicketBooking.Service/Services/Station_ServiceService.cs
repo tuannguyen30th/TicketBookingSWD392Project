@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
@@ -12,14 +13,16 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class Station_ServiceService : IStation_ServiceService
     {
-        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepository;
-        private readonly IRepository<Station_Service, Guid> _stationServiceRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _unitOfWork.ServiceRepository;
+        //private readonly IRepository<Station_Service, Guid> _unitOfWork.Station_ServiceRepository;
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
-        public Station_ServiceService(IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
+        public Station_ServiceService(IUnitOfWork unitOfWork, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
         {
-            _serviceRepository = serviceRepository;
-            _stationServiceRepository = stationServiceRepository;
+            _unitOfWork = unitOfWork;
+            //_unitOfWork.ServiceRepository = serviceRepository;
+            //_unitOfWork.Station_ServiceRepository = stationServiceRepository;
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
@@ -27,7 +30,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _stationServiceRepository.FindByCondition(_ => _.ServiceID == createServiceInStationModel.ServiceID && _.StationID == createServiceInStationModel.StationID).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.Station_ServiceRepository.FindByCondition(_ => _.ServiceID == createServiceInStationModel.ServiceID && _.StationID == createServiceInStationModel.StationID).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("This Service had existed in this Station");
@@ -41,8 +44,8 @@ namespace SWD.TicketBooking.Service.Services
                     ImageUrl = "",
                     Status = SD.ACTIVE
                 };
-                await _stationServiceRepository.AddAsync(serviceStation);
-                await _stationServiceRepository.Commit();
+                await _unitOfWork.Station_ServiceRepository.AddAsync(serviceStation);
+                //await _unitOfWork.Station_ServiceRepository.Commit();
                 var imagePath = FirebasePathName.SERVICE_STATION + $"{serviceStation.Station_ServiceID}";
                 var imageUploadResult = await _firebaseService.UploadFileToFirebase(createServiceInStationModel.ImageUrl, imagePath);
                 if (imageUploadResult.IsSuccess)
@@ -50,8 +53,9 @@ namespace SWD.TicketBooking.Service.Services
                     serviceStation.ImageUrl = (string)imageUploadResult.Result;
                 }
 
-                _stationServiceRepository.Update(serviceStation);
-                var rs = await _stationServiceRepository.Commit();
+                _unitOfWork.Station_ServiceRepository.Update(serviceStation);
+                //var rs = await _unitOfWork.Station_ServiceRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
                     return true;
@@ -67,15 +71,15 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var serviceStation = await _stationServiceRepository.GetByIdAsync(stationServiceID);
-                var checkExisted = await _stationServiceRepository.FindByCondition(_ =>
+                var serviceStation = await _unitOfWork.Station_ServiceRepository.GetByIdAsync(stationServiceID);
+                var checkExisted = await _unitOfWork.Station_ServiceRepository.FindByCondition(_ =>
                                          _.ServiceID == updateServiceInStationModel.ServiceID &&
                                          _.StationID == updateServiceInStationModel.StationID)
                                            .FirstOrDefaultAsync();              
 
                 if (checkExisted.Station_ServiceID != updateServiceInStationModel.Station_ServiceID)
                 {
-                    var checkDuplicate = await _stationServiceRepository.FindByCondition(_ =>
+                    var checkDuplicate = await _unitOfWork.Station_ServiceRepository.FindByCondition(_ =>
                         _.ServiceID == updateServiceInStationModel.ServiceID &&
                         _.StationID == updateServiceInStationModel.StationID &&
                         _.Station_ServiceID != updateServiceInStationModel.Station_ServiceID)
@@ -90,8 +94,8 @@ namespace SWD.TicketBooking.Service.Services
                 serviceStation.StationID = updateServiceInStationModel.StationID;
                 serviceStation.ServiceID = updateServiceInStationModel.ServiceID;
                 serviceStation.Price = updateServiceInStationModel.Price;
-                _stationServiceRepository.Update(serviceStation);
-                await _stationServiceRepository.Commit();
+                _unitOfWork.Station_ServiceRepository.Update(serviceStation);
+                //await _unitOfWork.Station_ServiceRepository.Commit();
                 if (updateServiceInStationModel.ImageUrl != null && updateServiceInStationModel.ImageUrl.Length > 0)
                 {
                     if (!string.IsNullOrEmpty(serviceStation.ImageUrl))
@@ -115,9 +119,10 @@ namespace SWD.TicketBooking.Service.Services
                         throw new InternalServerErrorException($"Failed to upload new image:");
                     }
 
-                    _stationServiceRepository.Update(serviceStation);
+                    _unitOfWork.Station_ServiceRepository.Update(serviceStation);
                 }
-                var rs = await _stationServiceRepository.Commit();
+                //var rs = await _unitOfWork.Station_ServiceRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
                     return true;
@@ -133,14 +138,15 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var serviceStation = await _stationServiceRepository.GetByIdAsync(Station_ServiceID);
+                var serviceStation = await _unitOfWork.Station_ServiceRepository.GetByIdAsync(Station_ServiceID);
                 if (serviceStation == null)
                 {
                     throw new NotFoundException("Service not found.");
                 }
                 serviceStation.Status = SD.INACTIVE;
-                _stationServiceRepository.Update(serviceStation);
-                var rs = await _stationServiceRepository.Commit();
+                _unitOfWork.Station_ServiceRepository.Update(serviceStation);
+                //var rs = await _unitOfWork.Station_ServiceRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
                     return true;

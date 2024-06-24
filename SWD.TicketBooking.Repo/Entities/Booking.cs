@@ -24,9 +24,8 @@ namespace SWD.TicketBooking.Repo.Entities
         public string Email { get; set; } = string.Empty;
         public DateTime BookingTime { get; set; } = DateTime.Now;
         public int Quantity { get; set; }
-        public string QRCodeImage { get; set; } = string.Empty;
-        public string QRCodeText { get; set; } = string.Empty;
-        public string QRCode {  get; set; } = string.Empty;
+        public double TotalVnpayPayment { get; set; }
+        public double TotalBalancePayment { get; set; }
         public double TotalBill { get; set; }
       /*  public double? TotalVnPayPayments { get; set; }
         public double? TotalRemainingBalance { get; set; }*/

@@ -80,8 +80,8 @@ namespace SWD.TicketBooking.Service.Services
                     TicketPrice = ticketDetail.Price,
                     TotalServicePrice = servicePrice,
                     SumOfPrice = servicePrice + ticketDetail.Price,
-                    QrCodeImage = booking.QRCodeImage,
-                    QrCode = booking.QRCode,
+                    //QrCodeImage = booking.QRCodeImage,
+                    //QrCode = booking.QRCode,
                     Status = ticketDetail.Status,
                     ServiceDetailList = serviceDetailList,
                 };
@@ -149,58 +149,58 @@ namespace SWD.TicketBooking.Service.Services
         }
 
 
-        public async Task<SearchTicketModel> SearchTicket(string QRCode, string email)
-        {
-            try
-            {
-                var checkUser = await _userRepo.GetAll().Where(u => u.Email.Equals(email)).Select(u => u.UserID).FirstOrDefaultAsync();
-                var searchTicket = new SearchTicketModel();
-                if (checkUser == Guid.Empty)
-                {
-                    return searchTicket;
-                }
-                else
-                {
-                    var check = await _bookingRepo.GetAll().Where(b => b.QRCode.Equals(QRCode) && b.UserID.Equals(checkUser)).Select(b => b.BookingID).FirstOrDefaultAsync();
-                    if (check == Guid.Empty)
-                    {
-                        return searchTicket;
-                    }
-                    else
-                    {
-                        var booking = await _bookingRepo.GetByIdAsync(check);
-                        var trip = await _bookingRepo.GetAll().Where(t => t.QRCode.Equals(QRCode)).Select(t => t.Trip).FirstOrDefaultAsync();
-                        var ticketDetail = await _ticketDetailRepo.FindByCondition(b => b.BookingID == booking.BookingID).FirstOrDefaultAsync();
-                        var services = await _ticketDetailServiceRepo.GetAll().
-                            Where(t => t.TicketDetailID == ticketDetail.TicketDetailID).
-                                            Select(ts => ts.ServiceID).ToListAsync();
+        //public async Task<SearchTicketModel> SearchTicket(string QRCode, string email)
+        //{
+        //    try
+        //    {
+        //        var checkUser = await _userRepo.GetAll().Where(u => u.Email.Equals(email)).Select(u => u.UserID).FirstOrDefaultAsync();
+        //        var searchTicket = new SearchTicketModel();
+        //        if (checkUser == Guid.Empty)
+        //        {
+        //            return searchTicket;
+        //        }
+        //        else
+        //        {
+        //            var check = await _bookingRepo.GetAll().Where(b => b.QRCode.Equals(QRCode) && b.UserID.Equals(checkUser)).Select(b => b.BookingID).FirstOrDefaultAsync();
+        //            if (check == Guid.Empty)
+        //            {
+        //                return searchTicket;
+        //            }
+        //            else
+        //            {
+        //                var booking = await _bookingRepo.GetByIdAsync(check);
+        //                var trip = await _bookingRepo.GetAll().Where(t => t.QRCode.Equals(QRCode)).Select(t => t.Trip).FirstOrDefaultAsync();
+        //                var ticketDetail = await _ticketDetailRepo.FindByCondition(b => b.BookingID == booking.BookingID).FirstOrDefaultAsync();
+        //                var services = await _ticketDetailServiceRepo.GetAll().
+        //                    Where(t => t.TicketDetailID == ticketDetail.TicketDetailID).
+        //                                    Select(ts => ts.ServiceID).ToListAsync();
 
-                        var route = await _tripRepo.GetAll().Where(x => x.TripID == trip.TripID).Select(r => r.Route_Company.Route).FirstOrDefaultAsync();
-                        var priceRs = new PriceInSearchTicketModel
-                        {
-                            Price = ticketDetail.Price,
-                            Stations = GetAllStationName(services)
-                        };
+        //                var route = await _tripRepo.GetAll().Where(x => x.TripID == trip.TripID).Select(r => r.Route_Company.Route).FirstOrDefaultAsync();
+        //                var priceRs = new PriceInSearchTicketModel
+        //                {
+        //                    Price = ticketDetail.Price,
+        //                    Stations = GetAllStationName(services)
+        //                };
 
-                        var rs = new SearchTicketModel
-                        {
-                            Price = priceRs,
-                            Trip = GetTripBaseOnModel(trip, booking, route, ticketDetail),
-                            TotalBill = booking.TotalBill,
-                            QrCodeImage = booking.QRCodeImage,
-                            QrCode = booking.QRCode
-                        };
-                        return rs;
-                    }
+        //                var rs = new SearchTicketModel
+        //                {
+        //                    Price = priceRs,
+        //                    Trip = GetTripBaseOnModel(trip, booking, route, ticketDetail),
+        //                    TotalBill = booking.TotalBill,
+        //                    QrCodeImage = booking.QRCodeImage,
+        //                    QrCode = booking.QRCode
+        //                };
+        //                return rs;
+        //            }
                 
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
 
-        }
+        //}
 
         public List<StationInSearchTicket> GetAllStationName(List<Guid> serviceID)
         {

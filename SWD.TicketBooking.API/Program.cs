@@ -24,10 +24,10 @@ namespace SWD.TicketBooking.API
 
             var app = builder.Build();
 
-            app.Lifetime.ApplicationStarted.Register(async () =>
-            {
-                await app.InitialiseDatabaseAsync();
-            });      
+            //app.Lifetime.ApplicationStarted.Register(async () =>
+            //{
+            //    await app.InitialiseDatabaseAsync();
+            //});      
             app.UseSwagger(op => op.SerializeAsV2 = false);
             app.UseSwaggerUI(options =>
             {

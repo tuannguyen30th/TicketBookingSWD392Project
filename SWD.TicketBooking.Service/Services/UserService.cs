@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
@@ -15,26 +16,27 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class UserService : IUserService
     {
-
-        private readonly IRepository<User, Guid> _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IRepository<User, Guid> _unitOfWork.UserRepository;
         private readonly IMapper _mapper;
-        private readonly IRepository<UserRole, Guid> _userRoleRepository;
+        //private readonly IRepository<UserRole, Guid> _unitOfWork.UserRoleRepository;
         public readonly IFirebaseService _firebaseService;
 
         public static int Page_Size { get; set; } = 10;
 
-        public UserService(IRepository<User, Guid> userRepository, IMapper mapper, IRepository<UserRole, Guid> userRoleRepository, IFirebaseService firebaseService)
+        public UserService(IUnitOfWork unitOfWork, IRepository<User, Guid> userRepository, IMapper mapper, IRepository<UserRole, Guid> userRoleRepository, IFirebaseService firebaseService)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
+            //_unitOfWork.UserRepository = userRepository;
             _mapper = mapper;
-            _userRoleRepository = userRoleRepository;
+            //_unitOfWork.UserRoleRepository = userRoleRepository;
             _firebaseService = firebaseService;
         }
         public async Task<List<UserModel>> GetAllUsers()
         {
             try
             {
-                var users = _userRepository.GetAll();
+                var users = _unitOfWork.UserRepository.GetAll();
                 var rs = _mapper.Map<List<UserModel>>(users);
                 return rs;
             }
@@ -48,7 +50,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
 
-                var userEntity = await _userRepository.FindByCondition(x => x.Email == email).FirstOrDefaultAsync();
+                var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).FirstOrDefaultAsync();
                 var result = _mapper.Map<UserModel>(userEntity);
 
                 if (result == null)
@@ -78,7 +80,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var userEntity = _userRepository.FindByCondition(x => x.Email == email).FirstOrDefault();
+                var userEntity = _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).FirstOrDefault();
                 var userModel = _mapper.Map<UserModel>(userEntity);
                 return userModel;
             }
@@ -93,7 +95,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 try
                 {
-                    var user = _userRepository.FindByCondition(x => x.Email == req.Email).FirstOrDefault();
+                    var user = _unitOfWork.UserRepository.FindByCondition(x => x.Email == req.Email).FirstOrDefault();
 
                     if (user != null)
                     {
@@ -102,8 +104,8 @@ namespace SWD.TicketBooking.Service.Services
                             // User exists but not verified, update OTP code
                             user.CreateDate = DateTimeOffset.Now;
                             user.OTPCode = req.OTPCode;
-                            _userRepository.Update(user);
-                            int rs = await _userRepository.Commit();
+                            _unitOfWork.UserRepository.Update(user);
+                            int rs = await _unitOfWork.UserRepository.Commit();
 
                             if (rs > 0)
                             {
@@ -124,8 +126,8 @@ namespace SWD.TicketBooking.Service.Services
 
                     // If user does not exist, create a new user and send OTP
                     var userEntity = _mapper.Map<User>(req);
-                    _userRepository.AddAsync(userEntity);
-                    int commitResult = await _userRepository.Commit();
+                    _unitOfWork.UserRepository.AddAsync(userEntity);
+                    int commitResult = await _unitOfWork.UserRepository.Commit();
 
                     if (commitResult > 0)
                     {
@@ -151,7 +153,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var user = await _userRepository.FindByCondition(u => u.Email.Equals(req.Email)).FirstOrDefaultAsync();
+                var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email.Equals(req.Email)).FirstOrDefaultAsync();
 
                 if (user == null)
                 {
@@ -164,8 +166,9 @@ namespace SWD.TicketBooking.Service.Services
                 user.OTPCode = "0";
                 user.IsVerified = true;
                 user.Status = "Active";
-                _userRepository.Update(user);
-                int result = await _userRepository.Commit();
+                _unitOfWork.UserRepository.Update(user);
+                //int result = await _unitOfWork.UserRepository.Commit();
+                int result = _unitOfWork.Complete();
 
                 if (result > 0)
                 {
@@ -185,7 +188,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var user = await _userRepository.GetByIdAsync(id);
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
                 var us = _mapper.Map<UserModel>(user);
                 return us;
             }
@@ -198,7 +201,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var existedUser = await _userRepository.FindByCondition(x => x.UserID == id).FirstOrDefaultAsync();
+                var existedUser = await _unitOfWork.UserRepository.FindByCondition(x => x.UserID == id).FirstOrDefaultAsync();
                 if (existedUser != null)
                 {
 
@@ -232,8 +235,9 @@ namespace SWD.TicketBooking.Service.Services
                             throw new InternalServerErrorException($"Failed to upload new image:");
                         }
 
-                        _userRepository.Update(existedUser);
-                        _userRepository.Commit();
+                        _unitOfWork.UserRepository.Update(existedUser);
+                        //await _unitOfWork.UserRepository.Commit();
+                        _unitOfWork.Complete();
                         var update = _mapper.Map<UpdateUserModel>(existedUser);
                         return (update, "OK");
                     }

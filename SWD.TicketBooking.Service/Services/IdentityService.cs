@@ -11,22 +11,25 @@ using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
+using SWD.TicketBooking.Repo.UnitOfWork;
 
 
 namespace SWD.TicketBooking.Service.Services;
 
 public class IdentityService
 {
+    private readonly IUnitOfWork _unitOfWork;
     private readonly JwtSettings _jwtSettings;
-    private readonly IRepository<User, int> _userRepository;
-    private readonly IRepository<UserRole, int> _userRoleRepository;
+    //private readonly IRepository<User, int> _unitOfWork.UserRepository;
+    //private readonly IRepository<UserRole, int> _unitOfWork.UserRoleRepository;
     private readonly IFirebaseService _firebaseService;
 
-    public IdentityService(IOptions<JwtSettings> jwtSettingsOptions, IRepository<User, int> userRepository, IRepository<UserRole, int> userRoleRepository, IFirebaseService firebaseService)
+    public IdentityService(IUnitOfWork unitOfWork, IOptions<JwtSettings> jwtSettingsOptions, IRepository<User, int> userRepository, IRepository<UserRole, int> userRoleRepository, IFirebaseService firebaseService)
     {
-        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
+        //_unitOfWork.UserRepository = userRepository;
         _jwtSettings = jwtSettingsOptions.Value;
-        _userRoleRepository = userRoleRepository;
+        //_unitOfWork.UserRoleRepository = userRoleRepository;
         _firebaseService = firebaseService;
     }
 
@@ -35,13 +38,13 @@ public class IdentityService
         try
         {
 
-            var user = await _userRepository.FindByCondition(u => u.Email == req.Email).FirstOrDefaultAsync();
+            var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email == req.Email).FirstOrDefaultAsync();
             if (user is not null)
             {
                 throw new BadRequestException("username or email already exists");
             }
 
-            var userAdd = await _userRepository.AddAsync(new User
+            var userAdd = await _unitOfWork.UserRepository.AddAsync(new User
             {
                 UserID = Guid.NewGuid(),
                 Email = req.Email,
@@ -55,7 +58,8 @@ public class IdentityService
                 Avatar = "https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o/AVATAR_DEFAULT%2Fdc5551cc-b063-45d8-86e0-84ec6b7d2af6?alt=media&token=8f897d9b-bc83-45e2-9102-f0056f93a914",
                 RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387"),
             });
-            var res = await _userRepository.Commit();
+            //var res = await _unitOfWork.UserRepository.Commit();
+            var res = _unitOfWork.Complete();
             /*  var imagePath = FirebasePathName.AVATAR + $"{userAdd.UrlGuidID}";
               var imageUploadResult = await _firebaseService.UploadFileToFirebase("https://res.cloudinary.com/dkdl8asci/image/upload/v1711506064/canhcut_zpazas.webp?fbclid=IwZXh0bgNhZW0CMTAAAR27ufM-uhy8i9s-S-aAXmlIyJEt2-qP9EUhcXMzP9TSbdyoA4ifW-t4zzk_aem_AbJfJkMqTauRCYn09gIF1SWycsbwalv7be8u-ufHN4nWqlVljdcG-DAPaC1w0B7RieBjNDYOXJ_mzsLOS4Th4rTQ", imagePath);
               if (imageUploadResult.IsSuccess)
@@ -63,8 +67,8 @@ public class IdentityService
                       userAdd.Avatar = (string)imageUploadResult.Result;
                   }
 
-               _userRepository.Update(userAdd);
-              var rs = await _userRepository.Commit();*/
+               _unitOfWork.UserRepository.Update(userAdd);
+              var rs = await _unitOfWork.UserRepository.Commit();*/
             return res > 0;
         }
         catch (Exception ex)
@@ -78,7 +82,7 @@ public class IdentityService
     {
         try
         {
-            var user = await _userRepository.FindByCondition(u => u.Email == email).FirstOrDefaultAsync();
+            var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email == email).FirstOrDefaultAsync();
             var hash = SecurityUtil.Hash(password);
             if (user != null && user.Password.Equals(hash) && user.IsVerified == false)
             {
@@ -93,7 +97,7 @@ public class IdentityService
                 throw new NotFoundException("Không tìm thấy user!");
             }
 
-            var userRole = await _userRoleRepository.FindByCondition(ur => ur.RoleID == user.RoleID).FirstOrDefaultAsync();
+            var userRole = await _unitOfWork.UserRoleRepository.FindByCondition(ur => ur.RoleID == user.RoleID).FirstOrDefaultAsync();
             user.UserRole = userRole!;
 
             if (!user.Password.Equals(hash))
@@ -125,7 +129,7 @@ public class IdentityService
         try
         {
             var utcNow = DateTime.UtcNow;
-            var userRole = _userRoleRepository.FindByCondition(u => u.RoleID == user.RoleID).FirstOrDefault();
+            var userRole = _unitOfWork.UserRoleRepository.FindByCondition(u => u.RoleID == user.RoleID).FirstOrDefault();
             var authClaims = new List<Claim>
           {
               new(JwtRegisteredClaimNames.NameId, user.UserID.ToString()),

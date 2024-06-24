@@ -5,6 +5,7 @@ using QRCoder;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.Exceptions;
@@ -18,19 +19,21 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class BookingService : IBookingService
     {
-        private readonly IRepository<Booking, Guid> _bookingRepository;
-        private readonly IRepository<User, Guid> _userRepository;
-        private readonly IRepository<TicketDetail, Guid> _ticketDetailRepository;
-        private readonly IRepository<TicketDetail_Service, Guid> _ticketDetailServiceRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IRepository<Booking, Guid> _unitOfWork.BookingRepository;
+        //private readonly IRepository<User, Guid> _unitOfWork.UserRepository;
+        //private readonly IRepository<TicketDetail, Guid> _unitOfWork.TicketDetailRepository;
+        //private readonly IRepository<TicketDetail_Service, Guid> _unitOfWork.TicketDetail_ServiceRepository;
         private readonly IPaymentGatewayService _paymentGatewayService;
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
-        public BookingService(IFirebaseService firebaseService, IPaymentGatewayService paymentGatewayService, IRepository<Booking, Guid> bookingRepository, IRepository<TicketDetail, Guid> ticketDetailRepository, IRepository<TicketDetail_Service, Guid> ticketDetailServiceRepository, IMapper mapper)
+        public BookingService(IUnitOfWork unitOfWork, IFirebaseService firebaseService, IPaymentGatewayService paymentGatewayService, IRepository<Booking, Guid> bookingRepository, IRepository<TicketDetail, Guid> ticketDetailRepository, IRepository<TicketDetail_Service, Guid> ticketDetailServiceRepository, IMapper mapper)
         {
-            _ticketDetailRepository = ticketDetailRepository;
-            _ticketDetailServiceRepository = ticketDetailServiceRepository;
-            _bookingRepository = bookingRepository;
+            _unitOfWork = unitOfWork;
+            //_unitOfWork.TicketDetailRepository = ticketDetailRepository;
+            //_unitOfWork.TicketDetail_ServiceRepository = ticketDetailServiceRepository;
+            //_unitOfWork.BookingRepository = bookingRepository;
             _paymentGatewayService = paymentGatewayService;
             _firebaseService = firebaseService;
             _mapper = mapper;
@@ -98,8 +101,8 @@ namespace SWD.TicketBooking.Service.Services
                         Status = SD.BOOKING_NOTCOMPLETED,
                     };
 
-                    await _bookingRepository.AddAsync(newBooking);
-                    await _bookingRepository.Commit();
+                    await _unitOfWork.BookingRepository.AddAsync(newBooking);
+                    //await _unitOfWork.BookingRepository.Commit();
                     foreach (var ticketDetailItem in bookingModel.AddOrUpdateTicketModels)
                     {
                         if (ticketDetailItem.TicketType_TripID == null
@@ -117,7 +120,7 @@ namespace SWD.TicketBooking.Service.Services
                             SeatCode = ticketDetailItem.SeatCode,
                             Status = SD.NOTPAYING_TICKET
                         };
-                        var ticketRs = await _ticketDetailRepository.AddAsync(newTicketDetail);
+                        var ticketRs = await _unitOfWork.TicketDetailRepository.AddAsync(newTicketDetail);
 
                         if (ticketDetailItem.AddOrUpdateServiceModels != null && ticketDetailItem.AddOrUpdateServiceModels.Any())
                         {
@@ -140,16 +143,17 @@ namespace SWD.TicketBooking.Service.Services
                                     Price = ticketService.Price,
                                     Status = SD.NOTPAYING_TICKETSERVICE
                                 };
-                                await _ticketDetailServiceRepository.AddAsync(newTicketService);
+                                await _unitOfWork.TicketDetail_ServiceRepository.AddAsync(newTicketService);
                             }
-                            await _ticketDetailServiceRepository.Commit();
+                            await _unitOfWork.TicketDetail_ServiceRepository.Commit();
                         }
                         else
                         {
                             isValid = false;
                         }
                     }
-                    await _bookingRepository.Commit();
+                    //await _unitOfWork.BookingRepository.Commit();
+                    _unitOfWork.Complete();
                     scope.Complete();
                     var payment = new PaymentInformationModel
                     {
@@ -175,7 +179,7 @@ namespace SWD.TicketBooking.Service.Services
                 var result = new ActionOutcome();
                 var mailBooking = new List<SendMailBookingModel.MailBookingModel>();
                 string qr = GenerateCode();
-                var findBooking = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).Include(_ => _.Trip.Route_Company.Route).FirstOrDefaultAsync();
+                var findBooking = await _unitOfWork.BookingRepository.FindByCondition(_ => _.BookingID == bookingID).Include(_ => _.Trip.Route_Company.Route).FirstOrDefaultAsync();
                 if (findBooking == null)
                 {
                     throw new NotFoundException("Not Found!");
@@ -184,32 +188,33 @@ namespace SWD.TicketBooking.Service.Services
                 findBooking.Status = SD.ACTIVE;
                 findBooking.PaymentMethod = SD.PM_CASH;
                 findBooking.Status = SD.BOOKING_COMPLETED;
-                findBooking.QRCode = qr;
+                //findBooking.QRCode = qr;
                 var imagePathQr = FirebasePathName.BOOKINGQR + $"{findBooking.BookingID}";
                 var imageUploadQrResult = await _firebaseService.UploadFileToFirebase(GenerateQRCode(qr), imagePathQr);
-                if (imageUploadQrResult.IsSuccess)
-                {
-                    findBooking.QRCodeImage = (string)imageUploadQrResult.Result;
-                }
-                _bookingRepository.Update(findBooking);
-                var findTicket = await _ticketDetailRepository.GetAll().Include(_ => _.Booking).Where(_ => _.BookingID == bookingID).ToListAsync();
+                //if (imageUploadQrResult.IsSuccess)
+                //{
+                //    findBooking.QRCodeImage = (string)imageUploadQrResult.Result;
+                //}
+                _unitOfWork.BookingRepository.Update(findBooking);
+                var findTicket = await _unitOfWork.TicketDetailRepository.GetAll().Include(_ => _.Booking).Where(_ => _.BookingID == bookingID).ToListAsync();
                 foreach (var ticket in findTicket)
                 {
                     ticket.Status = SD.UNUSED_TICKET;
-                    _ticketDetailRepository.Update(ticket);
-                    var findService = await _ticketDetailServiceRepository.GetAll().Where(_ => _.TicketDetailID == ticket.TicketDetailID).ToListAsync();
+                    _unitOfWork.TicketDetailRepository.Update(ticket);
+                    var findService = await _unitOfWork.TicketDetail_ServiceRepository.GetAll().Where(_ => _.TicketDetailID == ticket.TicketDetailID).ToListAsync();
                     foreach (var service in findService)
                     {
                         service.Status = SD.PAYING_TICKETSERVICE;
-                        _ticketDetailServiceRepository.Update(service);
+                        _unitOfWork.TicketDetail_ServiceRepository.Update(service);
                     }
                 }
-                await _bookingRepository.Commit();
-                await _ticketDetailRepository.Commit();
-                await _ticketDetailServiceRepository.Commit();
+                //await _unitOfWork.BookingRepository.Commit();
+                //await _unitOfWork.TicketDetailRepository.Commit();
+                //await _unitOfWork.TicketDetail_ServiceRepository.Commit();
+                _unitOfWork.Complete();
                 foreach (var ticket in findTicket)
                 {
-                    var mailBookingServices = await _ticketDetailServiceRepository
+                    var mailBookingServices = await _unitOfWork.TicketDetail_ServiceRepository
                                                     .GetAll()
                                                     .Where(_ => _.TicketDetailID == ticket.TicketDetailID)
                                                     .Select(_ => new SendMailBookingModel.MailBookingServiceModel
@@ -227,7 +232,7 @@ namespace SWD.TicketBooking.Service.Services
                         StartDate = findBooking.Trip.StartTime.ToString("yyyy-MM-dd"),
                         SeatCode = ticket.SeatCode,
                         TotalBill = findBooking.TotalBill.ToString("C"),
-                        QrCodeImage = findBooking.QRCodeImage,
+                        //QrCodeImage = findBooking.QRCodeImage,
                         MailBookingServices = mailBookingServices
                     };
                    mailBooking.Add(mailBookingModel);
@@ -245,7 +250,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var result = new ActionOutcome();
-                var getEmail = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).FirstOrDefaultAsync();
+                var getEmail = await _unitOfWork.BookingRepository.FindByCondition(_ => _.BookingID == bookingID).FirstOrDefaultAsync();
                 if (getEmail == null)
                 {
                     throw new NotFoundException("Not Found!");
@@ -265,7 +270,7 @@ namespace SWD.TicketBooking.Service.Services
             {   
                
                 var result = new ActionOutcome();
-                var getEmail = await _bookingRepository.FindByCondition(_ => _.BookingID == bookingID).Select(_ => _.Email).FirstOrDefaultAsync();
+                var getEmail = await _unitOfWork.BookingRepository.FindByCondition(_ => _.BookingID == bookingID).Select(_ => _.Email).FirstOrDefaultAsync();
                 if (getEmail == null)
                 {
                     throw new NotFoundException("Not Found!");

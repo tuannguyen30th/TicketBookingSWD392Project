@@ -6,20 +6,23 @@ using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Utilities;
 using SWD.TicketBooking.Service.IServices;
+using SWD.TicketBooking.Repo.UnitOfWork;
 
 
 namespace SWD.TicketBooking.Service.Services
 {
     public class ServiceService : IServiceService
     {
-        private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _serviceRepository;
-        private readonly IRepository<Station_Service, Guid> _stationServiceRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> _unitOfWork.ServiceRepository;
+        //private readonly IRepository<Station_Service, Guid> _unitOfWork.Station_ServiceRepository;
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
-        public ServiceService(IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
+        public ServiceService(IUnitOfWork unitOfWork, IRepository<SWD.TicketBooking.Repo.Entities.Service, Guid> serviceRepository, IRepository<Station_Service, Guid> stationServiceRepository, IFirebaseService firebaseService, IMapper mapper)
         {
-            _serviceRepository = serviceRepository;
-            _stationServiceRepository = stationServiceRepository;
+            _unitOfWork = unitOfWork;
+            //_unitOfWork.ServiceRepository = serviceRepository;
+            //_unitOfWork.Station_ServiceRepository = stationServiceRepository;
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
@@ -28,7 +31,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExistedName = await _serviceRepository.GetAll().Where(_ => _.ServiceTypeID == createServiceModel.ServiceTypeID && _.Name.ToLower().Trim().Equals(createServiceModel.Name.ToLower())).FirstOrDefaultAsync();
+                var checkExistedName = await _unitOfWork.ServiceRepository.GetAll().Where(_ => _.ServiceTypeID == createServiceModel.ServiceTypeID && _.Name.ToLower().Trim().Equals(createServiceModel.Name.ToLower())).FirstOrDefaultAsync();
                 if (checkExistedName != null)
                 {
                     throw new BadRequestException("Service name existed");
@@ -41,8 +44,9 @@ namespace SWD.TicketBooking.Service.Services
                     ServiceTypeID = createServiceModel.ServiceTypeID,
                     Status = SD.ACTIVE
                 };
-                await _serviceRepository.AddAsync(service);
-                var rs = await _serviceRepository.Commit();
+                await _unitOfWork.ServiceRepository.AddAsync(service);
+                //var rs = await _unitOfWork.ServiceRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 return rs;
             }
             catch (Exception ex)
@@ -55,13 +59,13 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var service = await _serviceRepository.GetByIdAsync(serviceID);
+                var service = await _unitOfWork.ServiceRepository.GetByIdAsync(serviceID);
                 if (service == null)
                 {
                     throw new NotFoundException("Service not found.");
                 }
 
-                var checkExistedName = await _serviceRepository.GetAll()
+                var checkExistedName = await _unitOfWork.ServiceRepository.GetAll()
                                       .Where(_ => _.ServiceTypeID == updateServiceModel.ServiceTypeID
                                        && _.Name.ToLower().Trim().Equals(updateServiceModel.Name.ToLower())
                                        && _.ServiceID != serviceID)
@@ -74,8 +78,9 @@ namespace SWD.TicketBooking.Service.Services
 
                 service.Name = updateServiceModel.Name;
                 service.ServiceTypeID = updateServiceModel.ServiceTypeID;            
-                _serviceRepository.Update(service);
-                var rs = await _serviceRepository.Commit();
+                _unitOfWork.ServiceRepository.Update(service);
+                //var rs = await _unitOfWork.ServiceRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 return rs;
             }
             catch (Exception ex)
@@ -88,14 +93,15 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var service = await _serviceRepository.GetByIdAsync(serviceID);
+                var service = await _unitOfWork.ServiceRepository.GetByIdAsync(serviceID);
                 if (service == null)
                 {
                     throw new NotFoundException("Service not found.");
                 }
                 service.Status = SD.INACTIVE;
-                _serviceRepository.Update(service);
-                var rs = await _serviceRepository.Commit();
+                _unitOfWork.ServiceRepository.Update(service);
+                //var rs = await _unitOfWork.ServiceRepository.Commit();
+                var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
                     return true;
