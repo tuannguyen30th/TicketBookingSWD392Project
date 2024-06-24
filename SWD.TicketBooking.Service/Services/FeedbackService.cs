@@ -27,12 +27,16 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkHadBooked = _unitOfWork.BookingRepository.FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID).FirstOrDefaultAsync();
+                var checkHadBooked = _unitOfWork.BookingRepository
+                                                .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID)
+                                                .FirstOrDefaultAsync();
                 if (checkHadBooked == null)
                 {
                     throw new BadRequestException("Not had booked this Trip yet!");
                 }
-                var checkHadRated = await _unitOfWork.FeedbackRepository.FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID).FirstOrDefaultAsync();
+                var checkHadRated = await _unitOfWork.FeedbackRepository
+                                                     .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID)
+                                                     .FirstOrDefaultAsync();
                 if (checkHadRated != null)
                 {
                     throw new BadRequestException("Had rated before!");
@@ -41,7 +45,10 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new BadRequestException("The point does not suitable!");
                 }
-                var getTemplateID = await _unitOfWork.TripRepository.FindByCondition(_ => _.TripID == ratingModel.TripID).Select(_ => _.TemplateID).FirstOrDefaultAsync();
+                var getTemplateID = await _unitOfWork.TripRepository
+                                                     .FindByCondition(_ => _.TripID == ratingModel.TripID)
+                                                     .Select(_ => _.TemplateID)
+                                                     .FirstOrDefaultAsync();
 
                 var newRating = new Feedback
                 {
@@ -93,25 +100,30 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var existedTrip = await _unitOfWork.TripRepository.FindByCondition(x=>x.TemplateID == tripID && x.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).FirstOrDefaultAsync();
+                var existedTrip = await _unitOfWork.TripRepository
+                                                   .FindByCondition(x=>x.TemplateID == tripID && x.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                   .FirstOrDefaultAsync();
                 if (existedTrip != null)
                 {
-                    var feedback = await _unitOfWork.FeedbackRepository.FindByCondition(x => x.TemplateID == tripID)
-                                 .ToListAsync();
+                    var feedback = await _unitOfWork.FeedbackRepository
+                                                    .FindByCondition(x => x.TemplateID == tripID)
+                                                    .ToListAsync();
                     var feedbacks = new List<Feedback>();
                     if (filter == 0)
                     {
-                         feedbacks = await _unitOfWork.FeedbackRepository.FindByCondition(x => x.TemplateID == tripID)
-                                 .Skip((pageNumber - 1) * pageSize)                                
-                                 .Take(pageSize)                                                   
-                                 .ToListAsync();                                                   
+                         feedbacks = await _unitOfWork.FeedbackRepository
+                                                      .FindByCondition(x => x.TemplateID == tripID)
+                                                      .Skip((pageNumber - 1) * pageSize)                                
+                                                      .Take(pageSize)                                                   
+                                                      .ToListAsync();                                                   
                     }                                                                              
                     else                                                                           
                     {                                                                              
-                         feedbacks = await _unitOfWork.FeedbackRepository.FindByCondition(x => x.TemplateID == tripID && (x.Rating == filter))
-                                 .Skip((pageNumber - 1) * pageSize)
-                                 .Take(pageSize)
-                                 .ToListAsync();
+                         feedbacks = await _unitOfWork.FeedbackRepository
+                                                      .FindByCondition(x => x.TemplateID == tripID && (x.Rating == filter))
+                                                      .Skip((pageNumber - 1) * pageSize)
+                                                      .Take(pageSize)
+                                                      .ToListAsync();
                     }
 
                     var rs = new List<FeedbackModel>();
@@ -123,7 +135,11 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         var user = await _unitOfWork.UserRepository.GetByIdAsync(fb.UserID);
 
-                        var listImage = await _unitOfWork.Feedback_ImageRepository.GetAll().Where(x => x.FeedbackID == fb.FeedbackID).Select(x => x.ImageUrl).ToListAsync();
+                        var listImage = await _unitOfWork.Feedback_ImageRepository
+                                                         .GetAll()
+                                                         .Where(x => x.FeedbackID == fb.FeedbackID)
+                                                         .Select(x => x.ImageUrl)
+                                                         .ToListAsync();
                         var fbModel = new FeedbackModel
                         {
                             Avt = user.Avatar,

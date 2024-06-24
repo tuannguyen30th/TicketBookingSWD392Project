@@ -56,10 +56,10 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var stationServices = await _unitOfWork.Station_ServiceRepository
-                                        .FindByCondition(_ => _.StationID == stationID && _.Service.ServiceTypeID == serviceTypeID && _.Service.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-                                        .Include(_ => _.Service)
-                                        .ThenInclude(_ => _.ServiceType)
-                                        .ToListAsync();
+                                                       .FindByCondition(_ => _.StationID == stationID && _.Service.ServiceTypeID == serviceTypeID && _.Service.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                       .Include(_ => _.Service)
+                                                       .ThenInclude(_ => _.ServiceType)
+                                                       .ToListAsync();
 
                 var serviceModelsTasks = stationServices.Select(async _ => new ServiceModel
                 {

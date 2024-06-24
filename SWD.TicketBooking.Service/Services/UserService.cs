@@ -10,6 +10,7 @@ using SWD.TicketBooking.Service.Dtos.Auth;
 using SWD.TicketBooking.Service.Dtos.User;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
+using SWD.TicketBooking.Service.Utilities;
 using System.Transactions;
 
 namespace SWD.TicketBooking.Service.Services
@@ -46,12 +47,14 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
 
-                var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).FirstOrDefaultAsync();
+                var userEntity = await _unitOfWork.UserRepository
+                                                  .FindByCondition(x => x.Email == email)
+                                                  .FirstOrDefaultAsync();
                 var result = _mapper.Map<UserModel>(userEntity);
 
                 if (result == null)
                 {
-                    throw new NotFoundException("Cannot find user");
+                    throw new NotFoundException(SD.Notification.NotFound("User"));
                 }
 
                 if (result.OTPCode == "0" && result.IsVerified == true)
@@ -137,7 +140,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 catch (BadRequestException ex)
                 {
-                    throw ex; // Re-throw custom exceptions without wrapping
+                    throw ex; 
                 }
                 catch (Exception ex)
                 {
@@ -163,7 +166,6 @@ namespace SWD.TicketBooking.Service.Services
                 user.IsVerified = true;
                 user.Status = "Active";
                 _unitOfWork.UserRepository.Update(user);
-                //int result = await _unitOfWork.UserRepository.Commit();
                 int result = _unitOfWork.Complete();
 
                 if (result > 0)

@@ -40,6 +40,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
+
         [HttpGet("managed-bookings/vnpay-ipn")]
         public async Task<IActionResult> VNPayIPN(Guid bookingId)
         {
@@ -109,7 +110,7 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = await _bookingService.GetBooking(bookingID);
             return Ok(rs);
         }
-
+      
         private string BookingSend(List<MailBookingModel> mailBookingResponses)
         {
             StringBuilder emailBody = new StringBuilder();

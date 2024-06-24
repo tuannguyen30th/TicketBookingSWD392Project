@@ -41,15 +41,19 @@
         {
             public static string NotFound(string entity)
             {
-                return $"The {entity} was not found".ToUpper();
+                return $"KHÔNG TÌM THẤY {entity}!".ToUpper();
             }
-            public static string NotFoundByField(string fieldName, string entity)
+            public static string Existed(string entity, string fieldName)
             {
-                return $"The {entity} with field name {fieldName} was not found".ToUpper();
+                return $"ĐÃ TỒN TẠI {entity} VỚI TÊN TRƯỜNG {fieldName}!".ToUpper();
             }
-            public static string BadRequest(string entity, string issue)
+            public static string NotFoundByField( string entity, string fieldName)
             {
-                return $"Bad Request: The {entity} has an issue - {issue}".ToUpper();
+                return $"KHÔNG TÌM THẤY {entity} VỚI TÊN TRƯỜNG {fieldName}!".ToUpper();
+            }
+            public static string Internal(string entity, string issue)
+            {
+                return $"VẤN ĐỀ XẢY RA VỚI {entity} - {issue}!".ToUpper();
             }
         }
 

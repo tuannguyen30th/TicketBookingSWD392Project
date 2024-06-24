@@ -27,7 +27,10 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExistedName = await _unitOfWork.ServiceRepository.GetAll().Where(_ => _.ServiceTypeID == createServiceModel.ServiceTypeID && _.Name.ToLower().Trim().Equals(createServiceModel.Name.ToLower())).FirstOrDefaultAsync();
+                var checkExistedName = await _unitOfWork.ServiceRepository
+                                                        .GetAll()
+                                                        .Where(_ => _.ServiceTypeID == createServiceModel.ServiceTypeID && _.Name.ToLower().Trim().Equals(createServiceModel.Name.ToLower()))
+                                                        .FirstOrDefaultAsync();
                 if (checkExistedName != null)
                 {
                     throw new BadRequestException("Service name existed");
@@ -60,11 +63,12 @@ namespace SWD.TicketBooking.Service.Services
                     throw new NotFoundException("Service not found.");
                 }
 
-                var checkExistedName = await _unitOfWork.ServiceRepository.GetAll()
-                                      .Where(_ => _.ServiceTypeID == updateServiceModel.ServiceTypeID
-                                       && _.Name.ToLower().Trim().Equals(updateServiceModel.Name.ToLower())
-                                       && _.ServiceID != serviceID)
-                                      .FirstOrDefaultAsync();
+                var checkExistedName = await _unitOfWork.ServiceRepository
+                                                        .GetAll()
+                                                        .Where(_ => _.ServiceTypeID == updateServiceModel.ServiceTypeID
+                                                                 && _.Name.ToLower().Trim().Equals(updateServiceModel.Name.ToLower())
+                                                                 && _.ServiceID != serviceID)
+                                                        .FirstOrDefaultAsync();
 
                 if (checkExistedName != null)
                 {
@@ -94,7 +98,6 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 service.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.ServiceRepository.Update(service);
-                //var rs = await _unitOfWork.ServiceRepository.Commit();
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {

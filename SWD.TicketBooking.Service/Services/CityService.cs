@@ -60,7 +60,10 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _unitOfWork.CityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.CityRepository
+                                                    .GetAll()
+                                                    .Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                    .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
                     throw new BadRequestException("Company name existed");
@@ -73,7 +76,7 @@ namespace SWD.TicketBooking.Service.Services
                 });
                 if (company == null)
                 {
-                    throw new InternalServerErrorException("Cannot create");
+                    throw new InternalServerErrorException(SD.Notification.Internal("Company", "Create"));
                 }
                 var rs = _unitOfWork.Complete();
                 if(rs >  0)
@@ -92,17 +95,23 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkExisted = await _unitOfWork.CityRepository.GetAll().Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).FirstOrDefaultAsync();
+                var checkExisted = await _unitOfWork.CityRepository
+                                                    .GetAll()
+                                                    .Where(_ => _.Name == model.CityName && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                    .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new BadRequestException("City name already existed");
+                    throw new BadRequestException(SD.Notification.Existed("City", "Name"));
                 }
 
-                var entity = await _unitOfWork.CityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.CityRepository
+                                              .GetAll()
+                                              .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CityID == cityId)
+                                              .FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
-                    throw new NotFoundException("Cannot find city");
+                    throw new NotFoundException(SD.Notification.NotFound("City"));
                 }
 
                 entity.Name = model.CityName;
@@ -111,7 +120,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException("Cannot update");
+                    throw new InternalServerErrorException(SD.Notification.Internal("City","Update"));
                 }
                 var rs = _unitOfWork.Complete();
                 if(rs > 0)
@@ -131,11 +140,14 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {                
-                var entity = await _unitOfWork.CityRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CityID == cityId).FirstOrDefaultAsync();
+                var entity = await _unitOfWork.CityRepository
+                                              .GetAll()
+                                              .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.CityID == cityId)
+                                              .FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
-                    throw new NotFoundException("Cannot find company");
+                    throw new NotFoundException(SD.Notification.NotFound("City"));
                 }
 
                 entity.Status = status;
@@ -144,7 +156,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new Exception("Cannot update");
+                    throw new InternalServerErrorException(SD.Notification.Internal("City", "Update"));
                 }
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
