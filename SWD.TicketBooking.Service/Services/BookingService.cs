@@ -98,7 +98,7 @@ namespace SWD.TicketBooking.Service.Services
                         Email = bookingModel.AddOrUpdateBookingModel.Email,
                         Quantity = bookingModel.AddOrUpdateBookingModel.Quantity,
                         TotalBill = bookingModel.AddOrUpdateBookingModel.TotalBill,
-                        Status = SD.BOOKING_NOTCOMPLETED,
+                        Status = SD.BookingStatus.PAYING_BOOKING,
                     };
 
                     await _unitOfWork.BookingRepository.AddAsync(newBooking);
@@ -118,7 +118,7 @@ namespace SWD.TicketBooking.Service.Services
                             BookingID = newBooking.BookingID,
                             Price = ticketDetailItem.Price,
                             SeatCode = ticketDetailItem.SeatCode,
-                            Status = SD.NOTPAYING_TICKET
+                            Status = SD.Booking_TicketStatus.NOTPAYING_TICKET
                         };
                         var ticketRs = await _unitOfWork.TicketDetailRepository.AddAsync(newTicketDetail);
 
@@ -141,7 +141,7 @@ namespace SWD.TicketBooking.Service.Services
                                     ServiceID = ticketService.ServiceID,
                                     Quantity = ticketService.Quantity,
                                     Price = ticketService.Price,
-                                    Status = SD.NOTPAYING_TICKETSERVICE
+                                    Status = SD.Booking_ServiceStatus.NOTPAYING_TICKETSERVICE
                                 };
                                 await _unitOfWork.TicketDetail_ServiceRepository.AddAsync(newTicketService);
                             }
@@ -185,9 +185,9 @@ namespace SWD.TicketBooking.Service.Services
                     throw new NotFoundException("Not Found!");
                 }
                 findBooking.BookingTime = DateTime.Now;
-                findBooking.Status = SD.ACTIVE;
-                findBooking.PaymentMethod = SD.PM_CASH;
-                findBooking.Status = SD.BOOKING_COMPLETED;
+                findBooking.Status = SD.GeneralStatus.ACTIVE;
+                findBooking.PaymentMethod = SD.BookingStatus.PM_VNPAY;
+                findBooking.PaymentStatus = SD.BookingStatus.PAYING_BOOKING;
                 //findBooking.QRCode = qr;
                 var imagePathQr = FirebasePathName.BOOKINGQR + $"{findBooking.BookingID}";
                 var imageUploadQrResult = await _firebaseService.UploadFileToFirebase(GenerateQRCode(qr), imagePathQr);
@@ -199,12 +199,12 @@ namespace SWD.TicketBooking.Service.Services
                 var findTicket = await _unitOfWork.TicketDetailRepository.GetAll().Include(_ => _.Booking).Where(_ => _.BookingID == bookingID).ToListAsync();
                 foreach (var ticket in findTicket)
                 {
-                    ticket.Status = SD.UNUSED_TICKET;
+                    ticket.Status = SD.Booking_TicketStatus.UNUSED_TICKET;
                     _unitOfWork.TicketDetailRepository.Update(ticket);
                     var findService = await _unitOfWork.TicketDetail_ServiceRepository.GetAll().Where(_ => _.TicketDetailID == ticket.TicketDetailID).ToListAsync();
                     foreach (var service in findService)
                     {
-                        service.Status = SD.PAYING_TICKETSERVICE;
+                        service.Status = SD.Booking_ServiceStatus.PAYING_TICKETSERVICE;
                         _unitOfWork.TicketDetail_ServiceRepository.Update(service);
                     }
                 }

@@ -91,7 +91,7 @@ namespace SWD.TicketBooking.Service.Services
                 var trips = await _unitOfWork.TripRepository.GetAll()
                                                 .Include(t => t.Route_Company.Route.FromCity)
                                                 .Include(t => t.Route_Company.Route.ToCity)
-                                                .Where(t => t.Status.Trim().Equals(SD.ACTIVE) && topTrips.Select(_ => _.TripID).Contains(t.TripID))
+                                                .Where(t => t.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && topTrips.Select(_ => _.TripID).Contains(t.TripID))
                                                 .ToListAsync();
 
                 var rs = new List<PopularTripModel>();
@@ -138,7 +138,7 @@ namespace SWD.TicketBooking.Service.Services
                     .Include(_ => _.Route_Company.Route)
                     .Where(_ => _.Route_Company.Route.FromCityID == fromCity
                                 && _.Route_Company.Route.ToCityID == toCity
-                                && _.StartTime.Date == startDate && _.Status.Trim().Equals(SD.ACTIVE));
+                                && _.StartTime.Date == startDate && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE));
 
                 var totalTrips = await tripsQuery.CountAsync();
                 if (totalTrips == 0)
@@ -226,7 +226,7 @@ namespace SWD.TicketBooking.Service.Services
                     IsTemplate = true,
                     StartTime = createTrip.StartTime,
                     EndTime = createTrip.EndTime,
-                    Status = SD.ACTIVE
+                    Status = SD.GeneralStatus.ACTIVE
                 };
                 await _unitOfWork.TripRepository.AddAsync(trip);
                 //await _unitOfWork.TripRepository.Commit();
@@ -247,7 +247,7 @@ namespace SWD.TicketBooking.Service.Services
                         TripPictureID = Guid.NewGuid(),
                         TripID = trip.TripID,
                         ImageUrl = (string)imageUploadResult.Result,
-                        Status = SD.ACTIVE
+                        Status = SD.GeneralStatus.ACTIVE
                     };
 
                     await _unitOfWork.TripPictureRepository.AddAsync(newtripImage);
@@ -270,7 +270,7 @@ namespace SWD.TicketBooking.Service.Services
                         TripID = trip.TripID,
                         Price = ticketType.Price,
                         Quantity = ticketType.Quantity,
-                        Status = SD.ACTIVE
+                        Status = SD.GeneralStatus.ACTIVE
                     };
                     await _unitOfWork.TicketType_TripRepository.AddAsync(newTicketType_Trip);
                 }
@@ -286,7 +286,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         TripID = trip.TripID,
                         UtilityID = tripUtility.UtilityID,
-                        Status = SD.ACTIVE
+                        Status = SD.GeneralStatus.ACTIVE
                     };
                     await _unitOfWork.Trip_UtilityRepository.AddAsync(newTrip_Utility);
                 }
@@ -336,7 +336,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new NotFoundException("No exist!");
                 }
-                trip.Status = SD.INACTIVE;
+                trip.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.TripRepository.Update(trip);
                 //var rs = await _unitOfWork.TripPictureRepository.Commit();
                 var rs = _unitOfWork.Complete();
@@ -356,7 +356,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var bookingDetails = await _unitOfWork.TicketDetailRepository
-                    .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.ACTIVE) && _.TicketType_Trip.Status.Trim().Equals(SD.ACTIVE))
+                    .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.TicketType_Trip.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                     .Select(_ => new
                     {
                         _.Booking.Trip.Route_Company.RouteID,
@@ -373,7 +373,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
 
                 var ticketTypeTrips = await _unitOfWork.TicketType_TripRepository
-                    .FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.ACTIVE))
+                    .FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                     .Select(_ => new GetSeatBookedFromTripModel.TicketType_TripModel
                     {
                         TicketType_TripID = _.TicketType_TripID,
@@ -386,7 +386,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new BadRequestException("Not Found!");
                 }
-                var totalSeat = await _unitOfWork.TicketType_TripRepository.FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.ACTIVE)).SumAsync(_ => _.Quantity);
+                var totalSeat = await _unitOfWork.TicketType_TripRepository.FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).SumAsync(_ => _.Quantity);
                 var firstBooking = bookingDetails.First();
                 var seatBookeds = bookingDetails.Select(_ => _.SeatCode).ToList();
                 var result = new GetSeatBookedFromTripModel
@@ -413,7 +413,7 @@ namespace SWD.TicketBooking.Service.Services
         public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
         {
             var utilities = await _unitOfWork.Trip_UtilityRepository
-               .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.ACTIVE))
+               .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                .Select(tu => tu.Utility)
                .ToListAsync();
             var result = new List<UtilityModel>();
