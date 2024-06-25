@@ -31,17 +31,23 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var fromCities = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).Select(_ => _.FromCity )
-                                                       .Distinct()
-                                                       .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })   
-                                                       .OrderBy(x => x.CityName)
-                                                       .ToListAsync();
+                var fromCities = await _unitOfWork.RouteRepository
+                                                  .GetAll()
+                                                  .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                  .Select(_ => _.FromCity )
+                                                  .Distinct()
+                                                  .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })   
+                                                  .OrderBy(x => x.CityName)
+                                                  .ToListAsync();
 
-                var toCities = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).Select(_ => _.ToCity)
-                                                       .Distinct()
-                                                       .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })
-                                                       .OrderBy(x => x.CityName)
-                                                       .ToListAsync();
+                var toCities = await _unitOfWork.RouteRepository
+                                                .GetAll()
+                                                .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                .Select(_ => _.ToCity)
+                                                .Distinct()
+                                                .Select(_ => new CityInfo { CityID = _.CityID, CityName = _.Name })
+                                                .OrderBy(x => x.CityName)
+                                                .ToListAsync();
 
                 var rs =  new CityModel
                 {

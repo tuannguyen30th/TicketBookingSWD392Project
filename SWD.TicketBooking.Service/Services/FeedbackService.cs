@@ -32,18 +32,18 @@ namespace SWD.TicketBooking.Service.Services
                                                 .FirstOrDefaultAsync();
                 if (checkHadBooked == null)
                 {
-                    throw new BadRequestException("NGƯỜI DÙNG CHƯA ĐẶT ĐI CHUYẾN XE NÀY!");
+                    throw new BadRequestException("Người dùng chưa đặt đi chuyến xe này!".ToUpper());
                 }
                 var checkHadRated = await _unitOfWork.FeedbackRepository
                                                      .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID)
                                                      .FirstOrDefaultAsync();
                 if (checkHadRated != null)
                 {
-                    throw new BadRequestException("NGƯỜI DÙNG ĐÃ ĐÁNH GIÁ CHUYẾN XE NÀY!");
+                    throw new BadRequestException("Người dùng đã đánh giá chuyến xe này!".ToUpper());
                 }
                 if (ratingModel.Rating > 5 || ratingModel.Rating <= 0)
                 {
-                    throw new BadRequestException("ĐIỂM ĐÁNH GIÁ KHÔNG PHÙ HỢP!");
+                    throw new BadRequestException("Điểm đánh giá không phù hợp!".ToUpper());
                 }
                 var getTemplateID = await _unitOfWork.TripRepository
                                                      .FindByCondition(_ => _.TripID == ratingModel.TripID)
@@ -70,16 +70,15 @@ namespace SWD.TicketBooking.Service.Services
                         Feedback_Image_ID = Guid.NewGuid(),
                         FeedbackID = newRating.FeedbackID,
                     };
-                    await _unitOfWork.Feedback_ImageRepository.AddAsync(newFeedbackImage);
                     var imagePath = FirebasePathName.RATING + $"{newFeedbackImage.Feedback_Image_ID}";
                     var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
                     if (!imageUploadResult.IsSuccess)
                     {
-                        throw new InternalServerErrorException("LỖI KHI TẢI ẢNH LÊN FIREBASE");
+                        throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi tải lên"));
                     }
 
                     newFeedbackImage.ImageUrl = (string)imageUploadResult.Result;
-                     _unitOfWork.Feedback_ImageRepository.Update(newFeedbackImage);
+                    await _unitOfWork.Feedback_ImageRepository.AddAsync(newFeedbackImage);
                 };
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
@@ -157,7 +156,7 @@ namespace SWD.TicketBooking.Service.Services
                         TotalRating = averageRating
                     };
                 }
-                else throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
+                else throw new NotFoundException(SD.Notification.NotFound("Chuyến xe"));
             }catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);

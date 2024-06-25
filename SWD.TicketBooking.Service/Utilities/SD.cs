@@ -45,11 +45,11 @@
             }
             public static string Existed(string entity, string fieldName)
             {
-                return $"ĐÃ TỒN TẠI {entity} VỚI TÊN TRƯỜNG {fieldName}!".ToUpper();
+                return $"ĐÃ TỒN TẠI {fieldName} TRONG {entity}!".ToUpper();
             }
             public static string NotFoundByField( string entity, string fieldName)
             {
-                return $"KHÔNG TÌM THẤY {entity} VỚI TÊN TRƯỜNG {fieldName}!".ToUpper();
+                return $"KHÔNG TÌM THẤY {fieldName} TRONG {entity}!".ToUpper();
             }
             public static string Internal(string entity, string issue)
             {

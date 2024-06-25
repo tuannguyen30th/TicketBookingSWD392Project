@@ -73,7 +73,7 @@ namespace SWD.TicketBooking.Service.Services
                 });
                 if (company == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Tạo mới"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Khi tạo mới công ty"));
                 }
                 var rs = await _unitOfWork.CompanyRepository.Commit();
                 return rs;
@@ -113,7 +113,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Cập nhật"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Khi cập nhật công ty"));
                 }
                 var rs = _unitOfWork.Complete();
                 return rs;
@@ -144,7 +144,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Cập nhật"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Khi cập nhật công ty"));
                 }
                 var rs = _unitOfWork.Complete();
                 return rs;

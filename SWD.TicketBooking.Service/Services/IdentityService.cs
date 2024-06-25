@@ -38,7 +38,7 @@ public class IdentityService
             var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email == req.Email).FirstOrDefaultAsync();
             if (user is not null)
             {
-                throw new BadRequestException("TÊN NGƯỜI DÙNG HOẶC EMAIL ĐÃ TỒN TẠI!");
+                throw new BadRequestException("Email đã tồn tại!".ToUpper());
             }
 
             var userAdd = await _unitOfWork.UserRepository.AddAsync(new User
@@ -50,7 +50,7 @@ public class IdentityService
                 UserName = req.UserName,
                 Address = req.Address,
                 PhoneNumber = req.PhoneNumber,
-                Status = "Active",
+                Status = SD.GeneralStatus.ACTIVE,
                 IsVerified = false,
                 Avatar = "https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o/AVATAR_DEFAULT%2Fdc5551cc-b063-45d8-86e0-84ec6b7d2af6?alt=media&token=8f897d9b-bc83-45e2-9102-f0056f93a914",
                 RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387"),
@@ -83,7 +83,7 @@ public class IdentityService
             }
             if (user is null)
             {
-                throw new NotFoundException(SD.Notification.NotFound("NGƯỜI DÙNG"));
+                throw new NotFoundException(SD.Notification.NotFound("Người dùng"));
             }
 
             var userRole = await _unitOfWork.UserRoleRepository
@@ -148,7 +148,7 @@ public class IdentityService
         }
         catch (Exception ex)
         {
-            throw new BadRequestException("LỖI XẢY RA KHI TẠO TOKEN!");
+            throw new BadRequestException("Lỗi xảy ra khi tạo mới Token!".ToUpper());
         }
     }
 

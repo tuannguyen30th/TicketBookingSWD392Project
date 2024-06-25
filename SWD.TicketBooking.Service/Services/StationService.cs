@@ -95,12 +95,12 @@ namespace SWD.TicketBooking.Service.Services
                             });
                     if (station == null)
                     {
-                        throw new InternalServerErrorException(SD.Notification.Internal("TRẠM DỪNG CHÂN", "KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
+                        throw new InternalServerErrorException(SD.Notification.Internal("Trạm", "Khi không thể tạo mới trạm này"));
                     }
                     _unitOfWork.Complete();
                     return "OK";
                 }
-                else throw new BadRequestException(SD.Notification.Existed("TRẠM DỪNG CHÂN", "TRẠM ĐÃ TỒN TẠI"));
+                else throw new BadRequestException("Trạm này đã tồn tại!".ToUpper());
 
             } catch (Exception ex)
             {
@@ -118,7 +118,7 @@ namespace SWD.TicketBooking.Service.Services
                                               .FirstOrDefaultAsync();
                 if (check == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("TRẠM DỪNG CHÂN"));
+                    throw new NotFoundException(SD.Notification.NotFound("Trạm"));
                 }
                 else
                 {
@@ -147,7 +147,8 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var route = await _unitOfWork.TripRepository
                                              .FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) 
-                                                               && s.Route_Company.Route.Status.Equals(SD.GeneralStatus.ACTIVE)).Include(_ => _.Route_Company)
+                                                               && s.Route_Company.Route.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                             .Include(_ => _.Route_Company)
                                              .Select(s=>s.Route_Company.RouteID).FirstOrDefaultAsync();
                 var stations = await _unitOfWork.Station_RouteRepository
                                                 .FindByCondition(_ => _.RouteID == route)

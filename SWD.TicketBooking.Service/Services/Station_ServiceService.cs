@@ -31,7 +31,7 @@ namespace SWD.TicketBooking.Service.Services
                                                     .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new BadRequestException("DỊCH VỤ NÀY ĐÃ TỒN TẠI Ở TRẠM NÀY!");
+                    throw new BadRequestException("Dịch vụ đã tồn tại ở trạm này!".ToUpper());
                 }
                 var serviceStation = new Station_Service
                 {
@@ -42,15 +42,13 @@ namespace SWD.TicketBooking.Service.Services
                     ImageUrl = "",
                     Status = SD.GeneralStatus.ACTIVE
                 };
-                await _unitOfWork.Station_ServiceRepository.AddAsync(serviceStation);
                 var imagePath = FirebasePathName.SERVICE_STATION + $"{serviceStation.Station_ServiceID}";
                 var imageUploadResult = await _firebaseService.UploadFileToFirebase(createServiceInStationModel.ImageUrl, imagePath);
                 if (imageUploadResult.IsSuccess)
                 {
                     serviceStation.ImageUrl = (string)imageUploadResult.Result;
                 }
-
-                _unitOfWork.Station_ServiceRepository.Update(serviceStation);
+                await _unitOfWork.Station_ServiceRepository.AddAsync(serviceStation);
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
@@ -83,7 +81,7 @@ namespace SWD.TicketBooking.Service.Services
 
                     if (checkDuplicate)
                     {
-                        throw new BadRequestException("DỊCH VỤ NÀY ĐÃ TỒN TẠI Ở TRẠM NÀY!");
+                        throw new BadRequestException(SD.Notification.Existed("Trạm", "Dịch vụ"));
                     }
                 }
 
@@ -99,7 +97,7 @@ namespace SWD.TicketBooking.Service.Services
                         var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
                         if (!deleteResult.IsSuccess)
                         {
-                            throw new InternalServerErrorException("LỖI KHI XÓA HÌNH ẢNH!");
+                            throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi xóa"));
                         }
                     }
                     var imagePath = $"{FirebasePathName.SERVICE_STATION}{serviceStation.Station_ServiceID}";
@@ -111,7 +109,7 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     else
                     {
-                        throw new InternalServerErrorException("LỖI KHI TẢI LÊN ẢNH!");
+                        throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi tải lên"));
                     }
 
                     _unitOfWork.Station_ServiceRepository.Update(serviceStation);
@@ -136,7 +134,7 @@ namespace SWD.TicketBooking.Service.Services
                                                       .GetByIdAsync(Station_ServiceID);
                 if (serviceStation == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("DỊCH VỤ"));
+                    throw new NotFoundException(SD.Notification.NotFound("Dịch vụ"));
                 }
                 serviceStation.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.Station_ServiceRepository.Update(serviceStation);

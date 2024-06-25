@@ -49,7 +49,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (checkCompanyExisted == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("nhà xe"));
+                    throw new NotFoundException(SD.Notification.NotFound("Nhà xe"));
                 }
 
                 var checkRouteExisted = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.FromCityID == model.FromCityID
@@ -69,17 +69,20 @@ namespace SWD.TicketBooking.Service.Services
                     });
                     if (route == null)
                     {
-                        throw new InternalServerErrorException(SD.Notification.Internal("Tuyến đường", "Lỗi khi tạo mới tuyến đường"));
+                        throw new InternalServerErrorException(SD.Notification.Internal("Tuyến đường", "Khi tạo mới tuyến đường"));
                     }
 
                     checkRouteExisted = route;
                 }
                 else if (!checkRouteExisted.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                 {
-                    throw new BadRequestException("TUYẾN ĐƯỜNG KHÔNG KHẢ DỤNG!!".ToUpper());
+                    throw new BadRequestException("Tuyến đường không khả dụng!".ToUpper());
                 }
 
-                var checkRouteCompanyExisted = await _unitOfWork.Route_CompanyRepository.GetAll().Where(_ => _.RouteID == checkRouteExisted.RouteID && _.CompanyID == model.CompanyID).FirstOrDefaultAsync();
+                var checkRouteCompanyExisted = await _unitOfWork.Route_CompanyRepository
+                                                                .GetAll()
+                                                                .Where(_ => _.RouteID == checkRouteExisted.RouteID && _.CompanyID == model.CompanyID)
+                                                                .FirstOrDefaultAsync();
 
                 if (checkRouteCompanyExisted == null && checkRouteExisted != null)
                 {
@@ -93,7 +96,7 @@ namespace SWD.TicketBooking.Service.Services
 
                     if (routeCompany == null)
                     {
-                        throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG CỦA NHÀ XE", "KHÔNG THỂ TẠO MỚI TUYẾN ĐƯỜNG CHO NHÀ XE NÀY"));
+                        throw new InternalServerErrorException(SD.Notification.Internal("Tuyến đường của nhà xe", "Khi tạo mới tuyến đường cho nhà xe này"));
                     }
                     var rs = _unitOfWork.Complete();
 
@@ -101,7 +104,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 else
                 {
-                    throw new BadRequestException("ĐÃ TỒN TẠI TUYẾN ĐƯỜNG CỦA NHÀ XE NÀY!");
+                    throw new BadRequestException("Đã tồn tại tuyến đường của nhà xe này!".ToUpper());
                 }
             }
             catch (Exception ex)
@@ -121,7 +124,7 @@ namespace SWD.TicketBooking.Service.Services
                                                              && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new BadRequestException("ĐÃ TỒN TẠI TUYẾN ĐƯỜNG NÀY!");
+                    throw new BadRequestException("Đã tồn tại tuyến đường này!".ToUpper());
                 }
 
                 var entity = await _unitOfWork.RouteRepository
@@ -131,7 +134,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (entity == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("TUYẾN ĐƯỜNG"));
+                    throw new NotFoundException(SD.Notification.NotFound("Tuyến đường"));
                 }
 
                 entity.FromCityID = model.FromCityID;
@@ -143,7 +146,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG", "KHÔNG THỂ CẬP NHẬT TUYẾN ĐƯỜNG NÀY"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Tuyến đường", "Khi cập nhật tuyến đường này"));
                 }
                 var rs = _unitOfWork.Complete(); 
 
@@ -166,7 +169,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (entity == null)
                 {
-                    throw new NotFoundException("KHÔNG THỂ TÌM THẤY TUYẾN ĐƯƠNG NÀY!");
+                    throw new NotFoundException(SD.Notification.NotFound("Tuyến đường"));
                 }
 
                 entity.Status = status;
@@ -175,7 +178,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG", "KHÔNG THỂ CẬP NHẬT TRẠNG THÁI CHO TUYẾN ĐƯỜNG NÀY"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Tuyến đường", "Khi cập nhật trạng thái cho tuyến đường này"));
                 }
                 var rs = _unitOfWork.Complete();
                 return rs;

@@ -12,6 +12,7 @@ using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
 using System.Transactions;
+using static System.Net.WebRequestMethods;
 
 namespace SWD.TicketBooking.Service.Services
 {
@@ -54,12 +55,12 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (result == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("NGƯỜI DÙNG"));
+                    throw new NotFoundException(SD.Notification.NotFound("Người dùng"));
                 }
 
                 if (result.OTPCode == "0" && result.IsVerified == true)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("NGƯỜI DÙNG", "ĐÃ CÓ LỖI XẢY RA TẠO LẤY MÃ OTP"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Người dùng", "Khi tạo lấy mã OTP"));
                 }
 
                 if (result.IsVerified == false)
@@ -67,7 +68,7 @@ namespace SWD.TicketBooking.Service.Services
                     return result;
                 }
 
-                throw new InternalServerErrorException(SD.Notification.Internal("NGƯỜI DÙNG", "ĐÃ CÓ LỖI XẢY RA"));
+                throw new InternalServerErrorException("Đã có lỗi xảy ra".ToUpper());
             }
 
             catch (Exception ex)
@@ -100,7 +101,6 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         if (user.IsVerified == false)
                         {
-                            // User exists but not verified, update OTP code
                             user.CreateDate = DateTimeOffset.Now;
                             user.OTPCode = req.OTPCode;
                             _unitOfWork.UserRepository.Update(user);
@@ -109,21 +109,18 @@ namespace SWD.TicketBooking.Service.Services
                             if (rs > 0)
                             {
                                 scope.Complete();
-                                return (_mapper.Map<CreateUserReq>(user), "Send OTP successfully");
+                                return (_mapper.Map<CreateUserReq>(user), "Send OTP successfully".ToUpper());
                             }
                             else
                             {
-                                return (null, "GỬI MÃ OTP THẤT BẠI!");
+                                throw new BadRequestException("Gửi mã OTP thất bại!".ToUpper());
                             }
                         }
                         else
                         {
-                            // User is already verified
-                            throw new BadRequestException(SD.Notification.Existed("NGƯỜI DÙNG", "EMAIL"));
+                            throw new BadRequestException(SD.Notification.Existed("Người dùng", "Email"));
                         }
                     }
-
-                    // If user does not exist, create a new user and send OTP
                     var userEntity = _mapper.Map<User>(req);
                     _unitOfWork.UserRepository.AddAsync(userEntity);
                     int commitResult = await _unitOfWork.UserRepository.Commit();
@@ -131,11 +128,11 @@ namespace SWD.TicketBooking.Service.Services
                     if (commitResult > 0)
                     {
                         scope.Complete();
-                        return (_mapper.Map<CreateUserReq>(userEntity), "GỬI OTP THÀNH CÔNG!");
+                        return (_mapper.Map<CreateUserReq>(userEntity), "Gửi OTP thành công!".ToUpper());
                     }
                     else
                     {
-                        return (null, "GỬI MÃ OTP THẤT BẠI!");
+                        throw new BadRequestException("Gửi mã OTP thất bại!".ToUpper());
                     }
                 }
                 catch (BadRequestException ex)
@@ -144,7 +141,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("LỖI XẢI RA KHI GỬI MÃ OTP", ex);
+                    throw new Exception(ex.Message, ex);
                 }
             }
         }
@@ -156,25 +153,25 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (user == null)
                 {
-                    return (null, "KHÔNG THỂ TÌM THẤY EMAIL!");
+                    throw new NotFoundException("Không tìm thấy Email!".ToUpper());
                 }
                 if (!user.OTPCode.Equals(req.OTPCode))
                 {
-                    return (null, "MÃ OTP KHÔNG CHÍNH XÁC!");
+                    throw new BadRequestException("Mã OTP không chính xác!".ToUpper());
                 }
                 user.OTPCode = "0";
                 user.IsVerified = true;
-                user.Status = "Active";
+                user.Status = SD.GeneralStatus.ACTIVE;
                 _unitOfWork.UserRepository.Update(user);
                 int result = _unitOfWork.Complete();
 
                 if (result > 0)
                 {
-                    return (_mapper.Map<UserModel>(user), "XÁC MINH OTP THÀNH CÔNG!");
+                    return (_mapper.Map<UserModel>(user), "Xác minh OTP thành công!".ToUpper());
                 }
                 else
                 {
-                    return (null, "LỖI XẢY RA VỚI CƠ SỞ DỮ LIỆU!");
+                    throw new InternalServerErrorException("Lỗi xảy ra với cơ sở dữ liệu!".ToUpper());
                 }
             }
             catch (Exception ex)
@@ -218,7 +215,7 @@ namespace SWD.TicketBooking.Service.Services
                             var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
                             if (!deleteResult.IsSuccess)
                             {
-                                throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHÔNG THỂ XÓA HÌNH ẢNH"));
+                                throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi xóa"));
                             }
                         }
                         var imagePath = $"{FirebasePathName.AVATAR}{existedUser.UserID}";
@@ -230,23 +227,22 @@ namespace SWD.TicketBooking.Service.Services
                         }
                         else
                         {
-                            throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHÔNG THỂ TẢI LÊN HÌNH ẢNH"));
+                            throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi tải lên"));
                         }
 
                         _unitOfWork.UserRepository.Update(existedUser);
-                        //await _unitOfWork.UserRepository.Commit();
                         _unitOfWork.Complete();
                         var update = _mapper.Map<UpdateUserModel>(existedUser);
                         return (update, "OK");
                     }
                     else
                     {
-                        throw new BadRequestException("SAI MẬT KHẨU!");
+                        throw new BadRequestException("Sai mật khẩu!".ToUpper());
                     }
                 }
                 else
                 {
-                    throw new BadRequestException("KHÔNG THỂ TÌM THẤY NGƯỜI DÙNG");
+                    throw new BadRequestException("Không thể tìm thấy người dùng!".ToUpper());
                 }
             }
             catch (Exception ex)
@@ -262,7 +258,7 @@ namespace SWD.TicketBooking.Service.Services
                 var imageUploadResult = await _firebaseService.UploadFileToFirebase(file, imagePath);
                 if (!imageUploadResult.IsSuccess)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "LỖI KHI TẢI ẢNH LÊN FIREBASE"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi tải lên"));
                 }
                 return true;
             }

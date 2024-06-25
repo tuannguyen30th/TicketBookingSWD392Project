@@ -75,7 +75,7 @@ namespace SWD.TicketBooking.Service.Services
                     );
                 if (newUtility == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Tiện ích", "Không thể tạo mới tiện ích"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Tiện ích", "Khi tạo mới tiện ích"));
                 }
                 var result = _unitOfWork.Complete();
                 return result;
