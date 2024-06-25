@@ -33,18 +33,18 @@ namespace SWD.TicketBooking.Service.Services
                 var trip = await _unitOfWork.TripRepository.GetByIdAsync(id);
                 if (trip == null)
                 {
-                    throw new BadRequestException("Trip not found!");
+                    throw new BadRequestException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
                 else
                 {
                     var pics = await _unitOfWork.TripPictureRepository.GetAll().Where(x => x.TripID == id).Select(p => p.TripPictureID).ToListAsync();
 
                     var rs = new List<string>();
-                    foreach(var p in pics)
+                    Parallel.ForEach(pics, async (p) =>
                     {
                         var tripPic = await _unitOfWork.TripPictureRepository.GetByIdAsync(p);
                         rs.Add(tripPic.ImageUrl);
-                    };
+                    });
                     return rs;
                 }
             }
@@ -77,7 +77,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 var rs = new List<PopularTripModel>();
 
-                foreach(var t in trips)
+                Parallel.ForEach(trips, async (t) =>
                 {
                      var listImg = await GetPictureOfTrip(t.TripID);
 
@@ -100,8 +100,8 @@ namespace SWD.TicketBooking.Service.Services
                         PriceFrom = minPriceByTrip.GetValueOrDefault(t.TripID, 0),
                     };
 
-                    rs.Add(popuTrip);                 
-                };
+                    rs.Add(popuTrip);
+                });
 
                 return rs;
             }
@@ -139,7 +139,7 @@ namespace SWD.TicketBooking.Service.Services
                 var totalTrips = await tripsQuery.CountAsync();
                 if (totalTrips == 0)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Trips"));
+                    throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
                 var totalPages = (int)Math.Ceiling((double)totalTrips / pageSize);
 
@@ -149,7 +149,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 var searchTripModels = new List<SearchTripModel>();
 
-                foreach(var trip in trips)
+                Parallel.ForEach(trips, async (trip) =>
                 {
                     var feedbacks = await _unitOfWork.FeedbackRepository
                                                      .FindByCondition(_ => _.TemplateID == trip.TemplateID)
@@ -204,7 +204,7 @@ namespace SWD.TicketBooking.Service.Services
                         EndTime = trip.EndTime.ToString("HH:mm")
                     };
                     searchTripModels.Add(searchTrip);
-                };
+                });
          
                     return new PagedResult<SearchTripModel>
                     {
@@ -226,11 +226,11 @@ namespace SWD.TicketBooking.Service.Services
             {
                 if (createTrip.StartTime == null || createTrip.EndTime == null || createTrip.ImageUrls == null)
                 {
-                    throw new BadRequestException("Not empty in any fields");
+                    throw new BadRequestException("TẤT CẢ TRƯỜNG PHẢI CÓ DỮ LIỆU!");
                 }
                 if(createTrip.StartTime > createTrip.EndTime)
                 {
-                    throw new BadRequestException("StartTime must greater than EndTime!");
+                    throw new BadRequestException("THỜI GIAN BẮT ĐẦU PHẢI SAU THỜI GIAN KẾT THÚC!");
                 }
                 var trip = new Trip
                 {
@@ -243,14 +243,14 @@ namespace SWD.TicketBooking.Service.Services
                 };
                 await _unitOfWork.TripRepository.AddAsync(trip);
                 var imageUrls = createTrip.ImageUrls;
-                foreach(var imageUrl in imageUrls)
+                Parallel.ForEach(imageUrls, async (imageUrl) =>
                 {
                     var guidPath = Guid.NewGuid().ToString();
                     var imagePath = FirebasePathName.TRIP + $"{guidPath}";
                     var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
                     if (!imageUploadResult.IsSuccess)
                     {
-                        throw new Exception("Error uploading files to Firebase.");
+                        throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "LỖI KHI TẢI ANH LÊN FIREBASE"));
                     }
 
                     var newtripImage = new TripPicture
@@ -262,12 +262,12 @@ namespace SWD.TicketBooking.Service.Services
                     };
 
                     await _unitOfWork.TripPictureRepository.AddAsync(newtripImage);
-                };
-                foreach (var ticketType in createTrip.TicketType_TripModels)
+                });        
+                Parallel.ForEach(createTrip.TicketType_TripModels, async (ticketType) =>
                 {
                     if (ticketType.Price <= 0 || ticketType.Quantity <= 0)
                     {
-                        throw new BadRequestException("Error format in Price or Quantity of TicketType_Trip!");
+                        throw new BadRequestException("GIÁ VÉ VÀ SỐ LƯỢNG PHẢI LỚN HƠN 0!");
                     }
                     var newTicketType_Trip = new TicketType_Trip
                     {
@@ -278,8 +278,8 @@ namespace SWD.TicketBooking.Service.Services
                         Status = SD.GeneralStatus.ACTIVE
                     };
                     await _unitOfWork.TicketType_TripRepository.AddAsync(newTicketType_Trip);
-                };
-                foreach (var tripUtility in createTrip.Trip_UtilityModels)
+                });         
+                Parallel.ForEach(createTrip.Trip_UtilityModels, async (tripUtility) =>
                 {
 
                     var newTrip_Utility = new Trip_Utility
@@ -289,7 +289,7 @@ namespace SWD.TicketBooking.Service.Services
                         Status = SD.GeneralStatus.ACTIVE
                     };
                     await _unitOfWork.Trip_UtilityRepository.AddAsync(newTrip_Utility);
-                };
+                });
                 var rs = _unitOfWork.Complete();
                 if (rs < 0)
                 {
@@ -335,7 +335,7 @@ namespace SWD.TicketBooking.Service.Services
                                             .FirstOrDefaultAsync();
                 if (trip == null)
                 {
-                    throw new NotFoundException("No exist!");
+                    throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
                 trip.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.TripRepository.Update(trip);
@@ -369,7 +369,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (bookingDetails == null || !bookingDetails.Any())
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Booking Details"));
+                    throw new NotFoundException(SD.Notification.NotFound("CHI TIẾT HÓA ĐƠN"));
                 }
 
                 var ticketTypeTrips = await _unitOfWork.TicketType_TripRepository
@@ -384,7 +384,7 @@ namespace SWD.TicketBooking.Service.Services
                     .ToListAsync();
                 if (ticketTypeTrips == null || !ticketTypeTrips.Any())
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Ticket Details"));
+                    throw new NotFoundException(SD.Notification.NotFound("CHI TIẾT VÉ"));
                 }
                 var totalSeat = await _unitOfWork.TicketType_TripRepository
                                                  .FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
@@ -419,7 +419,7 @@ namespace SWD.TicketBooking.Service.Services
                                              .Select(tu => tu.Utility)
                                              .ToListAsync();
             var result = new List<UtilityModel>();
-            foreach(var trip in utilities)
+            Parallel.ForEach(utilities, async (trip) =>
             {
                 var newModel = new UtilityModel
                 {
@@ -428,7 +428,7 @@ namespace SWD.TicketBooking.Service.Services
                     Status = trip.Status,
                 };
                 result.Add(newModel);
-            };
+            });
             return result;
         }
     }

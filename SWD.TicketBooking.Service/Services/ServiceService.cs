@@ -33,7 +33,7 @@ namespace SWD.TicketBooking.Service.Services
                                                         .FirstOrDefaultAsync();
                 if (checkExistedName != null)
                 {
-                    throw new BadRequestException("Service name existed");
+                    throw new BadRequestException(SD.Notification.Existed("DỊCH VỤ", "TÊN"));
                 }
 
                 var service = new SWD.TicketBooking.Repo.Entities.Service
@@ -60,7 +60,7 @@ namespace SWD.TicketBooking.Service.Services
                 var service = await _unitOfWork.ServiceRepository.GetByIdAsync(serviceID);
                 if (service == null)
                 {
-                    throw new NotFoundException("Service not found.");
+                    throw new NotFoundException(SD.Notification.NotFound("DỊCH VỤ"));
                 }
 
                 var checkExistedName = await _unitOfWork.ServiceRepository
@@ -72,7 +72,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (checkExistedName != null)
                 {
-                    throw new BadRequestException("Service name existed");
+                    throw new BadRequestException(SD.Notification.Existed("DỊCH VỤ", "TÊN"));
                 }
 
                 service.Name = updateServiceModel.Name;
@@ -83,7 +83,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error updating service", ex);
+                throw new Exception("LỖI KHI CẬP NHẬT DỊCH VỤ", ex);
             }
         }
 
@@ -94,7 +94,7 @@ namespace SWD.TicketBooking.Service.Services
                 var service = await _unitOfWork.ServiceRepository.GetByIdAsync(serviceID);
                 if (service == null)
                 {
-                    throw new NotFoundException("Service not found.");
+                    throw new NotFoundException(SD.Notification.NotFound("DỊCH VỤ"));
                 }
                 service.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.ServiceRepository.Update(service);

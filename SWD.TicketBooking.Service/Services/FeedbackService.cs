@@ -32,18 +32,18 @@ namespace SWD.TicketBooking.Service.Services
                                                 .FirstOrDefaultAsync();
                 if (checkHadBooked == null)
                 {
-                    throw new BadRequestException("Not had booked this Trip yet!");
+                    throw new BadRequestException("NGƯỜI DÙNG CHƯA ĐẶT ĐI CHUYẾN XE NÀY!");
                 }
                 var checkHadRated = await _unitOfWork.FeedbackRepository
                                                      .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID)
                                                      .FirstOrDefaultAsync();
                 if (checkHadRated != null)
                 {
-                    throw new BadRequestException("Had rated before!");
+                    throw new BadRequestException("NGƯỜI DÙNG ĐÃ ĐÁNH GIÁ CHUYẾN XE NÀY!");
                 }
                 if (ratingModel.Rating > 5 || ratingModel.Rating <= 0)
                 {
-                    throw new BadRequestException("The point does not suitable!");
+                    throw new BadRequestException("ĐIỂM ĐÁNH GIÁ KHÔNG PHÙ HỢP!");
                 }
                 var getTemplateID = await _unitOfWork.TripRepository
                                                      .FindByCondition(_ => _.TripID == ratingModel.TripID)
@@ -75,7 +75,7 @@ namespace SWD.TicketBooking.Service.Services
                     var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
                     if (!imageUploadResult.IsSuccess)
                     {
-                        throw new InternalServerErrorException("Error uploading files to Firebase.");
+                        throw new InternalServerErrorException("LỖI KHI TẢI ẢNH LÊN FIREBASE");
                     }
 
                     newFeedbackImage.ImageUrl = (string)imageUploadResult.Result;
@@ -157,7 +157,7 @@ namespace SWD.TicketBooking.Service.Services
                         TotalRating = averageRating
                     };
                 }
-                else throw new NotFoundException("Trip not found");
+                else throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
             }catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);

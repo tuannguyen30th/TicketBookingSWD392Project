@@ -12,6 +12,7 @@ using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Repo.UnitOfWork;
+using SWD.TicketBooking.Service.Utilities;
 
 
 namespace SWD.TicketBooking.Service.Services;
@@ -37,7 +38,7 @@ public class IdentityService
             var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email == req.Email).FirstOrDefaultAsync();
             if (user is not null)
             {
-                throw new BadRequestException("username or email already exists");
+                throw new BadRequestException("TÊN NGƯỜI DÙNG HOẶC EMAIL ĐÃ TỒN TẠI!");
             }
 
             var userAdd = await _unitOfWork.UserRepository.AddAsync(new User
@@ -77,12 +78,12 @@ public class IdentityService
                 return new LoginResponse
                 {
                     Verified = user.IsVerified,
-                    Message = "Email đã đăng kí nhưng chưa xác thực!"
+                    Message = "Email đã đăng kí nhưng chưa xác thực!".ToUpper()
                 };
             }
             if (user is null)
             {
-                throw new NotFoundException("Không tìm thấy user!");
+                throw new NotFoundException(SD.Notification.NotFound("NGƯỜI DÙNG"));
             }
 
             var userRole = await _unitOfWork.UserRoleRepository
@@ -95,7 +96,7 @@ public class IdentityService
                 return new LoginResponse
                 {
                     Verified = user.IsVerified,
-                    Message = "Email hoặc Password không đúng!"
+                    Message = "Email hoặc Password không đúng!".ToUpper()
                 };
             }
 
@@ -104,7 +105,7 @@ public class IdentityService
                 Authenticated = true,
                 Token = CreateJwtToken(user),
                 Verified = user.IsVerified,
-                Message = "Đăng nhập thành công"
+                Message = "Đăng nhập thành công".ToUpper()
             };
         }
         catch (Exception ex)
@@ -147,7 +148,7 @@ public class IdentityService
         }
         catch (Exception ex)
         {
-            throw new BadRequestException("l?i");
+            throw new BadRequestException("LỖI XẢY RA KHI TẠO TOKEN!");
         }
     }
 

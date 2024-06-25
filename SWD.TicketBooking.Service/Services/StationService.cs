@@ -95,12 +95,12 @@ namespace SWD.TicketBooking.Service.Services
                             });
                     if (station == null)
                     {
-                        throw new BadRequestException("Cannot add new station");
+                        throw new InternalServerErrorException(SD.Notification.Internal("TRẠM DỪNG CHÂN", "KHÔNG THỂ TẠO MỚI TRẠM NÀY");
                     }
                     _unitOfWork.Complete();
                     return "OK";
                 }
-                else throw new BadRequestException("Station exited!");
+                else throw new BadRequestException(SD.Notification.Existed("TRẠM DỪNG CHÂN", "TRẠM ĐÃ TỒN TẠI");
 
             } catch (Exception ex)
             {
@@ -118,7 +118,7 @@ namespace SWD.TicketBooking.Service.Services
                                               .FirstOrDefaultAsync();
                 if (check == null)
                 {
-                    throw new NotFoundException("Station not found!");
+                    throw new NotFoundException(SD.Notification.NotFound("TRẠM DỪNG CHÂN"));
                 }
                 else
                 {

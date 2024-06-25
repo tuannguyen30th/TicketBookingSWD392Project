@@ -66,24 +66,24 @@ namespace SWD.TicketBooking.Service.Services
                                                     .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new BadRequestException("Company name existed");
+                    throw new BadRequestException(SD.Notification.Existed("Thành phố", "Tên"));
                 }
-                var company = await _unitOfWork.CityRepository.AddAsync(new City
+                var city = await _unitOfWork.CityRepository.AddAsync(new City
                 {
                     CityID = Guid.NewGuid(),
                     Name = model.CityName,
                     Status = SD.GeneralStatus.ACTIVE
                 });
-                if (company == null)
+                if (city == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Company", "Create"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Nhà xe", "Không thể tạo mới thành phố"));
                 }
                 var rs = _unitOfWork.Complete();
                 if(rs >  0)
                 {
                    return rs;
                 }
-                else throw new BadRequestException("Fail!");
+                else throw new InternalServerErrorException(SD.Notification.Internal("Thành phố", "Lỗi xảy ra khi lưu vào cơ sở dữ liệu"));
             }
             catch (Exception ex)
             {
@@ -101,7 +101,7 @@ namespace SWD.TicketBooking.Service.Services
                                                     .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new BadRequestException(SD.Notification.Existed("City", "Name"));
+                    throw new BadRequestException(SD.Notification.Existed("Thành phố", "Tên"));
                 }
 
                 var entity = await _unitOfWork.CityRepository
@@ -111,7 +111,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (entity == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("City"));
+                    throw new NotFoundException(SD.Notification.NotFound("Thành phố"));
                 }
 
                 entity.Name = model.CityName;
@@ -120,14 +120,14 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("City","Update"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Thành phố","Cập nhật"));
                 }
                 var rs = _unitOfWork.Complete();
                 if(rs > 0)
                 {
                     return rs;
                 }
-                else throw new BadRequestException("Fail!");
+                else throw new InternalServerErrorException(SD.Notification.Internal("Thành phố", "Không thể cập nhật thành phố"));
 
             }
             catch (Exception ex)
@@ -147,7 +147,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (entity == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("City"));
+                    throw new NotFoundException(SD.Notification.NotFound("Thành phố"));
                 }
 
                 entity.Status = status;
@@ -156,14 +156,14 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("City", "Update"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("Thành phố", "Cập nhật trạng thái"));
                 }
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
                     return rs;
                 }
-                else throw new BadRequestException("Fail!");
+                else throw new InternalServerErrorException(SD.Notification.Internal("Thành phố", "Không thể cập nhật trạng thái thành phố"));
 
             }
             catch (Exception ex)
