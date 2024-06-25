@@ -27,8 +27,8 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var checkHadBooked = _unitOfWork.BookingRepository
-                                                .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID)
+                var checkHadBooked = await _unitOfWork.BookingRepository
+                                                .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID && _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
                                                 .FirstOrDefaultAsync();
                 if (checkHadBooked == null)
                 {
@@ -63,7 +63,7 @@ namespace SWD.TicketBooking.Service.Services
                 await _unitOfWork.FeedbackRepository.AddAsync(newRating);
                
                 var imageUrls = ratingModel.Files;
-                Parallel.ForEach(imageUrls, async (imageUrl) =>
+                foreach(var imageUrl in imageUrls)
                 {
                     var newFeedbackImage = new Feedback_Image
                     {
@@ -78,10 +78,9 @@ namespace SWD.TicketBooking.Service.Services
                         throw new InternalServerErrorException("Error uploading files to Firebase.");
                     }
 
-                    newFeedbackImage.FeedbackID = newRating.FeedbackID;
                     newFeedbackImage.ImageUrl = (string)imageUploadResult.Result;
-                    _unitOfWork.Feedback_ImageRepository.Update(newFeedbackImage);
-                });
+                     _unitOfWork.Feedback_ImageRepository.Update(newFeedbackImage);
+                };
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
@@ -131,7 +130,7 @@ namespace SWD.TicketBooking.Service.Services
                     var totalRating = feedback.Sum(fb => fb.Rating);
                     var averageRating = feedback.Count > 0 ? (double)totalRating / feedback.Count : 0;
 
-                    Parallel.ForEach(feedbacks, async (fb) =>
+                    foreach(var fb in feedbacks)
                     {
                         var user = await _unitOfWork.UserRepository.GetByIdAsync(fb.UserID);
 
@@ -151,7 +150,7 @@ namespace SWD.TicketBooking.Service.Services
                         };
 
                         rs.Add(fbModel);
-                    });
+                    };
                     return new TripFeedbackModel
                     {
                         Feedbacks = rs,
