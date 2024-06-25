@@ -54,12 +54,12 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (result == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("User"));
+                    throw new NotFoundException(SD.Notification.NotFound("NGƯỜI DÙNG"));
                 }
 
                 if (result.OTPCode == "0" && result.IsVerified == true)
                 {
-                    throw new InternalServerErrorException("Some error occur");
+                    throw new InternalServerErrorException(SD.Notification.Internal("NGƯỜI DÙNG", "ĐÃ CÓ LỖI XẢY RA TẠO LẤY MÃ OTP"));
                 }
 
                 if (result.IsVerified == false)
@@ -67,7 +67,7 @@ namespace SWD.TicketBooking.Service.Services
                     return result;
                 }
 
-                throw new InternalServerErrorException("Some error occur");
+                throw new InternalServerErrorException(SD.Notification.Internal("NGƯỜI DÙNG", "ĐÃ CÓ LỖI XẢY RA"));
             }
 
             catch (Exception ex)
@@ -113,13 +113,13 @@ namespace SWD.TicketBooking.Service.Services
                             }
                             else
                             {
-                                return (null, "Failed to send OTP");
+                                return (null, "GỬI MÃ OTP THẤT BẠI!");
                             }
                         }
                         else
                         {
                             // User is already verified
-                            throw new BadRequestException("Email is already existed!");
+                            throw new BadRequestException(SD.Notification.Existed("NGƯỜI DÙNG", "EMAIL"));
                         }
                     }
 
@@ -131,11 +131,11 @@ namespace SWD.TicketBooking.Service.Services
                     if (commitResult > 0)
                     {
                         scope.Complete();
-                        return (_mapper.Map<CreateUserReq>(userEntity), "Send OTP successfully");
+                        return (_mapper.Map<CreateUserReq>(userEntity), "GỬI OTP THÀNH CÔNG!");
                     }
                     else
                     {
-                        return (null, "Failed to send OTP");
+                        return (null, "GỬI MÃ OTP THẤT BẠI!");
                     }
                 }
                 catch (BadRequestException ex)
@@ -144,7 +144,7 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("An error occurred while sending OTP.", ex);
+                    throw new Exception("LỖI XẢI RA KHI GỬI MÃ OTP", ex);
                 }
             }
         }
@@ -156,11 +156,11 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (user == null)
                 {
-                    return (null, "Email not found!");
+                    return (null, "KHÔNG THỂ TÌM THẤY EMAIL!");
                 }
                 if (!user.OTPCode.Equals(req.OTPCode))
                 {
-                    return (null, "OTP is not correct");
+                    return (null, "MÃ OTP KHÔNG CHÍNH XÁC!");
                 }
                 user.OTPCode = "0";
                 user.IsVerified = true;
@@ -170,11 +170,11 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (result > 0)
                 {
-                    return (_mapper.Map<UserModel>(user), "OTP verified successfully");
+                    return (_mapper.Map<UserModel>(user), "XÁC MINH OTP THÀNH CÔNG!");
                 }
                 else
                 {
-                    return (null, "Failed to commit changes");
+                    return (null, "LỖI XẢY RA VỚI CƠ SỞ DỮ LIỆU!");
                 }
             }
             catch (Exception ex)
@@ -218,7 +218,7 @@ namespace SWD.TicketBooking.Service.Services
                             var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
                             if (!deleteResult.IsSuccess)
                             {
-                                throw new InternalServerErrorException($"Failed to delete old image");
+                                throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHÔNG THỂ XÓA HÌNH ẢNH"));
                             }
                         }
                         var imagePath = $"{FirebasePathName.AVATAR}{existedUser.UserID}";
@@ -230,7 +230,7 @@ namespace SWD.TicketBooking.Service.Services
                         }
                         else
                         {
-                            throw new InternalServerErrorException($"Failed to upload new image:");
+                            throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHÔNG THỂ TẢI LÊN HÌNH ẢNH"));
                         }
 
                         _unitOfWork.UserRepository.Update(existedUser);
@@ -241,12 +241,12 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     else
                     {
-                        throw new BadRequestException("Password is not true!");
+                        throw new BadRequestException("SAI MẬT KHẨU!");
                     }
                 }
                 else
                 {
-                    throw new BadRequestException("User not found!");
+                    throw new BadRequestException("KHÔNG THỂ TÌM THẤY NGƯỜI DÙNG");
                 }
             }
             catch (Exception ex)
@@ -262,7 +262,7 @@ namespace SWD.TicketBooking.Service.Services
                 var imageUploadResult = await _firebaseService.UploadFileToFirebase(file, imagePath);
                 if (!imageUploadResult.IsSuccess)
                 {
-                    throw new InternalServerErrorException("Error uploading files to Firebase.");
+                    throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "LỖI KHI TẢI ẢNH LÊN FIREBASE"));
                 }
                 return true;
             }

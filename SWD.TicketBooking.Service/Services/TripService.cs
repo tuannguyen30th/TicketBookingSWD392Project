@@ -33,7 +33,7 @@ namespace SWD.TicketBooking.Service.Services
                 var trip = await _unitOfWork.TripRepository.GetByIdAsync(id);
                 if (trip == null)
                 {
-                    throw new BadRequestException("Trip not found!");
+                    throw new BadRequestException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
                 else
                 {
@@ -101,7 +101,6 @@ namespace SWD.TicketBooking.Service.Services
                     };
 
                     rs.Add(popuTrip);
-                    //haha
                 });
 
                 return rs;
@@ -140,7 +139,7 @@ namespace SWD.TicketBooking.Service.Services
                 var totalTrips = await tripsQuery.CountAsync();
                 if (totalTrips == 0)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Trips"));
+                    throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
                 var totalPages = (int)Math.Ceiling((double)totalTrips / pageSize);
 
@@ -227,11 +226,11 @@ namespace SWD.TicketBooking.Service.Services
             {
                 if (createTrip.StartTime == null || createTrip.EndTime == null || createTrip.ImageUrls == null)
                 {
-                    throw new BadRequestException("Not empty in any fields");
+                    throw new BadRequestException("TẤT CẢ TRƯỜNG PHẢI CÓ DỮ LIỆU!");
                 }
                 if(createTrip.StartTime > createTrip.EndTime)
                 {
-                    throw new BadRequestException("StartTime must greater than EndTime!");
+                    throw new BadRequestException("THỜI GIAN BẮT ĐẦU PHẢI SAU THỜI GIAN KẾT THÚC!");
                 }
                 var trip = new Trip
                 {
@@ -251,7 +250,7 @@ namespace SWD.TicketBooking.Service.Services
                     var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
                     if (!imageUploadResult.IsSuccess)
                     {
-                        throw new Exception("Error uploading files to Firebase.");
+                        throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "LỖI KHI TẢI ANH LÊN FIREBASE"));
                     }
 
                     var newtripImage = new TripPicture
@@ -268,7 +267,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     if (ticketType.Price <= 0 || ticketType.Quantity <= 0)
                     {
-                        throw new BadRequestException("Error format in Price or Quantity of TicketType_Trip!");
+                        throw new BadRequestException("GIÁ VÉ VÀ SỐ LƯỢNG PHẢI LỚN HƠN 0!");
                     }
                     var newTicketType_Trip = new TicketType_Trip
                     {
@@ -336,7 +335,7 @@ namespace SWD.TicketBooking.Service.Services
                                             .FirstOrDefaultAsync();
                 if (trip == null)
                 {
-                    throw new NotFoundException("No exist!");
+                    throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
                 trip.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.TripRepository.Update(trip);
@@ -370,7 +369,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (bookingDetails == null || !bookingDetails.Any())
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Booking Details"));
+                    throw new NotFoundException(SD.Notification.NotFound("CHI TIẾT HÓA ĐƠN"));
                 }
 
                 var ticketTypeTrips = await _unitOfWork.TicketType_TripRepository
@@ -385,7 +384,7 @@ namespace SWD.TicketBooking.Service.Services
                     .ToListAsync();
                 if (ticketTypeTrips == null || !ticketTypeTrips.Any())
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Ticket Details"));
+                    throw new NotFoundException(SD.Notification.NotFound("CHI TIẾT VÉ"));
                 }
                 var totalSeat = await _unitOfWork.TicketType_TripRepository
                                                  .FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
