@@ -95,12 +95,12 @@ namespace SWD.TicketBooking.Service.Services
                             });
                     if (station == null)
                     {
-                        throw new InternalServerErrorException(SD.Notification.Internal("TRẠM DỪNG CHÂN", "KHÔNG THỂ TẠO MỚI TRẠM NÀY");
+                        throw new InternalServerErrorException(SD.Notification.Internal("TRẠM DỪNG CHÂN", "KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
                     }
                     _unitOfWork.Complete();
                     return "OK";
                 }
-                else throw new BadRequestException(SD.Notification.Existed("TRẠM DỪNG CHÂN", "TRẠM ĐÃ TỒN TẠI");
+                else throw new BadRequestException(SD.Notification.Existed("TRẠM DỪNG CHÂN", "TRẠM ĐÃ TỒN TẠI"));
 
             } catch (Exception ex)
             {
