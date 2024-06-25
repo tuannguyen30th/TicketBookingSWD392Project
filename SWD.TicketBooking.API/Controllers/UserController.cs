@@ -100,7 +100,7 @@ namespace SWD.TicketBooking.Controllers
                     var emailResult = await _emailService.SendEmailAsync(mailData);
                     if (!emailResult)
                     {
-                        throw new BadRequestException("Failed to send email.");
+                        throw new BadRequestException("Lỗi khi gửi Email!".ToUpper());
                     }
 
                     var createUser = new CreateUserReq
@@ -126,20 +126,19 @@ namespace SWD.TicketBooking.Controllers
                         {
                             return BadRequest(new SignUpResponse
                             {
-                                Messages = "Failed to send update email."
+                                Messages = "Lỗi khi gửi Email!".ToUpper()
                             });
 
                         }
                     }
-
                     return Ok(new SignUpResponse
                     {
-                        Messages = "Check your email and verify the OTP."
+                        Messages = "Kiểm tra Email của bạn và xác nhận mã OTP!".ToUpper()
                     });
                 }
                 resultFail = new SignUpResponse
                 {
-                    Messages = "Error."
+                    Messages = "Lỗi!".ToUpper()
                 };
                 return BadRequest(resultFail);
             }
@@ -149,7 +148,7 @@ namespace SWD.TicketBooking.Controllers
 
                 var resultFail = new SignUpResponse
                 {
-                    Messages = "An error occurred while sending OTP."
+                    Messages = "Lỗi khi gửi mã OTP!".ToUpper()
                 };
                 return BadRequest(resultFail);
             }
@@ -157,35 +156,8 @@ namespace SWD.TicketBooking.Controllers
         [HttpPut("managed-users/otp-code-submission")]
         public async Task<IActionResult> SubmitOTP(SubmitOTPReq req)
         {
-            try
-            {
                 var checkOTP = await _userService.SubmitOTP(req);
-                if (checkOTP.returnModel == null)
-                {
-                    return BadRequest(new GenericResponse<UserModel>
-                    {
-                        Data = null,
-                        StatusCode = System.Net.HttpStatusCode.BadRequest,
-                        Message = checkOTP.message
-                    });
-
-                }
-                return Ok(new GenericResponse<UserModel>
-                {
-                    Data = checkOTP.returnModel,
-                    StatusCode = System.Net.HttpStatusCode.OK,
-                    Message = checkOTP.message
-                });
-            }
-            catch (Exception ex) {
-                return BadRequest(new GenericResponse<UserModel>
-                {
-                    Data = null,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Message = ex.Message
-                });
-            }
-
+                return Ok(checkOTP);
         }
 
         [HttpGet("managed-users")]
@@ -252,7 +224,7 @@ namespace SWD.TicketBooking.Controllers
         >
           <p>
             Xin chào,
-            <span style=""font-weight: bold; color: #0d1226"">{fullName}</span>
+            <span style=""font-weight: bold; color: #0d1226"">{fullName}!</span>
           </p>
           <p>
             <span style=""font-weight: bold"">THE BUS JOURNEY </span>xin thông báo
@@ -260,7 +232,7 @@ namespace SWD.TicketBooking.Controllers
           </p>
           <p>
             <span>Mã xác thực của bạn là: </span
-            ><span style=""color: #0d1226; font-weight: bold"">{otp}</span>
+            ><span style=""color: #0d1226; font-weight: bold; font-size: 18px;"">{otp}</span>
           </p>
           <p>Xin chân thành cảm ơn vì bạn đã sử dụng dịch vụ của chúng tôi!</p>
           <p>Hân hạnh,</p>

@@ -41,12 +41,12 @@ namespace SWD.TicketBooking.Service.Services
                 await storage
                     .Child(pathFileName)
                     .DeleteAsync();
-                _result.Messages.Add("Delete image successful");
+                _result.Message = "Xóa file thành công!".ToUpper();
                 _result.IsSuccess = true;
             }
             catch (FirebaseStorageException ex)
             {
-                _result.Messages.Add($"Error deleting image: {ex.Message}");
+                _result.Message = $"Lỗi khi xóa file: {ex.Message}".ToUpper();
             }
             return _result;
         }
@@ -81,7 +81,7 @@ namespace SWD.TicketBooking.Service.Services
             if (file == null || file.Length == 0)
             {
                 isValid = false;
-                _result.Messages.Add("The file is empty");
+                _result.Message = "File đang bị trống!".ToUpper();
             }
             if (isValid)
             {
@@ -108,7 +108,7 @@ namespace SWD.TicketBooking.Service.Services
                 else
                 {
                     _result.IsSuccess = false;
-                    _result.Messages.Add("Upload failed");
+                    _result.Message =  "Tải file lên lỗi!".ToUpper();
                 }
             }
             return _result;
@@ -132,7 +132,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 if (file == null || file.Length == 0)
                 {
-                    _result.Messages.Add("One or more files are empty");
+                    _result.Message = "Một hoặc nhiều file bị trống!".ToUpper();
                     continue;
                 }
 
@@ -149,7 +149,7 @@ namespace SWD.TicketBooking.Service.Services
                 else
                 {
                     _result.IsSuccess = false;
-                    _result.Messages.Add($"Upload failed for file: {file.FileName}");
+                    _result.Message = $"Tải file lên bị lỗi : {file.FileName}".ToUpper();
                 }
             }
 
@@ -157,12 +157,12 @@ namespace SWD.TicketBooking.Service.Services
             if (uploadResults.Count == files.Count)
             {
                 _result.IsSuccess = true;
-                _result.Messages.Add("All files uploaded successfully");
+                _result.Message = "Tải toàn bộ file thành công!".ToUpper();
             }
             else
             {
                 _result.IsSuccess = false;
-                _result.Messages.Add("Some files failed to upload");
+                _result.Message = "Một số file bị lỗi khi tải lên!".ToUpper();
             }
 
             return _result;

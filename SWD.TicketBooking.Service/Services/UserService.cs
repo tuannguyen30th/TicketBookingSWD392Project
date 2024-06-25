@@ -145,10 +145,11 @@ namespace SWD.TicketBooking.Service.Services
                 }
             }
         }
-        public async Task<(UserModel returnModel, string message)> SubmitOTP(SubmitOTPReq req)
+        public async Task<ActionOutcome> SubmitOTP(SubmitOTPReq req)
         {
             try
             {
+                var rs = new ActionOutcome();
                 var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email.Equals(req.Email)).FirstOrDefaultAsync();
 
                 if (user == null)
@@ -164,10 +165,11 @@ namespace SWD.TicketBooking.Service.Services
                 user.Status = SD.GeneralStatus.ACTIVE;
                 _unitOfWork.UserRepository.Update(user);
                 int result = _unitOfWork.Complete();
-
+                rs.Result = _mapper.Map<UserModel>(user);
+                rs.Message = "Xác minh OTP thành công!".ToUpper();
                 if (result > 0)
                 {
-                    return (_mapper.Map<UserModel>(user), "Xác minh OTP thành công!".ToUpper());
+                    return rs;
                 }
                 else
                 {
