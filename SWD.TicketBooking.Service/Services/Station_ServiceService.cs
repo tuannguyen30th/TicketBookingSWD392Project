@@ -88,7 +88,6 @@ namespace SWD.TicketBooking.Service.Services
                 serviceStation.StationID = updateServiceInStationModel.StationID;
                 serviceStation.ServiceID = updateServiceInStationModel.ServiceID;
                 serviceStation.Price = updateServiceInStationModel.Price;
-                _unitOfWork.Station_ServiceRepository.Update(serviceStation);
                 if (updateServiceInStationModel.ImageUrl != null && updateServiceInStationModel.ImageUrl.Length > 0)
                 {
                     if (!string.IsNullOrEmpty(serviceStation.ImageUrl))
@@ -130,8 +129,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var serviceStation = await _unitOfWork.Station_ServiceRepository
-                                                      .GetByIdAsync(Station_ServiceID);
+                var serviceStation = await _unitOfWork.Station_ServiceRepository.GetByIdAsync(Station_ServiceID);
                 if (serviceStation == null)
                 {
                     throw new NotFoundException(SD.Notification.NotFound("Dịch vụ"));

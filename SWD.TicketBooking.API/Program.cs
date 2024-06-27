@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
 using SWD.TicketBooking.Service.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 
 namespace SWD.TicketBooking.API
@@ -21,7 +23,15 @@ namespace SWD.TicketBooking.API
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.InstallerServicesInAssembly(builder.Configuration);
             builder.Services.AddResponseCaching();
+           /* builder.Services.AddHttpClient();
+            builder.Services.AddIdentity<User, UserRole>()
+              .AddEntityFrameworkStores<TicketBookingDbContext>()
+              .AddDefaultTokenProviders();
 
+            builder.Services.AddScoped<IUserStore<User>, UserStore<User, UserRole, TicketBookingDbContext, Guid>>();
+            builder.Services.AddScoped<UserManager<User>>();
+            builder.Services.AddScoped<RoleManager<UserRole>>();
+            builder.Services.AddScoped<SignInManager<User>>();*/
             var app = builder.Build();
 
             //app.Lifetime.ApplicationStarted.Register(async () =>
@@ -43,6 +53,7 @@ namespace SWD.TicketBooking.API
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
+          
 
             app.UseAuthorization();
 

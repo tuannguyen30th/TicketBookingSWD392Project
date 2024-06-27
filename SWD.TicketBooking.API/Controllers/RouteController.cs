@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using SWD.TicketBooking.API.Installer;
 using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
@@ -19,6 +20,7 @@ namespace SWD.TicketBooking.API.Controllers
         private readonly IDistributedCache _cache;
         private readonly IRouteService _routeService;
         private readonly IMapper _mapper;
+        private const string FromCityToCityCacheKey = "FromCityToCity";
 
         public RouteController(ICityService cityService, IDistributedCache cache, IRouteService routeService, IMapper mapper) 
         {
@@ -28,9 +30,10 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
         }
         [HttpGet("managed-routes")]
+        [Cache(600, FromCityToCityCacheKey)]
         public async Task<IActionResult> GetFromCityToCity()
         {
-            try
+          /*  try
             {
                 string cacheKey = "FromCityToCity";
                 var cachedData = _cache.GetString(cacheKey);
@@ -39,18 +42,18 @@ namespace SWD.TicketBooking.API.Controllers
                     var cachedResponse = JsonConvert.DeserializeObject<FromCityToCityRepsonse.CityResponse>(cachedData);
                     return Ok(cachedResponse);
                 }
-
+*/
                 var dataFromService = await _cityService.GetFromCityToCity();
                 var response = _mapper.Map<FromCityToCityRepsonse.CityResponse>(dataFromService);
-                DistributedCacheEntryOptions options = new();
-                options.SetAbsoluteExpiration(new TimeSpan(0, 5, 0));
-                _cache.SetString(cacheKey, JsonConvert.SerializeObject(response), options);
+            /*    DistributedCacheEntryOptions options = new();*/
+             /*   options.SetAbsoluteExpiration(new TimeSpan(0, 5, 0));
+                _cache.SetString(cacheKey, JsonConvert.SerializeObject(response), options);*/
                 return Ok(response);
-            }
+         /*   }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
-            }
+            }*/
         }
       /*  [AllowAnonymous]
         [HttpGet("managed-routes")]
@@ -62,6 +65,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("managed-routes")]
+        [RemoveCache(FromCityToCityCacheKey)]
         public async Task<IActionResult> CreateRoute([FromBody] CreateRouteRequest req)
         {
            /* if (req.FromCityID <= 0 ||  req.ToCityID <= 0 || req.CompanyID <= 0) 

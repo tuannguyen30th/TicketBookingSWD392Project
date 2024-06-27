@@ -360,6 +360,7 @@ namespace SWD.TicketBooking.Service.Services
                                                       .Select(_ => new
                                                       {
                                                           _.Booking.Trip.Route_Company.RouteID,
+                                                          _.Booking.Trip.Route_Company.Company.Name,
                                                           _.SeatCode,
                                                           _.Booking.Trip.Route_Company.Route.StartLocation,
                                                           _.Booking.Trip.Route_Company.Route.EndLocation,
@@ -395,6 +396,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     TripID = tripID,
                     RouteID = firstBooking.RouteID,
+                    CompanyName = firstBooking.Name,
                     SeatBooked = seatBookeds,
                     TotalSeats = totalSeat,
                     StartLocation = firstBooking.StartLocation,

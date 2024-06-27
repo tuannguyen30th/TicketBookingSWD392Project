@@ -12,6 +12,12 @@ using Microsoft.AspNetCore.Identity;
 using SWD.TicketBooking.Service.Services;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.API.RequestModels;
+using Google.Apis.Auth;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using SWD.TicketBooking.Repo.Entities;
+using Google.Apis.Http;
 
 namespace SWD.TicketBooking.Booking.API;
 
@@ -22,13 +28,16 @@ public class AuthController : ControllerBase
     private readonly IdentityService _identityService;
     private readonly IEmailService _emailService;
     private readonly IUserService _userService;
+    private readonly IConfiguration _configuration;
+    private static readonly HttpClient httpClient = new HttpClient();
     private readonly IMapper _mapper;
 
-    public AuthController(IdentityService identityService, IUserService userService, IEmailService emailService, IMapper mapper)
+    public AuthController( IConfiguration configuration, IdentityService identityService, IUserService userService, IEmailService emailService, IMapper mapper)
     {
         _identityService = identityService;
         _userService = userService;
         _emailService = emailService;
+        _configuration = configuration;
         _mapper = mapper;
     }
 
@@ -117,8 +126,6 @@ public class AuthController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
         }
     }
-
-
     [AllowAnonymous]
     [HttpPost("managed-auths/sign-ins")]
     public async Task<IActionResult> Login([FromBody] LoginRequest req)
@@ -136,7 +143,52 @@ public class AuthController : ControllerBase
         };
         return Ok(res);
     }
+    [HttpPost("managed-auths/access-token-verification")]
+    public async Task<IActionResult> CheckAccessToken([FromBody] string accessToken)
+    {
+        try
+        {
+            var tokenInfoUrl = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={accessToken}";
+            var response = await httpClient.GetAsync(tokenInfoUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenInfo = await response.Content.ReadAsStringAsync();
 
+                var userInfoUrl = $"https://www.googleapis.com/oauth2/v1/userinfo?access_token={accessToken}";
+                var userInfoResponse = await httpClient.GetAsync(userInfoUrl);
+
+                if (userInfoResponse.IsSuccessStatusCode)
+                {
+                    var userInfo = await userInfoResponse.Content.ReadAsStringAsync();
+                    var user = JObject.Parse(userInfo);
+
+                    var userResult = new
+                    {
+                        Id = user["id"]?.ToString(),
+                        Email = user["email"]?.ToString(),
+                        Name = user["name"]?.ToString(),
+                        Picture = user["picture"]?.ToString()
+                    };
+
+                    return Ok(new { success = true, tokenInfo = tokenInfo, userInfo = userResult });
+                }
+                else
+                {
+                    var userInfoError = await userInfoResponse.Content.ReadAsStringAsync();
+                    return BadRequest(new { success = false, error = userInfoError });
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                return BadRequest(new { success = false, error = errorContent });
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { success = false, error = ex.Message });
+        }
+    }
     [Authorize]
     [HttpGet("managed-auths/token-verification")]
     public async Task<IActionResult> CheckToken()
