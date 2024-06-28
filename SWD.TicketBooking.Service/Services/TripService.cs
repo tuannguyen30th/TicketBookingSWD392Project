@@ -94,7 +94,9 @@ namespace SWD.TicketBooking.Service.Services
                     var popuTrip = new PopularTripModel
                     {
                         TripId = t.TripID,
+                        FromCityID = t.Route_Company.Route.FromCity.CityID,
                         FromCity = t.Route_Company.Route.FromCity.Name,
+                        ToCityID = t.Route_Company.Route.ToCity.CityID,
                         ToCity = t.Route_Company.Route.ToCity.Name,
                         ImageUrl = listImg.ToList(),
                         PriceFrom = minPriceByTrip.GetValueOrDefault(t.TripID, 0),
