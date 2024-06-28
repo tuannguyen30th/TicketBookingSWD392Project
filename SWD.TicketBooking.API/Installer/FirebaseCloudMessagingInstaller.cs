@@ -12,9 +12,9 @@ namespace SWD.TicketBooking.API.Installer
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-          
-            var firebaseAdminSDK = configuration.GetSection("CloudMessaging").GetChildren().ToDictionary(x=>x.Key, x=>x.Value);
-           
+
+            var firebaseAdminSDK = configuration.GetSection("FirebaseAdminSDK").GetChildren().ToDictionary(x => x.Key, x => x.Value);
+
 
             var firebaseAdminSDKJson = JsonConvert.SerializeObject(firebaseAdminSDK);
 
@@ -23,7 +23,7 @@ namespace SWD.TicketBooking.API.Installer
             FirebaseApp.Create(new AppOptions
             {
                 Credential = googleCredential,
-                ProjectId = configuration["CloudMessaging:project_id"]
+                ProjectId = configuration["FirebaseAdminSDK:project_id"]
             });
         }
     }
