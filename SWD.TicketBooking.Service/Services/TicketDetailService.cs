@@ -185,7 +185,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new NotFoundException(SD.Notification.NotFound("Vé"));
                 }            
                 var startTime = findTicket.Booking.Trip.StartTime;
-                if (currentTime <= startTime.AddHours(-6))
+                if (currentTime <= startTime.AddHours(-12))
                 {
                     findTicket.Status = SD.Booking_TicketStatus.CANCEL_TICKET;
                     totalBillCancel += findTicket.Price;
