@@ -18,6 +18,8 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using SWD.TicketBooking.Repo.Entities;
 using Google.Apis.Http;
+using SWD.TicketBooking.Service.Utilities;
+using SWD.TicketBooking.Repo.UnitOfWork;
 
 namespace SWD.TicketBooking.Booking.API;
 
@@ -31,13 +33,15 @@ public class AuthController : ControllerBase
     private readonly IConfiguration _configuration;
     private static readonly HttpClient httpClient = new HttpClient();
     private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public AuthController( IConfiguration configuration, IdentityService identityService, IUserService userService, IEmailService emailService, IMapper mapper)
+    public AuthController(IUnitOfWork unitOfWork, IConfiguration configuration, IdentityService identityService, IUserService userService, IEmailService emailService, IMapper mapper)
     {
         _identityService = identityService;
         _userService = userService;
         _emailService = emailService;
         _configuration = configuration;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
@@ -148,45 +152,91 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var tokenInfoUrl = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={accessToken}";
-            var response = await httpClient.GetAsync(tokenInfoUrl);
-            if (response.IsSuccessStatusCode)
+            var existingUser = await _userService.GetUserByAccessToken(accessToken);
+            if (existingUser != null)
             {
-                var tokenInfo = await response.Content.ReadAsStringAsync();
-
-                var userInfoUrl = $"https://www.googleapis.com/oauth2/v1/userinfo?access_token={accessToken}";
-                var userInfoResponse = await httpClient.GetAsync(userInfoUrl);
-
-                if (userInfoResponse.IsSuccessStatusCode)
+                if (!existingUser.IsTokenExpired())
                 {
-                    var userInfo = await userInfoResponse.Content.ReadAsStringAsync();
-                    var user = JObject.Parse(userInfo);
-
                     var userResult = new
                     {
-                        Id = user["id"]?.ToString(),
-                        Email = user["email"]?.ToString(),
-                        Name = user["name"]?.ToString(),
-                        Picture = user["picture"]?.ToString()
+                        Id = existingUser.UserID,
+                        Email = existingUser.Email,
+                        Name = existingUser.FullName,
+                        Picture = existingUser.Avatar
                     };
 
-                    return Ok(new { success = true, tokenInfo = tokenInfo, userInfo = userResult });
+                    return Ok(new { success = true, userInfo = userResult });
                 }
                 else
                 {
-                    var userInfoError = await userInfoResponse.Content.ReadAsStringAsync();
-                    return BadRequest(new { success = false, error = userInfoError });
+                    throw new InternalServerErrorException("Access token has expired. Please log in again.".ToUpper());
                 }
+            }
+            var tokenInfoUrl = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={accessToken}";
+            var response = await httpClient.GetAsync(tokenInfoUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new BadRequestException(errorContent.ToUpper());
+            }
+
+            var tokenInfo = await response.Content.ReadAsStringAsync();
+            var userInfoUrl = $"https://www.googleapis.com/oauth2/v1/userinfo?access_token={accessToken}";
+            var userInfoResponse = await httpClient.GetAsync(userInfoUrl);
+
+            if (!userInfoResponse.IsSuccessStatusCode)
+            {
+                var userInfoError = await userInfoResponse.Content.ReadAsStringAsync();
+                throw new BadRequestException(userInfoError.ToUpper());
+            }
+
+            var userInfo = await userInfoResponse.Content.ReadAsStringAsync();
+            var user = JObject.Parse(userInfo);
+
+            var userResultNew = new
+            {
+                Id = user["id"]?.ToString(),
+                Email = user["email"]?.ToString(),
+                Name = user["name"]?.ToString(),
+                Picture = user["picture"]?.ToString()
+            };
+
+            existingUser = await _userService.GetUserByEmail2(userResultNew.Email);
+            if (existingUser != null)
+            {
+                existingUser.AccessToken = accessToken;
+                existingUser.TokenExpiration = DateTime.UtcNow.AddHours(1);
+                _unitOfWork.UserRepository.Update(existingUser);
             }
             else
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                return BadRequest(new { success = false, error = errorContent });
+                var newUser = new User
+                {
+                    UserID = Guid.NewGuid(),
+                    Email = userResultNew.Email,
+                    Avatar = userResultNew.Picture,
+                    Balance = 0,
+                    CreateDate = DateTime.Now,
+                    Password = "",
+                    FullName = userResultNew.Name,
+                    IsVerified = true,
+                    Status = SD.GeneralStatus.ACTIVE,
+                    AccessToken = accessToken,
+                    TokenExpiration = DateTime.UtcNow.AddHours(1),
+                    RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387")
+                };
+
+                await _unitOfWork.UserRepository.AddAsync(newUser);
             }
+            _unitOfWork.Complete();
+
+            return Ok(new { success = true, tokenInfo = tokenInfo, userInfo = userResultNew });
         }
+
         catch (Exception ex)
         {
-            return BadRequest(new { success = false, error = ex.Message });
+            throw new BadRequestException(ex.Message.ToUpper());
         }
     }
     [Authorize]

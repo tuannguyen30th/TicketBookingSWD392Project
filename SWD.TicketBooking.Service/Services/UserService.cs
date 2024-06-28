@@ -30,6 +30,19 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
             _firebaseService = firebaseService;
         }
+        public async Task<User> GetUserByAccessToken(string accessToken)
+        {
+            // Assuming you have a UserRepository with a method to find a user by access token
+            var user = await _unitOfWork.UserRepository.FindByCondition(u => u.AccessToken == accessToken).FirstOrDefaultAsync();
+
+            // Check if the token is expired
+            if (user != null && user.TokenExpiration > DateTime.UtcNow)
+            {
+                return user;
+            }
+
+            return null;
+        }
         public async Task<List<UserModel>> GetAllUsers()
         {
             try
@@ -265,6 +278,19 @@ namespace SWD.TicketBooking.Service.Services
                 return true;
             }
             catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<User> GetUserByEmail2(string email)
+        {
+            try
+            {
+                var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).FirstOrDefaultAsync();
+                return userEntity;
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
             }
