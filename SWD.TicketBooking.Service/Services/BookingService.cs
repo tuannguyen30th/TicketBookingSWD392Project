@@ -32,7 +32,7 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
-
+        //////////
         public async Task<ActionOutcome> AddOrUpdateBookingVNPayPayment(BookingModel bookingModel, HttpContext context)
         {
             var result = new ActionOutcome();
