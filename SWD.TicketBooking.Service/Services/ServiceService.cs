@@ -7,6 +7,9 @@ using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.Utilities;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Repo.UnitOfWork;
+using NuGet.Protocol;
+using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
+using System.Collections.Frozen;
 
 
 namespace SWD.TicketBooking.Service.Services
@@ -110,5 +113,51 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+        /*public async Task<List<ServicesInStationResponse>> ServicesFromStations(Guid stationID)
+        {
+            try
+            {
+                var checkStation = await _unitOfWork.StationRepository.GetByIdAsync(stationID);
+                if (checkStation != null)
+                {
+                    var listServiceID = await _unitOfWork.Station_ServiceRepository
+                                                    .GetAll()
+                                                    .Where(s => s.StationID.Equals(stationID))
+                                                    .Select(s => s.ServiceID)
+                                                    .ToListAsync();
+                    var listServices = await _unitOfWork.ServiceRepository
+                                                        .GetAll()
+                                                        .Where(s => listServiceID.Contains(s.ServiceID))
+                                                        .ToListAsync();
+                    var serviceType = await _unitOfWork.ServiceTypeRepository
+                                                     .GetAll()
+                                                     .Where(s => listServices.Select(s=> s.ServiceTypeID).Contains(s.ServiceTypeID))
+                                                     .ToListAsync();
+                    var result = new List<ServicesInStationResponse>();
+                    foreach (var item in serviceType) 
+                    {
+                        var listServiceInServiceType = new List<ServiceInStationModel> ();
+                        var 
+
+
+                        var serviceResponse = new ServicesInStationResponse
+                        {
+                            ServiceTypeID = item.ServiceTypeID,
+                            ServiceTypeName = item.Name,
+                            ServiceInStation = listServiceInServiceType
+                        };
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+*/
+
     }
 }

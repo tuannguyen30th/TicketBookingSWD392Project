@@ -75,11 +75,13 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new BadRequestException(SD.Notification.Existed("NHÀ XE", "TÊN"));
                 }
+
                 var company = await _unitOfWork.CompanyRepository.AddAsync(new Company
                 {
                     CompanyID = Guid.NewGuid(),
                     Name = model.Name,
-                    Status = SD.GeneralStatus.ACTIVE
+                    Status = SD.GeneralStatus.ACTIVE,
+                    UserID = checkUser.UserID
                 });
                 if (company == null)
                 {
