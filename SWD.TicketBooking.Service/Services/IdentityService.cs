@@ -78,12 +78,12 @@ public class IdentityService
                 return new LoginResponse
                 {
                     Verified = user.IsVerified,
-                    Message = "Email đã đăng kí nhưng chưa xác thực!".ToUpper()
+                    Message = "EMAIL ĐÃ ĐĂNG KÍ NHƯNG CHƯA XÁC THỰC!"
                 };
             }
             if (user is null)
             {
-                throw new NotFoundException(SD.Notification.NotFound("Người dùng"));
+                throw new NotFoundException(SD.Notification.NotFound("NGƯỜI DÙNG"));
             }
 
             var userRole = await _unitOfWork.UserRoleRepository
@@ -96,7 +96,7 @@ public class IdentityService
                 return new LoginResponse
                 {
                     Verified = user.IsVerified,
-                    Message = "Email hoặc Password không đúng!".ToUpper()
+                    Message = "EMAIL HOẶC PASSWORD KHÔNG ĐÚNG!"
                 };
             }
 
@@ -105,7 +105,7 @@ public class IdentityService
                 Authenticated = true,
                 Token = CreateJwtToken(user),
                 Verified = user.IsVerified,
-                Message = "Đăng nhập thành công".ToUpper()
+                Message = "ĐĂNG NHẬP THÀNH CÔNG"
             };
         }
         catch (Exception ex)
@@ -148,7 +148,7 @@ public class IdentityService
         }
         catch (Exception ex)
         {
-            throw new BadRequestException("Lỗi xảy ra khi tạo mới Token!".ToUpper());
+            throw new BadRequestException("LỖI XẢY RA KHI TẠO MỚI TOKEN!");
         }
     }
 

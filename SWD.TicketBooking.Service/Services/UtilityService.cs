@@ -62,7 +62,7 @@ namespace SWD.TicketBooking.Service.Services
                 var checkUtility = await _unitOfWork.UtilityRepository.GetAll().Where(u => u.Name.Equals(utility.Name)).FirstOrDefaultAsync();
                 if (checkUtility != null)
                 {
-                    throw new BadRequestException(SD.Notification.Existed("Tiện ích", "Tên"));
+                    throw new BadRequestException(SD.Notification.Existed("TIỆN ÍCH", "TÊN"));
                 }
                 var newUtility = await _unitOfWork.UtilityRepository.AddAsync
                     (
@@ -75,7 +75,7 @@ namespace SWD.TicketBooking.Service.Services
                     );
                 if (newUtility == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Tiện ích", "Khi tạo mới tiện ích"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("TIỆN ÍCH", "KHI TẠO MỚI TIỆN ÍCH"));
                 }
                 var result = _unitOfWork.Complete();
                 return result;

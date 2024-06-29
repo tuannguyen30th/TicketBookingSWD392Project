@@ -9,6 +9,6 @@ namespace SWD.TicketBooking.Service.Dtos
     public class PriceInSearchTicketModel
     {
         public double Price { get; set; }
-        public List<StationInSearchTicket> Stations { get; set; }
+        public List<ServiceInSearchTicket> Services { get; set; }
     }
 }

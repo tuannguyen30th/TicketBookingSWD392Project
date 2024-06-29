@@ -32,18 +32,18 @@ namespace SWD.TicketBooking.Service.Services
                                                 .FirstOrDefaultAsync();
                 if (checkHadBooked == null)
                 {
-                    throw new BadRequestException("Người dùng chưa đặt đi chuyến xe này!".ToUpper());
+                    throw new BadRequestException("NGƯỜI DÙNG CHƯA ĐẶT ĐI CHUYẾN XE NÀY!");
                 }
                 var checkHadRated = await _unitOfWork.FeedbackRepository
                                                      .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID)
                                                      .FirstOrDefaultAsync();
                 if (checkHadRated != null)
                 {
-                    throw new BadRequestException("Người dùng đã đánh giá chuyến xe này!".ToUpper());
+                    throw new BadRequestException("NGƯỜI DÙNG ĐÃ ĐÁNH GIÁ CHUYẾN XE NÀY!");
                 }
                 if (ratingModel.Rating > 5 || ratingModel.Rating <= 0)
                 {
-                    throw new BadRequestException("Điểm đánh giá không phù hợp!".ToUpper());
+                    throw new BadRequestException("ĐIỂM ĐÁNH GIÁ KHÔNG PHÙ HỢP!");
                 }
                 var getTemplateID = await _unitOfWork.TripRepository
                                                      .FindByCondition(_ => _.TripID == ratingModel.TripID)
@@ -74,7 +74,7 @@ namespace SWD.TicketBooking.Service.Services
                     var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
                     if (!imageUploadResult.IsSuccess)
                     {
-                        throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi tải lên"));
+                        throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
                     }
 
                     newFeedbackImage.ImageUrl = (string)imageUploadResult.Result;
@@ -131,7 +131,7 @@ namespace SWD.TicketBooking.Service.Services
 
                     foreach(var fb in feedbacks)
                     {
-                        var user = await _unitOfWork.UserRepository.GetByIdAsync(fb.UserID);
+                        var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)fb.UserID);
 
                         var listImage = await _unitOfWork.Feedback_ImageRepository
                                                          .GetAll()
@@ -141,9 +141,9 @@ namespace SWD.TicketBooking.Service.Services
                         var fbModel = new FeedbackModel
                         {
                             Avt = user.Avatar,
-                            Date = existedTrip.StartTime,
+                            Date = (DateTime)existedTrip.StartTime,
                             Desciption = fb.Description,
-                            Rating = fb.Rating,
+                            Rating = (int)fb.Rating,
                             UserName = user.UserName,
                             ImageUrl = listImage
                         };
@@ -156,7 +156,7 @@ namespace SWD.TicketBooking.Service.Services
                         TotalRating = averageRating
                     };
                 }
-                else throw new NotFoundException(SD.Notification.NotFound("Chuyến xe"));
+                else throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
             }catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);

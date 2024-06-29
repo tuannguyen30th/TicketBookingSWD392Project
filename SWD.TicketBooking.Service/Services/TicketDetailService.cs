@@ -29,7 +29,7 @@ namespace SWD.TicketBooking.Service.Services
                                                     .FirstOrDefaultAsync();
                 if (ticketDetail == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Vé"));
+                    throw new NotFoundException(SD.Notification.NotFound("VÉ"));
                 }
                 var booking = await _unitOfWork.BookingRepository
                                                .FindByCondition(_ => _.BookingID == ticketDetail.BookingID)
@@ -40,7 +40,7 @@ namespace SWD.TicketBooking.Service.Services
                                                .FirstOrDefaultAsync();
                 if (booking == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Vé đã đặt"));
+                    throw new NotFoundException(SD.Notification.NotFound("VÉ ĐÃ ĐẶT"));
                 }
                 var company = await _unitOfWork.Route_CompanyRepository
                                                .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
@@ -48,7 +48,7 @@ namespace SWD.TicketBooking.Service.Services
                                                .FirstOrDefaultAsync();
                 if (company == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Công ty"));
+                    throw new NotFoundException(SD.Notification.NotFound("CÔNG TY"));
                 }
                 var ticketDetailServices = await _unitOfWork.TicketDetail_ServiceRepository
                                                             .FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID)
@@ -63,12 +63,12 @@ namespace SWD.TicketBooking.Service.Services
                     var serviceDetailModel = new ServiceDetailModel
                     {
                         ServiceName = ticketDetail_Service.Service.Name,
-                        ServicePrice = ticketDetail_Service.Price,
-                        Quantity = ticketDetail_Service.Quantity,
+                        ServicePrice = (double)ticketDetail_Service.Price,
+                        Quantity = (int)ticketDetail_Service.Quantity,
                         ServiceInStation = ticketDetail_Service.Station.Name
                     };
                     serviceDetailList.Add(serviceDetailModel);
-                    servicePrice += ticketDetail_Service.Price * ticketDetail_Service.Quantity;
+                    servicePrice += (double)(ticketDetail_Service.Price * ticketDetail_Service.Quantity);
                 };
 
                 var rs = new GetDetailTicketDetailByTicketDetailModel
@@ -77,15 +77,15 @@ namespace SWD.TicketBooking.Service.Services
                     CompanyName = company.Company.Name,
                     CustomerName = booking.User.FullName,
                     SeatCode = ticketDetail.SeatCode,
-                    StartDate = booking.Trip.StartTime.ToString("yyyy-MM-dd"),
-                    StartTime = booking.Trip.StartTime.ToString("HH:mm"),
-                    EndDate = booking.Trip.EndTime.ToString("yyyy-MM-dd"),
-                    EndTime = booking.Trip.EndTime.ToString("HH:mm"),
+                    StartDate = booking.Trip.StartTime?.ToString("yyyy-MM-dd"),
+                    StartTime = booking.Trip.StartTime?.ToString("HH:mm"),
+                    EndDate = booking.Trip.EndTime?.ToString("yyyy-MM-dd"),
+                    EndTime = booking.Trip.EndTime?.ToString("HH:mm"),
                     StartCity = booking.Trip.Route_Company.Route.FromCity.Name,
                     EndCity = booking.Trip.Route_Company.Route.ToCity.Name,
-                    TicketPrice = ticketDetail.Price,
+                    TicketPrice = (double)ticketDetail.Price,
                     TotalServicePrice = servicePrice,
-                    SumOfPrice = servicePrice + ticketDetail.Price,
+                    SumOfPrice = (double)(servicePrice + ticketDetail.Price),
                     QrCodeImage = ticketDetail.QRCodeImage,
                     QrCode = ticketDetail.QRCode,
                     Status = ticketDetail.Status,
@@ -129,7 +129,7 @@ namespace SWD.TicketBooking.Service.Services
 
                         foreach (var ticketDetail_Service in ticketDetailServices)
                         {
-                            servicePrice += ticketDetail_Service.Price * ticketDetail_Service.Quantity;
+                            servicePrice += (double)(ticketDetail_Service.Price * ticketDetail_Service.Quantity);
                         }
 
                         var company = await _unitOfWork.Route_CompanyRepository
@@ -142,15 +142,15 @@ namespace SWD.TicketBooking.Service.Services
                             BookingID = booking.BookingID,
                             TicketDetailID = ticketDetail.TicketDetailID,
                             CompanyName = company.Company.Name,
-                            StartDate = booking.Trip.StartTime.ToString("yyyy-MM-dd"),
-                            StartTime = booking.Trip.StartTime.ToString("HH:mm"),
-                            EndDate = booking.Trip.EndTime.ToString("yyyy-MM-dd"),
-                            EndTime = booking.Trip.EndTime.ToString("HH:mm"),
-                            TotalTime = booking.Trip.EndTime - booking.Trip.StartTime,
+                            StartDate = booking.Trip.StartTime?.ToString("yyyy-MM-dd"),
+                            StartTime = booking.Trip.StartTime?.ToString("HH:mm"),
+                            EndDate = booking.Trip.EndTime?.ToString("yyyy-MM-dd"),
+                            EndTime = booking.Trip.EndTime?.ToString("HH:mm"),
+                            TotalTime = (TimeSpan)(booking.Trip.EndTime - booking.Trip.StartTime),
                             StartCity = booking.Trip.Route_Company.Route.FromCity.Name,
                             EndCity = booking.Trip.Route_Company.Route.ToCity.Name,
                             SeatCode = ticketDetail.SeatCode,
-                            TicketPrice = ticketDetail.Price,
+                            TicketPrice = (double)ticketDetail.Price,
                             TotalServicePrice = servicePrice,
                             Status = ticketDetail.Status,
                         };
@@ -182,13 +182,13 @@ namespace SWD.TicketBooking.Service.Services
                                                   .FirstOrDefaultAsync();
                 if (findTicket == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Vé"));
+                    throw new NotFoundException(SD.Notification.NotFound("VÉ"));
                 }            
                 var startTime = findTicket.Booking.Trip.StartTime;
-                if (currentTime <= startTime.AddHours(-6))
+                if (currentTime <= startTime?.AddHours(-12))
                 {
                     findTicket.Status = SD.Booking_TicketStatus.CANCEL_TICKET;
-                    totalBillCancel += findTicket.Price;
+                    totalBillCancel += (double)findTicket.Price;
                     _unitOfWork.TicketDetailRepository.Update(findTicket);
                     var findService = await _unitOfWork.TicketDetail_ServiceRepository
                                                        .GetAll()
@@ -197,7 +197,7 @@ namespace SWD.TicketBooking.Service.Services
                     foreach (var ticket in findService)
                     {
                         ticket.Status = SD.Booking_ServiceStatus.CANCEL_TICKETSERVICE;
-                        totalBillCancel += ticket.Quantity * ticket.Price;
+                        totalBillCancel += (double)(ticket.Quantity * ticket.Price);
                         _unitOfWork.TicketDetail_ServiceRepository.Update(ticket);
                     }
                     var findUser = findTicket.Booking.User;
@@ -219,10 +219,10 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 else
                 {
-                    throw new BadRequestException("Thời gian hủy vé đã quá hạn, xin lỗi vì sự bất tiện này!");
+                    throw new BadRequestException("THỜI GIAN HỦY VÉ ĐÃ QUÁ HẠN, XIN LỖI VÌ SỰ BẤT TIỆN NÀY!");
                 }
                 _unitOfWork.Complete();
-                result.Message = "Hủy vé thành công!";
+                result.Message = "HỦY VÉ THÀNH CÔNG!";
                 return result;
             }
             catch (Exception ex)
@@ -289,15 +289,14 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var searchTicket = new SearchTicketModel();
-                var listBookingOfUser = await _unitOfWork.BookingRepository
-                                                         .GetAll()
-                                                         .Where(b => b.Email == email)
-                                                         .Select(b => b.BookingID)
-                                                         .ToListAsync();
                 var ticketDetail = await _unitOfWork.TicketDetailRepository
                                                     .GetAll()
-                                                    .Where(b => b.QRCode.Equals(QRCode)
-                                                                && listBookingOfUser.Contains(b.BookingID))
+                                                    .Include(t => t.Booking)
+                                                    .Where(b => b.QRCode.Equals(QRCode) && b.Booking.Email.Equals(email))                                                                                                     
+                                                    .Include(t => t.Booking)
+                                                    .ThenInclude(t => t.Trip)
+                                                    .ThenInclude(t => t.Route_Company)
+                                                    .ThenInclude(t => t.Route)
                                                     .FirstOrDefaultAsync();
                 if (ticketDetail == null)
                 {
@@ -305,34 +304,26 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 else
                 {
-                    var booking = await _unitOfWork.BookingRepository.GetByIdAsync(ticketDetail.BookingID);
-                    var trip = await _unitOfWork.BookingRepository
-                                                .GetAll()
-                                                .Where(t => t.BookingID.Equals(ticketDetail.BookingID))
-                                                .Select(t => t.Trip)
-                                                .FirstOrDefaultAsync();
+                    var booking = ticketDetail.Booking;
+                    var trip = booking.Trip;
                     var services = await _unitOfWork.TicketDetail_ServiceRepository
                                                     .GetAll()
                                                     .Where(t => t.TicketDetailID == ticketDetail.TicketDetailID)
                                                     .Select(ts => ts.ServiceID)
                                                     .ToListAsync();
 
-                    var route = await _unitOfWork.TripRepository
-                                                 .GetAll()
-                                                 .Where(x => x.TripID == trip.TripID)
-                                                 .Select(r => r.Route_Company.Route)
-                                                 .FirstOrDefaultAsync();
+                    var route = trip.Route_Company.Route;
                     var priceRs = new PriceInSearchTicketModel
                     {
-                        Price = ticketDetail.Price,
-                        Stations = await GetAllStationName(services)
+                        Price = (double)ticketDetail.Price,
+                        Services = await GetAllServiceName(services)
                     };
 
                     var rs = new SearchTicketModel
                     {
                         Price = priceRs,
                         Trip = await GetTripBaseOnModel(trip, booking, route, ticketDetail),
-                        TotalBill = booking.TotalBill,
+                        TotalBill = (double)booking.TotalBill,
                         QrCodeImage = ticketDetail.QRCodeImage,
                         QrCode = ticketDetail.QRCode
                     };
@@ -346,9 +337,9 @@ namespace SWD.TicketBooking.Service.Services
 
         }
 
-        public async Task<List<StationInSearchTicket>> GetAllStationName(List<Guid> serviceID)
+        public async Task<List<ServiceInSearchTicket>> GetAllServiceName(List<Guid?> serviceID)
         {
-            var rs = new List<StationInSearchTicket>();
+            var rs = new List<ServiceInSearchTicket>();
             foreach (var item in serviceID)
             {
                 var priceInService = await _unitOfWork.TicketDetail_ServiceRepository
@@ -359,10 +350,10 @@ namespace SWD.TicketBooking.Service.Services
                                              .FindByCondition(t => t.ServiceID == item)
                                              .Select(s=>s.Name)
                                              .FirstOrDefaultAsync();
-                var stationModel = new StationInSearchTicket
+                var stationModel = new ServiceInSearchTicket
                 {
-                    Price = priceInService,
-                    StaionName = name
+                    Price = (double)priceInService,
+                    ServiceName = name
                 };
                 rs.Add(stationModel);
             }
@@ -401,8 +392,8 @@ namespace SWD.TicketBooking.Service.Services
                 Company = company.Name,
                 Route = $"{fromCity} - {toCity}",
                 Position = ticket.SeatCode,
-                Date = trip.StartTime.ToString("yyyy-MM-dd"),
-                Time = trip.StartTime.ToString("HH:mm")
+                Date = trip.StartTime?.ToString("yyyy-MM-dd"),
+                Time = trip.StartTime?.ToString("HH:mm")
             };
             return rs;
         }

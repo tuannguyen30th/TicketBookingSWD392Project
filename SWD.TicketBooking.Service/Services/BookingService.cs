@@ -43,7 +43,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     if (bookingModel.AddOrUpdateBookingModel == null || bookingModel.AddOrUpdateTicketModels == null)
                     {
-                        throw new BadRequestException("BookingModel hoặc TicketModels không được bỏ trống!");
+                        throw new BadRequestException("BOOKINGMODEL HOẶC TICKETMODELS KHÔNG ĐƯỢC BỎ TRỐNG!");
                     }
                     if (bookingModel.AddOrUpdateBookingModel.UserID == null
                         || bookingModel.AddOrUpdateBookingModel.TripID == null
@@ -53,11 +53,11 @@ namespace SWD.TicketBooking.Service.Services
                         || bookingModel.AddOrUpdateBookingModel.PhoneNumber == null
                         || bookingModel.AddOrUpdateBookingModel.Email == null)
                     {
-                        throw new BadRequestException("Những trường trong BookingModel không được bỏ trống!");
+                        throw new BadRequestException("NHỮNG TRƯỜNG TRONG BOOKINGMODEL KHÔNG ĐƯỢC BỎ TRỐNG!");
                     }
                     if (!IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
                     {
-                        throw new BadRequestException("Email hoặc số điện thoại không đúng với quy định!");
+                        throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG ĐÚNG VỚI QUY ĐỊNH!");
                     }
 
                     var totalQuantity = bookingModel.AddOrUpdateTicketModels
@@ -81,7 +81,7 @@ namespace SWD.TicketBooking.Service.Services
                     if (bookingModel.AddOrUpdateBookingModel.Quantity != totalQuantity ||
                       bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
                     {
-                        throw new BadRequestException("Sai khác về số lượng hoặc tổng hóa đơn.");
+                        throw new BadRequestException("SAI KHÁC VỀ SỐ LƯỢNG HOẶC TỔNG HÓA ĐƠN.");
                     }
                     if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
                     {                   
@@ -106,7 +106,7 @@ namespace SWD.TicketBooking.Service.Services
                                 PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
                             };
                         }
-                        else throw new BadRequestException("Số dư không đủ để thực hiện dịch vụ này!");
+                        else throw new BadRequestException("SỐ DƯ KHÔNG ĐỦ ĐỂ THỰC HIỆN DỊCH VỤ NÀY!");
                     }
                     if (bookingModel.AddOrUpdateBookingModel.IsBalance == false)
                     {
@@ -132,7 +132,7 @@ namespace SWD.TicketBooking.Service.Services
                             || ticketDetailItem.Price <= 0
                             || ticketDetailItem.SeatCode == null)
                         {
-                            throw new BadRequestException("Những trường trong TicketDetail không được bỏ trống!");
+                            throw new BadRequestException("NHỮNG TRƯỜNG TRONG TICKETDETAIL KHÔNG ĐƯỢC BỎ TRỐNG!");
                         }
                         var newTicketDetail = new TicketDetail
                         {
@@ -154,7 +154,7 @@ namespace SWD.TicketBooking.Service.Services
                                     || ticketService.Quantity <= 0
                                     || ticketService.Price <= 0)
                                 {
-                                    throw new BadRequestException("Những trường trong Service không được bỏ trống!");
+                                    throw new BadRequestException("NHỮNG TRƯỜNG TRONG SERVICE KHÔNG ĐƯỢC BỎ TRỐNG!");
                                 }
                                 var newTicketService = new TicketDetail_Service
                                 {
@@ -202,7 +202,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     if (bookingModel.AddOrUpdateBookingModel == null || bookingModel.AddOrUpdateTicketModels == null)
                     {
-                        throw new BadRequestException("Thông tin trong đặt vé không được bỏ trống!".ToUpper());
+                        throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!".ToUpper());
                     }
                     if (bookingModel.AddOrUpdateBookingModel.UserID == null
                         || bookingModel.AddOrUpdateBookingModel.TripID == null
@@ -212,11 +212,11 @@ namespace SWD.TicketBooking.Service.Services
                         || bookingModel.AddOrUpdateBookingModel.PhoneNumber == null
                         || bookingModel.AddOrUpdateBookingModel.Email == null)
                     {
-                        throw new BadRequestException("Thông tin trong đặt vé không được bỏ trống!".ToUpper());
+                        throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!".ToUpper());
                     }
                     if (!IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
                     {
-                        throw new BadRequestException("Email hoặc số điện thoại không đúng với quy định!".ToUpper());
+                        throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG ĐÚNG VỚI QUY ĐỊNH!".ToUpper());
                     }
 
                     var totalQuantity = bookingModel.AddOrUpdateTicketModels
@@ -240,7 +240,7 @@ namespace SWD.TicketBooking.Service.Services
                     if (bookingModel.AddOrUpdateBookingModel.Quantity != totalQuantity ||
                       bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
                     {
-                        throw new BadRequestException("Sai khác về số lượng hoặc tổng hóa đơn.".ToUpper());
+                        throw new BadRequestException("SAI KHÁC VỀ SỐ LƯỢNG HOẶC TỔNG HÓA ĐƠN.".ToUpper());
                     }
                     if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
                     { 
@@ -265,7 +265,7 @@ namespace SWD.TicketBooking.Service.Services
                                 PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
                             };
                         }
-                        else throw new BadRequestException("Số dư không đủ để thực hiện dịch vụ này!".ToUpper());
+                        else throw new BadRequestException("SỐ DƯ KHÔNG ĐỦ ĐỂ THỰC HIỆN DỊCH VỤ NÀY!".ToUpper());
                     }
                     await _unitOfWork.BookingRepository.AddAsync(newBooking);
                     foreach (var ticketDetailItem in bookingModel.AddOrUpdateTicketModels)
@@ -275,7 +275,7 @@ namespace SWD.TicketBooking.Service.Services
                                 || ticketDetailItem.Price <= 0
                                 || ticketDetailItem.SeatCode == null)
                             {
-                                throw new BadRequestException("Thông tin trong chi tiết vé không được bỏ trống!".ToUpper());
+                                throw new BadRequestException("THÔNG TIN TRONG CHI TIẾT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!".ToUpper());
                             }
                             var newTicketDetail = new TicketDetail
                             {
@@ -297,7 +297,7 @@ namespace SWD.TicketBooking.Service.Services
                                         || ticketService.Quantity <= 0
                                         || ticketService.Price <= 0)
                                     {
-                                        throw new BadRequestException("Thông tin trong dịch vụ không được bỏ trống!".ToUpper());
+                                        throw new BadRequestException("THÔNG TIN TRONG DỊCH VỤ KHÔNG ĐƯỢC BỎ TRỐNG!".ToUpper());
                                     }
                                     var newTicketService = new TicketDetail_Service
                                     {
@@ -343,7 +343,7 @@ namespace SWD.TicketBooking.Service.Services
                                                                      .FirstOrDefaultAsync();
                 if (findBooking == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Vé đã đặt"));
+                    throw new NotFoundException(SD.Notification.NotFound("VÉ ĐÃ ĐẶT"));
                 }
                 findBooking.BookingTime = DateTime.Now;
                 findBooking.PaymentStatus = SD.BookingStatus.PAYING_BOOKING;
@@ -389,7 +389,7 @@ namespace SWD.TicketBooking.Service.Services
                 };              
                 if (findBooking.TotalBalancePayment > 0)
                 {
-                    findBooking.User.Balance -= findBooking.TotalBalancePayment;
+                    findBooking.User.Balance -= (double)findBooking.TotalBalancePayment;
                     if(findBooking.User.Balance < 0)
                     {
                         findBooking.User.Balance = 0;
@@ -404,19 +404,19 @@ namespace SWD.TicketBooking.Service.Services
                                                                .Where(_ => _.TicketDetailID == ticket.TicketDetailID)
                                                                .Select(_ => new SendMailBookingModel.MailBookingServiceModel
                                                                {
-                                                                   ServicePrice = _.Price,
+                                                                   ServicePrice = (double)_.Price,
                                                                    AtStation = _.Station.Name
                                                                }).ToListAsync();
                     var mailBookingModel = new SendMailBookingModel.MailBookingModel
                     {
                         Email = findBooking.Email,
-                        Price = ticket.Price,
+                        Price = (double)ticket.Price,
                         FullName = findBooking.FullName,
                         FromTo = $"{findBooking.Trip.Route_Company.Route.StartLocation} - {findBooking.Trip.Route_Company.Route.EndLocation}",
-                        StartTime = findBooking.Trip.StartTime.ToString("HH:mm"),
-                        StartDate = findBooking.Trip.StartTime.ToString("yyyy-MM-dd"),
+                        StartTime = findBooking.Trip.StartTime?.ToString("HH:mm"),
+                        StartDate = findBooking.Trip.StartTime?.ToString("yyyy-MM-dd"),
                         SeatCode = ticket.SeatCode,
-                        TotalBill = findBooking.TotalBill.ToString("C"),
+                        TotalBill = findBooking.TotalBill?.ToString("C"),
                         QrCodeImage = ticket.QRCodeImage,
                         MailBookingServices = mailBookingServices
                     };
@@ -439,13 +439,13 @@ namespace SWD.TicketBooking.Service.Services
                 var findTicket = await _unitOfWork.TicketDetailRepository.GetByIdAsync(ticketDetailID);
                 if (findTicket == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Vé"));
+                    throw new NotFoundException(SD.Notification.NotFound("VÉ"));
                 }
                 var startTime = findTicket.Booking.Trip.StartTime;
-                if (currentTime <= startTime.AddHours(-12))
+                if (currentTime <= startTime?.AddHours(-12))
                 {
                     findTicket.Status = SD.Booking_TicketStatus.CANCEL_TICKET;
-                    totalBillCancel += findTicket.Price;
+                    totalBillCancel += (double)findTicket.Price;
                     _unitOfWork.TicketDetailRepository.Update(findTicket);
                     var findService = await _unitOfWork.TicketDetail_ServiceRepository
                                                        .GetAll()
@@ -454,7 +454,7 @@ namespace SWD.TicketBooking.Service.Services
                     foreach (var ticket in findService)
                     {
                         ticket.Status = SD.Booking_ServiceStatus.CANCEL_TICKETSERVICE;
-                        totalBillCancel += ticket.Quantity * ticket.Price;
+                        totalBillCancel += (double)(ticket.Quantity * ticket.Price);
                         _unitOfWork.TicketDetail_ServiceRepository.Update(ticket);
                     }
                     var findUser = await _unitOfWork.TicketDetailRepository
@@ -469,7 +469,7 @@ namespace SWD.TicketBooking.Service.Services
 
                     if (otherTickets == null || !otherTickets.Any())
                     {
-                        var findBooking = await _unitOfWork.BookingRepository.GetByIdAsync(findTicket.BookingID);
+                        var findBooking = await _unitOfWork.BookingRepository.GetByIdAsync((Guid)findTicket.BookingID);
                         if (findBooking != null)
                         {
                             findBooking.PaymentStatus = SD.BookingStatus.CANCEL_BOOKING;
@@ -479,10 +479,10 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 else
                 {
-                    throw new BadRequestException("Thời gian hủy vé đã quá hạn, xin lỗi vì sự bất tiện này!".ToUpper());
+                    throw new BadRequestException("THỜI GIAN HỦY VÉ ĐÃ QUÁ HẠN, XIN LỖI VÌ SỰ BẤT TIỆN NÀY!".ToUpper());
                 }
                 _unitOfWork.Complete();
-                result.Message = "Hủy vé thành công!".ToUpper();
+                result.Message = "HỦY VÉ THÀNH CÔNG!".ToUpper();
                 return result;
             }
             catch (Exception ex)
@@ -498,7 +498,7 @@ namespace SWD.TicketBooking.Service.Services
                 var getEmail = await _unitOfWork.BookingRepository.FindByCondition(_ => _.BookingID == bookingID).FirstOrDefaultAsync();
                 if (getEmail == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Vé đã đặt"));
+                    throw new NotFoundException(SD.Notification.NotFound("VÉ ĐÃ ĐẶT"));
                 }
                 result.Result = getEmail;
                 return result;
@@ -520,7 +520,7 @@ namespace SWD.TicketBooking.Service.Services
                                                 .FirstOrDefaultAsync();
                 if (getEmail == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Vé đã đặt"));
+                    throw new NotFoundException(SD.Notification.NotFound("VÉ ĐÃ ĐẶT"));
                 }
                 result.Value = getEmail;
                 return result;

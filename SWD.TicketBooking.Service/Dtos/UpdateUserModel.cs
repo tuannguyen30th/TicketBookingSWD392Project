@@ -6,13 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWD.TicketBooking.Service.Dtos
+namespace SWD.TicketBooking.Service.Dtos.User
 {
     public class UpdateUserModel
     {
         public string UserName { get; set; }
 
         public string Password { get; set; }
+        public string? NewPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
 
         public string FullName { get; set; }
 

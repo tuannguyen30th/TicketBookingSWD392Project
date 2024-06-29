@@ -28,6 +28,9 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<User, CreateUserReq>().ReverseMap();
 
             CreateMap<UpdateUserModel, UpdateUserRequest>().ReverseMap();
+            CreateMap<User, UpdateUserResponseModel>()
+                .ForMember(dest => dest.Password, opt => opt.Ignore())
+                .ReverseMap();
             CreateMap<User, UpdateUserModel>().ReverseMap();
 
             ///////Route////////

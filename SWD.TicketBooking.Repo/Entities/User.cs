@@ -37,9 +37,9 @@ namespace SWD.TicketBooking.Repo.Entities
         public double Balance { get; set; }
         public DateTimeOffset? CreateDate { get; set; }
         public bool? IsVerified { get; set; }
-        public string AccessToken { get; set; } = string.Empty;
+        public string? AccessToken { get; set; } = string.Empty;
 
-        public DateTime TokenExpiration { get; set; }
+        public DateTime? TokenExpiration { get; set; }
         public string? Status { get; set; } = string.Empty;
         public Guid RoleID { get; set; }
 

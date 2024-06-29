@@ -13,11 +13,11 @@ namespace SWD.TicketBooking.Repo.Entities
     {
         [Key]
         public Guid Feedback_Image_ID { get; set; }
-        public Guid FeedbackID { get; set; }
+        public Guid? FeedbackID { get; set; }
         [ForeignKey("FeedbackID")]
-        public Feedback Feedback { get; set; }
-        public string ImageUrl { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
+        public Feedback? Feedback { get; set; }
+        public string? ImageUrl { get; set; } = string.Empty;
+        public string? Status { get; set; } = string.Empty;
 
     }
 }

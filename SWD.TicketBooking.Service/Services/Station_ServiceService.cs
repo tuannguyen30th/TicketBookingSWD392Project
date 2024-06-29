@@ -31,7 +31,7 @@ namespace SWD.TicketBooking.Service.Services
                                                     .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new BadRequestException("Dịch vụ đã tồn tại ở trạm này!".ToUpper());
+                    throw new BadRequestException("DỊCH VỤ ĐÃ TỒN TẠI Ở TRẠM NÀY!");
                 }
                 var serviceStation = new Station_Service
                 {
@@ -81,7 +81,7 @@ namespace SWD.TicketBooking.Service.Services
 
                     if (checkDuplicate)
                     {
-                        throw new BadRequestException(SD.Notification.Existed("Trạm", "Dịch vụ"));
+                        throw new BadRequestException(SD.Notification.Existed("TRẠM", "DỊCH VỤ"));
                     }
                 }
 
@@ -96,7 +96,7 @@ namespace SWD.TicketBooking.Service.Services
                         var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
                         if (!deleteResult.IsSuccess)
                         {
-                            throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi xóa"));
+                            throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI XÓA"));
                         }
                     }
                     var imagePath = $"{FirebasePathName.SERVICE_STATION}{serviceStation.Station_ServiceID}";
@@ -108,7 +108,7 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     else
                     {
-                        throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi tải lên"));
+                        throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
                     }
 
                     _unitOfWork.Station_ServiceRepository.Update(serviceStation);
@@ -132,7 +132,7 @@ namespace SWD.TicketBooking.Service.Services
                 var serviceStation = await _unitOfWork.Station_ServiceRepository.GetByIdAsync(Station_ServiceID);
                 if (serviceStation == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Dịch vụ"));
+                    throw new NotFoundException(SD.Notification.NotFound("DỊCH VỤ"));
                 }
                 serviceStation.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.Station_ServiceRepository.Update(serviceStation);

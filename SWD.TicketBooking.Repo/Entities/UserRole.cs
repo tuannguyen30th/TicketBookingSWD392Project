@@ -12,7 +12,7 @@ namespace SWD.TicketBooking.Repo.Entities
 
         [Required]
         [StringLength(50)]
-        public string RoleName { get; set; } = string.Empty;
+        public string? RoleName { get; set; } = string.Empty;
         public string? Status { get; set; } = string.Empty;
 
     }

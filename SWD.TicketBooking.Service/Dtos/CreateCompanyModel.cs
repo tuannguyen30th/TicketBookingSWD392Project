@@ -9,5 +9,6 @@ namespace SWD.TicketBooking.Service.Dtos
     public class CreateCompanyModel
     {
         public string? Name { get; set; }
+        public Guid UserID { get; set; }
     }
 }

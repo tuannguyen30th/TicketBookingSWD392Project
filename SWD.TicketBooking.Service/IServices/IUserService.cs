@@ -16,7 +16,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<(CreateUserReq returnModel, string message)> SendOTPCode(CreateUserReq req);
         Task<ActionOutcome> SubmitOTP(SubmitOTPReq req);
         Task<UserModel> GetUserById(Guid id);
-        Task<(UpdateUserModel returnModel, string message)> UpdateUser(Guid id, UpdateUserModel updateUser);
+        Task<UpdateUserResponseModel /*returnModel, string message*/> UpdateUser(Guid id, UpdateUserModel updateUser);
         Task<bool> UploadAvatar(IFormFile file);
     }
 }

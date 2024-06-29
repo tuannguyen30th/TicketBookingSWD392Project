@@ -34,7 +34,7 @@ namespace SWD.TicketBooking.Service.Services
                                                 .Include(_ => _.Station)
                                                 .Select(_ => new StationFromRouteModel
                                                  {
-                                                    StationID = _.StationID,
+                                                    StationID = (Guid)_.StationID,
                                                     Name = _.Station.Name
                                                  })
                                                 .ToListAsync();
@@ -95,12 +95,12 @@ namespace SWD.TicketBooking.Service.Services
                             });
                     if (station == null)
                     {
-                        throw new InternalServerErrorException(SD.Notification.Internal("Trạm", "Khi không thể tạo mới trạm này"));
+                        throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
                     }
                     _unitOfWork.Complete();
                     return "OK";
                 }
-                else throw new BadRequestException("Trạm này đã tồn tại!".ToUpper());
+                else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
 
             } catch (Exception ex)
             {
@@ -118,7 +118,7 @@ namespace SWD.TicketBooking.Service.Services
                                               .FirstOrDefaultAsync();
                 if (check == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Trạm"));
+                    throw new NotFoundException(SD.Notification.NotFound("TRẠM"));
                 }
                 else
                 {
@@ -156,7 +156,7 @@ namespace SWD.TicketBooking.Service.Services
                                                 .OrderBy(_ => _.OrderInRoute)
                                                 .Select(_ => new StationFromRouteModel
                                                 {
-                                                    StationID = _.StationID,
+                                                    StationID = (Guid)_.StationID,
                                                     Name = _.Station.Name
                                                 })
                                                 .ToListAsync();

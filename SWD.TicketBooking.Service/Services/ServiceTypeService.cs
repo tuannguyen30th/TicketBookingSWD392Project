@@ -65,7 +65,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     ServiceID = _.Service.ServiceID,
                     Name = _.Service.Name,
-                    Price = _.Price,
+                    Price = (double)_.Price,
                     ImageUrl = _.ImageUrl
                 }).ToList();
 

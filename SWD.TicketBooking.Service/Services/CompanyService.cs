@@ -57,13 +57,23 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
+                var checkUser = await _unitOfWork.UserRepository
+                                                 .GetAll()
+                                                 .Where(_ => _.UserID.Equals(model.UserID))
+                                                 .FirstOrDefaultAsync();
+
+                if (checkUser == null)
+                {
+                    throw new BadRequestException(SD.Notification.NotFound("NGƯỜI DÙNG"));
+                }
+
                 var checkExisted = await _unitOfWork.CompanyRepository
                                                     .GetAll()
                                                     .Where(_ => _.Name ==  model.Name)
                                                     .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new BadRequestException(SD.Notification.Existed("Công ty", "Tên"));
+                    throw new BadRequestException(SD.Notification.Existed("NHÀ XE", "TÊN"));
                 }
                 var company = await _unitOfWork.CompanyRepository.AddAsync(new Company
                 {
@@ -73,7 +83,7 @@ namespace SWD.TicketBooking.Service.Services
                 });
                 if (company == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Khi tạo mới công ty"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("NHÀ XE", "KHI TẠO MỚI NHÀ XE"));
                 }
                 var rs = await _unitOfWork.CompanyRepository.Commit();
                 return rs;
@@ -94,7 +104,7 @@ namespace SWD.TicketBooking.Service.Services
                                                     .FirstOrDefaultAsync();
                 if (checkExisted != null)
                 {
-                    throw new BadRequestException(SD.Notification.Existed("Công ty", "Tên"));
+                    throw new BadRequestException(SD.Notification.Existed("NHÀ XE", "TÊN"));
                 }
 
                 var entity = await _unitOfWork.CompanyRepository
@@ -104,7 +114,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (entity == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Công ty"));
+                    throw new NotFoundException(SD.Notification.NotFound("NHÀ XE"));
                 }
 
                 entity.Name = model.Name;
@@ -113,7 +123,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Khi cập nhật công ty"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("NHÀ XE", "KHI CẬP NHẬT NHÀ XE"));
                 }
                 var rs = _unitOfWork.Complete();
                 return rs;
@@ -135,7 +145,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (entity == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Công ty"));
+                    throw new NotFoundException(SD.Notification.NotFound("NHÀ XE"));
                 }
 
                 entity.Status = status;
@@ -144,7 +154,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (companyUpdate == null)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Công ty", "Khi cập nhật công ty"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("NHÀ XE", "KHI CẬP NHẬT NHÀ XE"));
                 }
                 var rs = _unitOfWork.Complete();
                 return rs;

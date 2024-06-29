@@ -12,11 +12,11 @@ namespace SWD.TicketBooking.Repo.Entities
       /*  public int RouteID { get; set; }
         [ForeignKey("RouteID")]
         public Route Route { get; set; }*/
-        public Guid ServiceTypeID { get; set; }
+        public Guid? ServiceTypeID { get; set; }
         [ForeignKey("ServiceTypeID")]
-        public ServiceType ServiceType { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
+        public ServiceType? ServiceType { get; set; }
+        public string? Name { get; set; } = string.Empty;
+        public string? Status { get; set; } = string.Empty;
 
     }
 }

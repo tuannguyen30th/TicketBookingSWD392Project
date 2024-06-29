@@ -33,7 +33,7 @@ namespace SWD.TicketBooking.Service.Services
                                                         .FirstOrDefaultAsync();
                 if (checkExistedName != null)
                 {
-                    throw new BadRequestException(SD.Notification.Existed("Dịch vụ", "Tên"));
+                    throw new BadRequestException(SD.Notification.Existed("DỊCH VỤ", "TÊN"));
                 }
 
                 var service = new SWD.TicketBooking.Repo.Entities.Service
@@ -60,7 +60,7 @@ namespace SWD.TicketBooking.Service.Services
                 var service = await _unitOfWork.ServiceRepository.GetByIdAsync(serviceID);
                 if (service == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Dịch vụ"));
+                    throw new NotFoundException(SD.Notification.NotFound("DỊCH VỤ"));
                 }
 
                 var checkExistedName = await _unitOfWork.ServiceRepository
@@ -72,7 +72,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 if (checkExistedName != null)
                 {
-                    throw new BadRequestException(SD.Notification.Existed("Dịch vụ", "Tên"));
+                    throw new BadRequestException(SD.Notification.Existed("DỊCH VỤ", "TÊN"));
                 }
 
                 service.Name = updateServiceModel.Name;
@@ -94,7 +94,7 @@ namespace SWD.TicketBooking.Service.Services
                 var service = await _unitOfWork.ServiceRepository.GetByIdAsync(serviceID);
                 if (service == null)
                 {
-                    throw new NotFoundException(SD.Notification.NotFound("Dịch vụ"));
+                    throw new NotFoundException(SD.Notification.NotFound("DỊCH VỤ"));
                 }
                 service.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.ServiceRepository.Update(service);

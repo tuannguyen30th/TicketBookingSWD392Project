@@ -8,14 +8,14 @@ namespace SWD.TicketBooking.Repo.Entities
     {
         [Key]
         public Guid TicketType_TripID { get; set; }
-        public Guid TicketTypeID { get; set; }
+        public Guid? TicketTypeID { get; set; }
         [ForeignKey("TicketTypeID")]
-        public TicketType TicketType { get; set; }
-        public Guid TripID { get; set; }
+        public TicketType? TicketType { get; set; }
+        public Guid? TripID { get; set; }
         [ForeignKey("TripID")]
-        public Trip Trip { get; set; }
-        public double Price { get; set; }
-        public int Quantity { get; set; }
-        public string Status { get; set; } = string.Empty;
+        public Trip? Trip { get; set; }
+        public double? Price { get; set; }
+        public int? Quantity { get; set; }
+        public string? Status { get; set; } = string.Empty;
     }
 }

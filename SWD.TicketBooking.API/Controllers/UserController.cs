@@ -49,7 +49,7 @@ namespace SWD.TicketBooking.Controllers
         }
 
         [HttpPut("managed-users/{userID}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] Guid userID, [FromBody] UpdateUserRequest req)
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid userID, [FromForm] UpdateUserRequest req)
         {
             var map = _mapper.Map<UpdateUserModel>(req);
             var user = await _userService.UpdateUser(userID, map);

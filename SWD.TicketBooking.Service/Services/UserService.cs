@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
+using SWD.TicketBooking.Repo.IRepositories;
 using SWD.TicketBooking.Repo.Repositories;
+using SWD.TicketBooking.Repo.SeedData;
 using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Auth;
@@ -207,18 +209,25 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<(UpdateUserModel returnModel, string message)> UpdateUser(Guid id, UpdateUserModel updateUser)
+        public async Task<UpdateUserResponseModel /*returnModel/*, string message*/> UpdateUser(Guid id, UpdateUserModel updateUser)
         {
             try
             {
                 var existedUser = await _unitOfWork.UserRepository.FindByCondition(x => x.UserID == id).FirstOrDefaultAsync();
                 if (existedUser != null)
                 {
+                    if (!SecurityUtil.Hash(updateUser.Password).Equals(existedUser.Password))
+                    {
+                        throw new BadRequestException("MẬT KHẨU CŨ KHÔNG ĐÚNG!");
+                    }
+                    if (updateUser.NewPassword == null || !updateUser.ConfirmPassword.Equals(updateUser.NewPassword))
+                    {
+                        throw new BadRequestException("MẬT KHẨU XÁC NHẬN KHÔNG ĐÚNG!");
+                    }
 
                     existedUser.UserName = updateUser.UserName;
-                    existedUser.Password = updateUser.Password;
+                    existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);
                     existedUser.FullName = updateUser.FullName;
-
                     existedUser.Address = updateUser.Address;
                     existedUser.PhoneNumber = updateUser.PhoneNumber;
 
@@ -230,7 +239,7 @@ namespace SWD.TicketBooking.Service.Services
                             var deleteResult = await _firebaseService.DeleteFileFromFirebase(url);
                             if (!deleteResult.IsSuccess)
                             {
-                                throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi xóa"));
+                                throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI XÓA"));
                             }
                         }
                         var imagePath = $"{FirebasePathName.AVATAR}{existedUser.UserID}";
@@ -242,22 +251,23 @@ namespace SWD.TicketBooking.Service.Services
                         }
                         else
                         {
-                            throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi tải lên"));
+                            throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
                         }
 
                         _unitOfWork.UserRepository.Update(existedUser);
+                        var update = _mapper.Map<UpdateUserResponseModel>(existedUser);
+                        update.Password = updateUser.NewPassword;
                         _unitOfWork.Complete();
-                        var update = _mapper.Map<UpdateUserModel>(existedUser);
-                        return (update, "OK");
+                        return (update/*, "OK"*/);
                     }
                     else
                     {
-                        throw new BadRequestException("Sai mật khẩu!".ToUpper());
+                        throw new BadRequestException("SAI MẬT KHẨU!");
                     }
                 }
                 else
                 {
-                    throw new BadRequestException("Không thể tìm thấy người dùng!".ToUpper());
+                    throw new BadRequestException(SD.Notification.NotFound("NGƯỜI DÙNG"));
                 }
             }
             catch (Exception ex)
@@ -273,7 +283,7 @@ namespace SWD.TicketBooking.Service.Services
                 var imageUploadResult = await _firebaseService.UploadFileToFirebase(file, imagePath);
                 if (!imageUploadResult.IsSuccess)
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("Hình ảnh", "Khi tải lên"));
+                    throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
                 }
                 return true;
             }

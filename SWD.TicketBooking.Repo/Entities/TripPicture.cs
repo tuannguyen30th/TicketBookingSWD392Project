@@ -14,10 +14,10 @@ namespace SWD.TicketBooking.Repo.Entities
     {
         [Key]
         public Guid TripPictureID { get; set; }
-        public Guid TripID { get; set; }
+        public Guid? TripID { get; set; }
         [ForeignKey("TripID")]
-        public Trip Trip { get; set; }
-        public string ImageUrl { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
+        public Trip? Trip { get; set; }
+        public string? ImageUrl { get; set; } = string.Empty;
+        public string? Status { get; set; } = string.Empty;
     }
 }
