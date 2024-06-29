@@ -202,7 +202,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     if (bookingModel.AddOrUpdateBookingModel == null || bookingModel.AddOrUpdateTicketModels == null)
                     {
-                        throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!".ToUpper());
+                        throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
                     }
                     if (bookingModel.AddOrUpdateBookingModel.UserID == null
                         || bookingModel.AddOrUpdateBookingModel.TripID == null
@@ -212,11 +212,11 @@ namespace SWD.TicketBooking.Service.Services
                         || bookingModel.AddOrUpdateBookingModel.PhoneNumber == null
                         || bookingModel.AddOrUpdateBookingModel.Email == null)
                     {
-                        throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!".ToUpper());
+                        throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
                     }
                     if (!IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
                     {
-                        throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG ĐÚNG VỚI QUY ĐỊNH!".ToUpper());
+                        throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG ĐÚNG VỚI QUY ĐỊNH!");
                     }
 
                     var totalQuantity = bookingModel.AddOrUpdateTicketModels
@@ -240,7 +240,7 @@ namespace SWD.TicketBooking.Service.Services
                     if (bookingModel.AddOrUpdateBookingModel.Quantity != totalQuantity ||
                       bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
                     {
-                        throw new BadRequestException("SAI KHÁC VỀ SỐ LƯỢNG HOẶC TỔNG HÓA ĐƠN.".ToUpper());
+                        throw new BadRequestException("SAI KHÁC VỀ SỐ LƯỢNG HOẶC TỔNG HÓA ĐƠN.");
                     }
                     if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
                     { 
@@ -265,7 +265,7 @@ namespace SWD.TicketBooking.Service.Services
                                 PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
                             };
                         }
-                        else throw new BadRequestException("SỐ DƯ KHÔNG ĐỦ ĐỂ THỰC HIỆN DỊCH VỤ NÀY!".ToUpper());
+                        else throw new BadRequestException("SỐ DƯ KHÔNG ĐỦ ĐỂ THỰC HIỆN DỊCH VỤ NÀY!");
                     }
                     await _unitOfWork.BookingRepository.AddAsync(newBooking);
                     foreach (var ticketDetailItem in bookingModel.AddOrUpdateTicketModels)
@@ -275,7 +275,7 @@ namespace SWD.TicketBooking.Service.Services
                                 || ticketDetailItem.Price <= 0
                                 || ticketDetailItem.SeatCode == null)
                             {
-                                throw new BadRequestException("THÔNG TIN TRONG CHI TIẾT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!".ToUpper());
+                                throw new BadRequestException("THÔNG TIN TRONG CHI TIẾT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
                             }
                             var newTicketDetail = new TicketDetail
                             {
@@ -297,7 +297,7 @@ namespace SWD.TicketBooking.Service.Services
                                         || ticketService.Quantity <= 0
                                         || ticketService.Price <= 0)
                                     {
-                                        throw new BadRequestException("THÔNG TIN TRONG DỊCH VỤ KHÔNG ĐƯỢC BỎ TRỐNG!".ToUpper());
+                                        throw new BadRequestException("THÔNG TIN TRONG DỊCH VỤ KHÔNG ĐƯỢC BỎ TRỐNG!");
                                     }
                                     var newTicketService = new TicketDetail_Service
                                     {
@@ -479,10 +479,10 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 else
                 {
-                    throw new BadRequestException("THỜI GIAN HỦY VÉ ĐÃ QUÁ HẠN, XIN LỖI VÌ SỰ BẤT TIỆN NÀY!".ToUpper());
+                    throw new BadRequestException("THỜI GIAN HỦY VÉ ĐÃ QUÁ HẠN, XIN LỖI VÌ SỰ BẤT TIỆN NÀY!");
                 }
                 _unitOfWork.Complete();
-                result.Message = "HỦY VÉ THÀNH CÔNG!".ToUpper();
+                result.Message = "HỦY VÉ THÀNH CÔNG!";
                 return result;
             }
             catch (Exception ex)

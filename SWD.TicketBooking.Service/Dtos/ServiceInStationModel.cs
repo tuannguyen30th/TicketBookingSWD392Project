@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Dtos
 {
-    public class ServicesInStationResponse
+    public class ServiceTypeInStationModel
     {
         public Guid ServiceTypeID { get; set; }
         public string ServiceTypeName { get; set; } 
