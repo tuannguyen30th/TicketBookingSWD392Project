@@ -30,6 +30,13 @@ namespace SWD.TicketBooking.API.Controllers
             var serviceTypes = await _serviceTypeService.ServicesOfTypeFromStations(stationID, serviceTypeID);
             var serviceTypeResponses = _mapper.Map<ServiceTypeResponse>(serviceTypes);
             return Ok(serviceTypeResponses);
+        }        
+
+        [HttpGet("managed-services/stations/{stationID}")]
+        public async Task<IActionResult> AllServicesInStations([FromRoute] Guid stationID)
+        {
+            var serviceTypes = await _serviceService.ServicesFromStations(stationID);
+            return Ok(serviceTypes);
         }
 
         [HttpPost("managed-services")]

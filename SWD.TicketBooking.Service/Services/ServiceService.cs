@@ -10,6 +10,7 @@ using SWD.TicketBooking.Repo.UnitOfWork;
 using NuGet.Protocol;
 using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
 using System.Collections.Frozen;
+using System.Linq;
 
 
 namespace SWD.TicketBooking.Service.Services
@@ -113,42 +114,59 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        /*public async Task<List<ServicesInStationResponse>> ServicesFromStations(Guid stationID)
+
+        public async Task<List<ServiceTypeInStationModel>> ServicesFromStations(Guid stationID)
         {
             try
             {
                 var checkStation = await _unitOfWork.StationRepository.GetByIdAsync(stationID);
                 if (checkStation != null)
                 {
-                    var listServiceID = await _unitOfWork.Station_ServiceRepository
+                    var listServiceInStation = await _unitOfWork.Station_ServiceRepository
                                                     .GetAll()
                                                     .Where(s => s.StationID.Equals(stationID))
-                                                    .Select(s => s.ServiceID)
                                                     .ToListAsync();
+
                     var listServices = await _unitOfWork.ServiceRepository
                                                         .GetAll()
-                                                        .Where(s => listServiceID.Contains(s.ServiceID))
+                                                        .Where(s => listServiceInStation.Select(s => s.ServiceID).Contains(s.ServiceID))
                                                         .ToListAsync();
+
                     var serviceType = await _unitOfWork.ServiceTypeRepository
                                                      .GetAll()
                                                      .Where(s => listServices.Select(s=> s.ServiceTypeID).Contains(s.ServiceTypeID))
                                                      .ToListAsync();
-                    var result = new List<ServicesInStationResponse>();
-                    foreach (var item in serviceType) 
+
+                    var result = new List<ServiceTypeInStationModel>();
+                    Parallel.ForEach(serviceType, async (item) =>
                     {
-                        var listServiceInServiceType = new List<ServiceInStationModel> ();
-                        var 
+                        var listServiceInServiceType = listServices.Where(s => s.ServiceTypeID.Equals(item.ServiceTypeID)).ToList();
 
+                        var listServiceInStationModelTask = listServiceInServiceType.Select(async s => new ServiceInStationModel
+                        {
+                            ServiceID = s.ServiceID,
+                            Name = s.Name,
+                            Price = (double)listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().Price,
+                            ImageUrl = listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().ImageUrl
+                        }).ToList();
 
-                        var serviceResponse = new ServicesInStationResponse
+                        var listServiceInStationModel = await Task.WhenAll(listServiceInStationModelTask);
+
+                        var serviceResponse = new ServiceTypeInStationModel
                         {
                             ServiceTypeID = item.ServiceTypeID,
                             ServiceTypeName = item.Name,
-                            ServiceInStation = listServiceInServiceType
+                            ServiceInStation = listServiceInStationModel.ToList(),
                         };
-                    }
+
+                        result.Add(serviceResponse);    
+                    });
+                    return result;
                 }
-                return null;
+                else
+                {
+                    throw new NotFoundException(SD.Notification.NotFound("NHÀ XE"));
+                }
             }
             catch (Exception ex)
             {
@@ -157,7 +175,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-*/
+
 
     }
 }
