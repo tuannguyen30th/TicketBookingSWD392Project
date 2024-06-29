@@ -87,9 +87,8 @@ namespace SWD.TicketBooking.Service.Services
                     var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
                     var station = await _unitOfWork.StationRepository.AddAsync(new Station 
                             {   
-                                CityID = Guid.NewGuid(),
-                                City = city,
-                                Company = company,
+                                CityID = city.CityID,
+                                CompanyID = company.CompanyID,
                                 Name = stationModel.StationName, 
                                 Status = SD.GeneralStatus.ACTIVE,
                             });
@@ -97,6 +96,20 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
                     }
+
+                    var checkout_Route = await _unitOfWork.RouteRepository
+                                                          .GetAll()
+                                                          .Where(r => r.RouteID.Equals(stationModel.RouteId) && r.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                          .FirstOrDefaultAsync();
+                    var station_route = new Station_Route
+                    {
+                        Station_RouteID = new Guid(),
+                        RouteID = checkout_Route.RouteID,
+                        StationID = station.StationID,
+                        Status = SD.GeneralStatus.ACTIVE,
+                        OrderInRoute = stationModel.OrderInRoute
+                    };
+                    
                     _unitOfWork.Complete();
                     return "OK";
                 }
