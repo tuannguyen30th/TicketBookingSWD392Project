@@ -115,65 +115,65 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<List<ServiceTypeInStationModel>> ServicesFromStations(Guid stationID)
-        {
-            try
-            {
-                var checkStation = await _unitOfWork.StationRepository.GetByIdAsync(stationID);
-                if (checkStation != null)
-                {
-                    var listServiceInStation = await _unitOfWork.Station_ServiceRepository
-                                                    .GetAll()
-                                                    .Where(s => s.StationID.Equals(stationID))
-                                                    .ToListAsync();
+        //public async Task<List<ServiceTypeInStationModel>> ServicesFromStations(Guid stationID)
+        //{
+        //    try
+        //    {
+        //        var checkStation = await _unitOfWork.StationRepository.GetByIdAsync(stationID);
+        //        if (checkStation != null)
+        //        {
+        //            var listServiceInStation = await _unitOfWork.Station_ServiceRepository
+        //                                            .GetAll()
+        //                                            .Where(s => s.StationID.Equals(stationID))
+        //                                            .ToListAsync();
 
-                    var listServices = await _unitOfWork.ServiceRepository
-                                                        .GetAll()
-                                                        .Where(s => listServiceInStation.Select(s => s.ServiceID).Contains(s.ServiceID))
-                                                        .ToListAsync();
+        //            var listServices = await _unitOfWork.ServiceRepository
+        //                                                .GetAll()
+        //                                                .Where(s => listServiceInStation.Select(s => s.ServiceID).Contains(s.ServiceID))
+        //                                                .ToListAsync();
 
-                    var serviceType = await _unitOfWork.ServiceTypeRepository
-                                                     .GetAll()
-                                                     .Where(s => listServices.Select(s=> s.ServiceTypeID).Contains(s.ServiceTypeID))
-                                                     .ToListAsync();
+        //            var serviceType = await _unitOfWork.ServiceTypeRepository
+        //                                             .GetAll()
+        //                                             .Where(s => listServices.Select(s=> s.ServiceTypeID).Contains(s.ServiceTypeID))
+        //                                             .ToListAsync();
 
-                    var result = new List<ServiceTypeInStationModel>();
-                    Parallel.ForEach(serviceType, async (item) =>
-                    {
-                        var listServiceInServiceType = listServices.Where(s => s.ServiceTypeID.Equals(item.ServiceTypeID)).ToList();
+        //            var result = new List<ServiceTypeInStationModel>();
+        //            Parallel.ForEach(serviceType, async (item) =>
+        //            {
+        //                var listServiceInServiceType = listServices.Where(s => s.ServiceTypeID.Equals(item.ServiceTypeID)).ToList();
 
-                        var listServiceInStationModelTask = listServiceInServiceType.Select(async s => new ServiceInStationModel
-                        {
-                            ServiceID = s.ServiceID,
-                            Name = s.Name,
-                            Price = (double)listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().Price,
-                            ImageUrl = listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().ImageUrl
-                        }).ToList();
+        //                var listServiceInStationModelTask = listServiceInServiceType.Select(async s => new ServiceInStationModel
+        //                {
+        //                    ServiceID = s.ServiceID,
+        //                    Name = s.Name,
+        //                    Price = (double)listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().Price,
+        //                    ImageUrl = listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().ImageUrl
+        //                }).ToList();
 
-                        var listServiceInStationModel = await Task.WhenAll(listServiceInStationModelTask);
+        //                var listServiceInStationModel = await Task.WhenAll(listServiceInStationModelTask);
 
-                        var serviceResponse = new ServiceTypeInStationModel
-                        {
-                            ServiceTypeID = item.ServiceTypeID,
-                            ServiceTypeName = item.Name,
-                            ServiceInStation = listServiceInStationModel.ToList(),
-                        };
+        //                var serviceResponse = new ServiceTypeInStationModel
+        //                {
+        //                    ServiceTypeID = item.ServiceTypeID,
+        //                    ServiceTypeName = item.Name,
+        //                    ServiceInStation = listServiceInStationModel.ToList(),
+        //                };
 
-                        result.Add(serviceResponse);    
-                    });
-                    return result;
-                }
-                else
-                {
-                    throw new NotFoundException(SD.Notification.NotFound("NHÀ XE"));
-                }
-            }
-            catch (Exception ex)
-            {
+        //                result.Add(serviceResponse);    
+        //            });
+        //            return result;
+        //        }
+        //        else
+        //        {
+        //            throw new NotFoundException(SD.Notification.NotFound("NHÀ XE"));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                throw new Exception(ex.Message, ex);
-            }
-        }
+        //        throw new Exception(ex.Message, ex);
+        //    }
+        //}
 
 
 

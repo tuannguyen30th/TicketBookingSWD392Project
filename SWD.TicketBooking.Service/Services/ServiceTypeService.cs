@@ -20,13 +20,13 @@ namespace SWD.TicketBooking.Service.Services
             _unitOfWork = unitOfWork;
             _firebaseService = firebaseService;
             _mapper = mapper;
-        }    
-     /*   public async Task<List<ServiceTypeModel>> ServiceTypesFromStation(Guid stationID)
+        }
+        public async Task<List<ServiceTypeModel>> ServiceTypesFromStation(Guid stationID)
         {
             try
             {
                 var stationServices = await _unitOfWork.Station_ServiceRepository
-                    .FindByCondition(_ => _.StationID == stationID && _.Service.Status.Trim().Equals(SD.ACTIVE))
+                    .FindByCondition(_ => _.StationID == stationID && _.Service.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                     .Include(_ => _.Service)
                     .ThenInclude(_ => _.ServiceType)
                     .ToListAsync();
@@ -39,8 +39,10 @@ namespace SWD.TicketBooking.Service.Services
                         Name = _.Key.Name,
                         ServiceModels = _.Select(_ => new ServiceModel
                         {
-                            ServiceID = _.Service.ServiceID,
+                            ServiceID = (Guid)_.ServiceID,
                             Name = _.Service.Name,
+                            Price = (double)_.Price,
+                            ImageUrl = _.ImageUrl
                         }).ToList()
                     }).ToList();
 
@@ -50,7 +52,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message, ex);
             }
-        }*/
+        }
         public async Task<ServiceTypeModel> ServicesOfTypeFromStations(Guid stationID, Guid serviceTypeID)
         {
             try

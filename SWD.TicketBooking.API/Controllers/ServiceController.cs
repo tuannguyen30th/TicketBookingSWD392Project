@@ -35,7 +35,7 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpGet("managed-services/stations/{stationID}")]
         public async Task<IActionResult> AllServicesInStations([FromRoute] Guid stationID)
         {
-            var serviceTypes = await _serviceService.ServicesFromStations(stationID);
+            var serviceTypes = await _serviceTypeService.ServiceTypesFromStation(stationID);
             return Ok(serviceTypes);
         }
 

@@ -10,5 +10,7 @@ namespace SWD.TicketBooking.Service.IServices
     public interface IServiceTypeService
     {
         Task<ServiceTypeModel> ServicesOfTypeFromStations(Guid stationID, Guid serviceTypeID);
+        Task<List<ServiceTypeModel>> ServiceTypesFromStation(Guid stationID);
+
     }
 }
