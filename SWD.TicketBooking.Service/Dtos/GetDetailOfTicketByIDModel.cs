@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Dtos
 {
-    public class GetDetailTicketDetailByTicketDetailModel
+    public class GetDetailOfTicketByIDModel
     {
         public Guid BookingID { get; set; }
         public string? CustomerName { get; set; }

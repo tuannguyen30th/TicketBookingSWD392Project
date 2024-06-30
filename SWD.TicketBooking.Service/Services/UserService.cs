@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
@@ -32,7 +33,7 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
             _firebaseService = firebaseService;
         }
-        public async Task<User> GetUserByAccessToken(string accessToken)
+        public async Task<Repo.Entities.User> GetUserByAccessToken(string accessToken)
         {
             // Assuming you have a UserRepository with a method to find a user by access token
             var user = await _unitOfWork.UserRepository.FindByCondition(u => u.AccessToken == accessToken).FirstOrDefaultAsync();
@@ -136,7 +137,7 @@ namespace SWD.TicketBooking.Service.Services
                             throw new BadRequestException(SD.Notification.Existed("Người dùng", "Email"));
                         }
                     }
-                    var userEntity = _mapper.Map<User>(req);
+                    var userEntity = _mapper.Map<Repo.Entities.User>(req);
                     _unitOfWork.UserRepository.AddAsync(userEntity);
                     int commitResult = await _unitOfWork.UserRepository.Commit();
 
@@ -293,12 +294,31 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<User> GetUserByEmail2(string email)
+        public async Task<Repo.Entities.User> GetUserByEmail2(string email)
         {
             try
             {
                 var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).FirstOrDefaultAsync();
                 return userEntity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }        
+        
+        public async Task<Guid> GetCompanyIDByUser(Guid userId)
+        {
+            try
+            {
+                var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.UserID == userId).FirstOrDefaultAsync();
+
+                var companyID = await _unitOfWork.CompanyRepository
+                                 .FindByCondition(c => c.UserID == userEntity.UserID)
+                                 .Select(_ => _.CompanyID)
+                                 .FirstOrDefaultAsync();
+
+                return companyID;
             }
             catch (Exception ex)
             {

@@ -1,6 +1,6 @@
 ﻿namespace SWD.TicketBooking.API.ResponseModels
 {
-    public class GetDetailTicketDetailByTicketDetailResponse
+    public class GetDetailOfTicketByIDResponse
     {
         public Guid BookingID { get; set; }
         public string? CustomerName { get; set; }
