@@ -27,6 +27,37 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
         }
 
+        public async Task<List<GetServiceTypeModel>> GetAllActiveServices()
+        {
+            try
+            {
+                var services = await _unitOfWork.ServiceRepository
+                                                 .GetAll()
+                                                 .Include(_ => _.ServiceType)
+                                                 .Where(_ => _.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                 .ToListAsync();
+
+                var serviceTypes = services
+                    .GroupBy(_ => _.ServiceType)
+                    .Select(_ => new GetServiceTypeModel
+                    {
+                        ServiceTypeID = _.Key.ServiceTypeID,
+                        ServiceTypeName = _.Key.Name,
+                        Services = _.Select(_ => new GetServiceModel
+                        {
+                            ServiceID = (Guid)_.ServiceID,
+                            ServiceName = _.Name,
+                        }).ToList()
+                    }).ToList();
+
+                return serviceTypes;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
         public async Task<int> CreateService(CreateServiceModel createServiceModel)
         {
             try

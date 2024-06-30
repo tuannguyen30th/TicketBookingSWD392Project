@@ -2,6 +2,7 @@
 using DinkToPdf;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
+using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
@@ -18,12 +19,14 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class StationService : IStationService
     {
+        private readonly IFirebaseService _firebaseService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public StationService(IUnitOfWork unitOfWork,  IMapper mapper)
+        public StationService(IUnitOfWork unitOfWork,  IMapper mapper, IFirebaseService firebaseService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _firebaseService = firebaseService;
         }
         public async Task<List<StationFromRouteModel>> GetStationsFromRoute(Guid routeID)
         {
@@ -119,7 +122,65 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message,ex);
             }
-        } 
+        }
+
+        public async Task<bool> CreateStationWithService(CreateStationWithServiceModel reqModel)
+        {
+            try
+            {
+                var check = await _unitOfWork.StationRepository
+                                             .GetAll()
+                                             .Where(s => s.Name.Equals(reqModel.StationName))
+                                             .FirstOrDefaultAsync();
+                if (check == null)
+                {
+                    var company = await _unitOfWork.CompanyRepository.GetByIdAsync(reqModel.CompanyID);
+                    var city = await _unitOfWork.CityRepository.GetByIdAsync(reqModel.CityID);
+                    var station = await _unitOfWork.StationRepository.AddAsync(new Station
+                    {
+                        StationID = Guid.NewGuid(),
+                        CityID = city.CityID,
+                        CompanyID = company.CompanyID,
+                        Name = reqModel.StationName,
+                        Status = SD.GeneralStatus.ACTIVE,
+                    });
+                    if (station == null)
+                    {
+                        throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
+                    }
+
+                    foreach(var service in reqModel.ServiceToCreateModels)
+                    { 
+                        var createStationService = new Station_Service
+                        {
+                            Station_ServiceID = Guid.NewGuid(),
+                            ServiceID = service.ServiceID,
+                            StationID = station.StationID,
+                            Price = service.Price,
+                            Status = SD.GeneralStatus.ACTIVE,
+                        };
+
+                        var imagePath = FirebasePathName.SERVICE_STATION + $"{createStationService.Station_ServiceID}";
+                        var imageUploadResult = await _firebaseService.UploadFileToFirebase(service.Image, imagePath);
+                        if (!imageUploadResult.IsSuccess)
+                        {
+                            throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
+                        }
+
+                        createStationService.ImageUrl = (string)imageUploadResult.Result;
+                        await _unitOfWork.Station_ServiceRepository.AddAsync(createStationService);
+                    }
+
+                    var rs = _unitOfWork.Complete();
+                    return rs < 1 ? false : true;
+                }
+                else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
 
         public async Task<string> UpdateStation(Guid stationId, CreateStationModel stationModel)
         {
