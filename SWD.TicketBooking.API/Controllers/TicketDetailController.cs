@@ -60,12 +60,36 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = await _ticketDetailService.CancelTicket(ticketDetailID);
             return rs;
         }
+
+        [HttpPut("managed-ticket-details/ticket-verification/{qrCode}")]
+        public async Task<IActionResult> VerifyTicketDetail(string qrCode)
+        {
+            /*  var map = _mapper.Map<BookingModel>(bookingRequest);*/
+            var rs = await _ticketDetailService.VerifyTicketDetail(qrCode);
+            return Ok(rs);
+        }
+
         [HttpGet("managed-ticket-details/qrCodes/{qrCode}/emails/{email}")]
         public async Task<IActionResult> SearchTicket([FromRoute] string qrCode, [FromRoute] string email)
         {
             try
             {
                 var rs = _mapper.Map<SearchTicketResponse>(await _ticketDetailService.SearchTicket(qrCode, email));
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
+        [HttpGet("managed-ticket-details/qrCodes/{qrCode}")]
+        public async Task<IActionResult> GetTicketDetailInMobile([FromRoute] string qrCode)
+        {
+            try
+            {
+                var rs = _mapper.Map<GetTicketDetailInMobileResponse>(await _ticketDetailService.GetTicketDetailInMobile(qrCode));
+          //      var result = _ticketDetailService.GetTicketDetailInMobile(qrCode);
                 return Ok(rs);
             }
             catch (Exception ex)
