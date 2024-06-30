@@ -13,5 +13,6 @@ namespace SWD.TicketBooking.Service.Dtos.Auth
         public SecurityToken? Token { get; set; }
         public bool? Verified { get; set; }
         public string? Message { get; set; }
+        public Guid? CompanyID { get; set; }
     }
 }

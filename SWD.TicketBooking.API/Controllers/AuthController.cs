@@ -145,6 +145,16 @@ public class AuthController : ControllerBase
         {
             AccessToken = handler.WriteToken(loginResult.Token),
         };
+
+        if (loginResult.CompanyID != null)
+        {
+            res = new SWD.TicketBooking.API.ResponseModels.LoginResponse
+            {
+                AccessToken = handler.WriteToken(loginResult.Token),
+                CompanyID = loginResult.CompanyID
+            };
+        }
+
         return Ok(res);
     }
     [HttpPost("managed-auths/access-token-verification")]
