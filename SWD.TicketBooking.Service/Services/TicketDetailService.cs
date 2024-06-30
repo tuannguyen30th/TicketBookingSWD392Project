@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.UnitOfWork;
@@ -58,7 +59,7 @@ namespace SWD.TicketBooking.Service.Services
                 double servicePrice = 0;
                 var serviceDetailList = new List<ServiceDetailModel>();
 
-                foreach(var ticketDetail_Service in ticketDetailServices)
+                foreach (var ticketDetail_Service in ticketDetailServices)
                 {
                     var serviceDetailModel = new ServiceDetailModel
                     {
@@ -183,7 +184,7 @@ namespace SWD.TicketBooking.Service.Services
                 if (findTicket == null)
                 {
                     throw new NotFoundException(SD.Notification.NotFound("VÉ"));
-                }            
+                }
                 var startTime = findTicket.Booking.Trip.StartTime;
                 if (currentTime <= startTime?.AddHours(-12))
                 {
@@ -283,7 +284,7 @@ namespace SWD.TicketBooking.Service.Services
         //    }
 
         //}        
-        
+
         public async Task<SearchTicketModel> SearchTicket(string QRCode, string email)
         {
             try
@@ -292,7 +293,7 @@ namespace SWD.TicketBooking.Service.Services
                 var ticketDetail = await _unitOfWork.TicketDetailRepository
                                                     .GetAll()
                                                     .Include(t => t.Booking)
-                                                    .Where(b => b.QRCode.Equals(QRCode) && b.Booking.Email.Equals(email))                                                                                                     
+                                                    .Where(b => b.QRCode.Equals(QRCode) && b.Booking.Email.Equals(email))
                                                     .Include(t => t.Booking)
                                                     .ThenInclude(t => t.Trip)
                                                     .ThenInclude(t => t.Route_Company)
@@ -344,11 +345,11 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var priceInService = await _unitOfWork.TicketDetail_ServiceRepository
                                                       .FindByCondition(t => t.ServiceID == item)
-                                                      .Select(t=>t.Price)
+                                                      .Select(t => t.Price)
                                                       .FirstOrDefaultAsync();
-                var name  = await _unitOfWork.ServiceRepository
+                var name = await _unitOfWork.ServiceRepository
                                              .FindByCondition(t => t.ServiceID == item)
-                                             .Select(s=>s.Name)
+                                             .Select(s => s.Name)
                                              .FirstOrDefaultAsync();
                 var stationModel = new ServiceInSearchTicket
                 {
@@ -362,24 +363,24 @@ namespace SWD.TicketBooking.Service.Services
 
         public async Task<TripInSearchTicketModel> GetTripBaseOnModel(Trip trip, Booking booking, Route route, TicketDetail ticket)
         {
-            
+
             var route_company = await _unitOfWork.TripRepository
-                                                 .FindByCondition(t=> t.TripID.Equals(trip.TripID))
-                                                 .Select(c=>c.Route_CompanyID)
+                                                 .FindByCondition(t => t.TripID.Equals(trip.TripID))
+                                                 .Select(c => c.Route_CompanyID)
                                                  .FirstOrDefaultAsync();
             var company = await _unitOfWork.Route_CompanyRepository
-                                           .FindByCondition(r=>r.Route_CompanyID.Equals(route_company))
-                                           .Select(c=>c.Company)
+                                           .FindByCondition(r => r.Route_CompanyID.Equals(route_company))
+                                           .Select(c => c.Company)
                                            .FirstOrDefaultAsync();
-            
+
             var user = await _unitOfWork.UserRepository
-                                        .FindByCondition(u=>u.UserID == booking.UserID)
-                                        .Select(u=>u.UserName)
+                                        .FindByCondition(u => u.UserID == booking.UserID)
+                                        .Select(u => u.UserName)
                                         .FirstOrDefaultAsync();
 
             var fromCity = await _unitOfWork.CityRepository
-                                            .FindByCondition(c=>c.CityID == route.FromCityID)
-                                            .Select(c=>c.Name)
+                                            .FindByCondition(c => c.CityID == route.FromCityID)
+                                            .Select(c => c.Name)
                                             .FirstOrDefaultAsync();
             var toCity = await _unitOfWork.CityRepository
                                           .FindByCondition(c => c.CityID == route.ToCityID)
@@ -396,6 +397,116 @@ namespace SWD.TicketBooking.Service.Services
                 Time = trip.StartTime?.ToString("HH:mm")
             };
             return rs;
+        }
+
+        public async Task<GetTicketDetailInMobileModel> GetTicketDetailInMobile(string qrCode)
+        {
+            try
+            {
+                var ticketDetail = await _unitOfWork.TicketDetailRepository
+                                                   .GetAll()
+                                                   .Where(t => t.QRCode.Equals(qrCode) && t.Status.Equals(SD.Booking_TicketStatus.UNUSED_TICKET))
+                                                   .FirstOrDefaultAsync();
+                if (ticketDetail == null)
+                {
+                    throw new NotFoundException(SD.Notification.NotFound("QR code"));
+                }
+
+                var booking = await _unitOfWork.BookingRepository
+                                               .GetAll()
+                                               .Where(b => b.BookingID.Equals(ticketDetail.BookingID) && b.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
+                                               .FirstOrDefaultAsync();
+                var trip = await _unitOfWork.TripRepository
+                                            .GetAll()
+                                            .Where(t=> t.TripID.Equals(booking.TripID) && t.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                            .FirstOrDefaultAsync();
+                var routeCompany = await _unitOfWork.Route_CompanyRepository
+                                                    .FindByCondition(rc => rc.Route_CompanyID.Equals(trip.Route_CompanyID) && rc.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                    .FirstOrDefaultAsync();
+                var route = await _unitOfWork.RouteRepository
+                                             .FindByCondition(r => r.RouteID.Equals(routeCompany.RouteID)&& r.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                             .FirstOrDefaultAsync();
+
+                var routeResponse = GetTripBaseOnModel(trip, booking, route,ticketDetail);
+
+                var result = new GetTicketDetailInMobileModel
+                {
+                    Name = booking.FullName,
+                    PhoneNumber = booking.PhoneNumber,
+                    SeatCode = ticketDetail.SeatCode,
+                    QrCodeImage = ticketDetail.QRCodeImage,
+                    Route = routeResponse.Result.Route,
+                    StartDay = routeResponse.Result.Date,
+                    StartTime = routeResponse.Result.Time,
+                    Status = ticketDetail.Status,
+                    Services = await GetServicesInTicket(ticketDetail.TicketDetailID)
+
+                };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<List<ServiceInTicketModel>> GetServicesInTicket(Guid ticketDetailId)
+        {
+            var listServices = await _unitOfWork.TicketDetail_ServiceRepository
+                                                .GetAll()
+                                                .Where(s => s.TicketDetailID.Equals(ticketDetailId) && s.Status.Equals(SD.Booking_ServiceStatus.PAYING_TICKETSERVICE))
+                                                .Select(s => s.ServiceID)
+                                                .ToListAsync();
+            var rs = new List<ServiceInTicketModel>();
+            foreach (var service in listServices)
+            {
+                var serviceResponse = await _unitOfWork.ServiceRepository.FindByCondition(s => s.ServiceID.Equals(service) && s.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                                         .FirstOrDefaultAsync();
+                var station_service = await _unitOfWork.Station_ServiceRepository.FindByCondition(st => st.ServiceID.Equals(service) && st.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                                         .FirstOrDefaultAsync();
+                var station = await _unitOfWork.StationRepository.FindByCondition(st => st.StationID.Equals(station_service.StationID) && st.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                                         .FirstOrDefaultAsync();
+                var service_ticket = await _unitOfWork.TicketDetail_ServiceRepository.FindByCondition(st => st.TicketDetailID.Equals(ticketDetailId) && st.ServiceID.Equals(service) && st.Status.Equals(SD.Booking_ServiceStatus.PAYING_TICKETSERVICE))
+                                                                                    .FirstOrDefaultAsync();
+
+                var serviceResult = new ServiceInTicketModel
+                {
+                    ServiceName = serviceResponse.Name,
+                    Station = station.Name,
+                    Quantity = service_ticket.Quantity ?? 0,
+                    TotalPrice = (service_ticket.Price ?? 0 )* (service_ticket.Quantity ?? 0)
+                };
+
+                rs.Add(serviceResult);
+            }
+            return rs;
+        }
+
+        public async Task<bool> VerifyTicketDetail(string qrCode)
+        {
+            try
+            {
+                var ticketDetail = await _unitOfWork.TicketDetailRepository
+                                                   .GetAll()
+                                                   .Where(t => t.QRCode.Equals(qrCode) && t.Status.Equals(SD.Booking_TicketStatus.UNUSED_TICKET))
+                                                   .FirstOrDefaultAsync();
+                if (ticketDetail == null)
+                {
+                    throw new NotFoundException(SD.Notification.NotFound("QR code"));
+                }
+                ticketDetail.Status = SD.Booking_TicketStatus.USED_TICKET;
+                var ticketUpdate = _unitOfWork.TicketDetailRepository.Update(ticketDetail);
+                if (ticketUpdate == null)
+                {
+                    throw new InternalServerErrorException(SD.Notification.Internal("VÉ XE", "KHI CẬP NHẬT VÉ XE"));
+                }
+                _unitOfWork.Complete();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

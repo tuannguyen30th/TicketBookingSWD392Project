@@ -13,5 +13,8 @@ namespace SWD.TicketBooking.Service.Services
         Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid customerID);
         Task<SearchTicketModel> SearchTicket(string QRCode, string email);
         Task<ActionOutcome> CancelTicket(Guid ticketDetailID);
+        Task<GetTicketDetailInMobileModel> GetTicketDetailInMobile(string qrCode);
+        Task<bool> VerifyTicketDetail(string qrCode);
+
     }
 }
