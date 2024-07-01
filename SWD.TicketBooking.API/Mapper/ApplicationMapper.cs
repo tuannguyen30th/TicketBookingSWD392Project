@@ -31,12 +31,20 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<User, UpdateUserResponseModel>()
                 .ReverseMap();
             CreateMap<User, UpdateUserModel>().ReverseMap();
+            CreateMap<User, UserDetailModel>()
+                .ForMember(_ => _.RoleName, opt => opt.MapFrom(_ => _.UserRole.RoleName))
+                .ReverseMap();
+            CreateMap<UserDetailReponse, UserDetailModel>().ReverseMap();
 
             ///////Route////////
             CreateMap<RouteResponse, RouteModel>().ReverseMap();
             CreateMap<SWD.TicketBooking.Repo.Entities.Route, RouteModel>().ReverseMap();
             CreateMap<CreateRouteModel, CreateRouteRequest>().ReverseMap();
             CreateMap<UpdateRouteModel, UpdateRouteRequest>().ReverseMap();
+
+            CreateMap<CreateRouteRequest, CreateRouteModel>()
+            .ForMember(dest => dest.StationInRoutes, opt => opt.MapFrom(src => src.StationInRoutes));
+            CreateMap<API.RequestModels.StationInRouteModel, Service.Dtos.StationInRouteModel>();
 
             //////Trip/////////
             CreateMap<PopularTripModel, PopularTripResponse>().ReverseMap();

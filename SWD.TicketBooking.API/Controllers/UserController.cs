@@ -44,7 +44,7 @@ namespace SWD.TicketBooking.Controllers
         [HttpGet("managed-users/{userID}/details")]
         public async Task<IActionResult> GetUserDetail([FromRoute] Guid userID)
         {
-            var user = _mapper.Map<UserResponse>(await _userService.GetUserById(userID));
+            var user = _mapper.Map<UserDetailReponse>(await _userService.GetUserById(userID));
             return Ok(user);
         }
 

@@ -198,12 +198,16 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        public async Task<UserModel> GetUserById(Guid id)
+        public async Task<UserDetailModel> GetUserById(Guid id)
         {
             try
             {
-                var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
-                var us = _mapper.Map<UserModel>(user);
+                var user = await _unitOfWork.UserRepository
+                                            .GetAll()
+                                            .Where(u => u.UserID.Equals(id))
+                                            .Include(u => u.UserRole)
+                                            .FirstOrDefaultAsync();
+                var us = _mapper.Map<UserDetailModel>(user);
                 return us;
             }
             catch (Exception ex)
