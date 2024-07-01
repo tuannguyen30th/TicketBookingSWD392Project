@@ -52,13 +52,43 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
+        //[HttpPost("managed-stations")]
+        //public async Task<IActionResult> CreateNewStation([FromBody] CreateStationRequest request)
+        //{
+        //    var map = _mapper.Map<CreateStationModel>(request);
+        //    var rs = await _stationService.CreateStation(map);
+        //    return Ok(rs);
+        //}
+
+
         [HttpPost("managed-stations")]
-        public async Task<IActionResult> CreateNewStation([FromBody] CreateStationRequest request)
+        public async Task<IActionResult> CreateStationWithService([FromForm] CreateStationWithServiceRequest requestDto)
         {
-            var map = _mapper.Map<CreateStationModel>(request);
-            var rs = await _stationService.CreateStation(map);
-            return Ok(rs);
+            var request = new CreateStationWithServiceModel
+            {
+                CompanyID = requestDto.CompanyID,
+                CityID = requestDto.CityID,
+                StationName = requestDto.StationName,
+                ServiceToCreateModels = new List<ServiceToCreateModel>()
+            };
+
+            for (int i = 0; i < requestDto.ServiceIDs.Count; i++)
+            {
+                var serviceToCreate = new ServiceToCreateModel
+                {
+                    ServiceID = requestDto.ServiceIDs[i],
+                    Price = requestDto.Prices[i],
+                    Image = requestDto.ServiceImages[i]
+                };
+
+                request.ServiceToCreateModels.Add(serviceToCreate);
+            }
+
+            var rs = await _stationService.CreateStationWithService(request);
+
+            return rs ? Ok("Create successfully") : BadRequest("Create failed");
         }
+
         [HttpPut("managed-stations/{stationID}")]
         public async Task<IActionResult> UpdateStation([FromRoute] Guid stationID, [FromBody] CreateStationRequest req)
         {

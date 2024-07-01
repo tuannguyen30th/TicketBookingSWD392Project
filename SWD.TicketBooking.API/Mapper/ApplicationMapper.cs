@@ -29,7 +29,6 @@ namespace SWD.TicketBooking.API.Mapper
 
             CreateMap<UpdateUserModel, UpdateUserRequest>().ReverseMap();
             CreateMap<User, UpdateUserResponseModel>()
-                .ForMember(dest => dest.Password, opt => opt.Ignore())
                 .ReverseMap();
             CreateMap<User, UpdateUserModel>().ReverseMap();
 
@@ -58,7 +57,11 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<FromCityToCityModel.CityInfo, FromCityToCityRepsonse.CityInfo>().ReverseMap();
             CreateMap<FeedbackRequestModel, FeedbackRequest>().ReverseMap();
             CreateMap<FeedbackRequestModel, Feedback>().ReverseMap();
+
+            /////Service/////
             CreateMap<ServiceModel, ServiceResponse>().ReverseMap();
+            CreateMap<GetServiceModel, SWD.TicketBooking.Repo.Entities.Service>().ReverseMap();
+            CreateMap<GetServiceModel, GetServiceResponse>().ReverseMap();
             CreateMap<ServiceTypeModel, ServiceTypeResponse>().ReverseMap();
 
             /*        CreateMap<ServiceTypeModel, ServiceFromStationResponse.ServiceTypeResponse>()
@@ -72,6 +75,7 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<GetStationModel,Station>().ReverseMap();
             CreateMap<GetStationModel,GetStationResponse>().ReverseMap();   
             CreateMap<CreateStationModel,CreateStationRequest>().ReverseMap();
+            CreateMap<CreateStationWithServiceModel,CreateStationWithServiceRequest>().ReverseMap();
             /////Company/////
             CreateMap<GetCompanyModel, Company>().ReverseMap();
             CreateMap<GetCompanyModel, GetCompanyResponse>().ReverseMap();
