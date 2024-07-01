@@ -107,6 +107,10 @@ namespace SWD.TicketBooking.Repo.Entities
               .HasOne(vr => vr.Trip)
               .WithMany()
               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Trip>()
+           .HasOne(t => t.User)
+           .WithMany()
+           .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

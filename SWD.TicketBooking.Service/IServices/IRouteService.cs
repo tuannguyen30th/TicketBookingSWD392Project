@@ -13,5 +13,6 @@ namespace SWD.TicketBooking.Service.IServices
         Task<int> CreateRoute(CreateRouteModel model);
         Task<int> UpdateRoute(Guid routeId, UpdateRouteModel model);
         Task<int> ChangeStatus(Guid routeId, string status);
+        Task<List<GetRouteFromCompanyModel>> GetAllRouteFromCompany(Guid companyID);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SWD.TicketBooking.API.Installer;
 using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
@@ -29,6 +30,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-feedbacks/trips/{tripID}/rate-scales/{filter}")]
+        [Cache(1200)]
         public async Task<IActionResult> GetAllFeedbackInTrip(Guid tripID, int filter, int pageNumber =1, int pageSize =5)
         {
             var fb = _mapper.Map<FeedbackInTripResponse>(await _feedbackService.GetAllFeedbackInTrip(tripID, pageNumber,pageSize, filter));

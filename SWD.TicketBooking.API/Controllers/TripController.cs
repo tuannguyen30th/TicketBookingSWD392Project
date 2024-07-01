@@ -33,6 +33,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("manage-trips/populars")]
+        [Cache(1200)]
         public async Task<IActionResult> GetPopularTrips()
         {
             var rs = _mapper.Map<List<PopularTripResponse>>(await _tripService.GetPopularTrips());
@@ -41,6 +42,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("manage-trips/{tripId}/pictures")]
+        [Cache(1200)]
         public async Task<IActionResult> GetTripPictureDetail(Guid tripId)
         {
             //   var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
@@ -49,7 +51,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
         [HttpGet("managed-trips/from-city/{fromCity}/to-city/{toCity}/start-time/{startTime}/page-number/{pageNumber}/page-size/{pageSize}")]
-        [Cache(600)]
+        [Cache(1200)]
         public async Task<IActionResult> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber = 1, int pageSize = 10)
         {
          
@@ -75,12 +77,14 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(updatedService);
         }
         [HttpGet("managed-trips/{tripID}/booked-seats")]
+        [Cache(1200)]
         public async Task<IActionResult> GetSeatBookedFromTrip(Guid tripID)
         {
             var rs = await _tripService.GetSeatBookedFromTrip(tripID);
             return Ok(rs);
         }
         [HttpGet("managed-trips/{tripID}/utilities")]
+        [Cache(1200)]
         public async Task<IActionResult> GetUtilityByTripID([FromRoute] Guid tripID)
         {
             var rs = _mapper.Map<List<UtilityInTripResponse>>(await _tripService.GetAllUtilityByTripID(tripID));
@@ -88,6 +92,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-trips/ticket-type")]
+        [Cache(1200)]
         public async Task<IActionResult> GetAllTicketType()
         {
             var ticketType = await _tripService.GetAllTicketType();

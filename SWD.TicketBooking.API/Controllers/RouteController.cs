@@ -30,7 +30,7 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
         }
         [HttpGet("managed-routes")]
-        [Cache(600, FromCityToCityCacheKey)]
+        [Cache(1200, FromCityToCityCacheKey)]
         public async Task<IActionResult> GetFromCityToCity()
         {
           /*  try
@@ -54,6 +54,14 @@ namespace SWD.TicketBooking.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }*/
+        }
+        [HttpGet("managed-routes/company-routes/{companyID}")]
+        [Cache(1200)]
+        public async Task<IActionResult> GetAllRouteFromCompany(Guid companyID)
+        {
+            var rs = await _routeService.GetAllRouteFromCompany(companyID);
+            var response = _mapper.Map<List<GetRouteFromCompanyResponse>>(rs);        
+            return Ok(response);
         }
       /*  [AllowAnonymous]
         [HttpGet("managed-routes")]

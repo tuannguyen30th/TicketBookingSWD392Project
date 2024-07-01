@@ -10,7 +10,7 @@ namespace SWD.TicketBooking.Service.IServices
 {
     public interface IUtilityService
     {
-        Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id);
+        //Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id);
         Task<List<Utility>> GetAllUtility();
         Task<int> CreateNewUtility(CreateUtilityModel utility);
 

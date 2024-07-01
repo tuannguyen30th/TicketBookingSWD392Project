@@ -56,14 +56,14 @@ public class AuthController : ControllerBase
             {
                 var resultFail = new SignUpResponse
                 {
-                    Messages = "Sign up fail"
+                    Messages = "ĐĂNG KÍ THẤT BẠI!"
                 };
                 return BadRequest(resultFail);
             }
 
             var resultSucess = new SignUpResponse
             {
-                Messages = "Sign up success and check your email and verify the OTP!"
+                Messages = "ĐĂNG KÍ THÀNH CÔNG, VUI LÒNG KIỂM TRA EMAIL VÀ XÁC NHẬN OTP!"
             };
 
             var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
@@ -93,7 +93,7 @@ public class AuthController : ControllerBase
                 var emailResult = await _emailService.SendEmailAsync(mailData);
                 if (!emailResult)
                 {
-                    throw new BadRequestException("Failed to send email.");
+                    throw new BadRequestException("GỬI EMAIL THẤT BẠI!");
                 }
 
                 var createUser = new CreateUserReq
@@ -179,7 +179,7 @@ public class AuthController : ControllerBase
                 }
                 else
                 {
-                    throw new InternalServerErrorException("Access token has expired. Please log in again.".ToUpper());
+                    throw new InternalServerErrorException("MÃ THÔNG BÁO TRUY CẬP ĐÃ HẾT HẠN. XIN VUI LÒNG ĐĂNG NHẬP LẠI!");
                 }
             }
             var tokenInfoUrl = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={accessToken}";
@@ -258,7 +258,7 @@ public class AuthController : ControllerBase
         // Here goes your token validation logic
         if (string.IsNullOrWhiteSpace(token))
         {
-            throw new BadRequestException("Authorization header is missing or invalid.");
+            throw new BadRequestException("AUTHORIZATION HEADER IS MISSING OR INVALID!");
         }
         // Decode the JWT token
         var handler = new JwtSecurityTokenHandler();
@@ -267,7 +267,7 @@ public class AuthController : ControllerBase
         // Check if the token is expired
         if (jwtToken.ValidTo < DateTime.UtcNow)
         {
-            throw new BadRequestException("Token has expired.");
+            throw new BadRequestException("TOKEN HAS EXPIRED!");
         }
 
         string email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
@@ -276,7 +276,7 @@ public class AuthController : ControllerBase
 
         if (user == null)
         {
-            return BadRequest("email is in valid");
+            return BadRequest("EMAIL KHÔNG TỒN TẠI!");
         }
 
         // If token is valid, return success response

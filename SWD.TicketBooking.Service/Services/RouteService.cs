@@ -37,7 +37,30 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+        public async Task<List<GetRouteFromCompanyModel>> GetAllRouteFromCompany(Guid companyID)
+        {
+            try
+            {
+                var result = await _unitOfWork.Route_CompanyRepository
+                                              .GetAll()
+                                              .Where(_ => _.CompanyID == companyID)
+                                              .Select(_ => new GetRouteFromCompanyModel
+                                              {
+                                                  Route_CompanyID = _.Route_CompanyID,
+                                                  FromCity = _.Route.FromCity.Name,
+                                                  ToCity = _.Route.ToCity.Name,
+                                                  StartLocation = _.Route.StartLocation,
+                                                  EndLocation = _.Route.EndLocation
+                                              })
+                                              .ToListAsync();
+                return result;
 
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
         public async Task<int> CreateRoute(CreateRouteModel model)
         {
             try

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SWD.TicketBooking.API.Installer;
 using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
@@ -24,6 +25,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("managed-companies")]
+        [Cache(1200)]
         public async Task<IActionResult> GetAllActiveCompanies()
         {
             var companies = await _companyService.GetAllActiveCompanies();
@@ -33,6 +35,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("managed-companies/{companyID}")]
+        [Cache(1200)]
         public async Task<IActionResult> GetCompanyById([FromRoute] Guid companyID)
         {
             var company = await _companyService.GetCompanyById(companyID);

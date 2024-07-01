@@ -34,10 +34,7 @@ namespace SWD.TicketBooking.Service.Services
         }
         public async Task<User> GetUserByAccessToken(string accessToken)
         {
-            // Assuming you have a UserRepository with a method to find a user by access token
             var user = await _unitOfWork.UserRepository.FindByCondition(u => u.AccessToken == accessToken).FirstOrDefaultAsync();
-
-            // Check if the token is expired
             if (user != null && user.TokenExpiration > DateTime.UtcNow)
             {
                 return user;
@@ -49,7 +46,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var users = _unitOfWork.UserRepository.GetAll();
+                var users = await _unitOfWork.UserRepository.GetAll().ToListAsync();
                 var rs = _mapper.Map<List<UserModel>>(users);
                 return rs;
             }
@@ -203,6 +200,22 @@ namespace SWD.TicketBooking.Service.Services
                 var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
                 var us = _mapper.Map<UserModel>(user);
                 return us;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<List<GetStaffFromCompanyModel>> GetStaffFromCompany(Guid companyID)
+        {
+            try
+            {
+                var rs = await _unitOfWork.UserRepository.GetAll().Where(_ => _.CompanyID == companyID).Select(_ => new GetStaffFromCompanyModel
+                {
+                    StaffID = _.UserID,
+                    Name = _.FullName
+                }).ToListAsync();
+                return rs;
             }
             catch (Exception ex)
             {
