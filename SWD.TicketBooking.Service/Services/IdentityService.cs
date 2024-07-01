@@ -89,11 +89,6 @@ public class IdentityService
             var userRole = await _unitOfWork.UserRoleRepository
                                             .FindByCondition(ur => ur.RoleID == user.RoleID)
                                             .FirstOrDefaultAsync();
-
-            var companyID = await _unitOfWork.CompanyRepository 
-                                             .FindByCondition(c => c.UserID == user.UserID)
-                                             .Select(_ => _.CompanyID)
-                                             .FirstOrDefaultAsync();
             user.UserRole = userRole!;
 
             if (!user.Password.Equals(hash))
@@ -102,18 +97,6 @@ public class IdentityService
                 {
                     Verified = user.IsVerified,
                     Message = "EMAIL HOẶC PASSWORD KHÔNG ĐÚNG!"
-                };
-            }
-
-            if (user.UserRole.RoleName.Equals("Manager"))
-            {
-                return new LoginResponse
-                {
-                    Authenticated = true,
-                    Token = CreateJwtToken(user),
-                    Verified = user.IsVerified,
-                    Message = "ĐĂNG NHẬP THÀNH CÔNG",
-                    CompanyID = companyID
                 };
             }
 

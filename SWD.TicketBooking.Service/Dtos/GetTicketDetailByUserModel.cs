@@ -10,6 +10,8 @@ namespace SWD.TicketBooking.Service.Dtos
     {
         public Guid BookingID { get; set; }
         public Guid TicketDetailID { get; set; }
+        public Guid UserID { get; set; }
+        public Guid TripID { get; set; }
         public string? CompanyName { get; set; }
         public string? StartDate { get; set; }
         public string? StartTime { get; set; }
@@ -22,5 +24,6 @@ namespace SWD.TicketBooking.Service.Dtos
         public double TicketPrice { get; set; }
         public double TotalServicePrice { get; set; }
         public string? Status { get; set; }
+        
     }
 }

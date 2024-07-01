@@ -10,6 +10,5 @@ namespace SWD.TicketBooking.API.ResponseModels
     public class LoginResponse
     {
         public string? AccessToken { get; set; } = null!;
-        public Guid? CompanyID { get; set; } = null!;
     }
 }

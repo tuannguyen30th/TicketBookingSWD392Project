@@ -21,7 +21,7 @@ namespace SWD.TicketBooking.Service.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<GetDetailTicketDetailByTicketDetailModel> GetDetailTicketDetailByTicketDetail(Guid ticketDetailID)
+        public async Task<GetDetailOfTicketByIDModel> GetDetailOfTicketByID(Guid ticketDetailID)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace SWD.TicketBooking.Service.Services
                     servicePrice += (double)(ticketDetail_Service.Price * ticketDetail_Service.Quantity);
                 };
 
-                var rs = new GetDetailTicketDetailByTicketDetailModel
+                var rs = new GetDetailOfTicketByIDModel
                 {
                     BookingID = booking.BookingID,
                     CompanyName = company.Company.Name,
@@ -111,7 +111,6 @@ namespace SWD.TicketBooking.Service.Services
                                                 .Include(_ => _.Trip.Route_Company.Route.ToCity)
                                                 .Include(_ => _.Trip.Route_Company.Route)
                                                 .ToListAsync();
-
                 var rsList = new List<GetTicketDetailByUserModel>();
 
                 foreach (var booking in bookings)
@@ -132,12 +131,16 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             servicePrice += (double)(ticketDetail_Service.Price * ticketDetail_Service.Quantity);
                         }
-
                         var company = await _unitOfWork.Route_CompanyRepository
                                                        .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
                                                        .Include(_ => _.Company)
                                                        .FirstOrDefaultAsync();
-
+                        var bookingInTicket = await _unitOfWork.BookingRepository
+                                                       .FindByCondition(_ => _.BookingID.Equals(ticketDetail.BookingID))
+                                                       .FirstOrDefaultAsync();
+                        var trip = await _unitOfWork.TripRepository
+                                                    .FindByCondition(_=>_.TripID.Equals(bookingInTicket.TripID))
+                                                    .FirstOrDefaultAsync();
                         var rs = new GetTicketDetailByUserModel
                         {
                             BookingID = booking.BookingID,
@@ -154,6 +157,8 @@ namespace SWD.TicketBooking.Service.Services
                             TicketPrice = (double)ticketDetail.Price,
                             TotalServicePrice = servicePrice,
                             Status = ticketDetail.Status,
+                            UserID= customerID,
+                            TripID = trip.TripID
                         };
                         rsList.Add(rs);
                     }
@@ -418,16 +423,16 @@ namespace SWD.TicketBooking.Service.Services
                                                .FirstOrDefaultAsync();
                 var trip = await _unitOfWork.TripRepository
                                             .GetAll()
-                                            .Where(t=> t.TripID.Equals(booking.TripID) && t.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                            .Where(t => t.TripID.Equals(booking.TripID) && t.Status.Equals(SD.GeneralStatus.ACTIVE))
                                             .FirstOrDefaultAsync();
                 var routeCompany = await _unitOfWork.Route_CompanyRepository
                                                     .FindByCondition(rc => rc.Route_CompanyID.Equals(trip.Route_CompanyID) && rc.Status.Equals(SD.GeneralStatus.ACTIVE))
                                                     .FirstOrDefaultAsync();
                 var route = await _unitOfWork.RouteRepository
-                                             .FindByCondition(r => r.RouteID.Equals(routeCompany.RouteID)&& r.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                             .FindByCondition(r => r.RouteID.Equals(routeCompany.RouteID) && r.Status.Equals(SD.GeneralStatus.ACTIVE))
                                              .FirstOrDefaultAsync();
 
-                var routeResponse = GetTripBaseOnModel(trip, booking, route,ticketDetail);
+                var routeResponse = GetTripBaseOnModel(trip, booking, route, ticketDetail);
 
                 var result = new GetTicketDetailInMobileModel
                 {
@@ -474,7 +479,7 @@ namespace SWD.TicketBooking.Service.Services
                     ServiceName = serviceResponse.Name,
                     Station = station.Name,
                     Quantity = service_ticket.Quantity ?? 0,
-                    TotalPrice = (service_ticket.Price ?? 0 )* (service_ticket.Quantity ?? 0)
+                    TotalPrice = (service_ticket.Price ?? 0) * (service_ticket.Quantity ?? 0)
                 };
 
                 rs.Add(serviceResult);
@@ -510,4 +515,3 @@ namespace SWD.TicketBooking.Service.Services
         }
     }
 }
-

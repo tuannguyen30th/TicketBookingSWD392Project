@@ -13,6 +13,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<int> UpdateService(UpdateServiceModel updateServiceModel, Guid serviceID);
         Task<bool> UpdateStatus(Guid serviceID);
         //Task<List<ServiceTypeInStationModel>> ServicesFromStations(Guid stationID);
+        Task<List<GetServiceTypeModel>> GetAllActiveServices();
 
     }
 }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.IRepositories;
@@ -32,7 +34,7 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
             _firebaseService = firebaseService;
         }
-        public async Task<User> GetUserByAccessToken(string accessToken)
+        public async Task<Repo.Entities.User> GetUserByAccessToken(string accessToken)
         {
             var user = await _unitOfWork.UserRepository.FindByCondition(u => u.AccessToken == accessToken).FirstOrDefaultAsync();
             if (user != null && user.TokenExpiration > DateTime.UtcNow)
@@ -133,7 +135,7 @@ namespace SWD.TicketBooking.Service.Services
                             throw new BadRequestException(SD.Notification.Existed("Người dùng", "Email"));
                         }
                     }
-                    var userEntity = _mapper.Map<User>(req);
+                    var userEntity = _mapper.Map<Repo.Entities.User>(req);
                     _unitOfWork.UserRepository.AddAsync(userEntity);
                     int commitResult = await _unitOfWork.UserRepository.Commit();
 
@@ -193,12 +195,16 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        public async Task<UserModel> GetUserById(Guid id)
+        public async Task<UserDetailModel> GetUserById(Guid id)
         {
             try
             {
-                var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
-                var us = _mapper.Map<UserModel>(user);
+                var user = await _unitOfWork.UserRepository
+                                            .GetAll()
+                                            .Where(u => u.UserID.Equals(id))
+                                            .Include(u => u.UserRole)
+                                            .FirstOrDefaultAsync();
+                var us = _mapper.Map<UserDetailModel>(user);
                 return us;
             }
             catch (Exception ex)
@@ -229,17 +235,21 @@ namespace SWD.TicketBooking.Service.Services
                 var existedUser = await _unitOfWork.UserRepository.FindByCondition(x => x.UserID == id).FirstOrDefaultAsync();
                 if (existedUser != null)
                 {
-                    if (!SecurityUtil.Hash(updateUser.Password).Equals(existedUser.Password))
+                    if (!updateUser.Password.IsNullOrEmpty() && !SecurityUtil.Hash(updateUser.Password).Equals(existedUser.Password))
                     {
                         throw new BadRequestException("MẬT KHẨU CŨ KHÔNG ĐÚNG!");
                     }
-                    if (updateUser.NewPassword == null || !updateUser.ConfirmPassword.Equals(updateUser.NewPassword))
+                    if (!updateUser.Password.IsNullOrEmpty() && updateUser.NewPassword != null && updateUser.ConfirmPassword.Equals(updateUser.NewPassword))
+                    {
+                        existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);                       
+                    }
+                    else if (!updateUser.Password.IsNullOrEmpty() && updateUser.NewPassword != null && !updateUser.ConfirmPassword.Equals(updateUser.NewPassword))
                     {
                         throw new BadRequestException("MẬT KHẨU XÁC NHẬN KHÔNG ĐÚNG!");
                     }
 
                     existedUser.UserName = updateUser.UserName;
-                    existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);
+                    //existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);
                     existedUser.FullName = updateUser.FullName;
                     existedUser.Address = updateUser.Address;
                     existedUser.PhoneNumber = updateUser.PhoneNumber;
@@ -266,17 +276,12 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
                         }
+                    }
 
-                        _unitOfWork.UserRepository.Update(existedUser);
-                        var update = _mapper.Map<UpdateUserResponseModel>(existedUser);
-                        update.Password = updateUser.NewPassword;
-                        _unitOfWork.Complete();
-                        return (update/*, "OK"*/);
-                    }
-                    else
-                    {
-                        throw new BadRequestException("SAI MẬT KHẨU!");
-                    }
+                    var updatedUser = _unitOfWork.UserRepository.Update(existedUser);
+                    var update = _mapper.Map<UpdateUserResponseModel>(updatedUser);
+                    _unitOfWork.Complete();
+                    return (update/*, "OK"*/);
                 }
                 else
                 {
@@ -306,12 +311,31 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<User> GetUserByEmail2(string email)
+        public async Task<Repo.Entities.User> GetUserByEmail2(string email)
         {
             try
             {
                 var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).FirstOrDefaultAsync();
                 return userEntity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }        
+        
+        public async Task<Guid> GetCompanyIDByUser(Guid userId)
+        {
+            try
+            {
+                var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.UserID == userId).FirstOrDefaultAsync();
+
+                var companyID = await _unitOfWork.CompanyRepository
+                                 .FindByCondition(c => c.UserID == userEntity.UserID)
+                                 .Select(_ => _.CompanyID)
+                                 .FirstOrDefaultAsync();
+
+                return companyID;
             }
             catch (Exception ex)
             {

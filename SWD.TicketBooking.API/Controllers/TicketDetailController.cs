@@ -28,11 +28,11 @@ namespace SWD.TicketBooking.API.Controllers
         [AllowAnonymous]
         [HttpGet("managed-ticket-details/{ticketDetailID}")]
         [Cache(1200)]
-        public async Task<IActionResult> GetDetailTicketDetailByTicketDetail([FromRoute] Guid ticketDetailID)
+        public async Task<IActionResult> GetDetailOfTicketByID([FromRoute] Guid ticketDetailID)
         {
             try
             {
-                var rs = _mapper.Map<GetDetailTicketDetailByTicketDetailResponse>(await _ticketDetailService.GetDetailTicketDetailByTicketDetail(ticketDetailID));
+                var rs = _mapper.Map<GetDetailOfTicketByIDResponse>(await _ticketDetailService.GetDetailOfTicketByID(ticketDetailID));
                 return Ok(rs);
             }
             catch (Exception ex)

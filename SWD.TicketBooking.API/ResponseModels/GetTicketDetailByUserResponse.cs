@@ -4,6 +4,8 @@
     {
         public Guid BookingID { get; set; }
         public Guid TicketDetailID { get; set; }
+        public Guid UserID { get; set; }
+        public Guid TripID { get; set; }
         public string? CompanyName { get; set; }
         public string? StartDate { get; set; }
         public string? StartTime { get; set; }
