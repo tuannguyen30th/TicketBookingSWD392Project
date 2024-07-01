@@ -111,7 +111,6 @@ namespace SWD.TicketBooking.Service.Services
                                                 .Include(_ => _.Trip.Route_Company.Route.ToCity)
                                                 .Include(_ => _.Trip.Route_Company.Route)
                                                 .ToListAsync();
-
                 var rsList = new List<GetTicketDetailByUserModel>();
 
                 foreach (var booking in bookings)
@@ -132,12 +131,16 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             servicePrice += (double)(ticketDetail_Service.Price * ticketDetail_Service.Quantity);
                         }
-
                         var company = await _unitOfWork.Route_CompanyRepository
                                                        .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
                                                        .Include(_ => _.Company)
                                                        .FirstOrDefaultAsync();
-
+                        var bookingInTicket = await _unitOfWork.BookingRepository
+                                                       .FindByCondition(_ => _.BookingID.Equals(ticketDetail.BookingID))
+                                                       .FirstOrDefaultAsync();
+                        var trip = await _unitOfWork.TripRepository
+                                                    .FindByCondition(_=>_.TripID.Equals(bookingInTicket.TripID))
+                                                    .FirstOrDefaultAsync();
                         var rs = new GetTicketDetailByUserModel
                         {
                             BookingID = booking.BookingID,
@@ -154,6 +157,8 @@ namespace SWD.TicketBooking.Service.Services
                             TicketPrice = (double)ticketDetail.Price,
                             TotalServicePrice = servicePrice,
                             Status = ticketDetail.Status,
+                            UserID= customerID,
+                            TripID = trip.TripID
                         };
                         rsList.Add(rs);
                     }

@@ -10,5 +10,14 @@ namespace SWD.TicketBooking.API.RequestModels
         public Guid CompanyID { get; set; }
         public string? StartLocation { get; set; }
         public string? EndLocation { get; set; }
+
+        public List<StationInRouteModel> StationInRoutes { get; set; }
+    }
+
+    public class StationInRouteModel
+    {
+        public Guid StationID { get; set; }
+        public string? StationName { get; set; }
+        public int OrderInRoute { get; set; }
     }
 }

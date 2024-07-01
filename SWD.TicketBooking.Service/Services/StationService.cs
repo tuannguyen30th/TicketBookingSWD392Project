@@ -36,10 +36,10 @@ namespace SWD.TicketBooking.Service.Services
                                                 .FindByCondition(_ => _.RouteID == routeID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                 .Include(_ => _.Station)
                                                 .Select(_ => new StationFromRouteModel
-                                                 {
+                                                {
                                                     StationID = (Guid)_.StationID,
                                                     Name = _.Station.Name
-                                                 })
+                                                })
                                                 .ToListAsync();
 
                 return stations;
