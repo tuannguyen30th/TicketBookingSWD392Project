@@ -27,6 +27,14 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
+                var getTemplateIDFromDb = await _unitOfWork.TripRepository
+                                                .GetAll()
+                                                .Where(_ => _.TripID == ratingModel.TripID)
+                                                .Select(_ => _.TemplateID)
+                                                .FirstOrDefaultAsync();
+
+        
+                //var tripID = getTripID.FirstOrDefault(_ => _.IsTemplate == true) ?? null;
                 var checkHadBooked = await _unitOfWork.BookingRepository
                                                 .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID && _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
                                                 .FirstOrDefaultAsync();
@@ -35,7 +43,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new BadRequestException("NGƯỜI DÙNG CHƯA ĐẶT ĐI CHUYẾN XE NÀY!");
                 }
                 var checkHadRated = await _unitOfWork.FeedbackRepository
-                                                     .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID)
+                                                     .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TemplateID == getTemplateIDFromDb)
                                                      .FirstOrDefaultAsync();
                 if (checkHadRated != null)
                 {

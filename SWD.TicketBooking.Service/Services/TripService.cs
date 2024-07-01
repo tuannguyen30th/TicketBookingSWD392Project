@@ -31,13 +31,31 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var trip = await _unitOfWork.TripRepository.GetByIdAsync(id);
+
                 if (trip == null)
                 {
                     throw new BadRequestException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
+              
+               
                 else
                 {
-                    var pics = await _unitOfWork.TripPictureRepository.GetAll().Where(x => x.TripID == id).Select(p => p.TripPictureID).ToListAsync();
+                    var getTemplateID = await _unitOfWork.TripRepository
+                                                         .GetAll()
+                                                         .Where(_ => _.TripID == id)
+                                                         .Select(_ => _.TemplateID)
+                                                         .FirstOrDefaultAsync();
+
+                    var getTripID = await _unitOfWork.TripRepository
+                                                     .FindByCondition(_ => _.TemplateID == getTemplateID)
+                                                     .ToListAsync();
+                    var tripID = getTripID.FirstOrDefault(_ => _.IsTemplate == true)?.TripID ?? Guid.Empty;
+
+                    var pics = await _unitOfWork.TripPictureRepository
+                                                .GetAll()
+                                                .Where(_ => _.TripID == tripID)
+                                                .Select(_ => _.TripPictureID)
+                                                .ToListAsync();
 
                     var rs = new List<string>();
                     foreach(var p in pics)
@@ -82,14 +100,14 @@ namespace SWD.TicketBooking.Service.Services
                      var listImg = await GetPictureOfTrip(t.TripID);
 
                      var minPriceByTrip = await _unitOfWork.TicketType_TripRepository.GetAll()
-                     .Where(_ => _.TripID == t.TripID)
-                     .GroupBy(_ => _.TripID)
-                     .Select(g => new
-                     {
-                         TripId = g.Key,
-                         MinPrice = g.Min(_ => _.Price)
-                     })
-                     .ToDictionaryAsync(x => x.TripId, x => x.MinPrice);
+                                                            .Where(_ => _.TripID == t.TripID)
+                                                            .GroupBy(_ => _.TripID)
+                                                            .Select(g => new
+                                                            {
+                                                                TripId = g.Key,
+                                                                MinPrice = g.Min(_ => _.Price)
+                                                            })
+                                                            .ToDictionaryAsync(x => x.TripId, x => x.MinPrice);
 
                     var popuTrip = new PopularTripModel
                     {
@@ -130,14 +148,13 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var startDate = startTime.Date;
-
+                var startDate = startTime.Date;              
                 var tripsQuery = _unitOfWork.TripRepository.GetAll()
                                             .Include(_ => _.Route_Company.Route)
                                             .Where(_ => _.Route_Company.Route.FromCityID == fromCity
                                                      && _.Route_Company.Route.ToCityID == toCity
                                                      && _.StartTime.Value.Date == startDate && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE));
-
+            
                 var totalTrips = await tripsQuery.CountAsync();
                 if (totalTrips == 0)
                 {
@@ -159,12 +176,13 @@ namespace SWD.TicketBooking.Service.Services
                     var ratingAverage = feedbacks.Select(_ => _.Rating).DefaultIfEmpty(0).Average();
                     var roundedRatingAverage = Math.Round((decimal)ratingAverage, 1);
                     var ratingQuantity = feedbacks.Count();
+                    var tripID = await GetTripIDFromTemplate(trip.TripID);
                     var totalSeatsInTrip = await _unitOfWork.TicketType_TripRepository
-                                                            .FindByCondition(_ => _.TripID == trip.TripID)
+                                                            .FindByCondition(_ => _.TripID == tripID.TripID)
                                                             .SumAsync(_ => (int?)_.Quantity) ?? 0;
                     var bookings = await _unitOfWork.BookingRepository
                                                     .GetAll()
-                                                    .Where(_ => _.TripID == trip.TripID)
+                                                    .Where(_ => _.TripID == trip.TripID)                                      
                                                     .Select(_ => _.BookingID)
                                                     .ToListAsync();
                     var totalUnusedSeats = await _unitOfWork.TicketDetailRepository
@@ -174,25 +192,27 @@ namespace SWD.TicketBooking.Service.Services
                     var remainingSeats = totalSeatsInTrip - totalUnusedSeats;
                     var tripImage = await _unitOfWork.TripPictureRepository
                                                      .GetAll()
-                                                     .Where(_ => _.TripID == trip.TripID)
+                                                     .Where(_ => _.TripID == tripID.TripID)
                                                      .Select(_ => _.ImageUrl)
                                                      .FirstOrDefaultAsync();
 
                     var lowestPrice = await _unitOfWork.TicketType_TripRepository
-                                                       .FindByCondition(_ => _.TripID == trip.TripID)
+                                                       .FindByCondition(_ => _.TripID == tripID.TripID)
                                                        .Select(_ => (double?)_.Price)
                                                        .MinAsync() ?? 0;
+                    var companyName = await _unitOfWork.Route_CompanyRepository
+                                                       .GetAll()
+                                                       .Include(_ => _.Company)
+                                                       .Where(_ => _.RouteID == tripID.Route_Company.RouteID)
+                                                       .Select(_ => _.Company.Name)
+                                                       .FirstOrDefaultAsync();
 
                     var searchTrip = new SearchTripModel
                     {
                         TripID = trip.TripID,
                         RouteID = (Guid)trip.Route_Company.RouteID,
                         TemplateID = (Guid)trip.TemplateID,
-                        CompanyName = await _unitOfWork.Route_CompanyRepository
-                                                       .GetAll()
-                                                       .Where(_ => _.RouteID == trip.Route_Company.RouteID)
-                                                       .Select(_ => _.Company.Name)
-                                                       .FirstOrDefaultAsync(),
+                        CompanyName = companyName,
                         ImageUrl = tripImage,
                         AverageRating = (double)roundedRatingAverage,
                         QuantityRating = ratingQuantity,
@@ -226,78 +246,142 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                if (createTrip.StartTime == null || createTrip.EndTime == null || createTrip.ImageUrls == null)
+                if (createTrip.IsTemplate == true)
                 {
-                    throw new BadRequestException("TẤT CẢ CÁC TRƯỜNG PHẢI CÓ DỮ LIỆU!");
-                }
-                if(createTrip.StartTime > createTrip.EndTime)
-                {
-                    throw new BadRequestException("THỜI GIAN BẮT ĐẦU PHẢI TRƯỚC THỜI GIAN KẾT THÚC CHUYẾN XE!");
-                }
-                var trip = new Trip
-                {
-                    TripID = Guid.NewGuid(),    
-                    Route_CompanyID = createTrip.Route_CompanyID,
-                    IsTemplate = true,
-                    StartTime = createTrip.StartTime,
-                    EndTime = createTrip.EndTime,
-                    Status = SD.GeneralStatus.ACTIVE
-                };
-                await _unitOfWork.TripRepository.AddAsync(trip);
-                var imageUrls = createTrip.ImageUrls;
-                foreach(var imageUrl in imageUrls)
-                {
-                    var guidPath = Guid.NewGuid().ToString();
-                    var imagePath = FirebasePathName.TRIP + $"{guidPath}";
-                    var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
-                    if (!imageUploadResult.IsSuccess)
+                    if (createTrip.StartTime == null || createTrip.EndTime == null || createTrip.ImageUrls == null)
                     {
-                        throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
+                        throw new BadRequestException("TẤT CẢ CÁC TRƯỜNG PHẢI CÓ DỮ LIỆU!");
                     }
-
-                    var newtripImage = new TripPicture
+                    if (createTrip.StartTime > createTrip.EndTime)
                     {
-                        TripPictureID = Guid.NewGuid(),
-                        TripID = trip.TripID,
-                        ImageUrl = (string)imageUploadResult.Result,
-                        Status = SD.GeneralStatus.ACTIVE
-                    };
-
-                    await _unitOfWork.TripPictureRepository.AddAsync(newtripImage);
-                };        
-                foreach(var ticketType in createTrip.TicketType_TripModels)
-                {
-                    if (ticketType.Price <= 0 || ticketType.Quantity <= 0)
-                    {
-                        throw new BadRequestException("GIÁ VÉ VÀ SỐ LƯỢNG PHẢI LỚN HƠN 0!");
+                        throw new BadRequestException("THỜI GIAN BẮT ĐẦU PHẢI TRƯỚC THỜI GIAN KẾT THÚC CHUYẾN XE!");
                     }
-                    var newTicketType_Trip = new TicketType_Trip
+                    var tripID = Guid.NewGuid();
+                    var trip = new Trip
                     {
-                        TicketTypeID = ticketType.TicketTypeID,
-                        TripID = trip.TripID,
-                        Price = ticketType.Price,
-                        Quantity = ticketType.Quantity,
+                        TripID = tripID,
+                        Route_CompanyID = createTrip.Route_CompanyID,
+                        StaffID = createTrip.StaffID,
+                        IsTemplate = true,
+                        StartTime = createTrip.StartTime,
+                        EndTime = createTrip.EndTime,
+                        TemplateID = tripID,
                         Status = SD.GeneralStatus.ACTIVE
                     };
-                    await _unitOfWork.TicketType_TripRepository.AddAsync(newTicketType_Trip);
-                } ;         
-                foreach(var tripUtility in createTrip.Trip_UtilityModels)
-                {
+                    await _unitOfWork.TripRepository.AddAsync(trip);
+                    var imageUrls = createTrip.ImageUrls;
+                    foreach (var imageUrl in imageUrls)
+                    {
+                        var guidPath = Guid.NewGuid().ToString();
+                        var imagePath = FirebasePathName.TRIP + $"{guidPath}";
+                        var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
+                        if (!imageUploadResult.IsSuccess)
+                        {
+                            throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
+                        }
 
-                    var newTrip_Utility = new Trip_Utility
-                    {
-                        TripID = trip.TripID,
-                        UtilityID = tripUtility.UtilityID,
-                        Status = SD.GeneralStatus.ACTIVE
+                        var newtripImage = new TripPicture
+                        {
+                            TripPictureID = Guid.NewGuid(),
+                            TripID = trip.TripID,
+                            ImageUrl = (string)imageUploadResult.Result,
+                            Status = SD.GeneralStatus.ACTIVE
+                        };
+
+                        await _unitOfWork.TripPictureRepository.AddAsync(newtripImage);
                     };
-                    await _unitOfWork.Trip_UtilityRepository.AddAsync(newTrip_Utility);
-                };
-                var rs = _unitOfWork.Complete();
-                if (rs < 0)
-                {
-                    return false;
+                    if (createTrip.TicketType_TripModels.Count < 2)
+                    {
+                        throw new BadRequestException("PHẢI CÓ ÍT NHẤT 2 LOẠI GHẾ!");
+                    }
+                    foreach (var ticketType in createTrip.TicketType_TripModels)
+                    {
+                        if (ticketType.Price <= 0 || ticketType.Quantity <= 0)
+                        {
+                            throw new BadRequestException("GIÁ VÉ VÀ SỐ LƯỢNG PHẢI LỚN HƠN 0!");
+                        }
+                        if(ticketType.Quantity % 4 != 0)
+                        {
+                            throw new BadRequestException("SỐ LƯỢNG GHẾ KHÔNG HỢP LỆ!");
+                        }
+                        var newTicketType_Trip = new TicketType_Trip
+                        {
+                            TicketTypeID = ticketType.TicketTypeID,
+                            TripID = trip.TripID,
+                            Price = ticketType.Price,
+                            Quantity = ticketType.Quantity,
+                            Status = SD.GeneralStatus.ACTIVE
+                        };
+                        await _unitOfWork.TicketType_TripRepository.AddAsync(newTicketType_Trip);
+                    };
+                    foreach (var tripUtility in createTrip.Trip_UtilityModels)
+                    {
+
+                        var newTrip_Utility = new Trip_Utility
+                        {
+                            TripID = trip.TripID,
+                            UtilityID = tripUtility.UtilityID,
+                            Status = SD.GeneralStatus.ACTIVE
+                        };
+                        await _unitOfWork.Trip_UtilityRepository.AddAsync(newTrip_Utility);
+                    };
+                    var rs = _unitOfWork.Complete();
+                    if (rs < 0)
+                    {
+                        return false;
+                    }
+                    return true;
                 }
-                return true;
+                else
+                {
+                    var getInformationTrip = await _unitOfWork.TripRepository
+                                                              .FindByCondition(_ => _.TemplateID == createTrip.TemplateID)
+                                                              .FirstOrDefaultAsync();
+                    if (getInformationTrip == null)
+                    {
+                        throw new NotFoundException("THÔNG TIN CHUYẾN XE KHÔNG TÌM THẤY!");
+                    }
+                 /*   var getInformationTicketTypes = await _unitOfWork.TicketType_TripRepository
+                                                                    .GetAll()
+                                                                    .Where(_ => _.TripID == getInformationTrip.TripID)
+                                                                    .ToListAsync();
+                    var getInformationUtilitys = await _unitOfWork.Trip_UtilityRepository
+                                                                 .GetAll()
+                                                                 .Where(_ => _.TripID == getInformationTrip.TripID)
+                                                                 .ToListAsync();
+                    var getInformationTripPictures = await _unitOfWork.TripPictureRepository
+                                                                     .GetAll()
+                                                                     .Where(_ => _.TripID == getInformationTrip.TripID)
+                                                                     .Select(_ => _.ImageUrl)
+                                                                     .ToListAsync();*/
+                    if (createTrip.StartTime == null || createTrip.EndTime == null)
+                    {
+                        throw new BadRequestException("TẤT CẢ CÁC TRƯỜNG PHẢI CÓ DỮ LIỆU!");
+                    }
+                    if (createTrip.StartTime > createTrip.EndTime)
+                    {
+                        throw new BadRequestException("THỜI GIAN BẮT ĐẦU PHẢI TRƯỚC THỜI GIAN KẾT THÚC CHUYẾN XE!");
+                    }
+                    var trip = new Trip
+                    {
+                        TripID = Guid.NewGuid(),
+                        Route_CompanyID = getInformationTrip.Route_CompanyID,
+                        StaffID = createTrip.StaffID,
+                        IsTemplate = false,
+                        StartTime = createTrip.StartTime,
+                        EndTime = createTrip.EndTime,
+                        TemplateID = createTrip.TemplateID,
+                        Status = SD.GeneralStatus.ACTIVE
+                    };       
+                    await _unitOfWork.TripRepository.AddAsync(trip);
+                    var rs = _unitOfWork.Complete();
+                    if (rs < 0)
+                    {
+                        return false;
+                    }
+                    return true;
+
+                }
             }
             catch (Exception ex)
             {
@@ -375,8 +459,11 @@ namespace SWD.TicketBooking.Service.Services
                     throw new NotFoundException(SD.Notification.NotFound("CHI TIẾT HÓA ĐƠN"));
                 }
 
+                var tripIDFromDb = await GetTripIDFromTemplate(tripID);
+
+
                 var ticketTypeTrips = await _unitOfWork.TicketType_TripRepository
-                    .FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                    .FindByCondition(_ => _.TripID == tripIDFromDb.TripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                     .Select(_ => new GetSeatBookedFromTripModel.TicketType_TripModel
                     {
                         TicketType_TripID = _.TicketType_TripID,
@@ -390,7 +477,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new NotFoundException(SD.Notification.NotFound("CHI TIẾT CỦA VÉ"));
                 }
                 var totalSeat = await _unitOfWork.TicketType_TripRepository
-                                                 .FindByCondition(_ => _.TripID == tripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                 .FindByCondition(_ => _.TripID == tripIDFromDb.TripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                  .SumAsync(_ => _.Quantity);
                 var firstBooking = bookingDetails.First();
                 var seatBookeds = bookingDetails.Select(_ => _.SeatCode).ToList();
@@ -418,9 +505,10 @@ namespace SWD.TicketBooking.Service.Services
 
         public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
         {
+            var tripID = await GetTripIDFromTemplate(id);
             var utilities = await _unitOfWork.Trip_UtilityRepository
-                                             .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-                                             .Select(tu => tu.Utility)
+                                             .FindByCondition(_ => _.TripID == tripID.TripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                             .Select(_ => _.Utility)
                                              .ToListAsync();
             var result = new List<UtilityModel>();
            foreach(var trip in utilities)
@@ -435,5 +523,22 @@ namespace SWD.TicketBooking.Service.Services
             };
             return result;
         }
+        public async Task<Trip> GetTripIDFromTemplate(Guid id)
+        {
+            var getTemplateID = await _unitOfWork.TripRepository
+                                                 .GetAll()
+                                                 .Where(_ => _.TripID == id)
+                                                 .Select(_ => _.TemplateID)
+                                                 .FirstOrDefaultAsync();
+
+            var getTripID = await _unitOfWork.TripRepository
+                                             .FindByCondition(_ => _.TemplateID == getTemplateID)
+                                             .ToListAsync();
+
+            var tripID = getTripID.FirstOrDefault(_ => _.IsTemplate == true) ?? null;
+
+            return tripID;
+        }
+
     }
 }

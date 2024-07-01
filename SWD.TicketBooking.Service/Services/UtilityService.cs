@@ -28,10 +28,21 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
 
         }
-        public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
+       /* public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
         {
+            var getTemplateID = await _unitOfWork.TripRepository
+                                          .GetAll()
+                                          .Where(_ => _.TripID == id)
+                                          .Select(_ => _.TemplateID)
+                                          .FirstOrDefaultAsync();
+
+            var getTripID = await _unitOfWork.TripRepository
+                                             .FindByCondition(_ => _.TemplateID == getTemplateID)
+                                             .FirstOrDefaultAsync();
+
+            var tripID = getTripID?.IsTemplate == true ? getTripID.TripID : id;
             var utilities = await _unitOfWork.Trip_UtilityRepository
-                .FindByCondition(tu => tu.TripID == id && tu.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                .FindByCondition(tu => tu.TripID == tripID && tu.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                 .Select(tu => tu.Utility)
                 .ToListAsync();
             var result = new List<UtilityModel>();
@@ -47,7 +58,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             return result;
         }
-
+*/
         public async Task<List<Utility>> GetAllUtility()
         {
 

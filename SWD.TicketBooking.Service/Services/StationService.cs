@@ -220,10 +220,10 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var route = await _unitOfWork.TripRepository
-                                             .FindByCondition(s=> s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) 
+                                             .FindByCondition(s => s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)
                                                                && s.Route_Company.Route.Status.Equals(SD.GeneralStatus.ACTIVE))
                                              .Include(_ => _.Route_Company)
-                                             .Select(s=>s.Route_Company.RouteID).FirstOrDefaultAsync();
+                                             .Select(s => s.Route_Company.RouteID).FirstOrDefaultAsync();
                 var stations = await _unitOfWork.Station_RouteRepository
                                                 .FindByCondition(_ => _.RouteID == route)
                                                 .Include(_ => _.Station)

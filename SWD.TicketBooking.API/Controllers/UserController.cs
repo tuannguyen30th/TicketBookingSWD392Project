@@ -12,6 +12,7 @@ using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
+using MimeKit.Encodings;
 
 namespace SWD.TicketBooking.Controllers
 {
@@ -34,7 +35,12 @@ namespace SWD.TicketBooking.Controllers
             _mapper = mapper;
 
         }
-
+        [HttpGet("managed-users/staff/{companyID}")]
+        public async Task<IActionResult> GetStaffFromCompany(Guid companyID)
+        {
+            var staff = _mapper.Map<List<GetStaffFromCompanyResponse>>(await _userService.GetStaffFromCompany(companyID));
+            return Ok(staff);
+        }
         [HttpPost("managed-users/avatars")]
         public async Task<IActionResult> UploadAvatar(IFormFile file)
         {
@@ -70,7 +76,7 @@ namespace SWD.TicketBooking.Controllers
 
                     resultFail = new SignUpResponse
                     {
-                        Messages = "Account does not exist!"
+                        Messages = "KHÔNG TỒN TẠI TÀI KHOẢN!"
                     };
                     return BadRequest(resultFail);
                 }
@@ -80,7 +86,7 @@ namespace SWD.TicketBooking.Controllers
 
                     resultFail = new SignUpResponse
                     {
-                        Messages = "Account does not exist!"
+                        Messages = "KHÔNG TỒN TẠI TÀI KHOẢN!"
                     };
                     return BadRequest(resultFail);
                 }
@@ -100,7 +106,7 @@ namespace SWD.TicketBooking.Controllers
                     var emailResult = await _emailService.SendEmailAsync(mailData);
                     if (!emailResult)
                     {
-                        throw new BadRequestException("Lỗi khi gửi Email!".ToUpper());
+                        throw new BadRequestException("LỖI XẢY RA KHI GỬI EMAIL!");
                     }
 
                     var createUser = new CreateUserReq
@@ -126,19 +132,19 @@ namespace SWD.TicketBooking.Controllers
                         {
                             return BadRequest(new SignUpResponse
                             {
-                                Messages = "Lỗi khi gửi Email!".ToUpper()
-                            });
+                                Messages = "LỖI XẢY RA KHI GỬI EMAIL!"
+                            }) ;
 
                         }
                     }
                     return Ok(new SignUpResponse
                     {
-                        Messages = "Kiểm tra Email của bạn và xác nhận mã OTP!".ToUpper()
+                        Messages = "KIỂM TRA EMAIL CỦA BẠN VÀ XÁC NHẬN OTP!"
                     });
                 }
                 resultFail = new SignUpResponse
                 {
-                    Messages = "Lỗi!".ToUpper()
+                    Messages = "LỖI!"
                 };
                 return BadRequest(resultFail);
             }
@@ -148,7 +154,7 @@ namespace SWD.TicketBooking.Controllers
 
                 var resultFail = new SignUpResponse
                 {
-                    Messages = "Lỗi khi gửi mã OTP!".ToUpper()
+                    Messages = "LỖI KHI GỬI MÃ OTP!"
                 };
                 return BadRequest(resultFail);
             }

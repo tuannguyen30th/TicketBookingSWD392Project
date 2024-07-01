@@ -18,6 +18,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<UserDetailModel> GetUserById(Guid id);
         Task<UpdateUserResponseModel /*returnModel, string message*/> UpdateUser(Guid id, UpdateUserModel updateUser);
         Task<bool> UploadAvatar(IFormFile file);
+        Task<List<GetStaffFromCompanyModel>> GetStaffFromCompany(Guid companyID);
         Task<Guid> GetCompanyIDByUser (Guid userId);
     }
 }
