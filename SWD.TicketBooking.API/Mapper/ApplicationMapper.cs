@@ -97,6 +97,7 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<GetTicketDetailInMobileModel, GetTicketDetailInMobileResponse>()
                      .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.Services));
             CreateMap<ServiceInTicketModel, ServiceInTicketResponse>();
+            CreateMap<GetTicketDetailByUserModel, GetTicketDetailByUserResponse>();
 
 
             CreateMap<GetDetailOfTicketByIDModel, GetDetailOfTicketByIDResponse>()
