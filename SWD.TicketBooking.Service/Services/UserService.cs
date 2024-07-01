@@ -2,6 +2,7 @@
 using Firebase.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Repo.IRepositories;
@@ -217,17 +218,21 @@ namespace SWD.TicketBooking.Service.Services
                 var existedUser = await _unitOfWork.UserRepository.FindByCondition(x => x.UserID == id).FirstOrDefaultAsync();
                 if (existedUser != null)
                 {
-                    if (!SecurityUtil.Hash(updateUser.Password).Equals(existedUser.Password))
+                    if (!updateUser.Password.IsNullOrEmpty() && !SecurityUtil.Hash(updateUser.Password).Equals(existedUser.Password))
                     {
                         throw new BadRequestException("MẬT KHẨU CŨ KHÔNG ĐÚNG!");
                     }
-                    if (updateUser.NewPassword == null || !updateUser.ConfirmPassword.Equals(updateUser.NewPassword))
+                    if (!updateUser.Password.IsNullOrEmpty() && updateUser.NewPassword != null && updateUser.ConfirmPassword.Equals(updateUser.NewPassword))
+                    {
+                        existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);                       
+                    }
+                    else if (!updateUser.Password.IsNullOrEmpty() && updateUser.NewPassword != null && !updateUser.ConfirmPassword.Equals(updateUser.NewPassword))
                     {
                         throw new BadRequestException("MẬT KHẨU XÁC NHẬN KHÔNG ĐÚNG!");
                     }
 
                     existedUser.UserName = updateUser.UserName;
-                    existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);
+                    //existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);
                     existedUser.FullName = updateUser.FullName;
                     existedUser.Address = updateUser.Address;
                     existedUser.PhoneNumber = updateUser.PhoneNumber;
@@ -254,17 +259,12 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
                         }
+                    }
 
-                        _unitOfWork.UserRepository.Update(existedUser);
-                        var update = _mapper.Map<UpdateUserResponseModel>(existedUser);
-                        update.Password = updateUser.NewPassword;
-                        _unitOfWork.Complete();
-                        return (update/*, "OK"*/);
-                    }
-                    else
-                    {
-                        throw new BadRequestException("SAI MẬT KHẨU!");
-                    }
+                    var updatedUser = _unitOfWork.UserRepository.Update(existedUser);
+                    var update = _mapper.Map<UpdateUserResponseModel>(updatedUser);
+                    _unitOfWork.Complete();
+                    return (update/*, "OK"*/);
                 }
                 else
                 {
