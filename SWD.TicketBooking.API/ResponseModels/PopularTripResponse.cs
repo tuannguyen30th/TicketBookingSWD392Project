@@ -3,18 +3,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.API.ResponseModels
 {
     public class PopularTripResponse
     {
+        [JsonPropertyName("TripId")]
         public Guid TripId { get; set; }
-        public Guid FromCityID { get; set; }
+
+        [JsonPropertyName("FromCityId")]
+        public Guid FromCityId { get; set; }
+
+        [JsonPropertyName("FromCity")]
         public string? FromCity { get; set; }
-        public Guid ToCityID { get; set; }
+
+        [JsonPropertyName("ToCityId")]
+        public Guid ToCityId { get; set; }
+
+        [JsonPropertyName("ToCity")]
         public string? ToCity { get; set; }
+
+        [JsonPropertyName("PriceFrom")]
         public double PriceFrom { get; set; }
+
+        [JsonPropertyName("ImageUrl")]
         public List<string>? ImageUrl { get; set; }
     }
 }

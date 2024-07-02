@@ -13,7 +13,6 @@ using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
 using SWD.TicketBooking.API.RequestModels.Booking;
 using SWD.TicketBooking.API.ResponseModels;
 
-
 namespace SWD.TicketBooking.API.Mapper
 {
     public class ApplicationMapper : Profile
@@ -41,7 +40,7 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<SWD.TicketBooking.Repo.Entities.Route, RouteModel>().ReverseMap();
             CreateMap<CreateRouteModel, CreateRouteRequest>().ReverseMap();
             CreateMap<UpdateRouteModel, UpdateRouteRequest>().ReverseMap();
-            CreateMap<GetRouteFromCompanyModel, GetRouteFromCompanyResponse>().ReverseMap();    
+            CreateMap<GetRouteFromCompanyModel, GetRouteFromCompanyResponse>().ReverseMap();
 
             CreateMap<CreateRouteRequest, CreateRouteModel>()
             .ForMember(dest => dest.StationInRoutes, opt => opt.MapFrom(src => src.StationInRoutes));
@@ -49,7 +48,7 @@ namespace SWD.TicketBooking.API.Mapper
 
             //////Trip/////////
             CreateMap<PopularTripModel, PopularTripResponse>().ReverseMap();
-            CreateMap<SearchTripModel,SearchTripResponse>().ReverseMap();
+            CreateMap<SearchTripModel, SearchTripResponse>().ReverseMap();
             CreateMap<CreateTripModel, CreateTripRequest>().ReverseMap();
             CreateMap<TicketType_TripRequest, TicketType_TripModel>().ReverseMap();
             CreateMap<Trip_UtilityRequest, Trip_UtilityModel>().ReverseMap();
@@ -58,9 +57,9 @@ namespace SWD.TicketBooking.API.Mapper
             //   CreateMap<Trip, PictureModel>().ReverseMap();
 
             /////Utility/////
-            CreateMap<UtilityInTripResponse,UtilityModel > ().ReverseMap();
+            CreateMap<UtilityInTripResponse, UtilityModel>().ReverseMap();
             CreateMap<CreateNewUtilityRequest, CreateUtilityModel>().ReverseMap();
-            CreateMap<UtilityReponse,Utility>().ReverseMap();
+            CreateMap<UtilityReponse, Utility>().ReverseMap();
 
             CreateMap<FromCityToCityModel.CityModel, FromCityToCityRepsonse.CityResponse>().ReverseMap();
             CreateMap<FromCityToCityModel.CityInfo, FromCityToCityRepsonse.CityInfo>().ReverseMap();
@@ -77,14 +76,14 @@ namespace SWD.TicketBooking.API.Mapper
                         .ForMember(dest => dest.ServiceResponse, opt => opt.MapFrom(src => src.ServiceModels)).ReverseMap();*/
             CreateMap<StationFromRouteModel, StationFromRouteResponse>().ReverseMap();
             CreateMap<CreateServiceModel, CreateServiceRequest>().ReverseMap();
-            CreateMap<UpdateServiceModel, UpdateServiceRequest>().ReverseMap();           
+            CreateMap<UpdateServiceModel, UpdateServiceRequest>().ReverseMap();
             ////Feedback////
             CreateMap<TripFeedbackModel, FeedbackInTripResponse>().ReverseMap();
             ////Station////
-            CreateMap<GetStationModel,Station>().ReverseMap();
-            CreateMap<GetStationModel,GetStationResponse>().ReverseMap();   
-            CreateMap<CreateStationModel,CreateStationRequest>().ReverseMap();
-            CreateMap<CreateStationWithServiceModel,CreateStationWithServiceRequest>().ReverseMap();
+            CreateMap<GetStationModel, Station>().ReverseMap();
+            CreateMap<GetStationModel, GetStationResponse>().ReverseMap();
+            CreateMap<CreateStationModel, CreateStationRequest>().ReverseMap();
+            CreateMap<CreateStationWithServiceModel, CreateStationWithServiceRequest>().ReverseMap();
             /////Company/////
             CreateMap<GetCompanyModel, Company>().ReverseMap();
             CreateMap<GetCompanyModel, GetCompanyResponse>().ReverseMap();
@@ -100,10 +99,13 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<ServiceInTicketModel, ServiceInTicketResponse>();
             CreateMap<GetTicketDetailByUserModel, GetTicketDetailByUserResponse>();
 
-
             CreateMap<GetDetailOfTicketByIDModel, GetDetailOfTicketByIDResponse>()
-                .ForMember(_ => _.ServiceDetailList, opt => opt.MapFrom(_ => _.ServiceDetailList)).ReverseMap();
+              .ForMember(dest => dest.ServiceDetailList, opt => opt.MapFrom(src => src.ServiceDetailList));
+
+            CreateMap<GetDetailOfTicketByIDResponse, GetDetailOfTicketByIDModel>()
+                .ForMember(dest => dest.ServiceDetailList, opt => opt.MapFrom(src => src.ServiceDetailList));
             CreateMap<SearchTicketModel, SearchTicketResponse>().ReverseMap();
+            CreateMap<ServiceDetailModel, ServiceDetailResponse>().ReverseMap();
             ///////Station_Service///////
             CreateMap<CreateServiceInStationModel, CreateServiceInStationRequest>().ReverseMap();
             CreateMap<UpdateServiceInStationModel, UpdateServiceInStationRequest>().ReverseMap();
@@ -117,9 +119,8 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<BookingModel, BookingRequest>().ReverseMap();
             CreateMap(typeof(PagedResult<>), typeof(PagedResultResponse<>));
 
-
             /////TicketType/////
-            CreateMap<TicketTypeResponse,TicketType>().ReverseMap();
+            CreateMap<TicketTypeResponse, TicketType>().ReverseMap();
         }
     }
 }

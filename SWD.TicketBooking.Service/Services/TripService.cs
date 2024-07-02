@@ -446,19 +446,11 @@ namespace SWD.TicketBooking.Service.Services
                                                       .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.Booking_TicketStatus.UNUSED_TICKET) && _.TicketType_Trip.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                       .Select(_ => new
                                                       {
-                                                          _.Booking.Trip.Route_Company.RouteID,
-                                                          _.Booking.Trip.Route_Company.Company.Name,
                                                           _.SeatCode,
-                                                          _.Booking.Trip.Route_Company.Route.StartLocation,
-                                                          _.Booking.Trip.Route_Company.Route.EndLocation,
-                                                          _.Booking.Trip.StartTime,
                                                       })
                                                       .ToListAsync();
 
-                if (bookingDetails == null || !bookingDetails.Any())
-                {
-                    throw new NotFoundException(SD.Notification.NotFound("CHI TIẾT HÓA ĐƠN"));
-                }
+            
 
                 var tripIDFromDb = await GetTripIDFromTemplate(tripID);
 
@@ -473,26 +465,21 @@ namespace SWD.TicketBooking.Service.Services
                         Quantity = (int)_.Quantity,
                     })
                     .ToListAsync();
-                if (ticketTypeTrips == null || !ticketTypeTrips.Any())
-                {
-                    throw new NotFoundException(SD.Notification.NotFound("CHI TIẾT CỦA VÉ"));
-                }
                 var totalSeat = await _unitOfWork.TicketType_TripRepository
                                                  .FindByCondition(_ => _.TripID == tripIDFromDb.TripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                  .SumAsync(_ => _.Quantity);
-                var firstBooking = bookingDetails.First();
                 var seatBookeds = bookingDetails.Select(_ => _.SeatCode).ToList();
                 var result = new GetSeatBookedFromTripModel
                 {
                     TripID = tripID,
-                    RouteID = (Guid)firstBooking.RouteID,
-                    CompanyName = firstBooking.Name,
+                    RouteID = (Guid)tripIDFromDb.Route_Company.RouteID,
+                    CompanyName = tripIDFromDb.Route_Company.Company.Name,
                     SeatBooked = seatBookeds,
                     TotalSeats = (int)totalSeat,
-                    StartLocation = firstBooking.StartLocation,
-                    EndLocation = firstBooking.EndLocation,
-                    StartDate = firstBooking.StartTime?.ToString("yyyy-MM-dd"),
-                    StartTime = firstBooking.StartTime?.ToString("HH:mm"),
+                    StartLocation = tripIDFromDb.Route_Company.Route.StartLocation,
+                    EndLocation = tripIDFromDb.Route_Company.Route.EndLocation,
+                    StartDate = tripIDFromDb.StartTime?.ToString("yyyy-MM-dd"),
+                    StartTime = tripIDFromDb.StartTime?.ToString("HH:mm"),
                     TicketType_TripModels = ticketTypeTrips
                 };
 
@@ -527,13 +514,18 @@ namespace SWD.TicketBooking.Service.Services
         public async Task<Trip> GetTripIDFromTemplate(Guid id)
         {
             var getTemplateID = await _unitOfWork.TripRepository
-                                                 .GetAll()
+                                                 .GetAll()                                              
                                                  .Where(_ => _.TripID == id)
                                                  .Select(_ => _.TemplateID)
                                                  .FirstOrDefaultAsync();
 
             var getTripID = await _unitOfWork.TripRepository
                                              .FindByCondition(_ => _.TemplateID == getTemplateID)
+                                             .Include(_ => _.Route_Company)
+                                             .Include(_ => _.Route_Company.Route)
+                                             .Include(_ => _.Route_Company.Route.FromCity)
+                                             .Include(_ => _.Route_Company.Route.ToCity)
+                                             .Include(_ => _.Route_Company.Company)
                                              .ToListAsync();
 
             var tripID = getTripID.FirstOrDefault(_ => _.IsTemplate == true) ?? null;

@@ -32,7 +32,8 @@ namespace SWD.TicketBooking.API.Controllers
         {
             try
             {
-                var rs = _mapper.Map<GetDetailOfTicketByIDResponse>(await _ticketDetailService.GetDetailOfTicketByID(ticketDetailID));
+                var result = await _ticketDetailService.GetDetailOfTicketByID(ticketDetailID);
+                var rs = _mapper.Map<GetDetailOfTicketByIDResponse>(result);
                 return Ok(rs);
             }
             catch (Exception ex)
