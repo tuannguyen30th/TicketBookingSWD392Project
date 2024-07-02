@@ -7,7 +7,7 @@ namespace SWD.TicketBooking.API.ResponseModels
     public class FeedbackInTripResponse
     {
         [JsonPropertyName("Feedbacks")]
-        public List<Feedback> Feedbacks { get; set; }
+        public List<FeedbackModel> Feedbacks { get; set; }
 
         [JsonPropertyName("TotalRating")]
         public double TotalRating { get; set; }
