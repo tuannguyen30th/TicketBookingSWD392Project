@@ -119,7 +119,13 @@ namespace SWD.TicketBooking.Service.Services
                                                          .GetAll()
                                                          .Where(_ => _.BookingID == booking.BookingID)
                                                          .ToListAsync();
-
+                    var company = await _unitOfWork.Route_CompanyRepository
+                               .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
+                               .Include(_ => _.Company)
+                               .FirstOrDefaultAsync();
+                    var feedback = await _unitOfWork.FeedbackRepository
+                                                   .FindByCondition(_ => _.UserID.Equals(customerID) && _.TemplateID.Equals(booking.Trip.TemplateID))
+                                                   .FirstOrDefaultAsync();
                     foreach (var ticketDetail in ticketDetails)
                     {
                         var ticketDetailServices = await _unitOfWork.TicketDetail_ServiceRepository
@@ -131,16 +137,7 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             servicePrice += (double)(ticketDetail_Service.Price * ticketDetail_Service.Quantity);
                         }
-                        var company = await _unitOfWork.Route_CompanyRepository
-                                                       .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
-                                                       .Include(_ => _.Company)
-                                                       .FirstOrDefaultAsync();
-                        var bookingInTicket = await _unitOfWork.BookingRepository
-                                                       .FindByCondition(_ => _.BookingID.Equals(ticketDetail.BookingID))
-                                                       .FirstOrDefaultAsync();
-                        var trip = await _unitOfWork.TripRepository
-                                                    .FindByCondition(_=>_.TripID.Equals(bookingInTicket.TripID))
-                                                    .FirstOrDefaultAsync();
+
                         var rs = new GetTicketDetailByUserModel
                         {
                             BookingID = booking.BookingID,
@@ -157,8 +154,9 @@ namespace SWD.TicketBooking.Service.Services
                             TicketPrice = (double)ticketDetail.Price,
                             TotalServicePrice = servicePrice,
                             Status = ticketDetail.Status,
-                            UserID= customerID,
-                            TripID = trip.TripID
+                            UserID = customerID,
+                            TripID = booking.Trip.TripID,
+                            IsRated = feedback != null,
                         };
                         rsList.Add(rs);
                     }

@@ -24,6 +24,7 @@ namespace SWD.TicketBooking.Service.Dtos
         public double TicketPrice { get; set; }
         public double TotalServicePrice { get; set; }
         public string? Status { get; set; }
+        public bool IsRated { get; set; }
         
     }
 }
