@@ -15,7 +15,6 @@ namespace SWD.TicketBooking.API.Installer
 
             var firebaseAdminSDK = configuration.GetSection("CloudMessaging").GetChildren().ToDictionary(x => x.Key, x => x.Value);
 
-
             var firebaseAdminSDKJson = JsonConvert.SerializeObject(firebaseAdminSDK);
 
             var googleCredential = GoogleCredential.FromJson(firebaseAdminSDKJson);
