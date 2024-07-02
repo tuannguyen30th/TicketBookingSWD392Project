@@ -50,7 +50,9 @@ namespace SWD.TicketBooking.API.ResponseModels
         public double TotalServicePrice { get; set; }
 
         [JsonPropertyName("Status")]
-        public string? Status { get; set; }
+        public string? Status { get; set; }        
+        [JsonPropertyName("IsRated")]
+        public bool? IsRated { get; set; }
 
     }
 }
