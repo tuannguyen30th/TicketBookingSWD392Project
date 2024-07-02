@@ -23,21 +23,7 @@ namespace SWD.TicketBooking.API
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.InstallerServicesInAssembly(builder.Configuration);
             builder.Services.AddResponseCaching();
-           /* builder.Services.AddHttpClient();
-            builder.Services.AddIdentity<User, UserRole>()
-              .AddEntityFrameworkStores<TicketBookingDbContext>()
-              .AddDefaultTokenProviders();
-
-            builder.Services.AddScoped<IUserStore<User>, UserStore<User, UserRole, TicketBookingDbContext, Guid>>();
-            builder.Services.AddScoped<UserManager<User>>();
-            builder.Services.AddScoped<RoleManager<UserRole>>();
-            builder.Services.AddScoped<SignInManager<User>>();*/
-            var app = builder.Build();
-
-            //app.Lifetime.ApplicationStarted.Register(async () =>
-            //{
-            //    await app.InitialiseDatabaseAsync();
-            //});      
+            var app = builder.Build();      
             app.UseSwagger(op => op.SerializeAsV2 = false);
             app.UseSwaggerUI(options =>
             {
@@ -53,8 +39,7 @@ namespace SWD.TicketBooking.API
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
-          
-
+         
             app.UseAuthorization();
 
             app.MapControllers();

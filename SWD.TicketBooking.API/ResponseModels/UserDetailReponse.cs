@@ -23,6 +23,8 @@
         public bool? IsVerified { get; set; }
         public string? Status { get; set; }
         public Guid RoleID { get; set; }
+        public Guid CompanyID { get; set; }
+
         public string RoleName { get; set; }
 
     }

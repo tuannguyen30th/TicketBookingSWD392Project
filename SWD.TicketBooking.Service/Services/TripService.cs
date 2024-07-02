@@ -294,6 +294,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new BadRequestException("PHẢI CÓ ÍT NHẤT 2 LOẠI GHẾ!");
                     }
+                    
                     foreach (var ticketType in createTrip.TicketType_TripModels)
                     {
                         if (ticketType.Price <= 0 || ticketType.Quantity <= 0)

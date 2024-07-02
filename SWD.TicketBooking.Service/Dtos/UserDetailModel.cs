@@ -39,6 +39,7 @@ namespace SWD.TicketBooking.Service.Dtos
 
         public string? Status { get; set; } = string.Empty;
         public Guid RoleID { get; set; }
+        public Guid CompanyID { get; set; }
         public string RoleName { get; set; }
     }
 }

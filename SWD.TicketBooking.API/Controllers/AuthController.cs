@@ -273,8 +273,7 @@ public class AuthController : ControllerBase
         // If token is valid, return success response
         return Ok(ApiResult<CheckTokenResponse>.Succeed(new CheckTokenResponse
         {
-            User = user,
-            CompanyID = await _userService.GetCompanyIDByUser(user.UserID),
+            User = user,       
         }));
     }
 

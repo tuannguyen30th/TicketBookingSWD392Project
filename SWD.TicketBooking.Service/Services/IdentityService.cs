@@ -73,7 +73,17 @@ public class IdentityService
                                         .FindByCondition(u => u.Email == email)
                                         .FirstOrDefaultAsync();
             var hash = SecurityUtil.Hash(password);
-            if (user != null && user.Password.Equals(hash) && user.IsVerified == false)
+
+            if (user == null || !SecurityUtil.Hash(password).Equals(user.Password))
+            {
+                return new LoginResponse
+                {
+                    Verified = null, 
+                    Message = "EMAIL HOẶC PASSWORD KHÔNG ĐÚNG!"
+                };
+            }
+
+            if (user.IsVerified == false)
             {
                 return new LoginResponse
                 {
@@ -81,24 +91,14 @@ public class IdentityService
                     Message = "EMAIL ĐÃ ĐĂNG KÍ NHƯNG CHƯA XÁC THỰC!"
                 };
             }
-            if (user is null)
-            {
-                throw new NotFoundException(SD.Notification.NotFound("NGƯỜI DÙNG"));
-            }
+
 
             var userRole = await _unitOfWork.UserRoleRepository
                                             .FindByCondition(ur => ur.RoleID == user.RoleID)
                                             .FirstOrDefaultAsync();
             user.UserRole = userRole!;
 
-            if (!user.Password.Equals(hash))
-            {
-                return new LoginResponse
-                {
-                    Verified = user.IsVerified,
-                    Message = "EMAIL HOẶC PASSWORD KHÔNG ĐÚNG!"
-                };
-            }
+          
 
             return new LoginResponse
             {

@@ -34,6 +34,7 @@ namespace SWD.TicketBooking.Service.Dtos.User
         public bool? IsVerified { get; set; }
 
         public string? Status { get; set; } = string.Empty;
+        public Guid CompanyID { get; set; }
         public Guid RoleID { get; set; }
     }
 }

@@ -328,14 +328,11 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.UserID == userId).FirstOrDefaultAsync();
-
-                var companyID = await _unitOfWork.CompanyRepository
-                                 .FindByCondition(c => c.UserID == userEntity.UserID)
-                                 .Select(_ => _.CompanyID)
-                                 .FirstOrDefaultAsync();
-
-                return companyID;
+                var userEntity = await _unitOfWork.UserRepository
+                                                  .FindByCondition(x => x.UserID == userId)
+                                                  .Select(_ => _.CompanyID)
+                                                  .FirstOrDefaultAsync();
+                return (Guid)userEntity;
             }
             catch (Exception ex)
             {
