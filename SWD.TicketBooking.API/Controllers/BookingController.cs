@@ -28,14 +28,12 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpPost("managed-bookings/vnpay-payment")]
         public async Task<IActionResult> AddOrUpdateBookingVNPayPayment(BookingModel bookingRequest)
         {
-          /*  var map = _mapper.Map<BookingModel>(bookingRequest);*/
             var rs = await _bookingService.AddOrUpdateBookingVNPayPayment(bookingRequest, HttpContext);
             return Ok(rs);
         }
         [HttpPost("managed-bookings/balance-payment")]
         public async Task<IActionResult> AddOrUpdateBookingBalancePayment(BookingModel bookingRequest)
         {
-            /*  var map = _mapper.Map<BookingModel>(bookingRequest);*/
             var rs = await _bookingService.AddOrUpdateBookingBalancePayment(bookingRequest);
             return Ok(rs);
         }
@@ -78,7 +76,7 @@ namespace SWD.TicketBooking.API.Controllers
                         var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
                         if (!rsUpdate)
                         {
-                            return BadRequest("Something wrong email!");
+                            return BadRequest("LỖI KHI GỬI MAIL!");
                         }
                 /*    }
                     else
@@ -88,7 +86,7 @@ namespace SWD.TicketBooking.API.Controllers
                     return Ok(new
                     {
                         RspCode = "00",
-                        Message = "Confirm Success"
+                        Message = "XÁC NHẬN THÀNH CÔNG"
                     });
               /*  }
 

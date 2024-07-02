@@ -20,6 +20,8 @@ using SWD.TicketBooking.Repo.Entities;
 using Google.Apis.Http;
 using SWD.TicketBooking.Service.Utilities;
 using SWD.TicketBooking.Repo.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
+using SWD.TicketBooking.Repo.SeedData;
 
 namespace SWD.TicketBooking.Booking.API;
 
@@ -51,83 +53,34 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var res = await _identityService.Signup(_mapper.Map<SignUpModel>(req));
-            if (!res)
+            var signUpResponse = await _identityService.Signup(_mapper.Map<SignUpModel>(req));
+
+            if (signUpResponse.Verified == true)
             {
-                var resultFail = new SignUpResponse
+                var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
+                if (userResponse == null)
                 {
-                    Messages = "ĐĂNG KÍ THẤT BẠI!"
-                };
-                return BadRequest(resultFail);
-            }
-
-            var resultSucess = new SignUpResponse
-            {
-                Messages = "ĐĂNG KÍ THÀNH CÔNG, VUI LÒNG KIỂM TRA EMAIL VÀ XÁC NHẬN OTP!"
-            };
-
-            var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
-
-            if (userResponse == null)
-            {
-                return BadRequest();
-            }
-
-            if (userResponse.OTPCode == "0" && userResponse.IsVerified == true)
-            {
-                return BadRequest();
-            }
-
-            if (userResponse.IsVerified == false)
-            {
-                var otp = new Random().Next(100000, 999999);
-
-                var mailData = new MailData
-                {
-                    EmailToId = req.Email,
-                    EmailToName = "TicketBookingWebSite",
-                    EmailBody = GenerateEmailBody(userResponse.FullName, otp),
-                    EmailSubject = "OTP Verification"
-                };
-
-                var emailResult = await _emailService.SendEmailAsync(mailData);
-                if (!emailResult)
-                {
-                    throw new BadRequestException("GỬI EMAIL THẤT BẠI!");
+                    return BadRequest();
                 }
 
-                var createUser = new CreateUserReq
+                if (userResponse.IsVerified == false)
                 {
-                    Email = req.Email,
-                    OTPCode = otp.ToString(),
-                };
+                    var otpSent = await _identityService.SendOtpToUser(req.Email, userResponse.FullName);
 
-                var createUserResponse = await _userService.SendOTPCode(createUser);
-
-                if (createUserResponse.returnModel.OTPCode != otp.ToString())
-                {
-                    var mailUpdateData = new MailData
+                    if (!otpSent)
                     {
-                        EmailToId = req.Email,
-                        EmailToName = "TicketBookingWebSite",
-                        EmailBody = GenerateEmailBody(userResponse.FullName, otp),
-                        EmailSubject = "OTP Verification"
-                    };
-
-                    var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
-                    if (!rsUpdate)
-                    {
-                        return BadRequest();
+                        return BadRequest(new { Message = "GỬI EMAIL THẤT BẠI!" });
                     }
+
+                    return Ok(new { Message = "ĐĂNG KÍ THÀNH CÔNG, VUI LÒNG KIỂM TRA EMAIL VÀ XÁC NHẬN OTP!" });
                 }
-                return Ok(resultSucess);
             }
 
-            return BadRequest();
+            return Ok(signUpResponse);
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
+            throw new Exception(ex.Message, ex);
         }
     }
     [AllowAnonymous]
@@ -277,96 +230,5 @@ public class AuthController : ControllerBase
         }));
     }
 
-    private string GenerateEmailBody(string fullName, int otp)
-    {
-        return $@"
-   <body style=""display: flex; justify-content: center; align-items: center"">
-    <div>
-      <div
-        style=""
-          color: #536e88;
-          width: fit-content;
-          box-shadow: 0 2px 8px rgba(8, 120, 211, 0.2);
-          padding: 10px;
-          border-radius: 5px;
-        ""
-      >
-        <div
-          style=""
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 10px;
-            margin-top: 0px;
-            background-color: #3498db;
-            font-size: 0.875rem;
-            font-weight: bold;
-            color: #ffffff;
-          ""
-        ></div>
-
-        <h1 style=""text-align: center; color: #3498db"">
-          Chào mừng đến với
-          <span style=""color: #f99f41"">trạm của chúng tôi!</span>
-        </h1>
-
-        <div style=""text-align: center"">
-          <img
-            src=""https://img.freepik.com/free-vector/students-bus-transportation_24877-83765.jpg?size=338&ext=jpg&ga=GA1.1.553209589.1715040000&semt=ais""
-            alt=""logo""
-            width=""70""
-          />
-        </div>
-
-        <p style=""text-align: center; font-weight: bold; margin-top: 0"">
-          <span style=""color: #f99f41"">THE BUS </span
-          ><span style=""color: #3498db"">JOURNEY</span>
-        </p>
-
-        <div
-          style=""
-            width: fit-content;
-            margin: auto;
-            box-shadow: 0 2px 8px rgba(8, 120, 211, 0.2);
-            padding-top: 10px;
-            border-radius: 10px;
-          ""
-        >
-          <p>
-            Xin chào,
-            <span style=""font-weight: bold; color: #0d1226"">{fullName}</span>
-          </p>
-          <p>
-            <span style=""font-weight: bold"">THE BUS JOURNEY </span>xin thông báo
-            tài khoản của bạn đã được đăng kí thành công. <span></span>
-          </p>
-          <p>
-            <span>Mã xác thực của bạn là: </span
-            ><span style=""color: #0d1226; font-weight: bold"">{otp}</span>
-          </p>
-          <p>Xin chân thành cảm ơn vì bạn đã sử dụng dịch vụ của chúng tôi!</p>
-          <p>Hân hạnh,</p>
-          <p style=""font-weight: 700; color: #0d1226"">THE BUS JOURNEY</p>
-        </div>
-
-        <div
-          style=""
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 40px;
-            background-color: #3498db;
-            font-size: 0.875rem;
-            font-weight: bold;
-            color: #ffffff;
-          ""
-        >
-          © 2024 | Bản quyền thuộc về THE BUS JOURNEY.
-        </div>
-      </div>
-    </div>
-  </body>
-
-    ";
-    }
+    
 }
