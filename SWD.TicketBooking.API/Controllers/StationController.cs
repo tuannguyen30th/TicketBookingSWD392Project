@@ -22,7 +22,7 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
         }
         [HttpGet("managed-stations/routes/{routeID}")]
-        [Cache(1200)]
+        ///*[Cache(1200)]*/
         public async Task<IActionResult> GetStationsFromRoute(Guid routeID)
         {
             var stations = await _stationService.GetStationsFromRoute(routeID);
@@ -31,7 +31,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-stations/trips/{tripID}")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetStationsInTrip(Guid tripID)
         {
             var stations = await _stationService.GetAllStationInRoute(tripID);
@@ -40,7 +40,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-stations")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetAllStations()
         {
             var stations = await _stationService.GetAllStationActive();
@@ -49,7 +49,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-stations/{stationID}")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetStationById(Guid stationID)
         {
             var station = await _stationService.GetStationById(stationID);

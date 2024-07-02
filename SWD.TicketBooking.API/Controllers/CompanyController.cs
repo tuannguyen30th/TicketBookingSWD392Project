@@ -25,7 +25,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("managed-companies")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetAllActiveCompanies()
         {
             var companies = await _companyService.GetAllActiveCompanies();
@@ -35,7 +35,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("managed-companies/{companyID}")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetCompanyById([FromRoute] Guid companyID)
         {
             var company = await _companyService.GetCompanyById(companyID);

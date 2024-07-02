@@ -29,7 +29,7 @@ namespace SWD.TicketBooking.API.Controllers
               return Ok(rs);
           }*/
 
-        [HttpGet("")]
+        [HttpGet("managed-utilities")]
         public async Task<IActionResult> GetAllUtility()
         {
             var utilityList = await _utilityService.GetAllUtility();
@@ -38,7 +38,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("managed-utilities")]
         public async Task<IActionResult> CreateNewUtility([FromBody] CreateNewUtilityRequest req)
         {
             var map = _mapper.Map<CreateUtilityModel>(req);

@@ -27,7 +27,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("managed-ticket-details/{ticketDetailID}")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetDetailOfTicketByID([FromRoute] Guid ticketDetailID)
         {
             try
@@ -44,7 +44,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("managed-ticket-details/customers/{customerID}")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetTicketDetailByUser([FromRoute] Guid customerID)
         {
             try
@@ -74,7 +74,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-ticket-details/qrCodes/{qrCode}/emails/{email}")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> SearchTicket([FromRoute] string qrCode, [FromRoute] string email)
         {
             try
@@ -89,7 +89,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-ticket-details/qrCodes/{qrCode}")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetTicketDetailInMobile([FromRoute] string qrCode)
         {
             try

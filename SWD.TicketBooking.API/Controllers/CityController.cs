@@ -27,7 +27,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-cities")]
-        [Cache(600, GetAllCitiesCacheKey)]
+        //[Cache(600, GetAllCitiesCacheKey)]
         public async Task<IActionResult> GetAllCities()
         {
             var dataFromService = await _cityService.GetAllCities();
@@ -36,7 +36,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
         [AllowAnonymous]
         [HttpPost("managed-cities")]
-        [RemoveCache(GetAllCitiesCacheKey)]
+        //[RemoveCache(GetAllCitiesCacheKey)]
         public async Task<IActionResult> CreateCompany([FromBody] CreateCityRequest req)
         {
             var map = _mapper.Map<CreateCityModel>(req);
