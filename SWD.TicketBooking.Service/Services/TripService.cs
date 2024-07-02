@@ -200,12 +200,7 @@ namespace SWD.TicketBooking.Service.Services
                                                        .FindByCondition(_ => _.TripID == tripID.TripID)
                                                        .Select(_ => (double?)_.Price)
                                                        .MinAsync() ?? 0;
-                    var companyName = await _unitOfWork.Route_CompanyRepository
-                                                       .GetAll()
-                                                       .Include(_ => _.Company)
-                                                       .Where(_ => _.RouteID == tripID.Route_Company.RouteID)
-                                                       .Select(_ => _.Company.Name)
-                                                       .FirstOrDefaultAsync();
+                    var companyName = tripID.Route_Company.Company.Name;
 
                     var searchTrip = new SearchTripModel
                     {
@@ -444,13 +439,15 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var bookingDetails = await _unitOfWork.TicketDetailRepository
                                                       .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.Booking_TicketStatus.UNUSED_TICKET) && _.TicketType_Trip.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                      .Include(_ => _.Booking.Trip)
                                                       .Select(_ => new
                                                       {
                                                           _.SeatCode,
+                                                          _.Booking.Trip.StartTime
                                                       })
                                                       .ToListAsync();
 
-            
+                var findTrip = await _unitOfWork.TripRepository.FindByCondition(_ => _.TripID == tripID).FirstOrDefaultAsync();
 
                 var tripIDFromDb = await GetTripIDFromTemplate(tripID);
 
@@ -478,8 +475,8 @@ namespace SWD.TicketBooking.Service.Services
                     TotalSeats = (int)totalSeat,
                     StartLocation = tripIDFromDb.Route_Company.Route.StartLocation,
                     EndLocation = tripIDFromDb.Route_Company.Route.EndLocation,
-                    StartDate = tripIDFromDb.StartTime?.ToString("yyyy-MM-dd"),
-                    StartTime = tripIDFromDb.StartTime?.ToString("HH:mm"),
+                    StartDate = findTrip.StartTime?.ToString("yyyy-MM-dd"),
+                    StartTime = findTrip.StartTime?.ToString("HH:mm"),
                     TicketType_TripModels = ticketTypeTrips
                 };
 
