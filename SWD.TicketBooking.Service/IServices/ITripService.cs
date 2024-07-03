@@ -19,6 +19,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id);
         Task<List<TicketType>> GetAllTicketType();
         Task<ActionOutcome> GetAllSeatsFromTrip(Guid tripID);
+        Task<List<SearchTripModel>> GetAllTripsByStaffAndDate(Guid staffID, DateTime startTime);
 
     }
 }

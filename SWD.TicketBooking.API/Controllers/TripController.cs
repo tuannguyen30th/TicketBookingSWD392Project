@@ -105,6 +105,15 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
+        [HttpGet("managed-trips/staff/{staffID}/start-time/{startTime}")]
+        //[Cache(1200)]
+        public async Task<IActionResult> SearchTrip(Guid staffID, DateTime startTime)
+        {
+
+            var dataFromService = await _tripService.GetAllTripsByStaffAndDate(staffID, startTime);
+            var response = _mapper.Map<List<SearchTripResponse>>(dataFromService);
+            return Ok(response);
+        }
     }
 }
 

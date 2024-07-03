@@ -124,7 +124,7 @@ namespace SWD.TicketBooking.Service.Services
                                .Include(_ => _.Company)
                                .FirstOrDefaultAsync();
                     var feedback = await _unitOfWork.FeedbackRepository
-                                                   .FindByCondition(_ => _.UserID.Equals(customerID) && _.TemplateID.Equals(booking.Trip.TemplateID))
+                                                   .FindByCondition(_ => _.UserID.Equals(customerID) && _.TripID.Equals(booking.Trip.TripID))
                                                    .FirstOrDefaultAsync();
                     foreach (var ticketDetail in ticketDetails)
                     {

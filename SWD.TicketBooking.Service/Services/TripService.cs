@@ -9,6 +9,7 @@ using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
+using System.Drawing.Printing;
 using System.Net.Sockets;
 
 namespace SWD.TicketBooking.Service.Services
@@ -25,6 +26,83 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
+
+        public async Task<List<SearchTripModel>> GetAllTripsByStaffAndDate(Guid staffID, DateTime startTime)
+        {
+            try
+            {
+                var startDate = startTime.Date;
+                var trips = await _unitOfWork.TripRepository.GetAll()
+                                                      .Include(_ => _.Route_Company.Route)
+                                                      .Where(_ => _.StaffID.Equals(staffID)
+                                                               && _.StartTime.Value.Date == startDate && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                      .ToListAsync();
+
+                var searchTripModels = new List<SearchTripModel>();
+
+                foreach (var trip in trips)
+                {
+                    var feedbacks = await _unitOfWork.FeedbackRepository
+                                                     .FindByCondition(_ => _.TemplateID == trip.TemplateID)
+                                                     .ToListAsync();
+                    var ratingAverage = feedbacks.Select(_ => _.Rating).DefaultIfEmpty(0).Average();
+                    var roundedRatingAverage = Math.Round((decimal)ratingAverage, 1);
+                    var ratingQuantity = feedbacks.Count();
+                    var tripID = await GetTripIDFromTemplate(trip.TripID);
+                    var totalSeatsInTrip = await _unitOfWork.TicketType_TripRepository
+                                                            .FindByCondition(_ => _.TripID == tripID.TripID)
+                                                            .SumAsync(_ => (int?)_.Quantity) ?? 0;
+                    var bookings = await _unitOfWork.BookingRepository
+                                                    .GetAll()
+                                                    .Where(_ => _.TripID == trip.TripID)
+                                                    .Select(_ => _.BookingID)
+                                                    .ToListAsync();
+                    var totalUnusedSeats = await _unitOfWork.TicketDetailRepository
+                                                            .FindByCondition(_ => bookings.Contains((Guid)_.BookingID)
+                                                                             && _.Status.Equals(SD.Booking_TicketStatus.UNUSED_TICKET))
+                                                            .CountAsync();
+                    var remainingSeats = totalSeatsInTrip - totalUnusedSeats;
+                    var tripImage = await _unitOfWork.TripPictureRepository
+                                                     .GetAll()
+                                                     .Where(_ => _.TripID == tripID.TripID)
+                                                     .Select(_ => _.ImageUrl)
+                                                     .FirstOrDefaultAsync();
+
+                    var lowestPrice = await _unitOfWork.TicketType_TripRepository
+                                                       .FindByCondition(_ => _.TripID == tripID.TripID)
+                                                       .Select(_ => (double?)_.Price)
+                                                       .MinAsync() ?? 0;
+                    var companyName = tripID.Route_Company.Company.Name;
+
+                    var searchTrip = new SearchTripModel
+                    {
+                        TripID = trip.TripID,
+                        RouteID = (Guid)trip.Route_Company.RouteID,
+                        TemplateID = (Guid)trip.TemplateID,
+                        CompanyName = companyName,
+                        ImageUrl = tripImage,
+                        AverageRating = (double)roundedRatingAverage,
+                        QuantityRating = ratingQuantity,
+                        EmptySeat = remainingSeats,
+                        Price = lowestPrice,
+                        StartLocation = trip.Route_Company.Route?.StartLocation,
+                        EndLocation = trip.Route_Company.Route?.EndLocation,
+                        StartDate = trip.StartTime?.ToString("yyyy-MM-dd"),
+                        EndDate = trip.EndTime?.ToString("yyyy-MM-dd"),
+                        StartTime = trip.StartTime?.ToString("HH:mm"),
+                        EndTime = trip.EndTime?.ToString("HH:mm")
+                    };
+                    searchTripModels.Add(searchTrip);
+                };
+
+                return searchTripModels;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
         public async Task<ActionOutcome> GetAllSeatsFromTrip(Guid tripID)
         {
             try

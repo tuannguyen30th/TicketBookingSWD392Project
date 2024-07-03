@@ -28,6 +28,28 @@ namespace SWD.TicketBooking.Service.Services
             _mapper = mapper;
             _firebaseService = firebaseService;
         }
+
+        public async Task<List<StationFromRouteModel>> GetAllStationsByCompanyID(Guid companyID)
+        {
+            try
+            {
+                var stations = await _unitOfWork.StationRepository
+                                                .FindByCondition(_ => _.CompanyID.Equals(companyID) && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                .Select(_ => new StationFromRouteModel
+                                                {
+                                                    StationID = (Guid)_.StationID,
+                                                    Name = _.Name
+                                                })
+                                                .ToListAsync();
+                return stations;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
         public async Task<List<StationFromRouteModel>> GetStationsFromRoute(Guid routeID)
         {
             try
