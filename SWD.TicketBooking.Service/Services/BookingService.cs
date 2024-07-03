@@ -174,7 +174,6 @@ namespace SWD.TicketBooking.Service.Services
                             isValid = false;
                         }
                     };
-                    _unitOfWork.Complete();
                     scope.Complete();
                     var payment = new PaymentInformationModel
                     {
@@ -190,6 +189,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new Exception(ex.Message, ex);
                 }
             }
+            _unitOfWork.Complete();
             return result;
         }
         public async Task<ActionOutcome> AddOrUpdateBookingBalancePayment(BookingModel bookingModel)
