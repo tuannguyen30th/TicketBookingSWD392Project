@@ -16,5 +16,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<string> UpdateStation(Guid stationId, CreateStationModel stationModel);
         Task<List<StationFromRouteModel>> GetAllStationInRoute(Guid id);
         Task<bool> CreateStationWithService(CreateStationWithServiceModel stationModel);
+        Task<List<StationFromRouteModel>> GetAllStationsByCompanyID(Guid companyID);
+
     }
 }
