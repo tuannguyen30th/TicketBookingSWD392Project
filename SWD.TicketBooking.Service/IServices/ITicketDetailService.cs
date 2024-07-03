@@ -16,5 +16,7 @@ namespace SWD.TicketBooking.Service.Services
         Task<GetTicketDetailInMobileModel> GetTicketDetailInMobile(string qrCode);
         Task<bool> VerifyTicketDetail(string qrCode);
 
+        Task<int> ChangeStatus(Guid ticketDetailID);
+
     }
 }

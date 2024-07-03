@@ -408,7 +408,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var ticketDetail = await _unitOfWork.TicketDetailRepository
                                                    .GetAll()
-                                                   .Where(t => t.QRCode.Equals(qrCode) && t.Status.Equals(SD.Booking_TicketStatus.UNUSED_TICKET))
+                                                   .Where(t => t.QRCode.Equals(qrCode))
                                                    .FirstOrDefaultAsync();
                 if (ticketDetail == null)
                 {
@@ -419,6 +419,7 @@ namespace SWD.TicketBooking.Service.Services
                                                .GetAll()
                                                .Where(b => b.BookingID.Equals(ticketDetail.BookingID) && b.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
                                                .FirstOrDefaultAsync();
+              
                 var trip = await _unitOfWork.TripRepository
                                             .GetAll()
                                             .Where(t => t.TripID.Equals(booking.TripID) && t.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -446,6 +447,37 @@ namespace SWD.TicketBooking.Service.Services
 
                 };
                 return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<int> ChangeStatus(Guid ticketDetailID)
+        {
+            try
+            {
+                var ticketDetail = await _unitOfWork.TicketDetailRepository
+                                              .GetAll()
+                                              .Where(_ => _.Status.Trim().Equals(SD.Booking_TicketStatus.UNUSED_TICKET) && _.TicketDetailID.Equals(ticketDetailID))
+                                              .FirstOrDefaultAsync();
+
+                if (ticketDetail == null)
+                {
+                    throw new NotFoundException(SD.Notification.NotFound("VÉ XE"));
+                }
+
+                ticketDetail.Status = SD.Booking_TicketStatus.USED_TICKET;
+
+                var ticketEntity = _unitOfWork.TicketDetailRepository.Update(ticketDetail);
+
+                if (ticketEntity == null)
+                {
+                    throw new InternalServerErrorException(SD.Notification.Internal("VÉ XE", "KHI CẬP NHẬT TRẠNG THÁI CHO VÉ XE NÀY"));
+                }
+                var rs = _unitOfWork.Complete();
+                return rs;
             }
             catch (Exception ex)
             {

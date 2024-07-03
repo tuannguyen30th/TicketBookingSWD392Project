@@ -18,6 +18,10 @@ namespace SWD.TicketBooking.API.ResponseModels
 
         [JsonPropertyName("EndLocation")]
         public string? EndLocation { get; set; } = string.Empty;
-       
+        [JsonPropertyName("Status")]
+
+        public string? Status { get; set; } = string.Empty;
+
+
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.UnitOfWork;
@@ -50,7 +52,8 @@ namespace SWD.TicketBooking.Service.Services
                                                   FromCity = _.Route.FromCity.Name,
                                                   ToCity = _.Route.ToCity.Name,
                                                   StartLocation = _.Route.StartLocation,
-                                                  EndLocation = _.Route.EndLocation
+                                                  EndLocation = _.Route.EndLocation,
+                                                  Status = _.Route.Status,
                                               })
                                               .ToListAsync();
                 return result;
@@ -165,7 +168,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateRoute(Guid routeId, UpdateRouteModel model)
+        public async Task<int> UpdateRoute(Guid routeId, CreateRouteModel model)
         {
             try
             {
@@ -179,27 +182,54 @@ namespace SWD.TicketBooking.Service.Services
                     throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG CỦA NHÀ XE", "KHI CẬP NHẬT TUYẾN ĐƯỜNG CHO NHÀ XE NÀY"));
                 }
 
-                var entity = await _unitOfWork.RouteRepository
+                var route = await _unitOfWork.RouteRepository
                                               .GetAll()
                                               .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId)
                                               .FirstOrDefaultAsync();
 
-                if (entity == null)
+                if (route == null)
                 {
                     throw new NotFoundException(SD.Notification.NotFound("TUYẾN ĐƯỜNG"));
                 }
-
-                entity.FromCityID = model.FromCityID;
-                entity.ToCityID = model.ToCityID;
-                entity.StartLocation = model.StartLocation;
-                entity.EndLocation = model.EndLocation;
-
-                var companyUpdate = _unitOfWork.RouteRepository.Update(entity);
-
-                if (companyUpdate == null)
+                if (model.FromCityID != Guid.Empty && model.ToCityID != Guid.Empty && !model.StartLocation.IsNullOrEmpty() && !model.EndLocation.IsNullOrEmpty())
                 {
-                    throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG", "KHI CẬP NHẬT TUYẾN ĐƯỜNG NÀY"));
+                    route.FromCityID = model.FromCityID;
+                    route.ToCityID = model.ToCityID;
+                    route.StartLocation = model.StartLocation;
+                    route.EndLocation = model.EndLocation;
+
+                    var companyUpdate = _unitOfWork.RouteRepository.Update(route);
+
+                    if (companyUpdate == null)
+                    {
+                        throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG", "KHI CẬP NHẬT TUYẾN ĐƯỜNG NÀY"));
+                    }
                 }
+                
+                if (model.StationInRoutes != null)
+                {
+
+                    foreach (var station in model.StationInRoutes)
+                    {
+                        var checkStation = await _unitOfWork.StationRepository
+                                                            .FindByCondition(s => s.StationID.Equals(station.StationID) && s.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                            .FirstOrDefaultAsync();
+                        var checkStationRoute = await _unitOfWork.Station_RouteRepository
+                                                                 .FindByCondition(sr => sr.StationID.Equals(station.StationID) && sr.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                                 .FirstOrDefaultAsync();
+
+                        checkStation.Name = station.StationName;
+                        checkStationRoute.OrderInRoute = station.OrderInRoute;
+                        var stationUpdate = _unitOfWork.StationRepository.Update(checkStation);
+                        var stationRouteUpdate = _unitOfWork.Station_RouteRepository.Update(checkStationRoute);
+                        if (checkStation == null || stationRouteUpdate == null)
+                        {
+                            throw new InternalServerErrorException(SD.Notification.Internal("NHÀ XE", "KHI CẬP NHẬT NHÀ XE NÀY"));
+                        }
+                    }
+
+                }
+
                 var rs = _unitOfWork.Complete(); 
 
                 return rs;
