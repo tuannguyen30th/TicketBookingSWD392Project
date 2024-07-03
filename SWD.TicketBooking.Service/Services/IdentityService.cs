@@ -14,6 +14,7 @@ using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Utilities;
 using SWD.TicketBooking.Repo.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SWD.TicketBooking.Service.Services;
 
@@ -39,7 +40,7 @@ public class IdentityService
         try
         {
             var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email == req.Email).FirstOrDefaultAsync();
-
+            
             if (user != null)
             {
                 if (user.IsVerified == true)
@@ -91,6 +92,59 @@ public class IdentityService
             {
                 Verified = true,
                 Messages = "ĐĂNG KÍ THÀNH CÔNG, VUI LÒNG KIỂM TRA EMAIL VÀ XÁC NHẬN OTP!"
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
+    }
+    public async Task<SignUpResponse> SignUpForStaff(SignUpModel req)
+    {
+        try
+        {
+            var message = "";
+            var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email == req.Email).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                return new SignUpResponse
+                {
+                    Verified = null,
+                    Messages = "EMAIL ĐÃ TỒN TẠI!"
+                };
+            }
+
+            var newUser = new User
+            {
+                UserID = Guid.NewGuid(),
+                Email = req.Email,
+                Password = SecurityUtil.Hash(req.Password),
+                FullName = req.FullName,
+                UserName = req.UserName,
+                Address = req.Address,
+                PhoneNumber = req.PhoneNumber,
+                Status = SD.GeneralStatus.ACTIVE,
+                IsVerified = true,
+                Avatar = "https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o/AVATAR_DEFAULT%2Fdc5551cc-b063-45d8-86e0-84ec6b7d2af6?alt=media&token=8f897d9b-bc83-45e2-9102-f0056f93a914",
+                RoleID = new Guid("9ADFF955-DB2B-4688-9048-30CC8367A519"),
+                CompanyID = req.CompanyID,
+            };
+
+            await _unitOfWork.UserRepository.AddAsync(newUser);
+            var res = _unitOfWork.Complete();
+
+            if (res < 0)
+            {
+                return new SignUpResponse
+                {
+                    Verified = null,
+                    Messages = "ĐĂNG KÍ THẤT BẠI!"
+                };
+            }
+            return new SignUpResponse
+            {
+                Verified = true,
+                Messages = "ĐĂNG KÍ THÀNH CÔNG!"
             };
         }
         catch (Exception ex)

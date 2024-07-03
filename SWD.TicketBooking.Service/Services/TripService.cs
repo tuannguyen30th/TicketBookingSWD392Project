@@ -285,6 +285,11 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new BadRequestException("PHẢI CÓ ÍT NHẤT 2 LOẠI GHẾ!");
                     }
+                    int totalQuantity = (int)createTrip.TicketType_TripModels.Sum(_ => _.Quantity);
+                    if (totalQuantity < 20)
+                    {
+                        throw new BadRequestException("TỔNG SỐ LƯỢNG GHẾ PHẢI ÍT NHẤT LÀ 20!");
+                    }
 
                     foreach (var ticketType in createTrip.TicketType_TripModels)
                     {
@@ -296,6 +301,7 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             throw new BadRequestException("SỐ LƯỢNG GHẾ KHÔNG HỢP LỆ!");
                         }
+
                         var newTicketType_Trip = new TicketType_Trip
                         {
                             TicketTypeID = ticketType.TicketTypeID,
@@ -305,7 +311,7 @@ namespace SWD.TicketBooking.Service.Services
                             Status = SD.GeneralStatus.ACTIVE
                         };
                         await _unitOfWork.TicketType_TripRepository.AddAsync(newTicketType_Trip);
-                    };
+                    }
                     foreach (var tripUtility in createTrip.Trip_UtilityModels)
                     {
                         var newTrip_Utility = new Trip_Utility

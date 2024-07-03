@@ -53,46 +53,32 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var signUpResponse = await _identityService.Signup(_mapper.Map<SignUpModel>(req));
-
-            if (signUpResponse.Verified == true)
+            if (req.CompanyID == null || req.CompanyID == Guid.Empty || req.CompanyID != new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"))
             {
-                var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
-                if (userResponse == null)
-                {
-                    return BadRequest();
-                }
-
-                if (userResponse.IsVerified == false)
-                {
-                    var otpSent = await _identityService.SendOtpToUser(req.Email, userResponse.FullName);
-
-                    if (!otpSent)
-                    {
-                        return BadRequest(new { Message = "GỬI EMAIL THẤT BẠI!" });
-                    }
-
-                    return Ok(new { Message = "ĐĂNG KÍ THÀNH CÔNG, VUI LÒNG KIỂM TRA EMAIL VÀ XÁC NHẬN OTP!" });
-                }
+                SignUpResponse rs = await _identityService.SignUpForStaff(_mapper.Map<SignUpModel>(req));
+                return Ok(rs);
             }
-
-            return Ok(signUpResponse);
+            else
+            {
+                return await SignUpForCustomer(req);
+            }
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message, ex);
+           throw new Exception(ex.Message, ex);
         }
     }
+
     [AllowAnonymous]
     [HttpPost("managed-auths/sign-ins")]
     public async Task<IActionResult> Login([FromBody] LoginRequest req)
     {
         var loginResult = await _identityService.Login(req.Email, req.Password);
         if (!loginResult.Authenticated)
-        {          
+        {
             return BadRequest(loginResult);
         }
-        
+
         var handler = new JwtSecurityTokenHandler();
         var res = new SWD.TicketBooking.API.ResponseModels.LoginResponse
         {
@@ -101,6 +87,7 @@ public class AuthController : ControllerBase
 
         return Ok(res);
     }
+
     [HttpPost("managed-auths/access-token-verification")]
     public async Task<IActionResult> CheckAccessToken([FromBody] string accessToken)
     {
@@ -187,12 +174,12 @@ public class AuthController : ControllerBase
 
             return Ok(new { success = true, tokenInfo = tokenInfo, userInfo = userResultNew });
         }
-
         catch (Exception ex)
         {
             throw new BadRequestException(ex.Message.ToUpper());
         }
     }
+
     [Authorize]
     [HttpGet("managed-auths/token-verification")]
     public async Task<IActionResult> CheckToken()
@@ -226,9 +213,42 @@ public class AuthController : ControllerBase
         // If token is valid, return success response
         return Ok(ApiResult<CheckTokenResponse>.Succeed(new CheckTokenResponse
         {
-            User = user,       
+            User = user,
         }));
     }
+    private async Task<IActionResult> SignUpForCustomer(SignUpRequest req)
+    {
+        try
+        {
+            var signUpResponse = await _identityService.Signup(_mapper.Map<SignUpModel>(req));
 
-    
+            if (signUpResponse.Verified == true)
+            {
+                var userResponse = await _userService.GetUserByEmailForOTP(req.Email);
+                if (userResponse == null)
+                {
+                    return BadRequest(new { Message = "User not found." });
+                }
+
+                if (userResponse.IsVerified == false)
+                {
+                    var otpSent = await _identityService.SendOtpToUser(req.Email, userResponse.FullName);
+
+                    if (!otpSent)
+                    {
+                        return BadRequest(new { Message = "GỬI EMAIL THẤT BẠI!" });
+                    }
+
+                    return Ok(new { Message = "ĐĂNG KÍ THÀNH CÔNG, VUI LÒNG KIỂM TRA EMAIL VÀ XÁC NHẬN OTP!" });
+                }
+            }
+            return Ok(signUpResponse);
+        }
+        catch(Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
+    }
+
+   
 }
