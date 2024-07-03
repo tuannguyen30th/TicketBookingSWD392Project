@@ -244,7 +244,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<UpdateUserResponseModel /*returnModel/*, string message*/> UpdateUser(Guid id, UpdateUserModel updateUser)
+        public async Task<UpdateUserResponseModel> UpdateUser(Guid id, UpdateUserModel updateUser)
         {
             try
             {
@@ -268,7 +268,10 @@ namespace SWD.TicketBooking.Service.Services
                     //existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);
                     existedUser.FullName = updateUser.FullName;
                     existedUser.Address = updateUser.Address;
-                    existedUser.PhoneNumber = updateUser.PhoneNumber;
+                    if (updateUser.PhoneNumber.Length == 10)
+                    {
+                        existedUser.PhoneNumber = updateUser.PhoneNumber;
+                    }
 
                     if (updateUser.Avatar != null && updateUser.Avatar.Length > 0)
                     {

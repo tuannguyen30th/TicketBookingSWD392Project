@@ -91,13 +91,13 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpPut("managed-routes/{routeID}")]
-        public async Task<IActionResult> UpdateRoute([FromRoute] Guid routeID, [FromBody] UpdateRouteRequest req)
+        public async Task<IActionResult> UpdateRoute([FromRoute] Guid routeID, [FromBody] CreateRouteRequest req)
         {
            /* if (routeID <= 0 || req.FromCityID <= 0 || req.ToCityID <= 0)
             {
                 return BadRequest("Invalid ID");
             }*/
-            var map = _mapper.Map<UpdateRouteModel>(req);
+            var map = _mapper.Map<CreateRouteModel>(req);
             var rs = await _routeService.UpdateRoute(routeID, map);
             if (rs < 1)
             {

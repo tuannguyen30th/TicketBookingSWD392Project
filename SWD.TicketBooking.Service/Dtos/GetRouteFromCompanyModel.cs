@@ -13,6 +13,8 @@ namespace SWD.TicketBooking.Service.Dtos
         public string? ToCity { get; set; } = string.Empty;
         public string? StartLocation { get; set; } = string.Empty;
         public string? EndLocation { get; set; } = string.Empty;
+
+        public string? Status { get; set; } = string.Empty;
       
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SWD.TicketBooking.API.Installer;
+using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
@@ -102,6 +103,22 @@ namespace SWD.TicketBooking.API.Controllers
             {
                 throw new Exception();
             }
+        }
+
+
+        [HttpPut("managed-ticket-details/{ticketDetailID}/status")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] Guid ticketDetailID)
+        {
+            /*   if (routeID <= 0)
+               {
+                   return BadRequest("Invalid ID");
+               }*/
+            var rs = await _ticketDetailService.ChangeStatus(ticketDetailID);
+            if (rs < 1)
+            {
+                return BadRequest("Update failed");
+            }
+            return Ok("Update successfully");
         }
 
     }
