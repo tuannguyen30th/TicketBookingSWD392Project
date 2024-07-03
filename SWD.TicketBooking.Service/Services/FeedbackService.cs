@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
@@ -14,27 +13,22 @@ namespace SWD.TicketBooking.Service.Services
 {
     public class FeedbackService : IFeedbackService
     {
-        private readonly IUnitOfWork _unitOfWork;   
+        private readonly IUnitOfWork _unitOfWork;
         public readonly IFirebaseService _firebaseService;
         public readonly IMapper _mapper;
+
         public FeedbackService(IUnitOfWork unitOfWork, IFirebaseService firebaseService, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;        
+            _unitOfWork = unitOfWork;
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
+
         public async Task<bool> CreateRating(FeedbackRequestModel ratingModel)
         {
             try
             {
-                var getTemplateIDFromDb = await _unitOfWork.TripRepository
-                                                .GetAll()
-                                                .Where(_ => _.TripID == ratingModel.TripID)
-                                                .Select(_ => _.TemplateID)
-                                                .FirstOrDefaultAsync();
-
-        
-                //var tripID = getTripID.FirstOrDefault(_ => _.IsTemplate == true) ?? null;
+                
                 var checkHadBooked = await _unitOfWork.BookingRepository
                                                 .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID && _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
                                                 .FirstOrDefaultAsync();
@@ -43,7 +37,7 @@ namespace SWD.TicketBooking.Service.Services
                     throw new BadRequestException("NGƯỜI DÙNG CHƯA ĐẶT ĐI CHUYẾN XE NÀY!");
                 }
                 var checkHadRated = await _unitOfWork.FeedbackRepository
-                                                     .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TemplateID == getTemplateIDFromDb)
+                                                     .FindByCondition(_ => _.UserID == ratingModel.UserID && _.TripID == ratingModel.TripID)
                                                      .FirstOrDefaultAsync();
                 if (checkHadRated != null)
                 {
@@ -69,32 +63,34 @@ namespace SWD.TicketBooking.Service.Services
                     Status = SD.GeneralStatus.ACTIVE,
                 };
                 await _unitOfWork.FeedbackRepository.AddAsync(newRating);
-               
-                var imageUrls = ratingModel.Files;
-                foreach(var imageUrl in imageUrls)
+                if (ratingModel.Files != null || ratingModel.Files.Count > 0)
                 {
-                    var newFeedbackImage = new Feedback_Image
+                    var imageUrls = ratingModel.Files;
+                    foreach (var imageUrl in imageUrls)
                     {
-                        Feedback_Image_ID = Guid.NewGuid(),
-                        FeedbackID = newRating.FeedbackID,
-                    };
-                    var imagePath = FirebasePathName.RATING + $"{newFeedbackImage.Feedback_Image_ID}";
-                    var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
-                    if (!imageUploadResult.IsSuccess)
-                    {
-                        throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
-                    }
+                        var newFeedbackImage = new Feedback_Image
+                        {
+                            Feedback_Image_ID = Guid.NewGuid(),
+                            FeedbackID = newRating.FeedbackID,
+                        };
+                        var imagePath = FirebasePathName.RATING + $"{newFeedbackImage.Feedback_Image_ID}";
+                        var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
+                        if (!imageUploadResult.IsSuccess)
+                        {
+                            throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
+                        }
 
-                    newFeedbackImage.ImageUrl = (string)imageUploadResult.Result;
-                    await _unitOfWork.Feedback_ImageRepository.AddAsync(newFeedbackImage);
-                };
+                        newFeedbackImage.ImageUrl = (string)imageUploadResult.Result;
+                        await _unitOfWork.Feedback_ImageRepository.AddAsync(newFeedbackImage);
+                    };
+                }
+
                 var rs = _unitOfWork.Complete();
                 if (rs > 0)
                 {
                     return true;
                 }
                 return false;
-
             }
             catch (Exception ex)
             {
@@ -107,7 +103,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var existedTrip = await _unitOfWork.TripRepository
-                                                   .FindByCondition(x=>x.TemplateID == tripID && x.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                   .FindByCondition(x => x.TemplateID == tripID && x.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                    .FirstOrDefaultAsync();
                 if (existedTrip != null)
                 {
@@ -117,19 +113,19 @@ namespace SWD.TicketBooking.Service.Services
                     var feedbacks = new List<Feedback>();
                     if (filter == 0)
                     {
-                         feedbacks = await _unitOfWork.FeedbackRepository
-                                                      .FindByCondition(x => x.TemplateID == tripID)
-                                                      .Skip((pageNumber - 1) * pageSize)                                
-                                                      .Take(pageSize)                                                   
-                                                      .ToListAsync();                                                   
-                    }                                                                              
-                    else                                                                           
-                    {                                                                              
-                         feedbacks = await _unitOfWork.FeedbackRepository
-                                                      .FindByCondition(x => x.TemplateID == tripID && (x.Rating == filter))
-                                                      .Skip((pageNumber - 1) * pageSize)
-                                                      .Take(pageSize)
-                                                      .ToListAsync();
+                        feedbacks = await _unitOfWork.FeedbackRepository
+                                                     .FindByCondition(x => x.TemplateID == tripID)
+                                                     .Skip((pageNumber - 1) * pageSize)
+                                                     .Take(pageSize)
+                                                     .ToListAsync();
+                    }
+                    else
+                    {
+                        feedbacks = await _unitOfWork.FeedbackRepository
+                                                     .FindByCondition(x => x.TemplateID == tripID && (x.Rating == filter))
+                                                     .Skip((pageNumber - 1) * pageSize)
+                                                     .Take(pageSize)
+                                                     .ToListAsync();
                     }
 
                     var rs = new List<FeedbackModel>();
@@ -137,7 +133,7 @@ namespace SWD.TicketBooking.Service.Services
                     var totalRating = feedback.Sum(fb => fb.Rating);
                     var averageRating = feedback.Count > 0 ? (double)totalRating / feedback.Count : 0;
 
-                    foreach(var fb in feedbacks)
+                    foreach (var fb in feedbacks)
                     {
                         var user = await _unitOfWork.UserRepository.GetByIdAsync((Guid)fb.UserID);
 
@@ -165,11 +161,11 @@ namespace SWD.TicketBooking.Service.Services
                     };
                 }
                 else throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
             }
         }
-
     }
 }

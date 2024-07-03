@@ -15,6 +15,8 @@ using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Utilities;
 using SWD.TicketBooking.Repo.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using static QRCoder.PayloadGenerator;
+using Org.BouncyCastle.Ocsp;
 
 namespace SWD.TicketBooking.Service.Services;
 
@@ -35,10 +37,14 @@ public class IdentityService
         _firebaseService = firebaseService;
     }
 
-    public async Task<SignUpResponse> Signup(SignUpModel req)
+    public async Task<SignUpResponse> SignupForCustomer(SignUpModel req)
     {
         try
         {
+            if (!FunctionCommon.IsValidEmail(req.Email) || !FunctionCommon.IsValidPhoneNumber(req.PhoneNumber))
+            {
+                throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
+            }
             var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email == req.Email).FirstOrDefaultAsync();
             
             if (user != null)
@@ -103,6 +109,10 @@ public class IdentityService
     {
         try
         {
+            if (!FunctionCommon.IsValidEmail(req.Email) || !FunctionCommon.IsValidPhoneNumber(req.PhoneNumber))
+            {
+                throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
+            }
             var message = "";
             var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email == req.Email).FirstOrDefaultAsync();
             if (user != null)
@@ -157,6 +167,10 @@ public class IdentityService
     {
         try
         {
+            if (!FunctionCommon.IsValidEmail(email) )
+            {
+                throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
+            }
             var otp = new Random().Next(100000, 999999);
             var mailData = new MailData
             {
@@ -209,6 +223,10 @@ public class IdentityService
     {
         try
         {
+            if (!FunctionCommon.IsValidEmail(email))
+            {
+                throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
+            }
             var user = await _unitOfWork.UserRepository
                                         .FindByCondition(u => u.Email == email)
                                         .FirstOrDefaultAsync();

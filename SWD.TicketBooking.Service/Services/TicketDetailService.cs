@@ -169,6 +169,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+     
         public async Task<ActionOutcome> CancelTicket(Guid ticketDetailID)
         {
             try
@@ -484,7 +485,7 @@ namespace SWD.TicketBooking.Service.Services
             }
             return rs;
         }
-
+        
         public async Task<bool> VerifyTicketDetail(string qrCode)
         {
             try

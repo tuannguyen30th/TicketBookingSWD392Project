@@ -25,7 +25,34 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
+        public async Task<ActionOutcome> GetAllSeatsFromTrip(Guid tripID)
+        {
+            try
+            {
+                var rs = new ActionOutcome();
+                var bookingFromTrip = await _unitOfWork.BookingRepository.FindByCondition(_ => _.TripID == tripID).FirstOrDefaultAsync();
+                if (bookingFromTrip == null)
+                {
+                    throw new NotFoundException("KHÔNG CÓ HÓA ĐƠN NÀO CHO CHUYẾN ĐI NÀY!");
+                }
 
+                var ticketFromTrip = await _unitOfWork.TicketDetailRepository.GetAll()
+                                                   .Where(_ => _.BookingID == bookingFromTrip.BookingID && _.Status != SD.Booking_TicketStatus.CANCEL_TICKET)
+                                                   .ToListAsync();
+                rs.Result = ticketFromTrip.Select(_ => new List<string>
+                                          {
+                                              _.TicketDetailID.ToString(),
+                                              _.SeatCode,
+                                              _.Status
+                                          }).ToList();
+
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
         public async Task<List<string>> GetPictureOfTrip(Guid id)
         {
             try

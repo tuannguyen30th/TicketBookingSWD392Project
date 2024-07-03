@@ -16,6 +16,7 @@ using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
 using System.Transactions;
+using static QRCoder.PayloadGenerator;
 using static System.Net.WebRequestMethods;
 
 namespace SWD.TicketBooking.Service.Services
@@ -61,7 +62,10 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-
+                if (!FunctionCommon.IsValidEmail(email))
+                {
+                    throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
+                }
                 var userEntity = await _unitOfWork.UserRepository
                                                   .FindByCondition(x => x.Email == email)
                                                   .FirstOrDefaultAsync();
@@ -94,7 +98,11 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var userEntity = _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).FirstOrDefault();
+                if (!FunctionCommon.IsValidEmail(email))
+                {
+                    throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
+                }
+                var userEntity = _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).Include(_ => _.UserRole).FirstOrDefault();
                 var userModel = _mapper.Map<UserModel>(userEntity);
                 return userModel;
             }
@@ -109,6 +117,10 @@ namespace SWD.TicketBooking.Service.Services
             {
                 try
                 {
+                    if (!FunctionCommon.IsValidEmail(req.Email))
+                    {
+                        throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
+                    }
                     var user = _unitOfWork.UserRepository.FindByCondition(x => x.Email == req.Email).FirstOrDefault();
 
                     if (user != null)
@@ -163,6 +175,10 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
+                if (!FunctionCommon.IsValidEmail(req.Email))
+                {
+                    throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
+                }
                 var rs = new ActionOutcome();
                 var user = await _unitOfWork.UserRepository.FindByCondition(u => u.Email.Equals(req.Email)).FirstOrDefaultAsync();
 

@@ -18,6 +18,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(Guid tripID);
         Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id);
         Task<List<TicketType>> GetAllTicketType();
+        Task<ActionOutcome> GetAllSeatsFromTrip(Guid tripID);
 
     }
 }

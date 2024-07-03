@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.API.Common
 {
     public record ApiResult<T>
     {
+        [JsonPropertyName("Success")]
         public bool Success { get; set; }
+        [JsonPropertyName("Result")]
         public T? Result { get; set; }
 
         public static ApiResult<T> Succeed(T? result)

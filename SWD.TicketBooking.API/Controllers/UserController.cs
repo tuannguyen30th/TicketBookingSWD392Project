@@ -33,20 +33,22 @@ namespace SWD.TicketBooking.Controllers
             _emailService = emailService;
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
-
         }
+
         [HttpGet("managed-users/staff/{companyID}")]
         public async Task<IActionResult> GetStaffFromCompany(Guid companyID)
         {
             var staff = _mapper.Map<List<GetStaffFromCompanyResponse>>(await _userService.GetStaffFromCompany(companyID));
             return Ok(staff);
         }
+
         [HttpPost("managed-users/avatars")]
         public async Task<IActionResult> UploadAvatar(IFormFile file)
         {
             var rs = await _userService.UploadAvatar(file);
             return Ok(rs);
         }
+
         [HttpGet("managed-users/{userID}/details")]
         public async Task<IActionResult> GetUserDetail([FromRoute] Guid userID)
         {
@@ -73,7 +75,6 @@ namespace SWD.TicketBooking.Controllers
 
                 if (userResponse == null)
                 {
-
                     resultFail = new SignUpResponse
                     {
                         Messages = "KHÔNG TỒN TẠI TÀI KHOẢN!"
@@ -83,7 +84,6 @@ namespace SWD.TicketBooking.Controllers
 
                 if (userResponse.OTPCode == "0" && userResponse.IsVerified == true)
                 {
-
                     resultFail = new SignUpResponse
                     {
                         Messages = "KHÔNG TỒN TẠI TÀI KHOẢN!"
@@ -133,8 +133,7 @@ namespace SWD.TicketBooking.Controllers
                             return BadRequest(new SignUpResponse
                             {
                                 Messages = "LỖI XẢY RA KHI GỬI EMAIL!"
-                            }) ;
-
+                            });
                         }
                     }
                     return Ok(new SignUpResponse
@@ -148,10 +147,8 @@ namespace SWD.TicketBooking.Controllers
                 };
                 return BadRequest(resultFail);
             }
-
             catch (Exception ex)
             {
-
                 var resultFail = new SignUpResponse
                 {
                     Messages = "LỖI KHI GỬI MÃ OTP!"
@@ -159,11 +156,12 @@ namespace SWD.TicketBooking.Controllers
                 return BadRequest(resultFail);
             }
         }
+
         [HttpPut("managed-users/otp-code-submission")]
         public async Task<IActionResult> SubmitOTP(SubmitOTPReq req)
         {
-                var checkOTP = await _userService.SubmitOTP(req);
-                return Ok(checkOTP);
+            var checkOTP = await _userService.SubmitOTP(req);
+            return Ok(checkOTP);
         }
 
         [HttpGet("managed-users")]
@@ -173,6 +171,7 @@ namespace SWD.TicketBooking.Controllers
             var rs = _mapper.Map<List<UserResponse>>(user);
             return Ok(rs);
         }
+
         private string GenerateEmailBody(string fullName, int otp)
         {
             return $@"
@@ -265,7 +264,5 @@ namespace SWD.TicketBooking.Controllers
 
     ";
         }
-       
-
     }
 }

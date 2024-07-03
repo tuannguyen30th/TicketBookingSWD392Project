@@ -55,7 +55,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new BadRequestException("NHỮNG TRƯỜNG TRONG BOOKINGMODEL KHÔNG ĐƯỢC BỎ TRỐNG!");
                     }
-                    if (!IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
+                    if (!FunctionCommon.IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !FunctionCommon.IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
                     {
                         throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG ĐÚNG VỚI QUY ĐỊNH!");
                     }
@@ -214,7 +214,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
                     }
-                    if (!IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
+                    if (!FunctionCommon.IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !FunctionCommon.IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
                     {
                         throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG ĐÚNG VỚI QUY ĐỊNH!");
                     }
@@ -531,23 +531,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        private bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool IsValidPhoneNumber(string phoneNumber)
-        {
-            return Regex.IsMatch(phoneNumber, "^0\\d{9,11}$");
-        }
+       
 
         private IFormFile GenerateQRCode(string QRCodeText)
         {

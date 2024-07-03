@@ -204,7 +204,7 @@ public class AuthController : ControllerBase
         string email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
 
         var user = await _userService.GetUserByEmail(email);
-
+        var userRole = await _unitOfWork.UserRoleRepository.FindByCondition(_ => _.RoleID == user.RoleID).Select(_ => _.RoleName).FirstOrDefaultAsync();
         if (user == null)
         {
             return BadRequest("EMAIL KHÔNG TỒN TẠI!");
@@ -214,13 +214,14 @@ public class AuthController : ControllerBase
         return Ok(ApiResult<CheckTokenResponse>.Succeed(new CheckTokenResponse
         {
             User = user,
+            RoleName = userRole
         }));
     }
     private async Task<IActionResult> SignUpForCustomer(SignUpRequest req)
     {
         try
         {
-            var signUpResponse = await _identityService.Signup(_mapper.Map<SignUpModel>(req));
+            var signUpResponse = await _identityService.SignupForCustomer(_mapper.Map<SignUpModel>(req));
 
             if (signUpResponse.Verified == true)
             {
