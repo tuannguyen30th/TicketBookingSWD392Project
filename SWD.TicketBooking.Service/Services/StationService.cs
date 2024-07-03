@@ -29,19 +29,68 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
         }
 
-        public async Task<List<StationFromRouteModel>> GetAllStationsByCompanyID(Guid companyID)
+        public async Task<List<GetStationByCompanyModel>> GetAllStationsByCompanyID(Guid companyID)
         {
             try
             {
                 var stations = await _unitOfWork.StationRepository
                                                 .FindByCondition(_ => _.CompanyID.Equals(companyID) && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-                                                .Select(_ => new StationFromRouteModel
-                                                {
-                                                    StationID = (Guid)_.StationID,
-                                                    Name = _.Name
-                                                })
                                                 .ToListAsync();
-                return stations;
+
+                var result = new List<GetStationByCompanyModel>();
+                foreach (var station in stations)
+                {
+                    var listServiceInStation = await _unitOfWork.Station_ServiceRepository
+                                                    .GetAll()
+                                                    .Where(s => s.StationID.Equals(station.StationID))
+                                                    .ToListAsync();
+
+                    var listServices = await _unitOfWork.ServiceRepository
+                                                        .GetAll()
+                                                        .Where(s => listServiceInStation.Select(s => s.ServiceID).Contains(s.ServiceID))
+                                                        .ToListAsync();
+
+                    var serviceType = await _unitOfWork.ServiceTypeRepository
+                                                     .GetAll()
+                                                     .Where(s => listServices.Select(s => s.ServiceTypeID).Contains(s.ServiceTypeID))
+                                                     .ToListAsync();
+
+                    var serviceTypeList = new List<ServiceTypeInStationModel>();
+                    Parallel.ForEach(serviceType, async (item) =>
+                    {
+                        var listServiceInServiceType = listServices.Where(s => s.ServiceTypeID.Equals(item.ServiceTypeID)).ToList();
+
+                        var listServiceInStationModelTask = listServiceInServiceType.Select(async s => new ServiceInStationModel
+                        {
+                            ServiceID = s.ServiceID,
+                            Name = s.Name,
+                            Price = (double)listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().Price,
+                            ImageUrl = listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().ImageUrl
+                        }).ToList();
+
+                        var listServiceInStationModel = await Task.WhenAll(listServiceInStationModelTask);
+
+                        var serviceResponse = new ServiceTypeInStationModel
+                        {
+                            ServiceTypeID = item.ServiceTypeID,
+                            ServiceTypeName = item.Name,
+                            ServiceInStation = listServiceInStationModel.ToList(),
+                        };
+
+                        serviceTypeList.Add(serviceResponse);
+                    });
+
+                    var stationResult = new GetStationByCompanyModel
+                    {
+                        StationID = station.StationID,
+                        CityID = (Guid)station.CityID,
+                        StationName = station.Name,
+                        ServiceTypeInStation = serviceTypeList
+                    };
+
+                    result.Add(stationResult);
+                }
+                return result;
 
             }
             catch (Exception ex)
