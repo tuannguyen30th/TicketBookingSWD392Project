@@ -47,5 +47,8 @@ namespace SWD.TicketBooking.API.ResponseModels
         [JsonPropertyName("TotalPrice")]
         public double TotalPrice { get; set; }
 
+        [JsonPropertyName("ImageUrl")]
+        public string ImageUrl { get; set; }
+
     }
 }

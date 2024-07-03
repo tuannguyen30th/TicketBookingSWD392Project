@@ -25,5 +25,6 @@ namespace SWD.TicketBooking.Service.Dtos
         public int Quantity { get; set; }
         public string Station { get; set; }
         public double TotalPrice { get; set; }
+        public string ImageUrl { get; set; }
     }
 }
