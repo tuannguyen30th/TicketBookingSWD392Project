@@ -478,7 +478,8 @@ namespace SWD.TicketBooking.Service.Services
                     ServiceName = serviceResponse.Name,
                     Station = station.Name,
                     Quantity = service_ticket.Quantity ?? 0,
-                    TotalPrice = (service_ticket.Price ?? 0) * (service_ticket.Quantity ?? 0)
+                    TotalPrice = (service_ticket.Price ?? 0) * (service_ticket.Quantity ?? 0),
+                    ImageUrl = station_service.ImageUrl
                 };
 
                 rs.Add(serviceResult);
