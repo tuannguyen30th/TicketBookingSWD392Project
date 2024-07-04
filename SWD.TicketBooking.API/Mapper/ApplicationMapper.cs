@@ -85,7 +85,10 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<GetStationByCompanyModel, GetStationByCompanyResponse>().ReverseMap();
             CreateMap<GetStationModel, GetStationResponse>().ReverseMap();
             CreateMap<CreateStationModel, CreateStationRequest>().ReverseMap();
+            CreateMap<UpdateStationModel, UpdateStationRequest>().ReverseMap();
+
             CreateMap<CreateStationWithServiceModel, CreateStationWithServiceRequest>().ReverseMap();
+
             /////Company/////
             CreateMap<GetCompanyModel, Company>().ReverseMap();
             CreateMap<GetCompanyModel, GetCompanyResponse>().ReverseMap();
