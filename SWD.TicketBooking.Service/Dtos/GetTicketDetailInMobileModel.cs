@@ -16,6 +16,7 @@ namespace SWD.TicketBooking.Service.Dtos
         public string StartDay { get; set; }
         public string SeatCode { get; set; }
         public string Route {  get; set; }
+        public Guid TripID { get; set; }
         public List<ServiceInTicketModel> Services { get; set; }
     }
 

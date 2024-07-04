@@ -28,9 +28,12 @@ namespace SWD.TicketBooking.API.ResponseModels
 
         [JsonPropertyName("Route")]
         public string Route { get; set; }
+        [JsonPropertyName("TripID")]
+        public Guid TripID { get; set; }
 
         [JsonPropertyName("Services")]
         public List<ServiceInTicketResponse> Services { get; set; } = new List<ServiceInTicketResponse>();
+
     }
 
     public class ServiceInTicketResponse

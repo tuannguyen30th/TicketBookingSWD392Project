@@ -444,8 +444,8 @@ namespace SWD.TicketBooking.Service.Services
                     StartDay = routeResponse.Result.Date,
                     StartTime = routeResponse.Result.Time,
                     Status = ticketDetail.Status,
-                    Services = await GetServicesInTicket(ticketDetail.TicketDetailID)
-
+                    Services = await GetServicesInTicket(ticketDetail.TicketDetailID),
+                    TripID = trip.TripID
                 };
                 return result;
             }
