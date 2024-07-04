@@ -35,6 +35,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var stations = await _unitOfWork.StationRepository
                                                 .FindByCondition(_ => _.CompanyID.Equals(companyID) && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                .Include(_ => _.City)
                                                 .ToListAsync();
 
                 var result = new List<GetStationByCompanyModel>();
@@ -79,11 +80,12 @@ namespace SWD.TicketBooking.Service.Services
 
                         serviceTypeList.Add(serviceResponse);
                     });
-
+                    
                     var stationResult = new GetStationByCompanyModel
                     {
                         StationID = station.StationID,
                         CityID = (Guid)station.CityID,
+                        CityName = station.City.Name,
                         StationName = station.Name,
                         ServiceTypeInStation = serviceTypeList
                     };

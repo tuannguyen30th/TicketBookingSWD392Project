@@ -9,6 +9,8 @@ namespace SWD.TicketBooking.API.ResponseModels
         public Guid StationID { get; set; }
         [JsonPropertyName("CityID")]
         public Guid CityID { get; set; }
+        [JsonPropertyName("CityName")]
+        public string CityName { get; set; }
         [JsonPropertyName("StationName")]
         public string StationName { get; set; }
         [JsonPropertyName("ServiceTypeInStation")]
