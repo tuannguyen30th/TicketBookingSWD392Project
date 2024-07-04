@@ -56,6 +56,29 @@
                 return $"VẤN ĐỀ XẢY RA VỚI {entity} - {issue}!".ToUpper();
             }
         }
+        
+        public static class Entity
+        {
+            public enum EntityType
+            {
+                City,
+                Company,
+                Feedback,
+                Feedback_Image,
+                Route,
+                Route_Company,
+                Service,
+                ServiceType,
+                Station, 
+                Station_Route,
+                Station_Service,
+                Trip,
+                Trip_Utility,
+                User,
+                UserRole,
+                Utitily
+            }
+        }
 
     }
 }
