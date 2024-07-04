@@ -105,9 +105,9 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpPut("managed-stations/{stationID}")]
-        public async Task<IActionResult> UpdateStation([FromRoute] Guid stationID, [FromBody] CreateStationRequest req)
+        public async Task<IActionResult> UpdateStation([FromRoute] Guid stationID, [FromBody] UpdateStationRequest req)
         {
-            var map = _mapper.Map<CreateStationModel>(req);
+            var map = _mapper.Map<UpdateStationModel>(req);
             var rs = await _stationService.UpdateStation(stationID, map);
             return Ok(rs);
         }

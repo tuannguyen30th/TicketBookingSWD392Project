@@ -255,7 +255,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<string> UpdateStation(Guid stationId, CreateStationModel stationModel)
+        public async Task<string> UpdateStation(Guid stationId, UpdateStationModel stationModel)
         {
             try
             {
