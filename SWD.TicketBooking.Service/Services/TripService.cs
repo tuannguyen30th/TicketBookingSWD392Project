@@ -293,6 +293,7 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             case SD.FilterOption.SEAT_HEAD:
                                 var headTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_A);
+
                                 if (!headTripIds.Any())
                                 {
                                     tripsQuery = null;
@@ -421,6 +422,7 @@ namespace SWD.TicketBooking.Service.Services
                         TripID = trip.TripID,
                         RouteID = (Guid)trip.Route_Company.RouteID,
                         TemplateID = (Guid)trip.TemplateID,
+                        CompanyID = (Guid)trip.Route_Company.CompanyID,
                         CompanyName = companyName,
                         ImageUrl = tripImage,
                         AverageRating = (double)roundedRatingAverage,

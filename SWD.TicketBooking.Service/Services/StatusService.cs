@@ -120,7 +120,7 @@ namespace SWD.TicketBooking.Service.Services
                         rs = _unitOfWork.Complete();
                         break;
                     case 10:
-                        var station_route = await _unitOfWork.Station_RouteRepository
+                        var station_route = await _unitOfWork.StationCompany_RouteRepository
                                                     .GetByIdAsync(Id);
                         if (station_route.Status.Equals(SD.GeneralStatus.ACTIVE))
                         {

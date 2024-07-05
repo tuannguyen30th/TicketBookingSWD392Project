@@ -12,6 +12,8 @@ namespace SWD.TicketBooking.API.ResponseModels
 
         [JsonPropertyName("TemplateID")]
         public Guid TemplateID { get; set; }
+        [JsonPropertyName("CompanyID")]
+        public Guid CompanyID { get; set; }
 
         [JsonPropertyName("CompanyName")]
         public string? CompanyName { get; set; }

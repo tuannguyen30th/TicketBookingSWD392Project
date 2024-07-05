@@ -9,12 +9,12 @@ namespace SWD.TicketBooking.Service.IServices
 {
     public interface IStationService
     {
-        Task<List<StationFromRouteModel>> GetStationsFromRoute(Guid routeID);
+        Task<List<StationFromRouteModel>> GetStationsFromTrip(Guid routeID, Guid companyID);
         Task<List<GetStationModel>> GetAllStationActive();
         Task<GetStationModel> GetStationById(Guid id);
-        Task<string> CreateStation(CreateStationModel stationModel);
+        //Task<string> CreateStation(CreateStationModel stationModel);
         Task<string> UpdateStation(Guid stationId, UpdateStationModel stationModel);
-        Task<List<StationFromRouteModel>> GetAllStationInRoute(Guid id);
+        //Task<List<StationFromRouteModel>> GetAllStationFromTrip(Guid id);
         Task<bool> CreateStationWithService(CreateStationWithServiceModel stationModel);
         Task<List<GetStationByCompanyModel>> GetAllStationsByCompanyID(Guid companyID);
 

@@ -4,20 +4,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWD.TicketBooking.Repo.Entities
 {
-    [Table("Station_Route")]
-    public class Station_Route
+    [Table("StationCompany_Route")]
+    public class StationCompany_Route
     {
         [Key]
-        public Guid Station_RouteID { get; set; }
-        public Guid? StationID { get; set; }
-        [ForeignKey("StationID")]
-        public Station? Station { get; set; }
+        public Guid StationCompany_RouteID { get; set; }
+        public Guid? Station_CompanyID { get; set; }
+        [ForeignKey("Station_CompanyID")]
+        public Station_Company? Station_Company { get; set; }
         public Guid? RouteID { get; set; }
         [ForeignKey("RouteID")]
         public Route? Route { get; set; }
         public string? Status { get; set; } = string.Empty;
-        public int? OrderInRoute {  get; set; }
+        public int? OrderInRoute { get; set; }
     }
 
-    
+
 }

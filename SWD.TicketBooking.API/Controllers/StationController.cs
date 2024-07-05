@@ -31,23 +31,23 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(stationResponses);
         }
 
-        [HttpGet("managed-stations/routes/{routeID}")]
+        [HttpGet("managed-stations/routes/{routeID}/companyID/{companyID}")]
         ///*[Cache(1200)]*/
-        public async Task<IActionResult> GetStationsFromRoute(Guid routeID)
+        public async Task<IActionResult> GetStationsFromTrip(Guid routeID, Guid companyID)
         {
-            var stations = await _stationService.GetStationsFromRoute(routeID);
+            var stations = await _stationService.GetStationsFromTrip(routeID, companyID);
             var stationResponses = _mapper.Map<List<StationFromRouteResponse>>(stations);
             return Ok(stationResponses);
         }
 
-        [HttpGet("managed-stations/trips/{tripID}")]
-        //[Cache(1200)]
-        public async Task<IActionResult> GetStationsInTrip(Guid tripID)
-        {
-            var stations = await _stationService.GetAllStationInRoute(tripID);
-            var stationResponses = _mapper.Map<List<StationFromRouteResponse>>(stations);
-            return Ok(stationResponses);
-        }
+        //[HttpGet("managed-stations/trips/{tripID}")]
+        ////[Cache(1200)]
+        //public async Task<IActionResult> GetStationsInTrip(Guid tripID)
+        //{
+        //    var stations = await _stationService.GetAllStationInRoute(tripID);
+        //    var stationResponses = _mapper.Map<List<StationFromRouteResponse>>(stations);
+        //    return Ok(stationResponses);
+        //}
 
         [HttpGet("managed-stations")]
         //[Cache(1200)]

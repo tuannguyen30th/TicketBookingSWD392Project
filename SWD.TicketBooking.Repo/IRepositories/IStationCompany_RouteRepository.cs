@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Repo.IRepositories
 {
-    public interface IStation_RouteRepository : IRepository<Station_Route, Guid>
+    public interface IStationCompany_RouteRepository : IRepository<StationCompany_Route, Guid>
     {
     }
 }

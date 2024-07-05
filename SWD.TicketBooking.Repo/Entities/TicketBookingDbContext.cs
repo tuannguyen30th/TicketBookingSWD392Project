@@ -24,7 +24,8 @@ namespace SWD.TicketBooking.Repo.Entities
         public DbSet<TicketType> TicketType { get; set; }
 
         public DbSet<Station> Station { get; set; }
-        public DbSet<Station_Route> Station_Route { get; set; }
+        public DbSet<Station_Company> Station_Company { get; set; }
+        public DbSet<StationCompany_Route> StationCompany_Route { get; set; }
         public DbSet<Feedback> Feedback { get; set; }
         public DbSet<Feedback_Image> Feedback_Image { get; set; }
 
@@ -78,8 +79,12 @@ namespace SWD.TicketBooking.Repo.Entities
                .HasOne(vr => vr.ToCity)
                .WithMany()
                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<Station_Route>()
+            modelBuilder.Entity<Station_Company>()
                .HasOne(vr => vr.Station)
+               .WithMany()
+               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<StationCompany_Route>()
+               .HasOne(vr => vr.Route)
                .WithMany()
                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Station_Service>()
