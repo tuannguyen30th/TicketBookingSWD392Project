@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SWD.TicketBooking.API.RequestModels;
+using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Booking;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services;
 using System.Text;
+using System.Text.Json;
 using static SWD.TicketBooking.Service.Dtos.SendMailBookingModel;
 
 namespace SWD.TicketBooking.API.Controllers
@@ -39,33 +42,15 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
 
-        [HttpGet("managed-bookings/vnpay-ipn")]
-        public async Task<IActionResult> VNPayIPN()
+        [HttpPut("managed-bookings")]
+        public async Task<IActionResult> UpdateStatusBooking([FromBody] UpdateBookingRequest updateBookingRequest)
         {
             try
-            {
-                var response = new VNPayModel
-                {
-                    PaymentMethod = Request.Query["vnp_BankCode"],
-                    BookingDescription = Request.Query["vnp_OrderInfo"],
-                    BookingId = Request.Query["vnp_TxnRef"],
-                    PaymentId = Request.Query["vnp_TransactionNo"],
-                    TransactionId = Request.Query["vnp_TransactionNo"],
-                    Token = Request.Query["vnp_SecureHash"],
-                    VnPayResponseCode = Request.Query["vnp_ResponseCode"],
-                    PayDate = Request.Query["vnp_PayDate"],
-                    Amount = Request.Query["vnp_Amount"],
-                    Success = true
-                };
-
-                if (response.VnPayResponseCode == "00")
-                {
-                    Guid bookingId;
-                    ;
-                    if (Guid.TryParse(response.BookingId, out bookingId))
-                    {
-                        var result = await _bookingService.UpdateStatusBooking(bookingId);
-                        var getEmail = await _bookingService.GetEmailBooking(bookingId);
+            {             
+                if (updateBookingRequest.VnPayResponseCode == "00")
+                {                  
+                        var result = await _bookingService.UpdateStatusBooking(updateBookingRequest.BookingId);
+                        var getEmail = await _bookingService.GetEmailBooking(updateBookingRequest.BookingId);
                         var mailUpdateData = new MailData()
                         {
                             EmailToId = getEmail.Value,
@@ -77,29 +62,28 @@ namespace SWD.TicketBooking.API.Controllers
                         var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
                         if (!rsUpdate)
                         {
-                            return BadRequest("LỖI KHI GỬI MAIL!");
+                            return BadRequest(new UpdateBookingResponse
+                            {
+                                RspCode = null,
+                                Message = "LỖI KHI GỬI MAIL!"
+                            });
                         }
-                    }
-                    else
+                    return Ok(new UpdateBookingResponse
                     {
-                        return BadRequest("LỖI!");
-                    }
-                    return Ok(new
-                    {
-                        RspCode = "00",
+                        RspCode = updateBookingRequest.VnPayResponseCode,
                         Message = "XÁC NHẬN THÀNH CÔNG"
                     });
                 }
 
-                return BadRequest(new
+                return BadRequest(new UpdateBookingResponse
                 {
-                    RspCode = response.VnPayResponseCode,
-                    Message = "LỖI!"
+                    RspCode = updateBookingRequest.VnPayResponseCode,
+                    Message = "LỖI KHI THANH TOÁN!"
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                throw new Exception(ex.Message, ex);
             }
         }
 

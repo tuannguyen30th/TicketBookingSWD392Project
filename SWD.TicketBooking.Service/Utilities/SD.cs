@@ -40,18 +40,15 @@
             public const string SEAT_A = "A";
             public const string SEAT_B = "B";
             public const string SEAT_C = "C";
-            public const string SEAT_HEAD = "HEAD";
-            public const string SEAT_MIDDLE = "MIDDLE";
-            public const string SEAT_BACK = "BACK";
-            public const string SEAT_HEAD_VN = "";
-            public const string SEAT_MIDDLE_VN = "BACK";
-            public const string SEAT_BACK_VN = "BACK";
-            public const string PRICE_ASC = "PRICE_ASC";
-            public const string PRICE_DESC = "PRICE_DESC";
-            public const string RATING_ASC = "RATING_ASC";
-            public const string RATING_DESC = "RATING_DESC";
-            public const string TIME_SOONER = "TIME_SOONER";
-            public const string TIME_LATER = "TIME_LATER";
+            public const string SEAT_HEAD = "HÀNG ĐẦU";
+            public const string SEAT_MIDDLE = "HÀNG GIỮA";
+            public const string SEAT_BACK = "HÀNG SAU";
+            public const string PRICE_ASC = "GIÁ TĂNG DẦN";
+            public const string PRICE_DESC = "GIÁ GIẢM DẦN";
+            public const string RATING_ASC = "TỔNG SỐ ĐÁNH GIÁ TĂNG DẦN";
+            public const string RATING_DESC = "TỔNG SỐ ĐÁNH GIÁ GIẢM DẦN";
+            public const string TIME_SOONER = "THỜI GIAN ĐI SỚM NHẤT";
+            public const string TIME_LATER = "THỜI GIAN ĐI MUỘN NHẤT";
         }
         public class Notification
         {
