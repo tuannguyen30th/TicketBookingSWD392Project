@@ -183,22 +183,24 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var topTrips = await _unitOfWork.BookingRepository.GetAll()
-                                            .GroupBy(b => b.TripID)
-                                            .Select(g => new
-                                            {
-                                                TripID = g.Key,
-                                                TotalQuantity = g.Sum(b => b.Quantity),
-                                            })
-                                            .OrderByDescending(t => t.TotalQuantity)
-                                            .Take(5)
-                                            .ToListAsync();
+                var listTripFromNow = await _unitOfWork.TripRepository
+                                                            .GetAll()
+                                                            .Include(t => t.Route_Company.Route.FromCity)
+                                                            .Include(t => t.Route_Company.Route.ToCity)
+                                                            .Where(t => t.Status.Trim() == SD.GeneralStatus.ACTIVE && t.StartTime.Value.Day == DateTime.UtcNow.Day)
+                                                            .ToListAsync();
 
-                var trips = await _unitOfWork.TripRepository.GetAll()
-                                                .Include(t => t.Route_Company.Route.FromCity)
-                                                .Include(t => t.Route_Company.Route.ToCity)
-                                                .Where(t => t.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && topTrips.Select(_ => _.TripID).Contains(t.TripID))
-                                                .ToListAsync();
+                var topTrips = await _unitOfWork.BookingRepository
+                                                            .GetAll()
+                                                            .Where(b => b.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING) 
+                                                                        && listTripFromNow.Select(t => t.TripID).Contains((Guid)b.TripID))
+                                                            .GroupBy(b => b.TripID)
+                                                            .OrderByDescending(g => g.Sum(b => b.Quantity))
+                                                            .Select(g => new { TripID = g.Key, TotalQuantity = g.Sum(b => b.Quantity) })
+                                                            .Take(5)
+                                                            .ToListAsync();
+
+                var trips = listTripFromNow.Where(t => topTrips.Select(_ => _.TripID).Contains(t.TripID)).ToList();
 
                 var rs = new List<PopularTripModel>();
 
