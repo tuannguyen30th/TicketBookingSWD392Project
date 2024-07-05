@@ -106,21 +106,26 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var rs = new ActionOutcome();
-                var bookingFromTrip = await _unitOfWork.BookingRepository.FindByCondition(_ => _.TripID == tripID).FirstOrDefaultAsync();
+                var bookingFromTrip = await _unitOfWork.BookingRepository
+                                                       .FindByCondition(_ => _.TripID == tripID)
+                                                       .Select(_ => _.BookingID)
+                                                       .ToListAsync();
                 if (bookingFromTrip == null)
                 {
                     throw new NotFoundException("KHÔNG CÓ HÓA ĐƠN NÀO CHO CHUYẾN ĐI NÀY!");
                 }
 
                 var ticketFromTrip = await _unitOfWork.TicketDetailRepository.GetAll()
-                                                   .Where(_ => _.BookingID == bookingFromTrip.BookingID && _.Status != SD.Booking_TicketStatus.CANCEL_TICKET)
+                                                   .Where(_ => bookingFromTrip.Contains((Guid)_.BookingID)
+                                                               && _.Status != SD.Booking_TicketStatus.CANCEL_TICKET
+                                                               && _.Status != SD.Booking_TicketStatus.NOTPAYING_TICKET)
                                                    .ToListAsync();
                 rs.Result = ticketFromTrip.Select(_ => new List<string>
-                                          {
-                                              _.TicketDetailID.ToString(),
-                                              _.SeatCode,
-                                              _.Status
-                                          }).ToList();
+                                   {
+                                       _.TicketDetailID.ToString(),
+                                       _.SeatCode,
+                                       _.Status
+                                   }).ToList();
 
                 return rs;
             }
@@ -262,7 +267,7 @@ namespace SWD.TicketBooking.Service.Services
                     foreach (var company in sortCompany)
                     {
                         var filteredTripIdsForCompany = tripsQuery.Where(_ => _.Route_Company.CompanyID == company);
-                        if(!filteredTripIdsForCompany.Any())
+                        if (!filteredTripIdsForCompany.Any())
                         {
                             tripsQuery = null;
                             break;
@@ -288,7 +293,9 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             case SD.FilterOption.SEAT_HEAD:
                                 var headTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_A);
-                                if (!headTripIds.Any()){
+
+                                if (!headTripIds.Any())
+                                {
                                     tripsQuery = null;
                                     break;
                                 }
@@ -354,6 +361,8 @@ namespace SWD.TicketBooking.Service.Services
 
                         case SD.FilterOption.TIME_LATER:
                             filteredTripIds = tripsQuery.OrderByDescending(_ => _.StartTime).ToList();
+                            break;
+                        default:
                             break;
                     }
                     if (filteredTripIds != null && filteredTripIds.Count > 0)
