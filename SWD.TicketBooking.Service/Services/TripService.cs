@@ -334,6 +334,8 @@ namespace SWD.TicketBooking.Service.Services
                         case SD.FilterOption.TIME_LATER:
                             filteredTripIds = tripsQuery.OrderByDescending(_ => _.StartTime).ToList();
                             break;
+                        default:
+                            break;
                     }
                     if (filteredTripIds != null && filteredTripIds.Count > 0)
                     {
