@@ -37,8 +37,52 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpPost("managed-bookings/balance-payment")]
         public async Task<IActionResult> AddOrUpdateBookingBalancePayment(BookingModel bookingRequest)
         {
-            var rs = await _bookingService.AddOrUpdateBookingBalancePayment(bookingRequest);
-            return Ok(rs);
+            var (outcome, bookingID) = await _bookingService.AddOrUpdateBookingBalancePayment(bookingRequest);
+
+            if (outcome.Result != null)
+            {
+                var getEmailResult = await _bookingService.GetEmailBooking(bookingID);
+                if (!getEmailResult.IsSuccess)
+                {
+                    return BadRequest(new BalancePaymentResponse
+                    {
+                        IsSuccess = false,
+                        Message = "LỖI KHI LẤY EMAIL!"
+                    });
+                }
+
+                var mailUpdateData = new MailData()
+                {
+                    EmailToId = getEmailResult.Value,
+                    EmailToName = "TicketBookingWebSite",
+                    EmailBody = BookingSend((List<MailBookingModel>)outcome.Result),
+                    EmailSubject = "THÔNG TIN VÉ XE!"
+                };
+
+                var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
+                if (!rsUpdate)
+                {
+                    return BadRequest(new BalancePaymentResponse
+                    {
+                        IsSuccess = false,
+                        Message = "LỖI KHI GỬI MAIL!"
+                    });
+                }
+
+                return Ok(new BalancePaymentResponse
+                {
+                    IsSuccess = true,
+                    Message = "XÁC NHẬN THANH TOÁN THÀNH CÔNG VÀ ĐÃ GỬI THÔNG TIN VÉ XE ĐẾN EMAIL CỦA BẠN!"
+                });
+            }
+            else
+            {
+                return BadRequest(new BalancePaymentResponse
+                {
+                    IsSuccess = false,
+                    Message = "THANH TOÁN KHÔNG THÀNH CÔNG!"
+                });
+            }
         }
 
 

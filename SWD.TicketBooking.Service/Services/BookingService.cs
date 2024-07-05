@@ -192,144 +192,146 @@ namespace SWD.TicketBooking.Service.Services
             _unitOfWork.Complete();
             return result;
         }
-        public async Task<ActionOutcome> AddOrUpdateBookingBalancePayment(BookingModel bookingModel)
-        {
-            var result = new ActionOutcome();
-            bool isValid = true;
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            public async Task<(ActionOutcome, Guid bookingID)> AddOrUpdateBookingBalancePayment(BookingModel bookingModel)
             {
-                try
+                var result = new ActionOutcome();
+                bool isValid = true;
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    if (bookingModel.AddOrUpdateBookingModel == null || bookingModel.AddOrUpdateTicketModels == null)
+                    try
                     {
-                        throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
-                    }
-                    if (bookingModel.AddOrUpdateBookingModel.UserID == null
-                        || bookingModel.AddOrUpdateBookingModel.TripID == null
-                        || bookingModel.AddOrUpdateBookingModel.Quantity <= 0
-                        || bookingModel.AddOrUpdateBookingModel.TotalBill <= 0
-                        || bookingModel.AddOrUpdateBookingModel.FullName == null
-                        || bookingModel.AddOrUpdateBookingModel.PhoneNumber == null
-                        || bookingModel.AddOrUpdateBookingModel.Email == null)
-                    {
-                        throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
-                    }
-                    if (!FunctionCommon.IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !FunctionCommon.IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
-                    {
-                        throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG ĐÚNG VỚI QUY ĐỊNH!");
-                    }
-
-                    var totalQuantity = bookingModel.AddOrUpdateTicketModels
-                                                    .Select(_ => _.SeatCode)
-                                                    .Count();
-                    double totalPrice = 0;
-                    double totalBalance = 0;
-                    var newBooking = new Booking();
-                    foreach (var ticket in bookingModel.AddOrUpdateTicketModels)
-                    {
-                        totalPrice += ticket.Price;
-
-                        if (ticket.AddOrUpdateServiceModels != null && ticket.AddOrUpdateServiceModels.Any())
+                        if (bookingModel.AddOrUpdateBookingModel == null || bookingModel.AddOrUpdateTicketModels == null)
                         {
-                            foreach (var service in ticket.AddOrUpdateServiceModels)
-                            {
-                                totalPrice += service.Price * service.Quantity;
-                            }
+                            throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
                         }
-                    }
-                    if (bookingModel.AddOrUpdateBookingModel.Quantity != totalQuantity ||
-                      bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
-                    {
-                        throw new BadRequestException("SAI KHÁC VỀ SỐ LƯỢNG HOẶC TỔNG HÓA ĐƠN.");
-                    }
-                    if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
-                    { 
-                        totalBalance = await _unitOfWork.UserRepository
-                                                        .FindByCondition(_ => _.UserID == bookingModel.AddOrUpdateBookingModel.UserID)
-                                                        .Select(_ => _.Balance)
-                                                        .FirstOrDefaultAsync();
-                        if (totalBalance >= bookingModel.AddOrUpdateBookingModel.TotalBill)
+                        if (bookingModel.AddOrUpdateBookingModel.UserID == null
+                            || bookingModel.AddOrUpdateBookingModel.TripID == null
+                            || bookingModel.AddOrUpdateBookingModel.Quantity <= 0
+                            || bookingModel.AddOrUpdateBookingModel.TotalBill <= 0
+                            || bookingModel.AddOrUpdateBookingModel.FullName == null
+                            || bookingModel.AddOrUpdateBookingModel.PhoneNumber == null
+                            || bookingModel.AddOrUpdateBookingModel.Email == null)
                         {
-                            newBooking = new Booking
-                            {
-                                BookingID = Guid.NewGuid(),
-                                UserID = bookingModel.AddOrUpdateBookingModel.UserID,
-                                TripID = bookingModel.AddOrUpdateBookingModel.TripID,
-                                FullName = bookingModel.AddOrUpdateBookingModel.FullName,
-                                PhoneNumber = bookingModel.AddOrUpdateBookingModel.PhoneNumber,
-                                Email = bookingModel.AddOrUpdateBookingModel.Email,
-                                Quantity = bookingModel.AddOrUpdateBookingModel.Quantity,
-                                TotalBill = bookingModel.AddOrUpdateBookingModel.TotalBill,
-                                TotalVnpayPayment = 0,
-                                TotalBalancePayment = bookingModel.AddOrUpdateBookingModel.TotalBill,
-                                PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
-                            };
+                            throw new BadRequestException("THÔNG TIN TRONG ĐẶT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
                         }
-                        else throw new BadRequestException("SỐ DƯ KHÔNG ĐỦ ĐỂ THỰC HIỆN DỊCH VỤ NÀY!");
-                    }
-                    await _unitOfWork.BookingRepository.AddAsync(newBooking);
-                    foreach (var ticketDetailItem in bookingModel.AddOrUpdateTicketModels)
-                    {
+                        if (!FunctionCommon.IsValidEmail(bookingModel.AddOrUpdateBookingModel.Email) || !FunctionCommon.IsValidPhoneNumber(bookingModel.AddOrUpdateBookingModel.PhoneNumber))
                         {
-                            if (ticketDetailItem.TicketType_TripID == null
-                                || ticketDetailItem.Price <= 0
-                                || ticketDetailItem.SeatCode == null)
-                            {
-                                throw new BadRequestException("THÔNG TIN TRONG CHI TIẾT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
-                            }
-                            var newTicketDetail = new TicketDetail
-                            {
-                                TicketDetailID = Guid.NewGuid(),
-                                TicketType_TripID = ticketDetailItem.TicketType_TripID,
-                                BookingID = newBooking.BookingID,
-                                Price = ticketDetailItem.Price,
-                                SeatCode = ticketDetailItem.SeatCode,
-                                Status = SD.Booking_TicketStatus.NOTPAYING_TICKET
-                            };
-                            var ticketResult = await _unitOfWork.TicketDetailRepository.AddAsync(newTicketDetail);
+                            throw new BadRequestException("EMAIL HOẶC SỐ ĐIỆN THOẠI KHÔNG ĐÚNG VỚI QUY ĐỊNH!");
+                        }
 
-                            if (ticketDetailItem.AddOrUpdateServiceModels != null && ticketDetailItem.AddOrUpdateServiceModels.Any())
+                        var totalQuantity = bookingModel.AddOrUpdateTicketModels
+                                                        .Select(_ => _.SeatCode)
+                                                        .Count();
+                        double totalPrice = 0;
+                        double totalBalance = 0;
+                        var newBooking = new Booking();
+                        foreach (var ticket in bookingModel.AddOrUpdateTicketModels)
+                        {
+                            totalPrice += ticket.Price;
+
+                            if (ticket.AddOrUpdateServiceModels != null && ticket.AddOrUpdateServiceModels.Any())
                             {
-                                foreach (var ticketService in ticketDetailItem.AddOrUpdateServiceModels)
+                                foreach (var service in ticket.AddOrUpdateServiceModels)
                                 {
-                                    if (ticketService.StationID == null
-                                        || ticketService.ServiceID == null
-                                        || ticketService.Quantity <= 0
-                                        || ticketService.Price <= 0)
-                                    {
-                                        throw new BadRequestException("THÔNG TIN TRONG DỊCH VỤ KHÔNG ĐƯỢC BỎ TRỐNG!");
-                                    }
-                                    var newTicketService = new TicketDetail_Service
-                                    {
-                                        TicketDetail_ServiceID = Guid.NewGuid(),
-                                        TicketDetailID = ticketResult.TicketDetailID,
-                                        StationID = ticketService.StationID,
-                                        ServiceID = ticketService.ServiceID,
-                                        Quantity = ticketService.Quantity,
-                                        Price = ticketService.Price,
-                                        Status = SD.Booking_ServiceStatus.NOTPAYING_TICKETSERVICE
-                                    };
-                                    await _unitOfWork.TicketDetail_ServiceRepository.AddAsync(newTicketService);
+                                    totalPrice += service.Price * service.Quantity;
+                                }
+                            }
+                        }
+                        if (bookingModel.AddOrUpdateBookingModel.Quantity != totalQuantity ||
+                          bookingModel.AddOrUpdateBookingModel.TotalBill != totalPrice)
+                        {
+                            throw new BadRequestException("SAI KHÁC VỀ SỐ LƯỢNG HOẶC TỔNG HÓA ĐƠN.");
+                        }
+                        if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
+                        { 
+                            totalBalance = await _unitOfWork.UserRepository
+                                                            .FindByCondition(_ => _.UserID == bookingModel.AddOrUpdateBookingModel.UserID)
+                                                            .Select(_ => _.Balance)
+                                                            .FirstOrDefaultAsync();
+                            if (totalBalance >= bookingModel.AddOrUpdateBookingModel.TotalBill)
+                            {
+                                newBooking = new Booking
+                                {
+                                    BookingID = Guid.NewGuid(),
+                                    UserID = bookingModel.AddOrUpdateBookingModel.UserID,
+                                    TripID = bookingModel.AddOrUpdateBookingModel.TripID,
+                                    FullName = bookingModel.AddOrUpdateBookingModel.FullName,
+                                    PhoneNumber = bookingModel.AddOrUpdateBookingModel.PhoneNumber,
+                                    Email = bookingModel.AddOrUpdateBookingModel.Email,
+                                    Quantity = bookingModel.AddOrUpdateBookingModel.Quantity,
+                                    TotalBill = bookingModel.AddOrUpdateBookingModel.TotalBill,
+                                    TotalVnpayPayment = 0,
+                                    TotalBalancePayment = bookingModel.AddOrUpdateBookingModel.TotalBill,
+                                    PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
                                 };
                             }
-                            else
+                            else throw new BadRequestException("SỐ DƯ KHÔNG ĐỦ ĐỂ THỰC HIỆN DỊCH VỤ NÀY!");
+                        }
+                        await _unitOfWork.BookingRepository.AddAsync(newBooking);
+                        foreach (var ticketDetailItem in bookingModel.AddOrUpdateTicketModels)
+                        {
                             {
-                                isValid = false;
-                            }
-                        };
-                    }
-                    _unitOfWork.Complete();
-                    await UpdateStatusBooking(newBooking.BookingID);
-                    scope.Complete();
-                }
+                                if (ticketDetailItem.TicketType_TripID == null
+                                    || ticketDetailItem.Price <= 0
+                                    || ticketDetailItem.SeatCode == null)
+                                {
+                                    throw new BadRequestException("THÔNG TIN TRONG CHI TIẾT VÉ KHÔNG ĐƯỢC BỎ TRỐNG!");
+                                }
+                                var newTicketDetail = new TicketDetail
+                                {
+                                    TicketDetailID = Guid.NewGuid(),
+                                    TicketType_TripID = ticketDetailItem.TicketType_TripID,
+                                    BookingID = newBooking.BookingID,
+                                    Price = ticketDetailItem.Price,
+                                    SeatCode = ticketDetailItem.SeatCode,
+                                    Status = SD.Booking_TicketStatus.NOTPAYING_TICKET
+                                };
+                                var ticketResult = await _unitOfWork.TicketDetailRepository.AddAsync(newTicketDetail);
 
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message, ex);
+                                if (ticketDetailItem.AddOrUpdateServiceModels != null && ticketDetailItem.AddOrUpdateServiceModels.Any())
+                                {
+                                    foreach (var ticketService in ticketDetailItem.AddOrUpdateServiceModels)
+                                    {
+                                        if (ticketService.StationID == null
+                                            || ticketService.ServiceID == null
+                                            || ticketService.Quantity <= 0
+                                            || ticketService.Price <= 0)
+                                        {
+                                            throw new BadRequestException("THÔNG TIN TRONG DỊCH VỤ KHÔNG ĐƯỢC BỎ TRỐNG!");
+                                        }
+                                        var newTicketService = new TicketDetail_Service
+                                        {
+                                            TicketDetail_ServiceID = Guid.NewGuid(),
+                                            TicketDetailID = ticketResult.TicketDetailID,
+                                            StationID = ticketService.StationID,
+                                            ServiceID = ticketService.ServiceID,
+                                            Quantity = ticketService.Quantity,
+                                            Price = ticketService.Price,
+                                            Status = SD.Booking_ServiceStatus.NOTPAYING_TICKETSERVICE
+                                        };
+                                        await _unitOfWork.TicketDetail_ServiceRepository.AddAsync(newTicketService);
+                                    };
+                                }
+                                else
+                                {
+                                    isValid = false;
+                                }
+                            };
+                        }
+                        _unitOfWork.Complete();
+                        var rs = await UpdateStatusBooking(newBooking.BookingID);
+                        result.Result = rs;                  
+                        scope.Complete();
+                        return (result, newBooking.BookingID);
+                    }
+
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message, ex);
+                    }
                 }
+            
             }
-            return result;
-        }
         public async Task<List<SendMailBookingModel.MailBookingModel>> UpdateStatusBooking(Guid bookingID)
         {
             try
