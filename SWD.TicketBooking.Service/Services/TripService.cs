@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Common;
+using NuGet.Packaging;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
-using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
-using System.Drawing.Printing;
-using System.Net.Sockets;
+using System.Linq;
 
 namespace SWD.TicketBooking.Service.Services
 {
@@ -131,6 +129,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
         public async Task<List<string>> GetPictureOfTrip(Guid id)
         {
             try
@@ -247,27 +246,105 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<PagedResult<SearchTripModel>> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber, int pageSize)
+        public async Task<PagedResult<SearchTripModel>> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber, int pageSize, string[]? seatAvailability, string? sortOption, Guid[]? sortCompany)
         {
             try
             {
                 var startDate = startTime.Date;
-                var tripsQuery = _unitOfWork.TripRepository.GetAll()
+                var tripsQuery = await _unitOfWork.TripRepository.GetAll()
                                             .Include(_ => _.Route_Company.Route)
                                             .Where(_ => _.Route_Company.Route.FromCityID == fromCity
                                                      && _.Route_Company.Route.ToCityID == toCity
-                                                     && _.StartTime.Value.Date == startDate && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE));
+                                                     && _.StartTime.Value.Date == startDate && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)).ToListAsync();
+                var filteredTripIds = new List<Trip>();
+                if (sortCompany != null && sortCompany.Length > 0)
+                {
+                    foreach (var company in sortCompany)
+                    {
+                        var filteredTripIdsForCompany = tripsQuery.Where(_ => _.Route_Company.CompanyID == company);
+                        filteredTripIds.AddRange(filteredTripIdsForCompany);
+                    }
+                    if (filteredTripIds != null && filteredTripIds.Count > 0)
+                    {
+                        tripsQuery = filteredTripIds.ToList();
+                    }
+                    tripsQuery.ToList();
 
-                var totalTrips = await tripsQuery.CountAsync();
+                }
+                var seatFilteredTrips = new List<Trip>();
+                if (seatAvailability != null && seatAvailability.Length > 0)
+                {
+                    foreach (var seatType in seatAvailability)
+                    {
+                        switch (seatType.Trim().ToUpper())
+                        {
+                            case SD.FilterOption.SEAT_HEAD:
+                                var headTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_A);
+                                seatFilteredTrips.AddRange(headTripIds);
+                                break;
+
+                            case SD.FilterOption.SEAT_MIDDLE:
+                                var middleTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_B);
+                                seatFilteredTrips.AddRange(middleTripIds);
+                                break;
+
+                            case SD.FilterOption.SEAT_BACK:
+                                var backTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_C);
+                                seatFilteredTrips.AddRange(backTripIds);
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                    if (seatFilteredTrips != null && seatFilteredTrips.Count > 0)
+                    {
+                        tripsQuery = seatFilteredTrips.ToList();
+                    }
+                    tripsQuery.ToList();
+
+                }
+                if (sortOption != null && sortOption.Length > 0)
+                {
+                    switch (sortOption.Trim().ToUpper())
+                    {
+                        case SD.FilterOption.PRICE_ASC:
+                            filteredTripIds = await GetFilteredTripIdsByOption(tripsQuery, SD.FilterOption.PRICE_ASC);
+                            break;
+
+                        case SD.FilterOption.PRICE_DESC:
+                            filteredTripIds = await GetFilteredTripIdsByOption(tripsQuery, SD.FilterOption.PRICE_DESC);
+                            break;
+                        case SD.FilterOption.RATING_ASC:
+                            filteredTripIds = await GetFilteredTripIdsByOption(tripsQuery, SD.FilterOption.RATING_ASC);
+                            break;
+
+                        case SD.FilterOption.RATING_DESC:
+                            filteredTripIds = await GetFilteredTripIdsByOption(tripsQuery, SD.FilterOption.RATING_DESC);
+                            break;
+                        case SD.FilterOption.TIME_SOONER:
+                            filteredTripIds = tripsQuery.OrderBy(_ => _.StartTime).ToList();
+                            break;
+
+                        case SD.FilterOption.TIME_LATER:
+                            filteredTripIds = tripsQuery.OrderByDescending(_ => _.StartTime).ToList();
+                            break;
+                    }
+                    if (filteredTripIds != null && filteredTripIds.Count > 0)
+                    {
+                        tripsQuery = filteredTripIds.ToList();
+                    }
+                    tripsQuery.ToList();
+                }                       
+                var totalTrips = tripsQuery.Count();
                 if (totalTrips == 0)
                 {
                     throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
                 var totalPages = (int)Math.Ceiling((double)totalTrips / pageSize);
 
-                var trips = await tripsQuery.Skip((pageNumber - 1) * pageSize)
-                                            .Take(pageSize)
-                                            .ToListAsync();
+                var trips = tripsQuery.Skip((pageNumber - 1) * pageSize)
+                                            .Take(pageSize).ToList();
 
                 var searchTripModels = new List<SearchTripModel>();
 
@@ -337,6 +414,192 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        private async Task<List<Trip>> GetFilteredTripIdsBySeatCode(List<Trip> tripsQuery, string seatCode)
+        {
+            var filteredTripIds = new List<Trip>();
+
+            foreach (var trip in tripsQuery)
+            {
+                var checkTrip = await _unitOfWork.BookingRepository
+                                                 .FindByCondition(_ => _.TripID == trip.TripID)
+                                                 .AsNoTracking()
+                                                 .FirstOrDefaultAsync();
+
+                int checkQuantitySeat;
+                int checkQuantitySeatBooked = 0;
+                int checkQuantitySeatEmpty;
+
+                if (checkTrip != null)
+                {
+                    var seatBookings = await _unitOfWork.TicketDetailRepository.GetAll()
+                                                        .Where(_ => _.BookingID == checkTrip.BookingID
+                                                            && _.SeatCode.StartsWith(seatCode)
+                                                            && _.Status.Equals(SD.Booking_TicketStatus.UNUSED_TICKET))
+                                                        .AsNoTracking()
+                                                        .ToListAsync();
+
+                    checkQuantitySeatBooked = seatBookings.Count;
+                }
+
+                switch (seatCode)
+                {
+                    case "A":
+                        checkQuantitySeat = await _unitOfWork.TicketType_TripRepository
+                                                             .FindByCondition(_ => _.TripID == trip.TemplateID
+                                                                 && _.TicketType.Name.Equals("Hàng đầu"))
+                                                             .Select(_ => _.Quantity)
+                                                             .FirstOrDefaultAsync() ?? 0;
+                        break;
+
+                    case "B":
+                        checkQuantitySeat = await _unitOfWork.TicketType_TripRepository
+                                                             .FindByCondition(_ => _.TripID == trip.TemplateID
+                                                                 && _.TicketType.Name.Equals("Hàng giữa"))
+                                                             .Select(_ => _.Quantity)
+                                                             .FirstOrDefaultAsync() ?? 0;
+                        break;
+
+                    case "C":
+                        checkQuantitySeat = await _unitOfWork.TicketType_TripRepository
+                                                             .FindByCondition(_ => _.TripID == trip.TemplateID
+                                                                 && _.TicketType.Name.Equals("Hàng sau"))
+                                                             .Select(_ => _.Quantity)
+                                                             .FirstOrDefaultAsync() ?? 0;
+                        break;
+
+                    default:
+                        checkQuantitySeat = 0;
+                        break;
+                }
+
+                checkQuantitySeatEmpty = checkQuantitySeat - checkQuantitySeatBooked;
+
+                if (checkQuantitySeatEmpty > 0)
+                {
+                    filteredTripIds.Add(trip);
+                }
+            }
+
+            return filteredTripIds;
+        }
+
+        private async Task<List<Trip>> GetFilteredTripIdsByOption(List<Trip> tripsQuery, string optionFilter)
+        {
+            try
+            {
+                var filteredTripIds = new List<Trip>();
+
+                switch (optionFilter)
+                {
+                    case SD.FilterOption.PRICE_ASC:
+                        var ticketTypesAsc = await _unitOfWork.TicketType_TripRepository
+                                                              .GetAll()
+                                                              .Include(_ => _.Trip)
+                                                              .Include(_ => _.TicketType)
+                                                              .ToListAsync();
+
+                        var ascPriceTripIds = tripsQuery.Select(trip => new
+                                                        {
+                                                            Trip = trip,
+                                                            MinPrice = ticketTypesAsc
+                                                                       .Where(_ => _.TripID == trip.TemplateID)
+                                                                       .Min(_ => (decimal?)_.Price) ?? 0
+                                                        })
+                                                        .OrderBy(_ => _.MinPrice)
+                                                        .Select(_ => _.Trip)
+                                                        .ToList();
+
+                        filteredTripIds.AddRange(ascPriceTripIds);
+                        break;
+
+                    case SD.FilterOption.PRICE_DESC:
+
+                        var ticketTypesDesc = await _unitOfWork.TicketType_TripRepository
+                                                               .GetAll()
+                                                               .Include(_ => _.Trip)
+                                                               .Include(_ => _.TicketType)
+                                                               .ToListAsync();
+
+                        var descPriceTripIds = tripsQuery.Select(trip => new
+                                                         {
+                                                             Trip = trip,
+                                                             MinPrice = ticketTypesDesc
+                                                                        .Where(_ => _.TripID == trip.TemplateID)
+                                                                        .Min(_ => (decimal?)_.Price) ?? 0
+                                                         })
+                                                         .OrderByDescending(_ => _.MinPrice)
+                                                         .Select(_ => _.Trip)
+                                                         .ToList();
+
+                        filteredTripIds.AddRange(descPriceTripIds);
+                        break;
+                    case SD.FilterOption.RATING_ASC:
+                        var ascRatingTripIds = await _unitOfWork.FeedbackRepository.GetAll()
+                                                                .GroupBy(_ => _.TemplateID)
+                                                                .Select(_ => new
+                                                                {
+                                                                    TemplateID = _.Key,
+                                                                    TotalRating = _.Sum(_ => _.Rating)
+                                                                })
+                                                                .ToListAsync();
+
+                        var allTemplateRatingAsc = tripsQuery.Select(_ => new
+                                                             {
+                                                                 TemplateID = _.TemplateID,
+                                                                 TotalRating = ascRatingTripIds
+                                                                               .FirstOrDefault(r => r.TemplateID == _.TemplateID)?.TotalRating ?? 0
+                                                             })
+                                                             .OrderBy(_ => _.TotalRating)
+                                                             .Select(_ => _.TemplateID)
+                                                             .ToList();
+
+                        filteredTripIds = tripsQuery
+                                          .Where(_ => allTemplateRatingAsc.Contains(_.TemplateID))
+                                          .OrderBy(_ => allTemplateRatingAsc.IndexOf(_.TemplateID))
+                                          .Select(_ => _)
+                                          .ToList();
+                        break;
+
+                    case SD.FilterOption.RATING_DESC:
+                        var descRatingTripIds = await _unitOfWork.FeedbackRepository.GetAll()
+                                                                .GroupBy(_ => _.TemplateID)
+                                                                .Select(_ => new
+                                                                {
+                                                                    TemplateID = _.Key,
+                                                                    TotalRating = _.Sum(_ => _.Rating)
+                                                                })
+                                                                .ToListAsync();
+
+                        var allTemplateRatingDesc = tripsQuery.Select(_ => new
+                                                              {
+                                                                  TemplateID = _.TemplateID,
+                                                                  TotalRating = descRatingTripIds
+                                                                                .FirstOrDefault(r => r.TemplateID == _.TemplateID)?.TotalRating ?? 0
+                                                              })
+                                                              .OrderByDescending(_ => _.TotalRating)
+                                                              .Select(_ => _.TemplateID)
+                                                              .ToList();
+
+                        filteredTripIds = tripsQuery
+                                          .Where(_ => allTemplateRatingDesc.Contains(_.TemplateID))
+                                          .OrderBy(_ => allTemplateRatingDesc.IndexOf(_.TemplateID))
+                                          .Select(_ => _)
+                                          .ToList();
+                        break;
+                    default:
+                        filteredTripIds = tripsQuery;
+                        break;
+                }
+                return filteredTripIds;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+    
 
         public async Task<bool> CreateTrip(CreateTripModel createTrip)
         {

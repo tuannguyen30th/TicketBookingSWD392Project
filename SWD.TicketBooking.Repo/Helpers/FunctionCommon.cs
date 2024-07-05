@@ -24,7 +24,7 @@ namespace SWD.TicketBooking.Repo.Helpers
 
         public static bool IsValidPhoneNumber(string phoneNumber)
         {
-            return Regex.IsMatch(phoneNumber, "^0\\d{9,11}$");
+            return Regex.IsMatch(phoneNumber, "^0\\d{9}$");
         }
     }
 }

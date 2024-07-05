@@ -22,6 +22,7 @@ using SWD.TicketBooking.Service.Utilities;
 using SWD.TicketBooking.Repo.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.SeedData;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SWD.TicketBooking.Booking.API;
 
@@ -94,6 +95,7 @@ public class AuthController : ControllerBase
         try
         {
             var existingUser = await _userService.GetUserByAccessToken(accessToken);
+            SecurityToken newToken = null;
             if (existingUser != null)
             {
                 if (!existingUser.IsTokenExpired())
@@ -105,8 +107,8 @@ public class AuthController : ControllerBase
                         Name = existingUser.FullName,
                         Picture = existingUser.Avatar
                     };
-
-                    return Ok(new { success = true, userInfo = userResult });
+                     newToken = _identityService.CreateJwtToken(existingUser);
+                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(newToken) });
                 }
                 else
                 {
@@ -144,15 +146,16 @@ public class AuthController : ControllerBase
             };
 
             existingUser = await _userService.GetUserByEmail2(userResultNew.Email);
+            var newUser = new User();
+            var handler = new JwtSecurityTokenHandler();
             if (existingUser != null)
             {
-                existingUser.AccessToken = accessToken;
                 existingUser.TokenExpiration = DateTime.UtcNow.AddHours(1);
                 _unitOfWork.UserRepository.Update(existingUser);
             }
             else
             {
-                var newUser = new User
+                newUser = new User
                 {
                     UserID = Guid.NewGuid(),
                     Email = userResultNew.Email,
@@ -163,7 +166,6 @@ public class AuthController : ControllerBase
                     FullName = userResultNew.Name,
                     IsVerified = true,
                     Status = SD.GeneralStatus.ACTIVE,
-                    AccessToken = accessToken,
                     TokenExpiration = DateTime.UtcNow.AddHours(1),
                     RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387")
                 };
@@ -171,8 +173,9 @@ public class AuthController : ControllerBase
                 await _unitOfWork.UserRepository.AddAsync(newUser);
             }
             _unitOfWork.Complete();
+             newToken = _identityService.CreateJwtToken(existingUser ?? newUser);
 
-            return Ok(new { success = true, tokenInfo = tokenInfo, userInfo = userResultNew });
+            return Ok(new { AccessToken = new JwtSecurityTokenHandler().WriteToken(newToken) });
         }
         catch (Exception ex)
         {

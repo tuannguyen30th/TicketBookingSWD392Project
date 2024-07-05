@@ -269,7 +269,7 @@ public class IdentityService
         }
     }
 
-    private SecurityToken CreateJwtToken(User user)
+    public SecurityToken CreateJwtToken(User user)
     {
         try
         {

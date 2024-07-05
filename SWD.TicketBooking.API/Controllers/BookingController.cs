@@ -40,11 +40,11 @@ namespace SWD.TicketBooking.API.Controllers
 
 
         [HttpGet("managed-bookings/vnpay-ipn")]
-        public async Task<IActionResult> VNPayIPN(Guid bookingId)
+        public async Task<IActionResult> VNPayIPN()
         {
             try
             {
-               /* var response = new VNPayModel
+                var response = new VNPayModel
                 {
                     PaymentMethod = Request.Query["vnp_BankCode"],
                     BookingDescription = Request.Query["vnp_OrderInfo"],
@@ -59,10 +59,11 @@ namespace SWD.TicketBooking.API.Controllers
                 };
 
                 if (response.VnPayResponseCode == "00")
-                {*/
-                    /*Guid bookingId*/;
-                 /*   if (Guid.TryParse(response.BookingId, out bookingId))
-                    {*/
+                {
+                    Guid bookingId;
+                    ;
+                    if (Guid.TryParse(response.BookingId, out bookingId))
+                    {
                         var result = await _bookingService.UpdateStatusBooking(bookingId);
                         var getEmail = await _bookingService.GetEmailBooking(bookingId);
                         var mailUpdateData = new MailData()
@@ -70,7 +71,7 @@ namespace SWD.TicketBooking.API.Controllers
                             EmailToId = getEmail.Value,
                             EmailToName = "TicketBookingWebSite",
                             EmailBody = BookingSend(result),
-                            EmailSubject = "Ticket Information!"
+                            EmailSubject = "THÔNG TIN VÉ XE!"
                         };
 
                         var rsUpdate = await _emailService.SendEmailAsync(mailUpdateData);
@@ -78,23 +79,23 @@ namespace SWD.TicketBooking.API.Controllers
                         {
                             return BadRequest("LỖI KHI GỬI MAIL!");
                         }
-                /*    }
+                    }
                     else
                     {
-                        return BadRequest("Invalid booking ID format.");
-                    }*/
+                        return BadRequest("LỖI!");
+                    }
                     return Ok(new
                     {
                         RspCode = "00",
                         Message = "XÁC NHẬN THÀNH CÔNG"
                     });
-              /*  }
+                }
 
                 return BadRequest(new
                 {
                     RspCode = response.VnPayResponseCode,
-                    Message = "Fail!"
-                });*/
+                    Message = "LỖI!"
+                });
             }
             catch (Exception ex)
             {
