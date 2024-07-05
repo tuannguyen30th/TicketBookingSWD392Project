@@ -24,6 +24,8 @@ namespace SWD.TicketBooking.API.ResponseModels
 
         [JsonPropertyName("ToCity")]
         public string? ToCity { get; set; }
+        [JsonPropertyName("StartTime")]
+        public DateTime? StartTime { get; set; }
 
         [JsonPropertyName("PriceFrom")]
         public double PriceFrom { get; set; }

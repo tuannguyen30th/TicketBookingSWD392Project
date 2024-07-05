@@ -44,13 +44,13 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("managed-ticket-details/customers/{customerID}")]
+        [HttpGet("managed-ticket-details/customers/{customerID}/page-number/{pageNumber}/page-size/{pageSize}")]
         //[Cache(1200)]
-        public async Task<IActionResult> GetTicketDetailByUser([FromRoute] Guid customerID)
+        public async Task<IActionResult> GetTicketDetailByUser([FromRoute] Guid customerID, [FromRoute] int pageSize = 10, [FromRoute] int pageNumber = 1)
         {
             try
             {
-                var rs = _mapper.Map<List<GetTicketDetailByUserResponse>>(await _ticketDetailService.GetTicketDetailByUser(customerID));
+                var rs = _mapper.Map<PagedResultResponse<GetTicketDetailByUserResponse>>(await _ticketDetailService.GetTicketDetailByUser(customerID, pageSize, pageNumber));
                 return Ok(rs);
             }
             catch (Exception ex)

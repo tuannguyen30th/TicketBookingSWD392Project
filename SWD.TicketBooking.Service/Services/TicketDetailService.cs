@@ -101,7 +101,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid customerID)
+        public async Task<PagedResult<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid customerID, int pageSize, int pageNumber)
         {
             try
             {
@@ -111,6 +111,7 @@ namespace SWD.TicketBooking.Service.Services
                                                 .Include(_ => _.Trip.Route_Company.Route.ToCity)
                                                 .Include(_ => _.Trip.Route_Company.Route)
                                                 .ToListAsync();
+
                 var rsList = new List<GetTicketDetailByUserModel>();
 
                 foreach (var booking in bookings)
@@ -119,18 +120,22 @@ namespace SWD.TicketBooking.Service.Services
                                                          .GetAll()
                                                          .Where(_ => _.BookingID == booking.BookingID)
                                                          .ToListAsync();
+
                     var company = await _unitOfWork.Route_CompanyRepository
-                               .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
-                               .Include(_ => _.Company)
-                               .FirstOrDefaultAsync();
+                                   .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
+                                   .Include(_ => _.Company)
+                                   .FirstOrDefaultAsync();
+
                     var feedback = await _unitOfWork.FeedbackRepository
                                                    .FindByCondition(_ => _.UserID.Equals(customerID) && _.TripID.Equals(booking.Trip.TripID))
                                                    .FirstOrDefaultAsync();
+
                     foreach (var ticketDetail in ticketDetails)
                     {
                         var ticketDetailServices = await _unitOfWork.TicketDetail_ServiceRepository
                                                                     .FindByCondition(_ => _.TicketDetailID == ticketDetail.TicketDetailID)
                                                                     .ToListAsync();
+
                         double servicePrice = 0;
 
                         foreach (var ticketDetail_Service in ticketDetailServices)
@@ -162,14 +167,23 @@ namespace SWD.TicketBooking.Service.Services
                     }
                 }
 
-                return rsList;
+                var totalPage = (int)Math.Ceiling((double)rsList.Count / pageSize);
+                var pagedResult = rsList.Skip((pageNumber - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .ToList();
+
+                return new PagedResult<GetTicketDetailByUserModel>
+                {
+                    TotalCount = totalPage,
+                    Items = pagedResult
+                };
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
             }
         }
-     
+
         public async Task<ActionOutcome> CancelTicket(Guid ticketDetailID)
         {
             try
