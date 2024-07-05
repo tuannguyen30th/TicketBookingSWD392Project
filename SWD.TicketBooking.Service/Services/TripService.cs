@@ -187,7 +187,7 @@ namespace SWD.TicketBooking.Service.Services
                                                             .GetAll()
                                                             .Include(t => t.Route_Company.Route.FromCity)
                                                             .Include(t => t.Route_Company.Route.ToCity)
-                                                            .Where(t => t.Status.Trim() == SD.GeneralStatus.ACTIVE && t.StartTime > DateTime.UtcNow)
+                                                            .Where(t => t.Status.Trim() == SD.GeneralStatus.ACTIVE && t.StartTime.Value.Day == DateTime.UtcNow.Day)
                                                             .ToListAsync();
 
                 var topTrips = await _unitOfWork.BookingRepository
@@ -225,7 +225,6 @@ namespace SWD.TicketBooking.Service.Services
                         FromCity = t.Route_Company.Route.FromCity.Name,
                         ToCityID = t.Route_Company.Route.ToCity.CityID,
                         ToCity = t.Route_Company.Route.ToCity.Name,
-                        StartTime = (DateTime)t.StartTime,
                         ImageUrl = listImg.ToList(),
                         PriceFrom = (double)minPriceByTrip.GetValueOrDefault(t.TripID, 0),
                     };
