@@ -267,13 +267,21 @@ namespace SWD.TicketBooking.Service.Services
                     foreach (var company in sortCompany)
                     {
                         var filteredTripIdsForCompany = tripsQuery.Where(_ => _.Route_Company.CompanyID == company);
+                        if (!filteredTripIdsForCompany.Any())
+                        {
+                            tripsQuery = null;
+                            break;
+                        }
                         filteredTripIds.AddRange(filteredTripIdsForCompany);
                     }
                     if (filteredTripIds != null && filteredTripIds.Count > 0)
                     {
                         tripsQuery = filteredTripIds.ToList();
                     }
-                    tripsQuery.ToList();
+                    else
+                    {
+                        tripsQuery = null;
+                    }
 
                 }
                 var seatFilteredTrips = new List<Trip>();
@@ -285,16 +293,31 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             case SD.FilterOption.SEAT_HEAD:
                                 var headTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_A);
+                                if (!headTripIds.Any())
+                                {
+                                    tripsQuery = null;
+                                    break;
+                                }
                                 seatFilteredTrips.AddRange(headTripIds);
                                 break;
 
                             case SD.FilterOption.SEAT_MIDDLE:
                                 var middleTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_B);
+                                if (!middleTripIds.Any())
+                                {
+                                    tripsQuery = null;
+                                    break;
+                                }
                                 seatFilteredTrips.AddRange(middleTripIds);
                                 break;
 
                             case SD.FilterOption.SEAT_BACK:
                                 var backTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_C);
+                                if (!backTripIds.Any())
+                                {
+                                    tripsQuery = null;
+                                    break;
+                                }
                                 seatFilteredTrips.AddRange(backTripIds);
                                 break;
 
@@ -306,7 +329,11 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         tripsQuery = seatFilteredTrips.ToList();
                     }
-                    tripsQuery.ToList();
+                    else
+                    {
+                        tripsQuery = null;
+
+                    }
 
                 }
                 if (sortOption != null && sortOption.Length > 0)
