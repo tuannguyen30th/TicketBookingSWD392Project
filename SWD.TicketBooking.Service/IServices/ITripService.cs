@@ -1,4 +1,5 @@
-﻿using SWD.TicketBooking.Repo.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Service.Dtos;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace SWD.TicketBooking.Service.IServices
     {
         Task<List<string>> GetPictureOfTrip(Guid id);
         Task<List<PopularTripModel>> GetPopularTrips();
-        Task<PagedResult<SearchTripModel>> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber, int pageSize);
+        Task<PagedResult<SearchTripModel>> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber, int pageSize, string[]? seatAvailability, string? sortOption, Guid[]? sortCompany);
         Task<bool> CreateTrip(CreateTripModel createTrip);
         Task<bool> ChangeStatusTrip(Guid tripId);
         Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(Guid tripID);

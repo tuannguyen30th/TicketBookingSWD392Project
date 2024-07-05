@@ -17,9 +17,9 @@ namespace SWD.TicketBooking.Service.Dtos
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public Guid? TemplateID { get; set; }
-        public List<IFormFile>? ImageUrls { get; set; } = new List<IFormFile>();
-        public List<TicketType_TripModel>? TicketType_TripModels { get; set; } = new List<TicketType_TripModel>();
-        public List<Trip_UtilityModel>? Trip_UtilityModels { get; set; } = new List<Trip_UtilityModel>();
+        public List<IFormFile> ImageUrls { get; set; } = new List<IFormFile>();
+        public List<TicketType_TripModel> TicketType_TripModels { get; set; } = new List<TicketType_TripModel>();
+        public List<Trip_UtilityModel> Trip_UtilityModels { get; set; } = new List<Trip_UtilityModel>();
 
         public class TicketType_TripModel
         {

@@ -57,10 +57,26 @@ namespace SWD.TicketBooking.API.Controllers
         }
         [HttpGet("managed-trips/from-city/{fromCity}/to-city/{toCity}/start-time/{startTime}/page-number/{pageNumber}/page-size/{pageSize}")]
         //[Cache(1200)]
-        public async Task<IActionResult> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> SearchTrip(
+             [FromRoute] Guid fromCity,
+             [FromRoute] Guid toCity,
+             [FromRoute] DateTime startTime,
+             [FromRoute] int pageNumber = 1,
+             [FromRoute] int pageSize = 10,
+             [FromQuery] string[]? seatAvailability = null,
+             [FromQuery] string? sortOption = null,
+             [FromQuery] Guid[]? sortCompany = null)
         {
-         
-            var dataFromService = await _tripService.SearchTrip(fromCity, toCity, startTime, pageNumber, pageSize);
+
+            var dataFromService = await _tripService.SearchTrip(
+                                                     fromCity,
+                                                     toCity,
+                                                     startTime,
+                                                     pageNumber,
+                                                     pageSize,
+                                                     seatAvailability,
+                                                     sortOption,
+                                                     sortCompany);
             var response = _mapper.Map<PagedResultResponse<SearchTripResponse>>(dataFromService);
             return Ok(response);
         }

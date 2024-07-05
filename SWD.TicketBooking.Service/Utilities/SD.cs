@@ -20,8 +20,6 @@
         }
         public class BookingStatus
         {
-           /* public static string PM_VNPAY = "TIỀN MẶT";
-            public static string PM_BALANCE = "SỐ DƯ";*/
             public static string PAYING_BOOKING = "ĐÃ THANH TOÁN";
             public static string NOTPAYING_BOOKING = "CHƯA THANH TOÁN";
             public static string CANCEL_BOOKING = "ĐÃ HỦY";
@@ -36,6 +34,24 @@
         {
             public static string ACTIVE = "HOẠT ĐỘNG";
             public static string INACTIVE = "KHÔNG HOẠT ĐỘNG";
+        }
+        public class FilterOption
+        {
+            public const string SEAT_A = "A";
+            public const string SEAT_B = "B";
+            public const string SEAT_C = "C";
+            public const string SEAT_HEAD = "HEAD";
+            public const string SEAT_MIDDLE = "MIDDLE";
+            public const string SEAT_BACK = "BACK";
+            public const string SEAT_HEAD_VN = "";
+            public const string SEAT_MIDDLE_VN = "BACK";
+            public const string SEAT_BACK_VN = "BACK";
+            public const string PRICE_ASC = "PRICE_ASC";
+            public const string PRICE_DESC = "PRICE_DESC";
+            public const string RATING_ASC = "RATING_ASC";
+            public const string RATING_DESC = "RATING_DESC";
+            public const string TIME_SOONER = "TIME_SOONER";
+            public const string TIME_LATER = "TIME_LATER";
         }
         public class Notification
         {

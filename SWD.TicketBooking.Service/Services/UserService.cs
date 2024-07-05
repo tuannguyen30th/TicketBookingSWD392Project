@@ -268,7 +268,7 @@ namespace SWD.TicketBooking.Service.Services
                     //existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);
                     existedUser.FullName = updateUser.FullName;
                     existedUser.Address = updateUser.Address;
-                    if (updateUser.PhoneNumber.Length == 10)
+                    if (!updateUser.PhoneNumber.IsNullOrEmpty() && FunctionCommon.IsValidPhoneNumber(updateUser.PhoneNumber))
                     {
                         existedUser.PhoneNumber = updateUser.PhoneNumber;
                     }
