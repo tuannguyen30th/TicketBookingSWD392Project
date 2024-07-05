@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Repo.Repositories
 {
-    public class Station_RouteRepository : GenericRepository<Station_Route, Guid>, IStation_RouteRepository
+    public class Station_CompanyRepository : GenericRepository<Station_Company, Guid>, IStation_CompanyRepository
     {
-        public Station_RouteRepository(TicketBookingDbContext context) : base(context) { }
+        public Station_CompanyRepository(TicketBookingDbContext context) : base(context) { }
     }
 }

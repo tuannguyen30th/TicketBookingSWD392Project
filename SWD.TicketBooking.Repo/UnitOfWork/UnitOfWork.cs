@@ -22,7 +22,8 @@ namespace SWD.TicketBooking.Repo.UnitOfWork
         public IRouteRepository RouteRepository { get; }
         public IServiceRepository ServiceRepository { get; }
         public IServiceTypeRepository ServiceTypeRepository { get; }
-        public IStation_RouteRepository Station_RouteRepository { get; }
+        public IStation_CompanyRepository Station_CompanyRepository { get; }
+        public IStationCompany_RouteRepository StationCompany_RouteRepository { get; }
         public IStation_ServiceRepository Station_ServiceRepository { get; }
         public IStationRepository StationRepository { get; }
         public ITicketDetail_ServiceRepository TicketDetail_ServiceRepository { get; }
@@ -46,7 +47,8 @@ namespace SWD.TicketBooking.Repo.UnitOfWork
             IRouteRepository routeRepository,
             IServiceRepository serviceRepository,
             IServiceTypeRepository serviceTypeRepository,
-            IStation_RouteRepository station_RouteRepository,
+            IStation_CompanyRepository station_CompanyRepository,
+            IStationCompany_RouteRepository stationCompany_RouteRepository,
             IStation_ServiceRepository station_ServiceRepository,
             IStationRepository stationRepository,
             ITicketDetail_ServiceRepository ticketDetail_ServiceRepository,
@@ -70,7 +72,8 @@ namespace SWD.TicketBooking.Repo.UnitOfWork
             RouteRepository = routeRepository;
             ServiceRepository = serviceRepository;
             ServiceTypeRepository = serviceTypeRepository;
-            Station_RouteRepository = station_RouteRepository;
+            Station_CompanyRepository = station_CompanyRepository;
+            StationCompany_RouteRepository = stationCompany_RouteRepository;
             Station_ServiceRepository = station_ServiceRepository;
             StationRepository = stationRepository;
             TicketDetail_ServiceRepository = ticketDetail_ServiceRepository;

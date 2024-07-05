@@ -101,21 +101,27 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<List<StationFromRouteModel>> GetStationsFromRoute(Guid routeID)
+        public async Task<List<StationFromRouteModel>> GetStationsFromTrip(Guid routeID, Guid companyID)
         {
             try
             {
-                var stations = await _unitOfWork.Station_RouteRepository
-                                                .FindByCondition(_ => _.RouteID == routeID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                
+                var stationsByRoute = await _unitOfWork.StationCompany_RouteRepository
+                                                 .GetAll()
+                                                .Where(_ => _.RouteID == routeID && _.Station_Company.CompanyID == companyID)
+                                                 .Select(_ => _.Station_CompanyID)
+                                                .ToListAsync();
+                var stationsByCompany = await _unitOfWork.Station_CompanyRepository
+                                                .FindByCondition(_ => stationsByRoute.Contains(_.Station_CompanyID) && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                 .Include(_ => _.Station)
                                                 .Select(_ => new StationFromRouteModel
                                                 {
+                                                    Name = _.Station.Name,
                                                     StationID = (Guid)_.StationID,
-                                                    Name = _.Station.Name
                                                 })
                                                 .ToListAsync();
 
-                return stations;
+                return stationsByCompany;
 
             }
             catch (Exception ex)
@@ -150,7 +156,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<string> CreateStation(CreateStationModel stationModel)
+       /* public async Task<string> CreateStation(CreateStationModel stationModel)
         {
             try
             {
@@ -177,7 +183,7 @@ namespace SWD.TicketBooking.Service.Services
                                                           .GetAll()
                                                           .Where(r => r.RouteID.Equals(stationModel.RouteId) && r.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                           .FirstOrDefaultAsync();
-                    var station_route = new Station_Route
+                    var station_route = new StationCompany_Route
                     {
                         Station_RouteID = new Guid(),
                         RouteID = checkout_Route.RouteID,
@@ -195,7 +201,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message,ex);
             }
-        }
+        }*/
 
         public async Task<bool> CreateStationWithService(CreateStationWithServiceModel reqModel)
         {
@@ -288,7 +294,7 @@ namespace SWD.TicketBooking.Service.Services
         }
 
 
-        public async Task<List<StationFromRouteModel>> GetAllStationInRoute(Guid id)
+     /*   public async Task<List<StationFromRouteModel>> GetAllStationInRoute(Guid id)
         {
             try
             {
@@ -313,7 +319,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message, ex);
             }
-        }
+        }*/
 
     }
 }

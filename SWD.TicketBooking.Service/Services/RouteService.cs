@@ -64,7 +64,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        public async Task<int> CreateRoute(CreateRouteModel model)
+      /*  public async Task<int> CreateRoute(CreateRouteModel model)
         {
             try
             {
@@ -106,10 +106,10 @@ namespace SWD.TicketBooking.Service.Services
                     throw new BadRequestException("TUYẾN ĐƯỜNG KHÔNG KHẢ DỤNG!");
                 }
 
-                var checkRouteStationExisted = new Station_Route();
+                var checkRouteStationExisted = new Station_Company();
                 foreach (var station in model.StationInRoutes)
                 {
-                    checkRouteStationExisted = await _unitOfWork.Station_RouteRepository
+                    checkRouteStationExisted = await _unitOfWork.Station_CompanyRepository
                                                               .GetAll()
                                                               .Where(_ => _.RouteID.Equals(checkRouteExisted.RouteID) && _.StationID.Equals(station.StationID)) 
                                                               .FirstOrDefaultAsync();
@@ -238,7 +238,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 throw new Exception(ex.Message, ex);
             }
-        }
+        }*/
 
         public async Task<int> ChangeStatus(Guid routeId, string status)
         {

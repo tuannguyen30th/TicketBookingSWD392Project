@@ -16,10 +16,11 @@ namespace SWD.TicketBooking.API.Installer
             services.AddTransient<IFeedbackRepository, FeedbackRepository>();
             services.AddTransient<IFeedback_ImageRepository, Feedback_ImageRepository>();
             services.AddTransient<IRoute_CompanyRepository, Route_CompanyRepository>();
+            services.AddTransient<IStationCompany_RouteRepository, StationCompany_RouteRepository>();
             services.AddTransient<IRouteRepository, RouteRepository>();
             services.AddTransient<IServiceRepository, ServiceRepository>();
             services.AddTransient<IServiceTypeRepository, ServiceTypeRepository>();
-            services.AddTransient<IStation_RouteRepository, Station_RouteRepository>();
+            services.AddTransient<IStation_CompanyRepository, Station_CompanyRepository>();
             services.AddTransient<IStation_ServiceRepository, Station_ServiceRepository>();
             services.AddTransient<IStationRepository, StationRepository>();
             services.AddTransient<ITicketDetailRepository, TicketDetailRepository>();
