@@ -106,21 +106,26 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var rs = new ActionOutcome();
-                var bookingFromTrip = await _unitOfWork.BookingRepository.FindByCondition(_ => _.TripID == tripID).FirstOrDefaultAsync();
+                var bookingFromTrip = await _unitOfWork.BookingRepository
+                                                       .FindByCondition(_ => _.TripID == tripID)
+                                                       .Select(_ => _.BookingID)
+                                                       .ToListAsync();
                 if (bookingFromTrip == null)
                 {
                     throw new NotFoundException("KHÔNG CÓ HÓA ĐƠN NÀO CHO CHUYẾN ĐI NÀY!");
                 }
 
                 var ticketFromTrip = await _unitOfWork.TicketDetailRepository.GetAll()
-                                                   .Where(_ => _.BookingID == bookingFromTrip.BookingID && _.Status != SD.Booking_TicketStatus.CANCEL_TICKET)
+                                                   .Where(_ => bookingFromTrip.Contains((Guid)_.BookingID)
+                                                               && _.Status != SD.Booking_TicketStatus.CANCEL_TICKET
+                                                               && _.Status != SD.Booking_TicketStatus.NOTPAYING_TICKET)
                                                    .ToListAsync();
                 rs.Result = ticketFromTrip.Select(_ => new List<string>
-                                          {
-                                              _.TicketDetailID.ToString(),
-                                              _.SeatCode,
-                                              _.Status
-                                          }).ToList();
+                                   {
+                                       _.TicketDetailID.ToString(),
+                                       _.SeatCode,
+                                       _.Status
+                                   }).ToList();
 
                 return rs;
             }
