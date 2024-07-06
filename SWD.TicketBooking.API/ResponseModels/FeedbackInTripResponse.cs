@@ -11,6 +11,10 @@ namespace SWD.TicketBooking.API.ResponseModels
 
         [JsonPropertyName("TotalRating")]
         public double TotalRating { get; set; }
+        [JsonPropertyName("TotalPage")]
+
+        public int TotalPages { get; set; }
+
 
     }
 }

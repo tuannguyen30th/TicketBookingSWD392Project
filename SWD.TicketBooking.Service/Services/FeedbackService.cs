@@ -110,9 +110,15 @@ namespace SWD.TicketBooking.Service.Services
                     var feedback = await _unitOfWork.FeedbackRepository
                                                     .FindByCondition(x => x.TemplateID == tripID)
                                                     .ToListAsync();
-                    var feedbacks = new List<Feedback>();
+
+                    int totalFeedbackCount;
+                    List<Feedback> feedbacks;
+
                     if (filter == 0)
                     {
+                        totalFeedbackCount = await _unitOfWork.FeedbackRepository
+                                                              .FindByCondition(x => x.TemplateID == tripID)
+                                                              .CountAsync();
                         feedbacks = await _unitOfWork.FeedbackRepository
                                                      .FindByCondition(x => x.TemplateID == tripID)
                                                      .Skip((pageNumber - 1) * pageSize)
@@ -121,12 +127,17 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     else
                     {
+                        totalFeedbackCount = await _unitOfWork.FeedbackRepository
+                                                              .FindByCondition(x => x.TemplateID == tripID && (x.Rating == filter))
+                                                              .CountAsync();
                         feedbacks = await _unitOfWork.FeedbackRepository
                                                      .FindByCondition(x => x.TemplateID == tripID && (x.Rating == filter))
                                                      .Skip((pageNumber - 1) * pageSize)
                                                      .Take(pageSize)
                                                      .ToListAsync();
                     }
+
+                    var totalPages = (int)Math.Ceiling((double)totalFeedbackCount / pageSize);
 
                     var rs = new List<FeedbackModel>();
 
@@ -153,11 +164,13 @@ namespace SWD.TicketBooking.Service.Services
                         };
 
                         rs.Add(fbModel);
-                    };
+                    }
+
                     return new TripFeedbackModel
                     {
                         Feedbacks = rs,
-                        TotalRating = averageRating
+                        TotalRating = averageRating,
+                        TotalPages = totalPages // Add this property to your TripFeedbackModel
                     };
                 }
                 else throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
@@ -167,5 +180,6 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
     }
 }
