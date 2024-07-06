@@ -269,15 +269,10 @@ namespace SWD.TicketBooking.Service.Services
                     foreach (var company in sortCompany)
                     {
                         var filteredTripIdsForCompany = tripsQuery.Where(_ => _.Route_Company.CompanyID == company);
-                        if (!filteredTripIdsForCompany.Any())
-                        {
-                            tripsQuery = null;
-                            break;
-                        }
                         filteredTripIds.AddRange(filteredTripIdsForCompany);
                     }
                     
-                    if (tripsQuery != null && filteredTripIds != null && filteredTripIds.Count > 0)
+                    if (filteredTripIds != null && filteredTripIds.Count > 0)
                     {
                         tripsQuery = filteredTripIds.ToList();
                     }
@@ -292,54 +287,59 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     foreach (var seatType in seatAvailability)
                     {
+                        if (seatFilteredTrips.Count == 0 || seatFilteredTrips == null)
+                            seatFilteredTrips = tripsQuery.ToList(); 
+
                         switch (seatType.Trim().ToUpper())
                         {
                             case SD.FilterOption.SEAT_HEAD:
-                                var headTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_A);
-
+                                var headTripIds = await GetFilteredTripIdsBySeatCode(seatFilteredTrips, SD.FilterOption.SEAT_A);
                                 if (!headTripIds.Any())
                                 {
                                     tripsQuery = null;
                                     break;
                                 }
-                                seatFilteredTrips.AddRange(headTripIds);
+                                seatFilteredTrips = seatFilteredTrips.Where(t => headTripIds.Contains(t)).ToList();
                                 break;
 
                             case SD.FilterOption.SEAT_MIDDLE:
-                                var middleTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_B);
+                                var middleTripIds = await GetFilteredTripIdsBySeatCode(seatFilteredTrips, SD.FilterOption.SEAT_B);
                                 if (!middleTripIds.Any())
                                 {
                                     tripsQuery = null;
                                     break;
                                 }
-                                seatFilteredTrips.AddRange(middleTripIds);
+                                seatFilteredTrips = seatFilteredTrips.Where(t => middleTripIds.Contains(t)).ToList();
                                 break;
 
                             case SD.FilterOption.SEAT_BACK:
-                                var backTripIds = await GetFilteredTripIdsBySeatCode(tripsQuery, SD.FilterOption.SEAT_C);
+                                var backTripIds = await GetFilteredTripIdsBySeatCode(seatFilteredTrips, SD.FilterOption.SEAT_C);
                                 if (!backTripIds.Any())
                                 {
                                     tripsQuery = null;
                                     break;
                                 }
-                                seatFilteredTrips.AddRange(backTripIds);
+                                seatFilteredTrips = seatFilteredTrips.Where(t => backTripIds.Contains(t)).ToList();
                                 break;
 
                             default:
                                 break;
                         }
+
+                        if (tripsQuery == null) 
+                            break;
                     }
-                    if (tripsQuery != null && seatFilteredTrips != null && seatFilteredTrips.Count > 0)
+
+                    if (tripsQuery != null && seatFilteredTrips.Count > 0)
                     {
-                        tripsQuery = seatFilteredTrips.ToList();
+                        tripsQuery = seatFilteredTrips.Distinct().ToList();
                     }
                     else
                     {
                         tripsQuery = null;
-
                     }
-
                 }
+
                 if (sortOption != null && sortOption.Length > 0)
                 {
                     switch (sortOption.Trim().ToUpper())
