@@ -24,6 +24,7 @@ namespace SWD.TicketBooking.Service.Dtos
         public class MailBookingServiceModel
         {
             public double ServicePrice { get; set; }
+            public string ServiceName { get; set; }
             public string AtStation { get; set; }
         }
     }

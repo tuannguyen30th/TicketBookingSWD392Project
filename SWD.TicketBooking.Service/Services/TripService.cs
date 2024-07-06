@@ -276,7 +276,8 @@ namespace SWD.TicketBooking.Service.Services
                         }
                         filteredTripIds.AddRange(filteredTripIdsForCompany);
                     }
-                    if (filteredTripIds != null && filteredTripIds.Count > 0)
+                    
+                    if (tripsQuery != null && filteredTripIds != null && filteredTripIds.Count > 0)
                     {
                         tripsQuery = filteredTripIds.ToList();
                     }
@@ -328,7 +329,7 @@ namespace SWD.TicketBooking.Service.Services
                                 break;
                         }
                     }
-                    if (seatFilteredTrips != null && seatFilteredTrips.Count > 0)
+                    if (tripsQuery != null && seatFilteredTrips != null && seatFilteredTrips.Count > 0)
                     {
                         tripsQuery = seatFilteredTrips.ToList();
                     }
@@ -373,7 +374,7 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     tripsQuery.ToList();
                 }                       
-                var totalTrips = tripsQuery.Count();
+                var totalTrips = tripsQuery?.Count() ?? 0;
                 if (totalTrips == 0)
                 {
                     throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
@@ -845,7 +846,9 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var bookingDetails = await _unitOfWork.TicketDetailRepository
-                                                      .FindByCondition(_ => _.Booking.TripID == tripID && _.Status.Trim().Equals(SD.Booking_TicketStatus.UNUSED_TICKET) && _.TicketType_Trip.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                      .FindByCondition(_ => _.Booking.TripID == tripID 
+                                                                    && _.Status.Trim().Equals(SD.Booking_TicketStatus.UNUSED_TICKET) 
+                                                                    && _.TicketType_Trip.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                       .Include(_ => _.Booking.Trip)
                                                       .Select(_ => new
                                                       {
@@ -859,15 +862,16 @@ namespace SWD.TicketBooking.Service.Services
                 var tripIDFromDb = await GetTripIDFromTemplate(tripID);
 
                 var ticketTypeTrips = await _unitOfWork.TicketType_TripRepository
-                    .FindByCondition(_ => _.TripID == tripIDFromDb.TripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-                    .Select(_ => new GetSeatBookedFromTripModel.TicketType_TripModel
-                    {
-                        TicketType_TripID = _.TicketType_TripID,
-                        TicketName = _.TicketType.Name,
-                        Price = (double)_.Price,
-                        Quantity = (int)_.Quantity,
-                    })
-                    .ToListAsync();
+                                                       .FindByCondition(_ => _.TripID == tripIDFromDb.TripID 
+                                                                     && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                       .Select(_ => new GetSeatBookedFromTripModel.TicketType_TripModel
+                                                       {
+                                                           TicketType_TripID = _.TicketType_TripID,
+                                                           TicketName = _.TicketType.Name,
+                                                           Price = (double)_.Price,
+                                                           Quantity = (int)_.Quantity,
+                                                       })
+                                                       .ToListAsync();
                 var totalSeat = await _unitOfWork.TicketType_TripRepository
                                                  .FindByCondition(_ => _.TripID == tripIDFromDb.TripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                  .SumAsync(_ => _.Quantity);

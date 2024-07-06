@@ -150,8 +150,9 @@ namespace SWD.TicketBooking.API.Controllers
                     serviceDetails.AppendLine($@"
                    <p style=""font-size: medium; margin: 0;"">
                        <span style=""color: dimgray;"">Dịch vụ:</span>
-                       <span style=""font-weight: bold;color: #ea7019;"">{service.ServicePrice:N0}đ</span>
-                       <span style=""font-style: italic; font-weight: bold;"">{service.AtStation}</span>
+                       <span style=""font-weight: bold;color: #ea7019;"">{service.ServiceName} - </span>
+                       <span style=""font-weight: bold;color: #ea7019;"">{service.ServicePrice:N0}đ - </span>                                           
+                       <span style=""font-weight: bold;"">{service.AtStation}</span>
                    </p>");
                 }
                 emailBody.AppendLine($@"
@@ -184,7 +185,7 @@ namespace SWD.TicketBooking.API.Controllers
                        <tr>
                            <td colspan=""2"" style=""padding: 20px; text-align: center; background: #F5B642;"">
                                <h1 style=""font-size: 18px;"">Tổng hóa đơn</h1>
-                               <h1>{bookingResponse.TotalBill}đ</h1>
+                               <h1>{bookingResponse.TotalBill:N0}đ</h1>
                                <div style=""height: 100px; margin: 20px 0;"">
                                    <img src=""{bookingResponse.QrCodeImage}"" alt=""QR code"" style=""height: 100%;"" />
                                </div>
