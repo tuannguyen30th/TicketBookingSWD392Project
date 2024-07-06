@@ -264,10 +264,18 @@ namespace SWD.TicketBooking.Service.Services
                         throw new BadRequestException("MẬT KHẨU XÁC NHẬN KHÔNG ĐÚNG!");
                     }
 
-                    existedUser.UserName = updateUser.UserName;
-                    //existedUser.Password = SecurityUtil.Hash(updateUser.NewPassword);
-                    existedUser.FullName = updateUser.FullName;
-                    existedUser.Address = updateUser.Address;
+                    if (!updateUser.UserName.IsNullOrEmpty())
+                    {
+                        existedUser.UserName = updateUser.UserName;
+                    }
+                    if (!updateUser.FullName.IsNullOrEmpty())
+                    {
+                        existedUser.FullName = updateUser.FullName;
+                    }
+                    if (!updateUser.Address.IsNullOrEmpty())
+                    {
+                        existedUser.Address = updateUser.Address;
+                    }
                     if (!updateUser.PhoneNumber.IsNullOrEmpty() && FunctionCommon.IsValidPhoneNumber(updateUser.PhoneNumber))
                     {
                         existedUser.PhoneNumber = updateUser.PhoneNumber;
