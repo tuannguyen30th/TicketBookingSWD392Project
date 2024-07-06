@@ -280,7 +280,10 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         existedUser.PhoneNumber = updateUser.PhoneNumber;
                     }
-
+                    if (!updateUser.UserName.IsNullOrEmpty())
+                    {
+                        existedUser.UserName = updateUser.UserName;
+                    }
                     if (updateUser.Avatar != null && updateUser.Avatar.Length > 0)
                     {
                         if (!string.IsNullOrEmpty(existedUser.Avatar))

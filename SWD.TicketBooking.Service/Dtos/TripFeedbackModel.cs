@@ -10,5 +10,7 @@ namespace SWD.TicketBooking.Service.Dtos
     {
         public List<FeedbackModel> Feedbacks { get; set; }
         public double TotalRating { get; set; }
+        public int TotalPages { get; set; }
+
     }
 }
