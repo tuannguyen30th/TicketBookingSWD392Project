@@ -187,7 +187,7 @@ namespace SWD.TicketBooking.Service.Services
                                                             .GetAll()
                                                             .Include(t => t.Route_Company.Route.FromCity)
                                                             .Include(t => t.Route_Company.Route.ToCity)
-                                                            .Where(t => t.Status.Trim() == SD.GeneralStatus.ACTIVE && t.StartTime.Value.Day == DateTime.UtcNow.Day)
+                                                            .Where(t => t.Status.Trim() == SD.GeneralStatus.ACTIVE && t.StartTime.Value.Date == DateTime.UtcNow.Date)
                                                             .ToListAsync();
 
                 var topTrips = await _unitOfWork.BookingRepository
