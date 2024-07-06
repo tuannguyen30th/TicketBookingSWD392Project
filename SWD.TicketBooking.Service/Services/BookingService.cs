@@ -407,6 +407,7 @@ namespace SWD.TicketBooking.Service.Services
                                                                .Select(_ => new SendMailBookingModel.MailBookingServiceModel
                                                                {
                                                                    ServicePrice = (double)_.Price,
+                                                                   ServiceName = _.Service.Name,
                                                                    AtStation = _.Station.Name
                                                                }).ToListAsync();
                     var mailBookingModel = new SendMailBookingModel.MailBookingModel
