@@ -299,7 +299,7 @@ namespace SWD.TicketBooking.Service.Services
                                     tripsQuery = null;
                                     break;
                                 }
-                                seatFilteredTrips = seatFilteredTrips.Where(t => headTripIds.Contains(t)).ToList();
+                                seatFilteredTrips = seatFilteredTrips.Where(_ => headTripIds.Contains(_)).ToList();
                                 break;
 
                             case SD.FilterOption.SEAT_MIDDLE:
@@ -309,7 +309,7 @@ namespace SWD.TicketBooking.Service.Services
                                     tripsQuery = null;
                                     break;
                                 }
-                                seatFilteredTrips = seatFilteredTrips.Where(t => middleTripIds.Contains(t)).ToList();
+                                seatFilteredTrips = seatFilteredTrips.Where(_ => middleTripIds.Contains(_)).ToList();
                                 break;
 
                             case SD.FilterOption.SEAT_BACK:
@@ -319,7 +319,7 @@ namespace SWD.TicketBooking.Service.Services
                                     tripsQuery = null;
                                     break;
                                 }
-                                seatFilteredTrips = seatFilteredTrips.Where(t => backTripIds.Contains(t)).ToList();
+                                seatFilteredTrips = seatFilteredTrips.Where(_ => backTripIds.Contains(_)).ToList();
                                 break;
 
                             default:
