@@ -101,7 +101,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<PagedResult<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid customerID, int pageSize, int pageNumber)
+        public async Task<List<GetTicketDetailByUserModel>> GetTicketDetailByUser(Guid customerID)
         {
             try
             {
@@ -166,17 +166,7 @@ namespace SWD.TicketBooking.Service.Services
                         rsList.Add(rs);
                     }
                 }
-
-                var totalPage = (int)Math.Ceiling((double)rsList.Count / pageSize);
-                var pagedResult = rsList.Skip((pageNumber - 1) * pageSize)
-                                       .Take(pageSize)
-                                       .ToList();
-
-                return new PagedResult<GetTicketDetailByUserModel>
-                {
-                    TotalCount = totalPage,
-                    Items = pagedResult
-                };
+                return rsList;
             }
             catch (Exception ex)
             {
