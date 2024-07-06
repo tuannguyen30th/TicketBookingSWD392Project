@@ -578,17 +578,17 @@ namespace SWD.TicketBooking.Service.Services
                                                                 .Select(_ => new
                                                                 {
                                                                     TemplateID = _.Key,
-                                                                    TotalRating = _.Sum(_ => _.Rating)
+                                                                    AverageRating = _.Average(_ => _.Rating)
                                                                 })
                                                                 .ToListAsync();
 
                         var allTemplateRatingAsc = tripsQuery.Select(_ => new
-                                                             {
+                                                             {  
                                                                  TemplateID = _.TemplateID,
-                                                                 TotalRating = ascRatingTripIds
-                                                                               .FirstOrDefault(r => r.TemplateID == _.TemplateID)?.TotalRating ?? 0
+                                                                 AverageRating = ascRatingTripIds
+                                                                               .FirstOrDefault(r => r.TemplateID == _.TemplateID)?.AverageRating ?? 0
                                                              })
-                                                             .OrderBy(_ => _.TotalRating)
+                                                             .OrderBy(_ => _.AverageRating)
                                                              .Select(_ => _.TemplateID)
                                                              .ToList();
 
@@ -605,17 +605,17 @@ namespace SWD.TicketBooking.Service.Services
                                                                 .Select(_ => new
                                                                 {
                                                                     TemplateID = _.Key,
-                                                                    TotalRating = _.Sum(_ => _.Rating)
+                                                                    AverageRating = _.Average(_ => _.Rating)
                                                                 })
                                                                 .ToListAsync();
 
                         var allTemplateRatingDesc = tripsQuery.Select(_ => new
                                                               {
                                                                   TemplateID = _.TemplateID,
-                                                                  TotalRating = descRatingTripIds
-                                                                                .FirstOrDefault(r => r.TemplateID == _.TemplateID)?.TotalRating ?? 0
+                                                                  AverageRating = descRatingTripIds
+                                                                                .FirstOrDefault(r => r.TemplateID == _.TemplateID)?.AverageRating ?? 0
                                                               })
-                                                              .OrderByDescending(_ => _.TotalRating)
+                                                              .OrderByDescending(_ => _.AverageRating)
                                                               .Select(_ => _.TemplateID)
                                                               .ToList();
 
