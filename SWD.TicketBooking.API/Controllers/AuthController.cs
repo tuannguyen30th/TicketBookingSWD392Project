@@ -74,7 +74,7 @@ public class AuthController : ControllerBase
     [HttpPost("managed-auths/sign-ins")]
     public async Task<IActionResult> Login([FromBody] LoginRequest req)
     {
-        var loginResult = await _identityService.Login(req.Email, req.Password);
+        var loginResult = await _identityService.Login(req.Email, req.Password, req.DeviceToken);
         if (!loginResult.Authenticated)
         {
             return BadRequest(loginResult);

@@ -10,5 +10,7 @@ namespace SWD.TicketBooking.API.RequestModels
     {
         public string? Email { get; set; } = null!;
         public string? Password { get; set; } = null!;
+        public string? DeviceToken { get; set; } = null!;
+
     }
 }

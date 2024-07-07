@@ -45,12 +45,15 @@ namespace SWD.TicketBooking.Service.Services
 
             return null;
         }
-        public async Task<List<UserModel>> GetAllUsers()
+        public async Task<List<UserDetailModel>> GetAllUsers()
         {
             try
             {
-                var users = await _unitOfWork.UserRepository.GetAll().ToListAsync();
-                var rs = _mapper.Map<List<UserModel>>(users);
+                var user = await _unitOfWork.UserRepository
+                                            .GetAll()
+                                            .Include(u => u.UserRole)
+                                            .ToListAsync();
+                var rs = _mapper.Map<List<UserDetailModel>>(user);
                 return rs;
             }
             catch (Exception ex)

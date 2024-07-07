@@ -219,7 +219,7 @@ public class IdentityService
         }
     }
 
-    public async Task<LoginResponse> Login(string email, string password)
+    public async Task<LoginResponse> Login(string email, string password, string deviceToken)
     {
         try
         {
@@ -254,7 +254,11 @@ public class IdentityService
                                             .FindByCondition(ur => ur.RoleID == user.RoleID)
                                             .FirstOrDefaultAsync();
             user.UserRole = userRole!;
-
+            if (deviceToken != null)
+            {
+                user.AccessToken = deviceToken;
+            }
+            await _unitOfWork.UserRepository.Commit();
             return new LoginResponse
             {
                 Authenticated = true,
