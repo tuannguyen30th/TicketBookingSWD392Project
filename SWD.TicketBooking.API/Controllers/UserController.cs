@@ -168,7 +168,7 @@ namespace SWD.TicketBooking.Controllers
         public async Task<IActionResult> GetALlUsers()
         {
             var user = await _userService.GetAllUsers();
-            var rs = _mapper.Map<List<UserResponse>>(user);
+            var rs = _mapper.Map<List<UserDetailReponse>>(user);
             return Ok(rs);
         }
 

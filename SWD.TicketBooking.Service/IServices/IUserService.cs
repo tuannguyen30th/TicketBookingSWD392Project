@@ -8,7 +8,7 @@ namespace SWD.TicketBooking.Service.IServices
 {
     public interface IUserService
     {
-        Task<List<UserModel>> GetAllUsers();
+        Task<List<UserDetailModel>> GetAllUsers();
         Task<UserModel> GetUserByEmailForOTP(string email);
         Task<UserModel> GetUserByEmail(string email);
         Task<User> GetUserByAccessToken(string accessToken);
