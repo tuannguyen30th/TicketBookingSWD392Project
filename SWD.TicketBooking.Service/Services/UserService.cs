@@ -372,5 +372,24 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        public async Task<List<UserModel>> GetAllUsersByRole(string roleName)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository
+                                                  .GetAll()
+                                                  //.Include(_ => _.UserRole)
+                                                  .Where(_ => _.UserRole.RoleName.ToUpper().Equals(roleName.ToUpper()))
+                                                  .ToListAsync();
+
+                var rs = _mapper.Map<List<UserModel>>(user);
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
     }
 }
