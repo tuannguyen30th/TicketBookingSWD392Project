@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -17,39 +18,27 @@ namespace SWD.TicketBooking.API.Controllers
     {
         private readonly ICityService _cityService;
         private readonly IMapper _mapper;
+        private readonly ILogger<CityController> _logger;
         private readonly IDistributedCache _cache;
-        private const string GetAllCitiesCacheKey = "GetAllCities";
-        public CityController(ICityService cityService, IMapper mapper, IDistributedCache cache)
+        private readonly IResponseCacheService _responseCacheService;
+
+        public CityController(IResponseCacheService responseCacheService, ILogger<CityController> logger, ICityService cityService, IMapper mapper, IDistributedCache cache)
         {
             _cityService = cityService;
             _cache = cache;
             _mapper = mapper;
+            _logger = logger;
+            _responseCacheService = responseCacheService;
         }
 
         [HttpGet("managed-cities")]
-        //[Cache(600, GetAllCitiesCacheKey)]
+        [Cache(120000000)]
         public async Task<IActionResult> GetAllCities()
         {
             var dataFromService = await _cityService.GetAllCities();
             var response = _mapper.Map<List<CitiesResponse>>(dataFromService);
             return Ok(response);
-        }
-        [AllowAnonymous]
-        [HttpPost("managed-cities")]
-        //[RemoveCache(GetAllCitiesCacheKey)]
-        public async Task<IActionResult> CreateCompany([FromBody] CreateCityRequest req)
-        {
-            var map = _mapper.Map<CreateCityModel>(req);
-            var rs = await _cityService.CreateCity(map);
-            if (rs == null)
-            {
-                return BadRequest("Create failed");
-            }
-         /*   string cacheKey = "GetAllCities";
-            await _cache.RemoveAsync(cacheKey);*/
-            return Ok("Create successfully");
-        }
-
+        }      
         [AllowAnonymous]
         [HttpPut("managed-cities/{cityID}")]
         public async Task<IActionResult> UpdateCompany([FromRoute] Guid cityID, [FromBody] CreateCityRequest req)

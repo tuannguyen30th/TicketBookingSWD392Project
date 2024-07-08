@@ -41,7 +41,7 @@ namespace SWD.TicketBooking.Repo.Entities
         public string? AccessToken { get; set; } = string.Empty;
 
         public DateTime? TokenExpiration { get; set; }
-        public string? AccessDevice { get; set; } = string.Empty;
+        //public string? AccessDevice { get; set; } = string.Empty;
         public string? Status { get; set; } = string.Empty;
         public Guid? RoleID { get; set; }
 

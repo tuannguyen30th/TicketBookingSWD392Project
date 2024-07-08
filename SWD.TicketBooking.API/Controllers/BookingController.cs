@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SWD.TicketBooking.API.Installer;
 using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
+using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Dtos.Booking;
@@ -17,15 +19,19 @@ namespace SWD.TicketBooking.API.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
+        private readonly IResponseCacheService _responseCacheService;
         private readonly IMapper _mapper;
         private readonly IBookingService _bookingService;
         private readonly IEmailService _emailService;
+        private readonly ILogger<BookingController> _logger;
 
-        public BookingController(IEmailService emailService, IBookingService bookingService, IMapper mapper)
+        public BookingController(IResponseCacheService responseCacheService, ILogger<BookingController> logger, IEmailService emailService, IBookingService bookingService, IMapper mapper)
         {
             _mapper = mapper;
             _emailService = emailService;
+            _logger = logger;
             _bookingService = bookingService;
+            _responseCacheService = responseCacheService;
         }
 
         [HttpPost("managed-bookings/vnpay-payment")]
@@ -68,7 +74,8 @@ namespace SWD.TicketBooking.API.Controllers
                         Message = "LỖI KHI GỬI MAIL!"
                     });
                 }
-
+                await _responseCacheService.RemoveCacheResponseAsync("/trip-management/managed-trips/from-city");
+                await _responseCacheService.RemoveCacheResponseAsync("/ticket-detail-management/managed-ticket-details/customers");
                 return Ok(new BalancePaymentResponse
                 {
                     IsSuccess = true,
@@ -84,8 +91,6 @@ namespace SWD.TicketBooking.API.Controllers
                 });
             }
         }
-
-
         [HttpPut("managed-bookings")]
         public async Task<IActionResult> UpdateStatusBooking([FromBody] UpdateBookingRequest updateBookingRequest)
         {
@@ -112,6 +117,8 @@ namespace SWD.TicketBooking.API.Controllers
                                 Message = "LỖI KHI GỬI MAIL!"
                             });
                         }
+                    await _responseCacheService.RemoveCacheResponseAsync("/trip-management/managed-trips/from-city");
+                    await _responseCacheService.RemoveCacheResponseAsync("/ticket-detail-management/managed-ticket-details/customers");
                     return Ok(new UpdateBookingResponse
                     {
                         RspCode = updateBookingRequest.VnPayResponseCode,
@@ -137,7 +144,7 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = await _bookingService.GetBooking(bookingID);
             return Ok(rs);
         }
-      
+
         private string BookingSend(List<MailBookingModel> mailBookingResponses)
         {
             StringBuilder emailBody = new StringBuilder();
@@ -145,59 +152,70 @@ namespace SWD.TicketBooking.API.Controllers
             foreach (var bookingResponse in mailBookingResponses)
             {
                 StringBuilder serviceDetails = new StringBuilder();
-                foreach (var service in bookingResponse.MailBookingServices)
+                if (bookingResponse.MailBookingServices != null)
+                {
+                    foreach (var service in bookingResponse.MailBookingServices)
+                    {
+                        serviceDetails.AppendLine($@"
+            <p style=""font-size: medium; margin: 0;"">
+                <span style=""color: dimgray;"">Dịch vụ:</span>
+                <span style=""font-weight: bold;color: #ea7019;"">{service.ServiceName} - </span>
+                <span style=""font-weight: bold;color: #ea7019;"">{service.ServicePrice:N0}đ - </span>                                           
+                <span style=""font-weight: bold;"">{service.AtStation}</span>
+            </p>");
+                    }
+                }
+                else
                 {
                     serviceDetails.AppendLine($@"
-                   <p style=""font-size: medium; margin: 0;"">
-                       <span style=""color: dimgray;"">Dịch vụ:</span>
-                       <span style=""font-weight: bold;color: #ea7019;"">{service.ServiceName} - </span>
-                       <span style=""font-weight: bold;color: #ea7019;"">{service.ServicePrice:N0}đ - </span>                                           
-                       <span style=""font-weight: bold;"">{service.AtStation}</span>
-                   </p>");
+            <p style=""font-size: medium; margin: 0;"">
+                <span style=""color: dimgray;"">Không có dịch vụ nào!</span>
+            </p>");
                 }
                 emailBody.AppendLine($@"
-               <body style=""font-size: 14px; background: #f5f5f5; padding: 20px;"">
-                   <h1 style=""text-align: center;"">Xác nhận hoàn thành đặt vé</h1>
-                   <table style=""width: 100%; max-width: 600px; margin: 0 auto; background: white; box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px; border-collapse: collapse;"">
-                       <tr>
-                           <td style=""width: 50%; vertical-align: top; border-right: 1px dashed #404040; padding: 20px;"">
-                               <div style=""margin-bottom: 20px;"">
-                                   <p style=""font-size: large; font-weight: 600;"">Giá vé: <span style=""font-size: x-large; font-weight: 600;color: #ea7019;"">{bookingResponse.Price:N0}đ</span></p>
-                                   <p style=""font-size: medium; font-weight: 600;"">Giá dịch vụ:</p>
-                               </div>
-                               {serviceDetails}
-                           </td>
-                           <td style=""width: 50%; padding: 20px; text-align: center;"">
-                               <p style=""border-top: 1px solid gray; border-bottom: 1px solid gray; padding: 5px 0; font-weight: 700; margin: 20px 0;"">
-                                   <span style=""color: #ea7019;"">THE BUS JOURNEY</span>
-                               </p>
-                               <div>
-                                   <h3>{bookingResponse.FullName}</h3>
-                                   <h4>Chặng đi: {bookingResponse.FromTo}</h4>
-                               </div>
-                               <div>
-                                   <p>Khởi hành: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.StartTime}</span></p>
-                                   <p>Ngày: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.StartDate}</span></p>
-                               </div>
-                               <p>Vị trí vé: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.SeatCode}</span></p>
-                           </td>
-                       </tr>
-                       <tr>
-                           <td colspan=""2"" style=""padding: 20px; text-align: center; background: #F5B642;"">
-                               <h1 style=""font-size: 18px;"">Tổng hóa đơn</h1>
-                               <h1>{bookingResponse.TotalBill:N0}đ</h1>
-                               <div style=""height: 100px; margin: 20px 0;"">
-                                   <img src=""{bookingResponse.QrCodeImage}"" alt=""QR code"" style=""height: 100%;"" />
-                               </div>
-                               <p>Cảm ơn quý khách đã tin tưởng</p>
-                           </td>
-                       </tr>
-                   </table>
-               </body>
-                ");
+        <body style=""font-size: 14px; background: #f5f5f5; padding: 20px;"">
+            <h1 style=""text-align: center;"">Xác nhận hoàn thành đặt vé</h1>
+            <table style=""width: 100%; max-width: 600px; margin: 0 auto; background: white; box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px; border-collapse: collapse;"">
+                <tr>
+                    <td style=""width: 50%; vertical-align: top; border-right: 1px dashed #404040; padding: 20px;"">
+                        <div style=""margin-bottom: 20px;"">
+                            <p style=""font-size: large; font-weight: 600;"">Giá vé: <span style=""font-size: x-large; font-weight: 600;color: #ea7019;"">{bookingResponse.Price:N0}đ</span></p>
+                            <p style=""font-size: medium; font-weight: 600;"">Giá dịch vụ:</p>
+                        </div>
+                        {serviceDetails}
+                    </td>
+                    <td style=""width: 50%; padding: 20px; text-align: center;"">
+                        <p style=""border-top: 1px solid gray; border-bottom: 1px solid gray; padding: 5px 0; font-weight: 700; margin: 20px 0;"">
+                            <span style=""color: #ea7019;"">THE BUS JOURNEY</span>
+                        </p>
+                        <div>
+                            <h3>{bookingResponse.FullName}</h3>
+                            <h4>Chặng đi: {bookingResponse.FromTo}</h4>
+                        </div>
+                        <div>
+                            <p>Khởi hành: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.StartTime}</span></p>
+                            <p>Ngày: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.StartDate}</span></p>
+                        </div>
+                        <p>Vị trí vé: <span style=""font-size: larger; font-weight: 700"">{bookingResponse.SeatCode}</span></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=""2"" style=""padding: 20px; text-align: center; background: #F5B642;"">
+                        <h1 style=""font-size: 18px;"">Tổng hóa đơn</h1>
+                        <h1>{bookingResponse.TotalBill:N0}đ</h1>
+                        <div style=""height: 100px; margin: 20px 0;"">
+                            <img src=""{bookingResponse.QrCodeImage}"" alt=""QR code"" style=""height: 100%;"" />
+                        </div>
+                        <p>Cảm ơn quý khách đã tin tưởng</p>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        ");
             }
 
             return emailBody.ToString();
         }
+
     }
 }

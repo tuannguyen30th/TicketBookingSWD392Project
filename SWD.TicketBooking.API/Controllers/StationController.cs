@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using SWD.TicketBooking.API.Installer;
 using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
@@ -16,14 +17,19 @@ namespace SWD.TicketBooking.API.Controllers
     {
         private readonly IStationService _stationService;
         private readonly IMapper _mapper;
-        public StationController(IStationService stationService, IMapper mapper)
+        private readonly ILogger<CityController> _logger;
+        private readonly IDistributedCache _cache;
+        private readonly IResponseCacheService _responseCacheService;
+        public StationController(ILogger<CityController> logger, IDistributedCache cache, IResponseCacheService responseCacheService, IStationService stationService, IMapper mapper)
         {
             _stationService = stationService;
             _mapper = mapper;
+            _logger = logger;
+            _cache = cache;
+            _responseCacheService = responseCacheService;
         }
 
         [HttpGet("managed-stations/company/{companyID}")]
-        ///*[Cache(1200)]*/
         public async Task<IActionResult> GetAllStationsByCompanyID(Guid companyID)
         {
             var stations = await _stationService.GetAllStationsByCompanyID(companyID);
@@ -32,7 +38,6 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-stations/routes/{routeID}/companyID/{companyID}")]
-        ///*[Cache(1200)]*/
         public async Task<IActionResult> GetStationsFromTrip(Guid routeID, Guid companyID)
         {
             var stations = await _stationService.GetStationsFromTrip(routeID, companyID);
@@ -50,7 +55,7 @@ namespace SWD.TicketBooking.API.Controllers
         //}
 
         [HttpGet("managed-stations")]
-        //[Cache(1200)]
+   
         public async Task<IActionResult> GetAllStations()
         {
             var stations = await _stationService.GetAllStationActive();
@@ -59,7 +64,6 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-stations/{stationID}")]
-        //[Cache(1200)]
         public async Task<IActionResult> GetStationById(Guid stationID)
         {
             var station = await _stationService.GetStationById(stationID);

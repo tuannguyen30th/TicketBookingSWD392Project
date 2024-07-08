@@ -33,5 +33,6 @@ namespace SWD.TicketBooking.Repo.UnitOfWork
         IUserRoleRepository UserRoleRepository { get; }
         IUtilityRepository UtilityRepository { get; }
         int Complete();
+   
     }
 }

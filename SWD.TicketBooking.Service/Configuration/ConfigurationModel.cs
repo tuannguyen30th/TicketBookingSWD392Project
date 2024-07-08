@@ -23,6 +23,7 @@ namespace SWD.TicketBooking.Service.Configuration
         }
         public class RedisCacheConfiguration
         {
+            public bool Enabled { get; set; }
             public string RedisCacheConnection { get; set; }
         }
         public class FirebaseAdminSDK

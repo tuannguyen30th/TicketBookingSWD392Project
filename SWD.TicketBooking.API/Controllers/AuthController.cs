@@ -1,28 +1,17 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using SWD.TicketBooking.Repo.Helpers;
 using SWD.TicketBooking.Service.Dtos.Auth;
-using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.API.Common;
 using AutoMapper;
 using SWD.TicketBooking.Service.Exceptions;
-using Microsoft.AspNetCore.Identity;
 using SWD.TicketBooking.Service.Services;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.API.RequestModels;
-using Google.Apis.Auth;
-using System.Net.Http;
-using Newtonsoft.Json.Linq;
-using System.Linq;
 using SWD.TicketBooking.Repo.Entities;
-using Google.Apis.Http;
-using SWD.TicketBooking.Service.Utilities;
 using SWD.TicketBooking.Repo.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
-using SWD.TicketBooking.Repo.SeedData;
-using Microsoft.IdentityModel.Tokens;
+
 
 namespace SWD.TicketBooking.Booking.API;
 
@@ -66,7 +55,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-           throw new Exception(ex.Message, ex);
+            throw new Exception(ex.Message, ex);
         }
     }
 
@@ -92,94 +81,15 @@ public class AuthController : ControllerBase
     [HttpPost("managed-auths/access-token-verification")]
     public async Task<IActionResult> CheckAccessToken([FromBody] string accessToken)
     {
-        try
+        var result = await _identityService.CheckAccessToken(accessToken);
+
+        if (result.Success)
         {
-            var existingUser = await _userService.GetUserByAccessToken(accessToken);
-            SecurityToken newToken = null;
-            if (existingUser != null)
-            {
-                if (!existingUser.IsTokenExpired())
-                {
-                    var userResult = new
-                    {
-                        Id = existingUser.UserID,
-                        Email = existingUser.Email,
-                        Name = existingUser.FullName,
-                        Picture = existingUser.Avatar
-                    };
-                     newToken = _identityService.CreateJwtToken(existingUser);
-                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(newToken) });
-                }
-                else
-                {
-                    throw new InternalServerErrorException("MÃ THÔNG BÁO TRUY CẬP ĐÃ HẾT HẠN. XIN VUI LÒNG ĐĂNG NHẬP LẠI!");
-                }
-            }
-            var tokenInfoUrl = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={accessToken}";
-            var response = await httpClient.GetAsync(tokenInfoUrl);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                throw new BadRequestException(errorContent.ToUpper());
-            }
-
-            var tokenInfo = await response.Content.ReadAsStringAsync();
-            var userInfoUrl = $"https://www.googleapis.com/oauth2/v1/userinfo?access_token={accessToken}";
-            var userInfoResponse = await httpClient.GetAsync(userInfoUrl);
-
-            if (!userInfoResponse.IsSuccessStatusCode)
-            {
-                var userInfoError = await userInfoResponse.Content.ReadAsStringAsync();
-                throw new BadRequestException(userInfoError.ToUpper());
-            }
-
-            var userInfo = await userInfoResponse.Content.ReadAsStringAsync();
-            var user = JObject.Parse(userInfo);
-
-            var userResultNew = new
-            {
-                Id = user["id"]?.ToString(),
-                Email = user["email"]?.ToString(),
-                Name = user["name"]?.ToString(),
-                Picture = user["picture"]?.ToString()
-            };
-
-            existingUser = await _userService.GetUserByEmail2(userResultNew.Email);
-            var newUser = new User();
-            var handler = new JwtSecurityTokenHandler();
-            if (existingUser != null)
-            {
-                existingUser.TokenExpiration = DateTime.UtcNow.AddHours(1);
-                _unitOfWork.UserRepository.Update(existingUser);
-            }
-            else
-            {
-                newUser = new User
-                {
-                    UserID = Guid.NewGuid(),
-                    Email = userResultNew.Email,
-                    Avatar = userResultNew.Picture,
-                    Balance = 0,
-                    CreateDate = DateTime.Now,
-                    Password = "",
-                    FullName = userResultNew.Name,
-                    IsVerified = true,
-                    Status = SD.GeneralStatus.ACTIVE,
-                    TokenExpiration = DateTime.UtcNow.AddHours(1),
-                    RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387")
-                };
-
-                await _unitOfWork.UserRepository.AddAsync(newUser);
-            }
-            _unitOfWork.Complete();
-             newToken = _identityService.CreateJwtToken(existingUser ?? newUser);
-
-            return Ok(new { AccessToken = new JwtSecurityTokenHandler().WriteToken(newToken) });
+            return Ok(new { Token = result.Token });
         }
-        catch (Exception ex)
+        else
         {
-            throw new BadRequestException(ex.Message.ToUpper());
+            return BadRequest(result.ErrorMessage);
         }
     }
 
@@ -220,6 +130,7 @@ public class AuthController : ControllerBase
             RoleName = userRole
         }));
     }
+
     private async Task<IActionResult> SignUpForCustomer(SignUpRequest req)
     {
         try
@@ -248,11 +159,9 @@ public class AuthController : ControllerBase
             }
             return Ok(signUpResponse);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             throw new Exception(ex.Message, ex);
         }
     }
-
-   
 }

@@ -338,7 +338,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<Repo.Entities.User> GetUserByEmail2(string email)
+        public async Task<Repo.Entities.User> GetUserByEmailToLoginGG(string email)
         {
             try
             {

@@ -17,7 +17,7 @@ namespace SWD.TicketBooking.Service.Dtos
             public string? StartTime { get; set; }
             public string? StartDate { get; set; }
             public string? SeatCode { get; set; }
-            public string? TotalBill { get; set; }
+            public double? TotalBill { get; set; }
             public string? QrCodeImage { get; set; }
             public List<MailBookingServiceModel> MailBookingServices { get; set; }
         }

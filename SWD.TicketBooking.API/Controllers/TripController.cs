@@ -23,17 +23,20 @@ namespace SWD.TicketBooking.API.Controllers
         private readonly ITripService _tripService;
         private readonly IMapper _mapper;
         private readonly IDistributedCache _cache;
-        private const string SearchTripCacheKey = "SearchTrip";
-        public TripController(IDistributedCache cache, ITripService tripService, IMapper mapper)
+        private readonly IResponseCacheService _responseCacheService;
+        private readonly ILogger<TripController> _logger;
+
+        public TripController(ILogger<TripController> logger, IResponseCacheService responseCacheService, IDistributedCache cache, ITripService tripService, IMapper mapper)
         {
             _cache = cache;
             _tripService = tripService;
             _mapper = mapper;
+            _logger = logger;
+            _responseCacheService = responseCacheService;
         }
 
         [AllowAnonymous]
         [HttpGet("manage-trips/populars")]
-        //[Cache(1200)]
         public async Task<IActionResult> GetPopularTrips()
         {
             var rs = _mapper.Map<List<PopularTripResponse>>(await _tripService.GetPopularTrips());
@@ -47,7 +50,6 @@ namespace SWD.TicketBooking.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet("manage-trips/{tripId}/pictures")]
-        //[Cache(1200)]
         public async Task<IActionResult> GetTripPictureDetail(Guid tripId)
         {
             //   var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
@@ -56,7 +58,7 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
         [HttpGet("managed-trips/from-city/{fromCity}/to-city/{toCity}/start-time/{startTime}/page-number/{pageNumber}/page-size/{pageSize}")]
-        //[Cache(1200)]
+        [Cache(1200)]
         public async Task<IActionResult> SearchTrip(
              [FromRoute] Guid fromCity,
              [FromRoute] Guid toCity,
@@ -83,10 +85,10 @@ namespace SWD.TicketBooking.API.Controllers
 
 
         [HttpPost("managed-trips")]
-        //[RemoveCache("managed-trips/from-city/{fromCity}/to-city/{toCity}/start-time/{startTime}/page-number/{pageNumber}/page-size/{pageSize}")]
         public async Task<IActionResult> CreateTrip([FromForm] CreateTripModel createTripRequest)
         {
             var updatedService = await _tripService.CreateTrip(createTripRequest);
+            await _responseCacheService.RemoveCacheResponseAsync("/trip-management/managed-trips/from-city");
             return Ok(updatedService);
         }
 
@@ -95,17 +97,16 @@ namespace SWD.TicketBooking.API.Controllers
         {
 
             var updatedService = await _tripService.ChangeStatusTrip(tripID);
+            await _responseCacheService.RemoveCacheResponseAsync("/trip-management/managed-trips/from-city");
             return Ok(updatedService);
         }
         [HttpGet("managed-trips/{tripID}/booked-seats")]
-        //[Cache(1200)]
         public async Task<IActionResult> GetSeatBookedFromTrip(Guid tripID)
         {
             var rs = await _tripService.GetSeatBookedFromTrip(tripID);
             return Ok(rs);
         }
         [HttpGet("managed-trips/{tripID}/utilities")]
-        //[Cache(1200)]
         public async Task<IActionResult> GetUtilityByTripID([FromRoute] Guid tripID)
         {
             var rs = _mapper.Map<List<UtilityInTripResponse>>(await _tripService.GetAllUtilityByTripID(tripID));
@@ -113,7 +114,6 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-trips/ticket-type")]
-        //[Cache(1200)]
         public async Task<IActionResult> GetAllTicketType()
         {
             var ticketType = await _tripService.GetAllTicketType();
@@ -122,7 +122,6 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-trips/staff/{staffID}/start-time/{startTime}")]
-        //[Cache(1200)]
         public async Task<IActionResult> SearchTrip(Guid staffID, DateTime startTime)
         {
 
