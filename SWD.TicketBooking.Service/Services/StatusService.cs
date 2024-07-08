@@ -23,14 +23,14 @@ namespace SWD.TicketBooking.Service.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<int> ChangeStatus(int entity, Guid Id)
+        public async Task<int> ChangeStatus(string entity, Guid Id)
         {
             try
             {
                 var rs = 0;
-                switch (entity)
+                switch (entity.Trim().ToUpper())
                 {
-                    case 1:
+                    case SD.Entity.ENTITY_CITY:
                         var city = await _unitOfWork.CityRepository
                                                     .GetByIdAsync(Id);
                         if (city.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -39,7 +39,7 @@ namespace SWD.TicketBooking.Service.Services
                         } else city.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 2:
+                    case SD.Entity.ENTITY_COMPANY:
                         var company = await _unitOfWork.CompanyRepository
                                                     .GetByIdAsync(Id);
                         if (company.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -49,7 +49,7 @@ namespace SWD.TicketBooking.Service.Services
                         else company.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 3:
+                    case SD.Entity.ENTITY_FEEDBACK:
                         var feedback = await _unitOfWork.FeedbackRepository
                                                     .GetByIdAsync(Id);
                         if (feedback.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -59,7 +59,7 @@ namespace SWD.TicketBooking.Service.Services
                         else feedback.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 4:
+                    case SD.Entity.ENTITY_FEEDBACK_IMAGE:
                         var feedback_Image = await _unitOfWork.Feedback_ImageRepository
                                                     .GetByIdAsync(Id);
                         if (feedback_Image.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -69,7 +69,7 @@ namespace SWD.TicketBooking.Service.Services
                         else feedback_Image.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 5:
+                    case SD.Entity.ENTITY_ROUTE:
                         var route = await _unitOfWork.RouteRepository
                                                     .GetByIdAsync(Id);
                         if (route.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -79,7 +79,7 @@ namespace SWD.TicketBooking.Service.Services
                         else route.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 6:
+                    case SD.Entity.ENTITY_ROUTE_COMPANY:
                         var route_company = await _unitOfWork.Route_CompanyRepository
                                                     .GetByIdAsync(Id);
                         if (route_company.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -89,7 +89,7 @@ namespace SWD.TicketBooking.Service.Services
                         else route_company.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 7:
+                    case SD.Entity.ENTITY_SERVICE:
                         var service = await _unitOfWork.ServiceRepository
                                                     .GetByIdAsync(Id);
                         if (service.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -99,7 +99,7 @@ namespace SWD.TicketBooking.Service.Services
                         else service.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 8:
+                    case SD.Entity.ENTITY_SERVICE_TYPE:
                         var servicetype = await _unitOfWork.ServiceTypeRepository
                                                     .GetByIdAsync(Id);
                         if (servicetype.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -109,7 +109,7 @@ namespace SWD.TicketBooking.Service.Services
                         else servicetype.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 9:
+                    case SD.Entity.ENTITY_STATION:
                         var station = await _unitOfWork.StationRepository
                                                     .GetByIdAsync(Id);
                         if (station.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -119,7 +119,7 @@ namespace SWD.TicketBooking.Service.Services
                         else station.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 10:
+                    case SD.Entity.ENTITY_STATION_COMPANY_ROUTE:
                         var station_route = await _unitOfWork.StationCompany_RouteRepository
                                                     .GetByIdAsync(Id);
                         if (station_route.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -129,7 +129,7 @@ namespace SWD.TicketBooking.Service.Services
                         else station_route.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 11:
+                    case SD.Entity.ENTITY_STATION_SERVICE:
                         var station_service = await _unitOfWork.Station_ServiceRepository
                                                     .GetByIdAsync(Id);
                         if (station_service.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -140,7 +140,7 @@ namespace SWD.TicketBooking.Service.Services
                         rs = _unitOfWork.Complete();
                         break;
 
-                    case 12:
+                    case SD.Entity.ENTITY_TRIP:
                         var trip = await _unitOfWork.TripRepository
                                                     .GetByIdAsync(Id);
                         if (trip.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -150,7 +150,7 @@ namespace SWD.TicketBooking.Service.Services
                         else trip.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 13:
+                    case SD.Entity.ENTITY_TRIP_UTILITY:
                         var trip_utility = await _unitOfWork.Trip_UtilityRepository
                                                     .GetByIdAsync(Id);
                         if (trip_utility.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -160,7 +160,7 @@ namespace SWD.TicketBooking.Service.Services
                         else trip_utility.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 14:
+                    case SD.Entity.ENTITY_USER:
                         var user = await _unitOfWork.UserRepository
                                                     .GetByIdAsync(Id);
                         if (user.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -170,7 +170,7 @@ namespace SWD.TicketBooking.Service.Services
                         else user.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 15:
+                    case SD.Entity.ENTITY_USER_ROLE:
                         var userRole = await _unitOfWork.UserRoleRepository
                                                     .GetByIdAsync(Id);
                         if (userRole.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -180,7 +180,7 @@ namespace SWD.TicketBooking.Service.Services
                         else userRole.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 16:
+                    case SD.Entity.ENTITY_UTILITY:
                         var utility = await _unitOfWork.UtilityRepository
                                                     .GetByIdAsync(Id);
                         if (utility.Status.Equals(SD.GeneralStatus.ACTIVE))
@@ -190,7 +190,7 @@ namespace SWD.TicketBooking.Service.Services
                         else utility.Status = SD.GeneralStatus.ACTIVE;
                         rs = _unitOfWork.Complete();
                         break;
-                    case 17:
+                    case SD.Entity.ENTITY_TRIP_PICTURE:
                         var trip_picture = await _unitOfWork.TripPictureRepository
                                                     .GetByIdAsync(Id);
                         if (trip_picture.Status.Equals(SD.GeneralStatus.ACTIVE))

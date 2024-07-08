@@ -49,63 +49,43 @@ namespace SWD.TicketBooking.API.Controllers
             var response = _mapper.Map<List<GetRouteFromCompanyResponse>>(rs);        
             return Ok(response);
         }
-      /*  [AllowAnonymous]
-        [HttpGet("managed-routes")]
-        public async Task<IActionResult> GetAllRoutes()
-        {
-            var rs = _mapper.Map<List<RouteResponse>>(await _routeService.GetAllRoutes());
-            return Ok(rs);
-        }*/
-
-        //[AllowAnonymous]
-        //[HttpPost("managed-routes")]
-        ////[RemoveCache(FromCityToCityCacheKey)]
-        //public async Task<IActionResult> CreateRoute([FromBody] CreateRouteRequest req)
-        //{
-        //   /* if (req.FromCityID <= 0 ||  req.ToCityID <= 0 || req.CompanyID <= 0) 
-        //    {
-        //        return BadRequest("Invalid ID");
-        //    }*/
-        //    var map = _mapper.Map<CreateRouteModel>(req);
-        //    var rs = await _routeService.CreateRoute(map);
-        //    if (rs < 1)
-        //    {
-        //        return BadRequest("Create failed");
-        //    }
-        //    return Ok("Create successfully");
-        //}
-
-        //[AllowAnonymous]
-        //[HttpPut("managed-routes/{routeID}")]
-        //public async Task<IActionResult> UpdateRoute([FromRoute] Guid routeID, [FromBody] CreateRouteRequest req)
-        //{
-        //   /* if (routeID <= 0 || req.FromCityID <= 0 || req.ToCityID <= 0)
-        //    {
-        //        return BadRequest("Invalid ID");
-        //    }*/
-        //    var map = _mapper.Map<CreateRouteModel>(req);
-        //    var rs = await _routeService.UpdateRoute(routeID, map);
-        //    if (rs < 1)
-        //    {
-        //        return BadRequest("Update failed");
-        //    }
-        //    return Ok("Update successfully");
-        //}
+        /*        [AllowAnonymous]
+                [HttpGet("managed-routes")]
+                public async Task<IActionResult> GetAllRoutes()
+                {
+                    var rs = _mapper.Map<List<RouteResponse>>(await _routeService.GetAllRoutes());
+                    return Ok(rs);
+                }*/
 
         [AllowAnonymous]
-        [HttpPut("managed-routes/{routeID}/status")]
-        public async Task<IActionResult> ChangeStatus([FromRoute] Guid routeID, [FromBody] ChangeStatusRequest req)
+        [HttpPost("managed-routes")]
+        public async Task<IActionResult> CreateRoute([FromBody] CreateRouteRequest req)
         {
-         /*   if (routeID <= 0)
+            var map = _mapper.Map<CreateRouteModel>(req);
+            var rs = await _routeService.CreateRoute(map);
+            if (rs < 1)
             {
-                return BadRequest("Invalid ID");
-            }*/
-            var rs = await _routeService.ChangeStatus(routeID, req.Status);
+                return BadRequest("Create failed");
+            }
+            return Ok("Create successfully");
+        }
+
+        [AllowAnonymous]
+        [HttpPut("managed-routes/{routeID}")]
+        public async Task<IActionResult> UpdateRoute([FromRoute] Guid routeID, [FromBody] CreateRouteRequest req)
+        {
+            /* if (routeID <= 0 || req.FromCityID <= 0 || req.ToCityID <= 0)
+             {
+                 return BadRequest("Invalid ID");
+             }*/
+            var map = _mapper.Map<CreateRouteModel>(req);
+            var rs = await _routeService.UpdateRoute(routeID, map);
             if (rs < 1)
             {
                 return BadRequest("Update failed");
             }
             return Ok("Update successfully");
         }
+
     }
 }

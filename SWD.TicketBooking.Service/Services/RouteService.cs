@@ -64,7 +64,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-      /*  public async Task<int> CreateRoute(CreateRouteModel model)
+        public async Task<int> CreateRoute(CreateRouteModel model)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace SWD.TicketBooking.Service.Services
                                                            .GetAll()
                                                            .Where(_ => _.CompanyID == model.CompanyID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                            .FirstOrDefaultAsync();
-                
+
                 if (checkCompanyExisted == null)
                 {
                     throw new NotFoundException(SD.Notification.NotFound("NHÀ XE"));
@@ -84,7 +84,7 @@ namespace SWD.TicketBooking.Service.Services
                                                                 && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
 
                 if (checkRouteExisted == null)
-                { 
+                {
                     var route = await _unitOfWork.RouteRepository.AddAsync(new Route
                     {
                         RouteID = Guid.NewGuid(),
@@ -106,27 +106,36 @@ namespace SWD.TicketBooking.Service.Services
                     throw new BadRequestException("TUYẾN ĐƯỜNG KHÔNG KHẢ DỤNG!");
                 }
 
-                var checkRouteStationExisted = new Station_Company();
+                var checkStationCompanyExisted = new Station_Company();
                 foreach (var station in model.StationInRoutes)
                 {
-                    checkRouteStationExisted = await _unitOfWork.Station_CompanyRepository
+                    checkStationCompanyExisted = await _unitOfWork.Station_CompanyRepository
                                                               .GetAll()
-                                                              .Where(_ => _.RouteID.Equals(checkRouteExisted.RouteID) && _.StationID.Equals(station.StationID)) 
+                                                              .Where(_ => _.CompanyID.Equals(model.CompanyID) && _.StationID.Equals(station.StationID))
                                                               .FirstOrDefaultAsync();
-                    if (checkRouteStationExisted != null)
+                    if (checkStationCompanyExisted != null)
                     {
                         throw new InternalServerErrorException(SD.Notification.Existed("NHÀ XE", "KHI TẠO MỚI TUYẾN ĐƯỜNG"));
                     }
 
-                    if (checkRouteStationExisted == null)
+                    if (checkStationCompanyExisted == null)
                     {
-                        var routeStation = await _unitOfWork.Station_RouteRepository.AddAsync(new Station_Route
+                        var stationCompany = await _unitOfWork.Station_CompanyRepository
+                                                              .AddAsync(new Station_Company
+                                                              {
+                                                                  Station_CompanyID = Guid.NewGuid(),
+                                                                  CompanyID = model.CompanyID,
+                                                                  StationID = station.StationID,
+                                                                  Status = SD.GeneralStatus.ACTIVE
+                                                              });
+
+                        var routeStation = await _unitOfWork.StationCompany_RouteRepository.AddAsync(new StationCompany_Route
                         {
+                            Station_CompanyID = stationCompany.Station_CompanyID,
+                            StationCompany_RouteID = Guid.NewGuid(),
                             OrderInRoute = station.OrderInRoute,
-                            StationID = station.StationID,
-                            RouteID= checkRouteExisted.RouteID,
-                            Status = SD.GeneralStatus.ACTIVE,
-                            Station_RouteID = Guid.NewGuid()
+                            RouteID = checkRouteExisted.RouteID,
+                            Status = SD.GeneralStatus.ACTIVE
                         });
                         if (routeStation == null)
                         {
@@ -167,26 +176,18 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-
         public async Task<int> UpdateRoute(Guid routeId, CreateRouteModel model)
         {
             try
             {
-                var checkExisted = await _unitOfWork.RouteRepository
-                                                    .GetAll()
-                                                    .Where(_ => _.FromCityID == model.FromCityID
-                                                             && _.ToCityID == model.ToCityID
-                                                             && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
-                if (checkExisted != null)
-                {
-                    throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG CỦA NHÀ XE", "KHI CẬP NHẬT TUYẾN ĐƯỜNG CHO NHÀ XE NÀY"));
-                }
-
                 var route = await _unitOfWork.RouteRepository
                                               .GetAll()
                                               .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId)
                                               .FirstOrDefaultAsync();
-
+                if (route == null)
+                {
+                    throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG CỦA NHÀ XE", "KHI CẬP NHẬT TUYẾN ĐƯỜNG CHO NHÀ XE NÀY"));
+                }
                 if (route == null)
                 {
                     throw new NotFoundException(SD.Notification.NotFound("TUYẾN ĐƯỜNG"));
@@ -205,7 +206,7 @@ namespace SWD.TicketBooking.Service.Services
                         throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG", "KHI CẬP NHẬT TUYẾN ĐƯỜNG NÀY"));
                     }
                 }
-                
+
                 if (model.StationInRoutes != null)
                 {
 
@@ -214,55 +215,27 @@ namespace SWD.TicketBooking.Service.Services
                         var checkStation = await _unitOfWork.StationRepository
                                                             .FindByCondition(s => s.StationID.Equals(station.StationID) && s.Status.Equals(SD.GeneralStatus.ACTIVE))
                                                             .FirstOrDefaultAsync();
-                        var checkStationRoute = await _unitOfWork.Station_RouteRepository
-                                                                 .FindByCondition(sr => sr.StationID.Equals(station.StationID) && sr.Status.Equals(SD.GeneralStatus.ACTIVE))
-                                                                 .FirstOrDefaultAsync();
-
-                        checkStation.Name = station.StationName;
-                        checkStationRoute.OrderInRoute = station.OrderInRoute;
-                        var stationUpdate = _unitOfWork.StationRepository.Update(checkStation);
-                        var stationRouteUpdate = _unitOfWork.Station_RouteRepository.Update(checkStationRoute);
-                        if (checkStation == null || stationRouteUpdate == null)
-                        {
-                            throw new InternalServerErrorException(SD.Notification.Internal("NHÀ XE", "KHI CẬP NHẬT NHÀ XE NÀY"));
+                        if (checkStation != null)
+                        { 
+                           
+                            var checkStationCompanyRoute = await _unitOfWork.StationCompany_RouteRepository
+                                                                .FindByCondition(scr => scr.Station_CompanyID.Equals(model.StationCompany))
+                                                                .FirstOrDefaultAsync();
+                            checkStationCompanyRoute.OrderInRoute = station.OrderInRoute;
+                            var stationRouteUpdate = _unitOfWork.StationCompany_RouteRepository.Update(checkStationCompanyRoute);
+                            if ( stationRouteUpdate == null)
+                            {
+                                throw new InternalServerErrorException(SD.Notification.Internal("NHÀ XE", "KHI CẬP NHẬT NHÀ XE NÀY"));
+                            }
                         }
+
+                        
                     }
 
                 }
 
-                var rs = _unitOfWork.Complete(); 
-
-                return rs;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
-        }*/
-
-        public async Task<int> ChangeStatus(Guid routeId, string status)
-        {
-            try
-            {
-                var entity = await _unitOfWork.RouteRepository
-                                              .GetAll()
-                                              .Where(_ => _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && _.RouteID == routeId)
-                                              .FirstOrDefaultAsync();
-
-                if (entity == null)
-                {
-                    throw new NotFoundException(SD.Notification.NotFound("TUYẾN ĐƯỜNG"));
-                }
-
-                entity.Status = status;
-
-                var companyUpdate = _unitOfWork.RouteRepository.Update(entity);
-
-                if (companyUpdate == null)
-                {
-                    throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG", "KHI CẬP NHẬT TRẠNG THÁI CHO TUYẾN ĐƯỜNG NÀY"));
-                }
                 var rs = _unitOfWork.Complete();
+
                 return rs;
             }
             catch (Exception ex)
@@ -270,5 +243,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        
     }
 }

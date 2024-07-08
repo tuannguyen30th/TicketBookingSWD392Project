@@ -19,7 +19,7 @@ namespace SWD.TicketBooking.API.Controllers
         }
         [AllowAnonymous]
         [HttpPut("")]
-        public async Task<IActionResult> ChangeStatus(int entity, Guid Id)
+        public async Task<IActionResult> ChangeStatus(string entity, Guid Id)
         {
             var rs = await _statusService.ChangeStatus(entity, Id);
             return Ok(rs);
