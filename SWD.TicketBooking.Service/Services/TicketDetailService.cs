@@ -106,7 +106,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var bookings = await _unitOfWork.BookingRepository
-                                                .FindByCondition(_ => _.UserID == customerID)
+                                                .FindByCondition(_ => _.UserID.Equals(customerID) && !_.PaymentStatus.Equals(SD.BookingStatus.NOTPAYING_BOOKING))
                                                 .Include(_ => _.Trip.Route_Company.Route.FromCity)
                                                 .Include(_ => _.Trip.Route_Company.Route.ToCity)
                                                 .Include(_ => _.Trip.Route_Company.Route)
