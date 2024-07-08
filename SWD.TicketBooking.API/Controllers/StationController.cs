@@ -31,6 +31,15 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(stationResponses);
         }
 
+        [HttpGet("managed-stations/city/{cityID}")]
+        ///*[Cache(1200)]*/
+        public async Task<IActionResult> GetAllStationsByCityID(Guid cityID)
+        {
+            var stations = await _stationService.GetStationsByCityId(cityID);
+            var stationResponses = _mapper.Map<List<GetStationResponse>>(stations);
+            return Ok(stationResponses);
+        }
+
         [HttpGet("managed-stations/routes/{routeID}/companyID/{companyID}")]
         ///*[Cache(1200)]*/
         public async Task<IActionResult> GetStationsFromTrip(Guid routeID, Guid companyID)
@@ -67,41 +76,19 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(rs);
         }
 
-        //[HttpPost("managed-stations")]
-        //public async Task<IActionResult> CreateNewStation([FromBody] CreateStationRequest request)
-        //{
-        //    var map = _mapper.Map<CreateStationModel>(request);
-        //    var rs = await _stationService.CreateStation(map);
-        //    return Ok(rs);
-        //}
-
-
         [HttpPost("managed-stations")]
-        public async Task<IActionResult> CreateStationWithService([FromForm] CreateStationWithServiceRequest requestDto)
+        public async Task<IActionResult> CreateNewStation([FromBody] CreateStationRequest request)
         {
-            var request = new CreateStationWithServiceModel
-            {
-                CompanyID = requestDto.CompanyID,
-                CityID = requestDto.CityID,
-                StationName = requestDto.StationName,
-                ServiceToCreateModels = new List<ServiceToCreateModel>()
-            };
+            var map = _mapper.Map<CreateStationModel>(request);
+            var rs = await _stationService.CreateStation(map);
+            return rs ? Ok(rs) : BadRequest(rs);
+        }
 
-            for (int i = 0; i < requestDto.ServiceIDs.Count; i++)
-            {
-                var serviceToCreate = new ServiceToCreateModel
-                {
-                    ServiceID = requestDto.ServiceIDs[i],
-                    Price = requestDto.Prices[i],
-                    Image = requestDto.ServiceImages[i]
-                };
-
-                request.ServiceToCreateModels.Add(serviceToCreate);
-            }
-
-            var rs = await _stationService.CreateStationWithService(request);
-
-            return rs ? Ok("Create successfully") : BadRequest("Create failed");
+        [HttpPost("managed-stations/company-registation/company/{companyID}")]
+        public async Task<IActionResult> CompanyRegisStation([FromRoute] Guid companyID, [FromForm] List<Guid> stationID)
+        {
+            var rs = await _stationService.CompanyRegisStation(companyID, stationID);
+            return Ok(rs);
         }
 
         [HttpPut("managed-stations/{stationID}")]
