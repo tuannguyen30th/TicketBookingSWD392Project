@@ -110,9 +110,10 @@ namespace SWD.TicketBooking.Service.Services
                 
                 var stationsByRoute = await _unitOfWork.StationCompany_RouteRepository
                                                  .GetAll()
-                                                .Where(_ => _.RouteID == routeID && _.Station_Company.CompanyID == companyID)
+                                                 .Where(_ => _.RouteID == routeID && _.Station_Company.CompanyID == companyID)
+                                                 .OrderBy(_ => _.OrderInRoute)
                                                  .Select(_ => _.Station_CompanyID)
-                                                .ToListAsync();
+                                                 .ToListAsync();
                 var stationsByCompany = await _unitOfWork.Station_CompanyRepository
                                                 .FindByCondition(_ => stationsByRoute.Contains(_.Station_CompanyID) && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                                 .Include(_ => _.Station)
