@@ -9,7 +9,7 @@ namespace SWD.TicketBooking.API.Installer
         {
             services.AddDbContext<TicketBookingDbContext>(opt =>
             {
-                opt.UseSqlServer(configuration.GetConnectionString("Host"));
+                opt.UseSqlServer(configuration.GetConnectionString("TuanConnection"));
             });
         }
     }
