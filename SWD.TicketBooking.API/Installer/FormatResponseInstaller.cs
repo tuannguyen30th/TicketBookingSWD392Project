@@ -1,4 +1,5 @@
 ﻿
+using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace SWD.TicketBooking.API.Installer
@@ -8,10 +9,13 @@ namespace SWD.TicketBooking.API.Installer
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-            });
+                 .AddJsonOptions(options =>
+                 {
+                     options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                     options.JsonSerializerOptions.IgnoreNullValues = false;
+                 });
+
         }
     }
 }

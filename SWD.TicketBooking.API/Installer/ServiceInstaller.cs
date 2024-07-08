@@ -31,6 +31,7 @@ namespace SWD.TicketBooking.API.Installer
             services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IStatusService, StatusService>();
+            services.AddScoped<IResponseCacheService, ResponseCacheService>();
         }
     }
 }

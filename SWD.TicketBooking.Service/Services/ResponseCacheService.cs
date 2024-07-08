@@ -1,13 +1,17 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using SWD.TicketBooking.Service.IServices;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Services
 {
-    public class ResponseCacheService :  IResponseCacheService
+    public class ResponseCacheService : IResponseCacheService
     {
         private readonly IDistributedCache _distributedCache;
         private readonly IConnectionMultiplexer _connectionMultiplexer;
@@ -73,7 +77,6 @@ namespace SWD.TicketBooking.Service.Services
                     yield return key.ToString();
                 }
             }
-
         }
 
         public async Task SetCacheResponseAsync(string cacheKey, object response, TimeSpan timeOut)
@@ -81,10 +84,7 @@ namespace SWD.TicketBooking.Service.Services
             if (response == null)
                 return;
 
-            var serializerResponse = JsonConvert.SerializeObject(response, new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            var serializerResponse = response.ToString(); 
 
             await _distributedCache.SetStringAsync(cacheKey, serializerResponse, new DistributedCacheEntryOptions
             {

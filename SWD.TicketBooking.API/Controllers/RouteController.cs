@@ -17,17 +17,20 @@ namespace SWD.TicketBooking.API.Controllers
     public class RouteController : ControllerBase
     {
         private readonly ICityService _cityService;
-        private readonly IDistributedCache _cache;
         private readonly IRouteService _routeService;
         private readonly IMapper _mapper;
-        private const string FromCityToCityCacheKey = "FromCityToCity";
+        private readonly IDistributedCache _cache;
+        private readonly IResponseCacheService _responseCacheService;
+        private readonly ILogger<RouteController> _logger;
 
-        public RouteController(ICityService cityService, IDistributedCache cache, IRouteService routeService, IMapper mapper) 
+        public RouteController(IDistributedCache cache, IResponseCacheService responseCacheService, ILogger<RouteController> logger, ICityService cityService, IRouteService routeService, IMapper mapper) 
         {
-            _cache = cache;
             _cityService = cityService;
             _routeService = routeService;
             _mapper = mapper;
+            _responseCacheService = responseCacheService;
+            _logger = logger;
+            _cache = cache; 
         }
         [HttpGet("managed-routes")]
         [Cache(1200)]

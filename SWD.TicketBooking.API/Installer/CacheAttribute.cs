@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json;
-using System.Text;
 using SWD.TicketBooking.Service.IServices;
+using System;
+using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Threading.Tasks;
 using static SWD.TicketBooking.Service.Configuration.ConfigurationModel;
 
 namespace SWD.TicketBooking.API.Installer
@@ -25,9 +30,11 @@ namespace SWD.TicketBooking.API.Installer
                 await next();
                 return;
             }
+
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
             var cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
             var cacheResponse = await cacheService.GetCacheResponseAsync(cacheKey);
+
             if (!string.IsNullOrEmpty(cacheResponse))
             {
                 var contentResult = new ContentResult
@@ -39,10 +46,20 @@ namespace SWD.TicketBooking.API.Installer
                 context.Result = contentResult;
                 return;
             }
-            var excutedContext = await next();
-            if (excutedContext.Result is OkObjectResult objecResult)
+
+            var executedContext = await next();
+
+            if (executedContext.Result is OkObjectResult okObjectResult)
             {
-                await cacheService.SetCacheResponseAsync(cacheKey, objecResult.Value, TimeSpan.FromSeconds(_timeToLiveSeconds));
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = false, 
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping 
+                };
+
+                var serializedResponse = JsonSerializer.Serialize(okObjectResult.Value, options);
+                await cacheService.SetCacheResponseAsync(cacheKey, serializedResponse, TimeSpan.FromSeconds(_timeToLiveSeconds));
             }
         }
 
