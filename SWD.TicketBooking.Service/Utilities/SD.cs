@@ -72,25 +72,25 @@
         
         public static class Entity
         {
-            public enum EntityType
-            {
-                City,
-                Company,
-                Feedback,
-                Feedback_Image,
-                Route,
-                Route_Company,
-                Service,
-                ServiceType,
-                Station, 
-                Station_Route,
-                Station_Service,
-                Trip,
-                Trip_Utility,
-                User,
-                UserRole,
-                Utitily
-            }
+            public const string ENTITY_CITY = "CITY";
+            public const string ENTITY_COMPANY = "COMPANY";
+            public const string ENTITY_FEEDBACK = "FEEDBACK";
+            public const string ENTITY_FEEDBACK_IMAGE = "FEEDBACK_IMAGE";
+            public const string ENTITY_ROUTE = "ROUTE";
+            public const string ENTITY_ROUTE_COMPANY = "ROUTE_COMPANY";
+            public const string ENTITY_SERVICE = "SERVICE";
+            public const string ENTITY_SERVICE_TYPE = "SERVICETYPE";
+            public const string ENTITY_STATION = "STATION";
+            public const string ENTITY_STATION_ROUTE = "STATION_ROUTE";
+            public const string ENTITY_STATION_SERVICE = "STATION_SERVICE";
+            public const string ENTITY_TRIP = "TRIP";
+            public const string ENTITY_TRIP_PICTURE = "TRIP_PICTURE";
+            public const string ENTITY_TRIP_UTILITY = "TRIP_UTILITY";
+            public const string ENTITY_USER = "USER";
+            public const string ENTITY_USER_ROLE = "USERROLE";
+            public const string ENTITY_UTILITY = "UTITILY";
+            public const string ENTITY_STATION_COMPANY_ROUTE = "STAION_COMPANY_ROUTE";
+
         }
 
     }
