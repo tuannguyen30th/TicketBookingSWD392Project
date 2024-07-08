@@ -39,6 +39,13 @@ namespace SWD.TicketBooking.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [HttpGet("managed-users/role-name/{roleName}")]
+        public async Task<IActionResult> GetAllUsersByRole(string roleName)
+        {
+            var user = _mapper.Map<List<UserResponse>>(await _userService.GetAllUsersByRole(roleName));
+            return Ok(user);
+        }
+
         [HttpGet("managed-users/staff/{companyID}")]
         public async Task<IActionResult> GetStaffFromCompany(Guid companyID)
         {
