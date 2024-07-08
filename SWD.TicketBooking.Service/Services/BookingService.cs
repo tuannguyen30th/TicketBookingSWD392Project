@@ -500,7 +500,7 @@ namespace SWD.TicketBooking.Service.Services
         {
             var checkNotPaying = await _unitOfWork.BookingRepository
                                                   .FindByCondition(_ => _.UserID == userId
-                                                                        && _.PaymentStatus.Equals(SD.BookingStatus.NOTPAYING_BOOKING))
+                                                                     && _.PaymentStatus.Equals(SD.BookingStatus.NOTPAYING_BOOKING))
                                                   .FirstOrDefaultAsync();
 
             if (checkNotPaying != null)
@@ -515,10 +515,12 @@ namespace SWD.TicketBooking.Service.Services
                     var checkServiceNotPaying = await _unitOfWork.TicketDetail_ServiceRepository
                                                                  .FindByCondition(_ => ticketDetailIds.Contains((Guid)_.TicketDetailID))
                                                                  .ToListAsync();
-
-                    foreach (var service in checkServiceNotPaying)
+                    if (checkServiceNotPaying.Any() || checkServiceNotPaying != null)
                     {
-                        _unitOfWork.TicketDetail_ServiceRepository.Remove(service);
+                        foreach (var service in checkServiceNotPaying)
+                        {
+                            _unitOfWork.TicketDetail_ServiceRepository.Remove(service);
+                        }
                     }
 
                     foreach (var ticket in checkTicketNotPaying)
