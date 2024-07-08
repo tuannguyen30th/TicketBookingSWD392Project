@@ -12,7 +12,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<UserModel> GetUserByEmailForOTP(string email);
         Task<UserModel> GetUserByEmail(string email);
         Task<User> GetUserByAccessToken(string accessToken);
-        Task<User> GetUserByEmail2(string email);
+        Task<User> GetUserByEmailToLoginGG(string email);
         Task<(CreateUserReq returnModel, string message)> SendOTPCode(CreateUserReq req);
         Task<ActionOutcome> SubmitOTP(SubmitOTPReq req);
         Task<UserDetailModel> GetUserById(Guid id);

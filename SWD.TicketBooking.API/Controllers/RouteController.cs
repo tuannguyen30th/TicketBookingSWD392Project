@@ -30,7 +30,7 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
         }
         [HttpGet("managed-routes")]
-        //[Cache(1200, FromCityToCityCacheKey)]
+        [Cache(1200)]
         public async Task<IActionResult> GetFromCityToCity()
         {
 
@@ -40,7 +40,6 @@ namespace SWD.TicketBooking.API.Controllers
 
         }
         [HttpGet("managed-routes/company-routes/{companyID}")]
-        //[Cache(1200)]
         public async Task<IActionResult> GetAllRouteFromCompany(Guid companyID)
         {
             var rs = await _routeService.GetAllRouteFromCompany(companyID);

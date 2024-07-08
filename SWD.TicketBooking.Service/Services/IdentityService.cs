@@ -17,6 +17,8 @@ using SWD.TicketBooking.Repo.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using static QRCoder.PayloadGenerator;
 using Org.BouncyCastle.Ocsp;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 namespace SWD.TicketBooking.Service.Services;
 
@@ -26,6 +28,7 @@ public class IdentityService
     private readonly JwtSettings _jwtSettings;
     private readonly IFirebaseService _firebaseService;
     private readonly IEmailService _emailService;
+    private static readonly HttpClient httpClient = new HttpClient();
     private readonly IUserService _userService;
 
     public IdentityService(IUserService userService, IEmailService emailService, IUnitOfWork unitOfWork, IOptions<JwtSettings> jwtSettingsOptions, IFirebaseService firebaseService)
@@ -36,7 +39,81 @@ public class IdentityService
         _jwtSettings = jwtSettingsOptions.Value;
         _firebaseService = firebaseService;
     }
+    public async Task<AccessTokenModel> CheckAccessToken(string accessToken)
+    {
+        try
+        {
+            SecurityToken newToken = null;
+            var existingUser = new User();
+            var tokenInfoUrl = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={accessToken}";
+            var response = await httpClient.GetAsync(tokenInfoUrl);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                return new AccessTokenModel { Success = false, ErrorMessage = errorContent.ToUpper() };
+            }
+
+            var tokenInfo = await response.Content.ReadAsStringAsync();
+            var userInfoUrl = $"https://www.googleapis.com/oauth2/v1/userinfo?access_token={accessToken}";
+            var userInfoResponse = await httpClient.GetAsync(userInfoUrl);
+
+            if (!userInfoResponse.IsSuccessStatusCode)
+            {
+                var userInfoError = await userInfoResponse.Content.ReadAsStringAsync();
+                return new AccessTokenModel { Success = false, ErrorMessage = userInfoError.ToUpper() };
+            }
+
+            var userInfo = await userInfoResponse.Content.ReadAsStringAsync();
+            var user = JObject.Parse(userInfo);
+
+            var userResultNew = new
+            {
+                Id = user["id"]?.ToString(),
+                Email = user["email"]?.ToString(),
+                Name = user["name"]?.ToString(),
+                Picture = user["picture"]?.ToString()
+            };
+
+            existingUser = await _userService.GetUserByEmailToLoginGG(userResultNew.Email);
+            var newUser = new User();
+            var handler = new JwtSecurityTokenHandler();
+            if (existingUser != null)
+            {
+                existingUser.TokenExpiration = DateTime.UtcNow.AddHours(1);
+                _unitOfWork.UserRepository.Update(existingUser);
+                newToken = CreateJwtToken(existingUser);
+                return new AccessTokenModel { Success = true, Token = new JwtSecurityTokenHandler().WriteToken(newToken) };
+            }
+            else
+            {
+                newUser = new User
+                {
+                    UserID = Guid.NewGuid(),
+                    Email = userResultNew.Email,
+                    Avatar = userResultNew.Picture,
+                    Balance = 0,
+                    CreateDate = DateTime.Now,
+                    Password = "",
+                    FullName = userResultNew.Name,
+                    IsVerified = true,
+                    Status = SD.GeneralStatus.ACTIVE,
+                    TokenExpiration = DateTime.UtcNow.AddHours(1),
+                    RoleID = new Guid("E6E2FCD6-22F0-426B-A3A0-DD0C5D398387")
+                };
+
+                await _unitOfWork.UserRepository.AddAsync(newUser);
+            }
+            _unitOfWork.Complete();
+            newToken = CreateJwtToken(existingUser ?? newUser);
+
+            return new AccessTokenModel { Success = true, Token = new JwtSecurityTokenHandler().WriteToken(newToken) };
+        }
+        catch (Exception ex)
+        {
+            throw new BadRequestException(ex.Message.ToUpper());
+        }
+    }
     public async Task<SignUpResponse> SignupForCustomer(SignUpModel req)
     {
         try

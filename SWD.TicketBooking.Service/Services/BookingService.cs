@@ -12,6 +12,7 @@ using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Services.PaymentService;
 using SWD.TicketBooking.Service.Utilities;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
 
@@ -41,6 +42,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 try
                 {
+             
                     if (bookingModel.AddOrUpdateBookingModel == null || bookingModel.AddOrUpdateTicketModels == null)
                     {
                         throw new BadRequestException("BOOKINGMODEL HOẶC TICKETMODELS KHÔNG ĐƯỢC BỎ TRỐNG!");
@@ -174,6 +176,7 @@ namespace SWD.TicketBooking.Service.Services
                             isValid = false;
                         }
                     };
+                    await RemoveNotPayingBooking(bookingModel.AddOrUpdateBookingModel.UserID);
                     scope.Complete();
                     var payment = new PaymentInformationModel
                     {
@@ -419,7 +422,7 @@ namespace SWD.TicketBooking.Service.Services
                         StartTime = findBooking.Trip.StartTime?.ToString("HH:mm"),
                         StartDate = findBooking.Trip.StartTime?.ToString("yyyy-MM-dd"),
                         SeatCode = ticket.SeatCode,
-                        TotalBill = findBooking.TotalBill?.ToString("C"),
+                        TotalBill = (double)findBooking.TotalBill,
                         QrCodeImage = ticket.QRCodeImage,
                         MailBookingServices = mailBookingServices
                     };
@@ -493,6 +496,43 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+        private async Task RemoveNotPayingBooking(Guid userId)
+        {
+            var checkNotPaying = await _unitOfWork.BookingRepository
+                                                  .FindByCondition(_ => _.UserID == userId
+                                                                     && _.PaymentStatus.Equals(SD.BookingStatus.NOTPAYING_BOOKING))
+                                                  .FirstOrDefaultAsync();
+
+            if (checkNotPaying != null)
+            {
+                var checkTicketNotPaying = await _unitOfWork.TicketDetailRepository
+                                                            .FindByCondition(_ => _.BookingID == checkNotPaying.BookingID)
+                                                            .ToListAsync();
+
+                if (checkTicketNotPaying.Any() || checkTicketNotPaying != null)
+                {
+                    var ticketDetailIds = checkTicketNotPaying.Select(_ => _.TicketDetailID).ToList();
+                    var checkServiceNotPaying = await _unitOfWork.TicketDetail_ServiceRepository
+                                                                 .FindByCondition(_ => ticketDetailIds.Contains((Guid)_.TicketDetailID))
+                                                                 .ToListAsync();
+                    if (checkServiceNotPaying.Any() || checkServiceNotPaying != null)
+                    {
+                        foreach (var service in checkServiceNotPaying)
+                        {
+                            _unitOfWork.TicketDetail_ServiceRepository.Remove(service);
+                        }
+                    }
+
+                    foreach (var ticket in checkTicketNotPaying)
+                    {
+                        _unitOfWork.TicketDetailRepository.Remove(ticket);
+                    }
+                }
+
+                _unitOfWork.BookingRepository.Remove(checkNotPaying);
+            }
+        }
+
         public async Task<ActionOutcome> GetBooking(Guid bookingID)
         {
             try

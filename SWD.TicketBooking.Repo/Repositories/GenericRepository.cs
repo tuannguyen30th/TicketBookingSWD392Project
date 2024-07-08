@@ -45,9 +45,8 @@ namespace SWD.TicketBooking.Repo.Repositories
             return entityEntry.Entity;
         }
 
-        public TEntity Remove(TKey id)
+        public TEntity Remove(TEntity entity)
         {
-            var entity = GetByIdAsync(id).Result;
             var entityEntry = _dbContext.Set<TEntity>().Remove(entity!);
             return entityEntry.Entity;
         }

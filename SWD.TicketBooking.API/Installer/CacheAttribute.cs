@@ -2,54 +2,54 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using System.Text;
+using SWD.TicketBooking.Service.IServices;
+using static SWD.TicketBooking.Service.Configuration.ConfigurationModel;
 
 namespace SWD.TicketBooking.API.Installer
 {
-    public class CacheAttribute : ActionFilterAttribute
+    public class CacheAttribute : Attribute, IAsyncActionFilter
     {
-        private readonly int _duration;
-        private readonly string _cacheKey;
+        private readonly int _timeToLiveSeconds;
 
-        public CacheAttribute(int duration, string cacheKey = null)
+        public CacheAttribute(int timeToLiveSeconds = 1000)
         {
-            _duration = duration;
-            _cacheKey = cacheKey;
+            _timeToLiveSeconds = timeToLiveSeconds;
         }
 
-        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var cache = (IDistributedCache)context.HttpContext.RequestServices.GetService(typeof(IDistributedCache));
-            var cacheKey = _cacheKey ?? GenerateCacheKeyFromRequest(context.HttpContext.Request);
-
-            var cachedResponse = await cache.GetStringAsync(cacheKey);
-            if (!string.IsNullOrEmpty(cachedResponse))
+            var cacheConfiguration = context.HttpContext.RequestServices.GetRequiredService<RedisCacheConfiguration>();
+            if (!cacheConfiguration.Enabled)
+            {
+                await next();
+                return;
+            }
+            var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
+            var cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
+            var cacheResponse = await cacheService.GetCacheResponseAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cacheResponse))
             {
                 var contentResult = new ContentResult
                 {
-                    Content = cachedResponse,
+                    Content = cacheResponse,
                     ContentType = "application/json",
                     StatusCode = 200
                 };
                 context.Result = contentResult;
                 return;
             }
-
-            var executedContext = await next();
-            if (executedContext.Result is ObjectResult objectResult)
+            var excutedContext = await next();
+            if (excutedContext.Result is OkObjectResult objecResult)
             {
-                var response = JsonConvert.SerializeObject(objectResult.Value);
-                var options = new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_duration)
-                };
-                await cache.SetStringAsync(cacheKey, response, options);
+                await cacheService.SetCacheResponseAsync(cacheKey, objecResult.Value, TimeSpan.FromSeconds(_timeToLiveSeconds));
             }
         }
 
-        private string GenerateCacheKeyFromRequest(HttpRequest request)
+        private static string GenerateCacheKeyFromRequest(HttpRequest request)
         {
-            var keyBuilder = new System.Text.StringBuilder();
-            keyBuilder.Append(request.Path.ToString());
+            var keyBuilder = new StringBuilder();
+            keyBuilder.Append($"{request.Path}");
             foreach (var (key, value) in request.Query.OrderBy(x => x.Key))
             {
                 keyBuilder.Append($"|{key}-{value}");
