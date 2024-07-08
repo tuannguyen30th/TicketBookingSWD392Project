@@ -194,8 +194,6 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 if (model.FromCityID != Guid.Empty && model.ToCityID != Guid.Empty && !model.StartLocation.IsNullOrEmpty() && !model.EndLocation.IsNullOrEmpty())
                 {
-                    route.FromCityID = model.FromCityID;
-                    route.ToCityID = model.ToCityID;
                     route.StartLocation = model.StartLocation;
                     route.EndLocation = model.EndLocation;
 
