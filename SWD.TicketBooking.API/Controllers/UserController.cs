@@ -13,6 +13,8 @@ using SWD.TicketBooking.API.RequestModels;
 using SWD.TicketBooking.API.ResponseModels;
 using SWD.TicketBooking.Service.Dtos;
 using MimeKit.Encodings;
+using SWD.TicketBooking.Repo.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 
 namespace SWD.TicketBooking.Controllers
 {
@@ -25,14 +27,16 @@ namespace SWD.TicketBooking.Controllers
         private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserController(IUserService userService, IdentityService identityService, IEmailService emailService, IWebHostEnvironment webHostEnvironment, IMapper mapper)
+        public UserController(IUserService userService, IdentityService identityService, IEmailService emailService, IWebHostEnvironment webHostEnvironment, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _userService = userService;
             _identityService = identityService;
             _emailService = emailService;
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("managed-users/staff/{companyID}")]
@@ -263,6 +267,24 @@ namespace SWD.TicketBooking.Controllers
   </body>
 
     ";
+        }
+
+        [HttpPut("managed-users/update-balance/userID/{userID}/balance/{balance}")]
+        public async Task<IActionResult> UpdateBalance([FromRoute] Guid userID, [FromRoute] double balance)
+        {
+            var user = await _unitOfWork.UserRepository.GetAll().Where(_ => _.UserID.Equals(userID)).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return BadRequest("Cannot find user");
+            }
+            user.Balance = balance;
+            var update = _unitOfWork.UserRepository.Update(user);
+            if (update == null)
+            {
+                return BadRequest("Update failed");
+            }
+            _unitOfWork.Complete();
+            return Ok(update.Balance);
         }
     }
 }
