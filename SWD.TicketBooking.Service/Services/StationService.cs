@@ -109,19 +109,21 @@ namespace SWD.TicketBooking.Service.Services
             {
                 
                 var stationsByRoute = await _unitOfWork.StationCompany_RouteRepository
-                                                 .GetAll()
-                                                .Where(_ => _.RouteID == routeID && _.Station_Company.CompanyID == companyID)
-                                                 .Select(_ => _.Station_CompanyID)
-                                                .ToListAsync();
+                                                       .GetAll()
+                                                       .Where(_ => _.RouteID == routeID && _.Station_Company.CompanyID == companyID)
+                                                       .OrderBy(_ => _.OrderInRoute)
+                                                       .Select(_ => _.Station_CompanyID)
+                                                       .ToListAsync();
                 var stationsByCompany = await _unitOfWork.Station_CompanyRepository
-                                                .FindByCondition(_ => stationsByRoute.Contains(_.Station_CompanyID) && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-                                                .Include(_ => _.Station)
-                                                .Select(_ => new StationFromRouteModel
-                                                {
-                                                    Name = _.Station.Name,
-                                                    StationID = (Guid)_.StationID,
-                                                })
-                                                .ToListAsync();
+                                                         .FindByCondition(_ => stationsByRoute.Contains(_.Station_CompanyID) 
+                                                                       && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                         .Include(_ => _.Station)
+                                                         .Select(_ => new StationFromRouteModel
+                                                         {
+                                                             Name = _.Station.Name,
+                                                             StationID = (Guid)_.StationID,
+                                                         })
+                                                         .ToListAsync();
 
                 return stationsByCompany;
 

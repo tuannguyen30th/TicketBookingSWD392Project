@@ -20,7 +20,7 @@ namespace SWD.TicketBooking.Service.Services
         public async Task<string> CreatePaymentUrlVnpay(PaymentInformationModel requestDto, HttpContext httpContext)
         {
             var paymentUrl = "";
-            var momo = new PaymentInformationModel
+            var vnPay = new PaymentInformationModel
             {
                 AccountID = requestDto.AccountID,
                 Amount = requestDto.Amount,

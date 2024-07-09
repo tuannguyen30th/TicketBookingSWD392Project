@@ -13,14 +13,17 @@ namespace SWD.TicketBooking.Service.Dtos
     {
         public Guid? Route_CompanyID { get; set; }
         public bool? IsTemplate { get; set; }
-        public Guid? StaffID { get; set; }
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public List<Guid?> StaffID { get; set; } = new List<Guid?>();
         public Guid? TemplateID { get; set; }
         public List<IFormFile> ImageUrls { get; set; } = new List<IFormFile>();
+        public List<TimeTrip> TimeTrips { get; set; } = new List<TimeTrip>();
         public List<TicketType_TripModel> TicketType_TripModels { get; set; } = new List<TicketType_TripModel>();
         public List<Trip_UtilityModel> Trip_UtilityModels { get; set; } = new List<Trip_UtilityModel>();
-
+        public class TimeTrip
+        {
+            public DateTime? StartTime { get; set; }
+            public DateTime? EndTime { get; set; }  
+        }
         public class TicketType_TripModel
         {
             public Guid? TicketTypeID { get; set; }
