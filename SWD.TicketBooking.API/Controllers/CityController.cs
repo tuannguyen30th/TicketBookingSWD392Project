@@ -30,7 +30,6 @@ namespace SWD.TicketBooking.API.Controllers
             _logger = logger;
             _responseCacheService = responseCacheService;
         }
-
         [HttpGet("managed-cities")]
         [Cache(120000000)]
         public async Task<IActionResult> GetAllCities()

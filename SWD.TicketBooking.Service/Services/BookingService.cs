@@ -166,6 +166,7 @@ namespace SWD.TicketBooking.Service.Services
                                     ServiceID = ticketService.ServiceID,
                                     Quantity = ticketService.Quantity,
                                     Price = ticketService.Price,
+                                    HasCheck = false,
                                     Status = SD.Booking_ServiceStatus.NOTPAYING_TICKETSERVICE
                                 };
                                 await _unitOfWork.TicketDetail_ServiceRepository.AddAsync(newTicketService);
@@ -195,7 +196,7 @@ namespace SWD.TicketBooking.Service.Services
             _unitOfWork.Complete();
             return result;
         }
-            public async Task<(ActionOutcome, Guid bookingID)> AddOrUpdateBookingBalancePayment(BookingModel bookingModel)
+        public async Task<(ActionOutcome, Guid bookingID)> AddOrUpdateBookingBalancePayment(BookingModel bookingModel)
             {
                 var result = new ActionOutcome();
                 bool isValid = true;
@@ -310,6 +311,7 @@ namespace SWD.TicketBooking.Service.Services
                                             ServiceID = ticketService.ServiceID,
                                             Quantity = ticketService.Quantity,
                                             Price = ticketService.Price,
+                                            HasCheck = false,
                                             Status = SD.Booking_ServiceStatus.NOTPAYING_TICKETSERVICE
                                         };
                                         await _unitOfWork.TicketDetail_ServiceRepository.AddAsync(newTicketService);
