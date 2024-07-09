@@ -780,10 +780,10 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             var createTime = createTrip.TimeTrips[i];
                             var checkExistTemplateInTime = await _unitOfWork.TripRepository
-                                                                         .FindByCondition(_ => _.TemplateID == createTrip.TemplateID
-                                                                                            && _.IsTemplate == false
-                                                                                            && _.Status == SD.GeneralStatus.ACTIVE)
-                                                                         .ToListAsync();
+                                                                            .FindByCondition(_ => _.TemplateID == createTrip.TemplateID
+                                                                                               && _.IsTemplate == false
+                                                                                               && _.Status == SD.GeneralStatus.ACTIVE)
+                                                                            .ToListAsync();
 
                             foreach (var existingTrip in checkExistTemplateInTime)
                             {
