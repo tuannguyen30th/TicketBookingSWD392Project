@@ -5,6 +5,9 @@ namespace SWD.TicketBooking.API.ResponseModels
 
     public class GetTicketDetailInMobileResponse
     {
+        [JsonPropertyName("TicketDetailID")]
+        public Guid TicketDetailID { get; set; }
+
         [JsonPropertyName("QrCodeImage")]
         public string QrCodeImage { get; set; }
 
@@ -52,6 +55,15 @@ namespace SWD.TicketBooking.API.ResponseModels
 
         [JsonPropertyName("ImageUrl")]
         public string ImageUrl { get; set; }
+
+        [JsonPropertyName("HasCheck")]
+        public bool? HasCheck { get; set; }
+
+        [JsonPropertyName("ServiceID")]
+        public Guid ServiceID { get; set; }
+        [JsonPropertyName("StationID")]
+        public Guid StationID { get; set; }
+
 
     }
 }

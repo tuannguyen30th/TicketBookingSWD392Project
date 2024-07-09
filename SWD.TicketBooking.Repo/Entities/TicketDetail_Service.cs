@@ -21,5 +21,7 @@ namespace SWD.TicketBooking.Repo.Entities
         public double? Price { get; set; }
         public bool? HasCheck { get; set; }
         public string? Status { get; set; } = string.Empty;
+
+        public bool? HasCheck { get; set; }
     }
 }

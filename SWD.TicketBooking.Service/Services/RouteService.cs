@@ -39,6 +39,81 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        public async Task<List<PopularRouteModel>> GetPopularRoutes()
+        {
+            try
+            {
+                // Get the total bookings per trip
+                var test = await _unitOfWork.BookingRepository
+                    .GetAll()
+                    .GroupBy(b => b.TripID)
+                    .Select(g => new
+                    {
+                        TripID = g.Key,
+                        TotalBooking = g.Count()
+                    })
+                    .ToListAsync();
+
+                // Get the route IDs for each trip
+                var routeIDs = await _unitOfWork.TripRepository
+                    .GetAll()
+                    .Where(t => test.Select(tt => tt.TripID).Contains(t.TripID))
+                    .Include(t => t.Route_Company.Route)
+                    .Select(t => t.Route_Company.RouteID)
+                    .Distinct()
+                    .ToListAsync();
+
+                // Order the route IDs by the total bookings per trip
+                var topRoutes = routeIDs
+                    .GroupBy(r => r)
+                    .Select(g => new
+                    {
+                        RouteID = g.Key,
+                        TotalBookings = test.Where(t => _unitOfWork.TripRepository
+                            .GetAll()
+                            .Include(tr => tr.Route_Company.Route)
+                            .Where(tr => tr.TripID == t.TripID)
+                            .Select(tr => tr.Route_Company.RouteID)
+                            .Contains(g.Key))
+                            .Sum(t => t.TotalBooking)
+                    })
+                    .OrderByDescending(r => r.TotalBookings)
+                    .Take(5)
+                    .ToList();
+
+                var rs = new List<PopularRouteModel>();
+
+                foreach(var route in topRoutes)
+                {
+                    var getRoute = await _unitOfWork.RouteRepository
+                                                    .GetAll()
+                                                    .Include(_ => _.FromCity)
+                                                    .Include(_ => _.ToCity)
+                                                    .Where(_ => _.RouteID.Equals((Guid)route.RouteID))
+                                                    .FirstOrDefaultAsync();
+
+                    var routeRs = new PopularRouteModel
+                    {
+                        RouteID = getRoute.RouteID,
+                        FromCity = getRoute.FromCity.Name,
+                        ToCity = getRoute.ToCity.Name,
+                        StartLocation = getRoute.StartLocation,
+                        EndLocation = getRoute.EndLocation,
+                        TotalBooking = route.TotalBookings
+                    };
+
+                    rs.Add(routeRs);
+                }
+
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
         public async Task<List<GetRouteFromCompanyModel>> GetAllRouteFromCompany(Guid companyID)
         {
             try
@@ -194,8 +269,6 @@ namespace SWD.TicketBooking.Service.Services
                 }
                 if (model.FromCityID != Guid.Empty && model.ToCityID != Guid.Empty && !model.StartLocation.IsNullOrEmpty() && !model.EndLocation.IsNullOrEmpty())
                 {
-                    route.FromCityID = model.FromCityID;
-                    route.ToCityID = model.ToCityID;
                     route.StartLocation = model.StartLocation;
                     route.EndLocation = model.EndLocation;
 

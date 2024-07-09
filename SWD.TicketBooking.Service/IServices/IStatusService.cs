@@ -9,6 +9,7 @@ namespace SWD.TicketBooking.Service.IServices
     public interface IStatusService
     {
         Task<int> ChangeStatus(string entity, Guid Id);
+        Task<int> UpdateStatusServiceInTicket(Guid stationId, Guid ticketDetailId, Guid serviceId);
 
     }
 }

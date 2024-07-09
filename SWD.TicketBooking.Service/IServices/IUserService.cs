@@ -20,5 +20,6 @@ namespace SWD.TicketBooking.Service.IServices
         Task<bool> UploadAvatar(IFormFile file);
         Task<List<GetStaffFromCompanyModel>> GetStaffFromCompany(Guid companyID);
         Task<Guid> GetCompanyIDByUser (Guid userId);
+        Task<List<UserModel>> GetAllUsersByRole(string roleName);
     }
 }
