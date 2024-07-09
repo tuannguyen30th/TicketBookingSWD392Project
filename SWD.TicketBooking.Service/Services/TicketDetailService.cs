@@ -433,13 +433,14 @@ namespace SWD.TicketBooking.Service.Services
                                                     .FindByCondition(rc => rc.Route_CompanyID.Equals(trip.Route_CompanyID) && rc.Status.Equals(SD.GeneralStatus.ACTIVE))
                                                     .FirstOrDefaultAsync();
                 var route = await _unitOfWork.RouteRepository
-                                             .FindByCondition(r => r.RouteID.Equals(routeCompany.RouteID) && r.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                             .FindByCondition(r => r.RouteID.Equals(routeCompany.RouteID) /*&& r.Status.Equals(SD.GeneralStatus.ACTIVE)*/)
                                              .FirstOrDefaultAsync();
 
                 var routeResponse = GetTripBaseOnModel(trip, booking, route, ticketDetail);
 
                 var result = new GetTicketDetailInMobileModel
                 {
+                    TicketDetailID = ticketDetail.TicketDetailID,
                     Name = booking.FullName,
                     PhoneNumber = booking.PhoneNumber,
                     SeatCode = ticketDetail.SeatCode,
@@ -515,7 +516,10 @@ namespace SWD.TicketBooking.Service.Services
                     Station = station.Name,
                     Quantity = service_ticket.Quantity ?? 0,
                     TotalPrice = (service_ticket.Price ?? 0) * (service_ticket.Quantity ?? 0),
-                    ImageUrl = station_service.ImageUrl
+                    ImageUrl = station_service.ImageUrl,
+                    HasCheck = service_ticket.HasCheck,
+                    ServiceID = serviceResponse.ServiceID,
+                    StationID = station.StationID
                 };
 
                 rs.Add(serviceResult);
