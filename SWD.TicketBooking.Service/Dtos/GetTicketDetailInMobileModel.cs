@@ -8,6 +8,8 @@ namespace SWD.TicketBooking.Service.Dtos
 {
     public class GetTicketDetailInMobileModel
     {
+        public Guid TicketDetailID { get; set; }
+
         public string QrCodeImage { get; set; }
         public string Status {  get; set; }
         public string Name { get; set; }
@@ -18,6 +20,7 @@ namespace SWD.TicketBooking.Service.Dtos
         public string Route {  get; set; }
         public Guid TripID { get; set; }
         public List<ServiceInTicketModel> Services { get; set; }
+
     }
 
     public class  ServiceInTicketModel
@@ -27,5 +30,9 @@ namespace SWD.TicketBooking.Service.Dtos
         public string Station { get; set; }
         public double TotalPrice { get; set; }
         public string ImageUrl { get; set; }
+        public bool? HasCheck { get; set; }
+        public Guid ServiceID { get; set; }
+        public Guid StationID { get; set; }
+
     }
 }
