@@ -122,7 +122,7 @@ namespace SWD.TicketBooking.Service.Services
                                                          .ToListAsync();
 
                     var company = await _unitOfWork.Route_CompanyRepository
-                                   .FindByCondition(_ => _.RouteID == booking.Trip.Route_Company.RouteID)
+                                   .FindByCondition(_ => _.Route_CompanyID == booking.Trip.Route_CompanyID)
                                    .Include(_ => _.Company)
                                    .FirstOrDefaultAsync();
 

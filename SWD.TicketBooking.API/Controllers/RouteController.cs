@@ -48,6 +48,14 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = await _routeService.GetAllRouteFromCompany(companyID);
             var response = _mapper.Map<List<GetRouteFromCompanyResponse>>(rs);        
             return Ok(response);
+        }        
+        
+        [HttpGet("managed-routes/popular")]
+        public async Task<IActionResult> GetPopularRoutes()
+        {
+            var rs = await _routeService.GetPopularRoutes();
+            //var response = _mapper.Map<List<GetRouteFromCompanyResponse>>(rs);        
+            return Ok(rs);
         }
         /*        [AllowAnonymous]
                 [HttpGet("managed-routes")]
