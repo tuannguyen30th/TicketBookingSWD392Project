@@ -103,6 +103,14 @@ namespace SWD.TicketBooking.API.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpPut("ticket-detail/station/service")]
+        public async Task<IActionResult> ChangeStatusServiceInTicketDetail(Guid ticketDetailServiceID)
+        {
+            var rs = await _ticketDetailService.UpdateStatusServiceInTicket(ticketDetailServiceID);
+            return Ok(rs);
+        }
+
 
         [HttpPut("managed-ticket-details/{ticketDetailID}/status")]
         public async Task<IActionResult> ChangeStatus([FromRoute] Guid ticketDetailID)
