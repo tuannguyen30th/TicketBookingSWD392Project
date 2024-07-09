@@ -240,6 +240,70 @@ public class IdentityService
         }
     }
 
+    public async Task<int> CreateManagementAccount(string email, string companyName)
+    {
+        try
+        {
+            if (!FunctionCommon.IsValidEmail(email))
+            {
+                throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
+            }
+            var checkEmail = await _unitOfWork.UserRepository
+                                              .FindByCondition(e => e.Email.Equals(email))
+                                              .FirstOrDefaultAsync();
+            if (checkEmail == null)
+            {
+                var password = GenerateRandomPassword();
+                var mailData = new MailData
+                {
+                    EmailToId = email,
+                    EmailToName = "TicketBookingWebSite",
+                    EmailBody = "Your password is" + password,
+                    EmailSubject = "YOUR ACCOUNT IN THE BUS JOURNEY"
+                };
+                var emailResult = await _emailService.SendEmailAsync(mailData);
+                if (!emailResult)
+                {
+                    return 0;
+                }
+                var user = await _unitOfWork.UserRepository.AddAsync( new User
+                {
+                    Email = email,
+                    Password = SecurityUtil.Hash(password),
+                    Avatar = "https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o/AVATAR_DEFAULT%2Fdc5551cc-b063-45d8-86e0-84ec6b7d2af6?alt=media&token=8f897d9b-bc83-45e2-9102-f0056f93a914",
+                    Status = SD.GeneralStatus.ACTIVE,
+                    UserID = Guid.NewGuid()
+                });
+                var company = await _unitOfWork.CompanyRepository.AddAsync(new Company
+                {
+                    Name = companyName,
+                    Status = SD.GeneralStatus.ACTIVE,
+                    UserID = user.UserID
+                });
+                var rs = _unitOfWork.Complete();
+                return rs;
+            }
+            else
+            {
+                throw new InternalServerErrorException(SD.Notification.Existed("EMAIL","USER"));
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
+
+    }
+
+    private string GenerateRandomPassword()
+    {
+        const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        var random = new Random();
+        return new string(Enumerable.Repeat(validChars, 8)
+                                    .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+
     public async Task<bool> SendOtpToUser(string email, string fullName)
     {
         try

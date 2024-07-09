@@ -131,6 +131,12 @@ public class AuthController : ControllerBase
         }));
     }
 
+    [HttpPost("managed-auths/manager")]
+    public async Task<IActionResult> CreateAccountForManager(string email, string companyName)
+    {
+        var rs = await _identityService.CreateManagementAccount(email, companyName);
+        return Ok(rs);
+    }
     private async Task<IActionResult> SignUpForCustomer(SignUpRequest req)
     {
         try
@@ -164,4 +170,6 @@ public class AuthController : ControllerBase
             throw new Exception(ex.Message, ex);
         }
     }
+
+
 }

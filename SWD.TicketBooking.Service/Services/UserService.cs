@@ -26,14 +26,16 @@ namespace SWD.TicketBooking.Service.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         public readonly IFirebaseService _firebaseService;
+        private readonly IEmailService _emailService;
 
         public static int Page_Size { get; set; } = 10;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseService firebaseService)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseService firebaseService, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _firebaseService = firebaseService;
+            _emailService = emailService;
         }
         public async Task<Repo.Entities.User> GetUserByAccessToken(string accessToken)
         {
@@ -114,6 +116,8 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+       
         public async Task<(CreateUserReq returnModel, string message)> SendOTPCode(CreateUserReq req)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
