@@ -437,7 +437,7 @@ namespace SWD.TicketBooking.Service.Services
                                              .FirstOrDefaultAsync();
 
                 var routeResponse = GetTripBaseOnModel(trip, booking, route, ticketDetail);
-
+                
                 var result = new GetTicketDetailInMobileModel
                 {
                     TicketDetailID = ticketDetail.TicketDetailID,
@@ -459,6 +459,19 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        public async Task<Guid> GetTicketDetailService(Guid stationId, Guid ticketDetailId, Guid serviceId)
+        {
+            var check = await _unitOfWork.TicketDetail_ServiceRepository
+                                             .GetAll()
+                                             .Where(t=>t.TicketDetailID.Equals(ticketDetailId) &&
+                                                       t.ServiceID.Equals(serviceId) &&
+                                                       t.StationID.Equals(stationId)
+                                                    )
+                                             .FirstOrDefaultAsync();
+            return check.TicketDetail_ServiceID;
+        }
+        
 
         public async Task<int> ChangeStatus(Guid ticketDetailID)
         {
@@ -509,7 +522,13 @@ namespace SWD.TicketBooking.Service.Services
                                                                          .FirstOrDefaultAsync();
                 var service_ticket = await _unitOfWork.TicketDetail_ServiceRepository.FindByCondition(st => st.TicketDetailID.Equals(ticketDetailId) && st.ServiceID.Equals(service) && st.Status.Equals(SD.Booking_ServiceStatus.PAYING_TICKETSERVICE))
                                                                                     .FirstOrDefaultAsync();
-
+                var ticketDetailService = await _unitOfWork.TicketDetail_ServiceRepository
+                                             .GetAll()
+                                             .Where(t => t.TicketDetailID.Equals(ticketDetailId) &&
+                                                       t.ServiceID.Equals(service) &&
+                                                       t.StationID.Equals(station.StationID)
+                                                    )
+                                             .FirstOrDefaultAsync();
                 var serviceResult = new ServiceInTicketModel
                 {
                     ServiceName = serviceResponse.Name,
@@ -519,7 +538,8 @@ namespace SWD.TicketBooking.Service.Services
                     ImageUrl = station_service.ImageUrl,
                     HasCheck = service_ticket.HasCheck,
                     ServiceID = serviceResponse.ServiceID,
-                    StationID = station.StationID
+                    StationID = station.StationID,
+                    TicketDetailServiceID = ticketDetailService.TicketDetail_ServiceID
                 };
 
                 rs.Add(serviceResult);
@@ -553,5 +573,28 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<int> UpdateStatusServiceInTicket(Guid ticketDetailServiceID)
+        {
+            try
+            {
+                var check = await _unitOfWork.TicketDetail_ServiceRepository
+                                             .GetAll()
+                                             .Where(t => t.TicketDetail_ServiceID.Equals(ticketDetailServiceID))
+                                             .FirstOrDefaultAsync();
+                if (check == null)
+                {
+                    throw new InternalServerErrorException(SD.Notification.Internal("DỊCH VỤ", "KHI CẬP NHẬT TRẠNG THÁI CHO DỊCH VỤ NÀY"));
+                }
+                check.HasCheck = true;
+                var rs = _unitOfWork.Complete();
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException(SD.Notification.Internal("CẬP NHẬT", "KHI CẬP NHẬT TRẠNG THÁI"));
+            }
+        }
+
     }
 }

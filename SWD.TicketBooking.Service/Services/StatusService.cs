@@ -212,31 +212,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateStatusServiceInTicket(Guid stationId, Guid ticketDetailId, Guid serviceId)
-        {
-            try
-            {
-                var check = await _unitOfWork.TicketDetail_ServiceRepository
-                                             .GetAll()
-                                             .Where(t=>t.TicketDetailID.Equals(ticketDetailId) &&
-                                                       t.ServiceID.Equals(serviceId) &&
-                                                       t.StationID.Equals(stationId)
-                                                    )
-                                             .FirstOrDefaultAsync();
-                if (check == null)
-                {
-                    throw new InternalServerErrorException(SD.Notification.Internal("DỊCH VỤ", "KHI CẬP NHẬT TRẠNG THÁI CHO DỊCH VỤ NÀY"));
-                }
-                check.HasCheck = true;
-                var rs = _unitOfWork.Complete();
-                return rs;
-            }
-            catch (Exception ex) 
-            {
-                throw new InternalServerErrorException(SD.Notification.Internal("CẬP NHẬT", "KHI CẬP NHẬT TRẠNG THÁI"));
-            }
-        }
-
+        
 
     }
 }

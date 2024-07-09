@@ -33,6 +33,8 @@ namespace SWD.TicketBooking.Service.Dtos
         public bool? HasCheck { get; set; }
         public Guid ServiceID { get; set; }
         public Guid StationID { get; set; }
+        public Guid TicketDetailServiceID { get; set; }
+
 
     }
 }
