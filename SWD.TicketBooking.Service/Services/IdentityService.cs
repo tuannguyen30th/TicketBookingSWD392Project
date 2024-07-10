@@ -265,7 +265,7 @@ public class IdentityService
                 var emailResult = await _emailService.SendEmailAsync(mailData);
                 if (!emailResult)
                 {
-                    return 0;
+                    return false;
                 }
                 var userId = Guid.NewGuid();
                 var companyId = Guid.NewGuid();
