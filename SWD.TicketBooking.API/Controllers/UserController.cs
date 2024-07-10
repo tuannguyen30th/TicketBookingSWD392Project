@@ -279,19 +279,19 @@ namespace SWD.TicketBooking.Controllers
         [HttpPut("managed-users/update-balance/userID/{userID}/balance/{balance}")]
         public async Task<IActionResult> UpdateBalance([FromRoute] Guid userID, [FromRoute] double balance)
         {
-            var user = await _unitOfWork.UserRepository.GetAll().Where(_ => _.UserID.Equals(userID)).FirstOrDefaultAsync();
+            var user = await _unitOfWork.TransactionRepository.GetAll().Where(_ => _.UserID.Equals(userID)).OrderByDescending(_ => _.TransactionDate).FirstOrDefaultAsync();
             if (user == null)
             {
                 return BadRequest("Cannot find user");
             }
-            user.Balance = balance;
-            var update = _unitOfWork.UserRepository.Update(user);
+            user.BalanceAfterTransaction = balance;
+            var update = _unitOfWork.TransactionRepository.Update(user);
             if (update == null)
             {
                 return BadRequest("Update failed");
             }
             _unitOfWork.Complete();
-            return Ok(update.Balance);
+            return Ok(update.BalanceAfterTransaction);
         }
     }
 }

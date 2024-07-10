@@ -30,6 +30,11 @@
             public static string PAYING_TICKETSERVICE = "ĐÃ THANH TOÁN";
             public static string CANCEL_TICKETSERVICE = "ĐÃ HỦY";
         }
+        public class TransactionStatus
+        {
+            public static string TRANSACTION_PAYMENT = "CHI TRẢ";
+            public static string TRANSACTION_CANCELLATION = "HỦY BỎ";
+        }
         public class GeneralStatus
         {
             public static string ACTIVE = "HOẠT ĐỘNG";

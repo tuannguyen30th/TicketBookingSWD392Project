@@ -32,6 +32,7 @@ namespace SWD.TicketBooking.Repo.Entities
         public DbSet<Booking> Booking { get; set; }
         public DbSet<TicketDetail> TicketDetail { get; set; }
         public DbSet<Station_Service> Station_Service { get; set; }
+        public DbSet<Transaction> Transaction { get; set; }
 
         public DbSet<TicketDetail_Service> TicketDetail_Service { get; set; }
         public DbSet<City> City { get; set; }

@@ -93,7 +93,6 @@ public class IdentityService
                     UserID = Guid.NewGuid(),
                     Email = userResultNew.Email,
                     Avatar = userResultNew.Picture,
-                    Balance = 0,
                     CreateDate = DateTime.Now,
                     Password = "",
                     FullName = userResultNew.Name,

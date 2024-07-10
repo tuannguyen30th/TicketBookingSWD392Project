@@ -33,6 +33,7 @@ namespace SWD.TicketBooking.API.Installer
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserRoleRepository, UserRoleRepository>();
             services.AddTransient<IUtilityRepository, UtilityRepository>();
+            services.AddTransient<ITransactionRepository, TransactionRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
     }

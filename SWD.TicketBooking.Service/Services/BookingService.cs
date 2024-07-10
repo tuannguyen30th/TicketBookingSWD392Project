@@ -15,6 +15,7 @@ using SWD.TicketBooking.Service.Utilities;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using Transaction = SWD.TicketBooking.Repo.Entities.Transaction;
 
 namespace SWD.TicketBooking.Service.Services
 {
@@ -22,7 +23,6 @@ namespace SWD.TicketBooking.Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPaymentGatewayService _paymentGatewayService;
-
         public readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
@@ -87,9 +87,10 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
                     {                   
-                        totalBalance = await _unitOfWork.UserRepository
+                        totalBalance = (double)await _unitOfWork.TransactionRepository
                                                         .FindByCondition(_ => _.UserID == bookingModel.AddOrUpdateBookingModel.UserID)
-                                                        .Select(_ => _.Balance)
+                                                        .OrderByDescending(_ => _.TransactionDate)
+                                                        .Select(_ => _.BalanceAfterTransaction)
                                                         .FirstOrDefaultAsync();
                         if (totalBalance > 0)
                         {
@@ -200,8 +201,7 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var result = new ActionOutcome();
                 bool isValid = true;
-                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-                {
+          
                     try
                     {
                         if (bookingModel.AddOrUpdateBookingModel == null || bookingModel.AddOrUpdateTicketModels == null)
@@ -247,12 +247,13 @@ namespace SWD.TicketBooking.Service.Services
                             throw new BadRequestException("SAI KHÁC VỀ SỐ LƯỢNG HOẶC TỔNG HÓA ĐƠN.");
                         }
                         if (bookingModel.AddOrUpdateBookingModel.IsBalance == true)
-                        { 
-                            totalBalance = await _unitOfWork.UserRepository
-                                                            .FindByCondition(_ => _.UserID == bookingModel.AddOrUpdateBookingModel.UserID)
-                                                            .Select(_ => _.Balance)
-                                                            .FirstOrDefaultAsync();
-                            if (totalBalance >= bookingModel.AddOrUpdateBookingModel.TotalBill)
+                        {
+                           var lastTransaction = await _unitOfWork.TransactionRepository
+                                                  .FindByCondition(t => t.UserID == bookingModel.AddOrUpdateBookingModel.UserID)
+                                                  .OrderByDescending(t => t.TransactionDate)
+                                                  .FirstOrDefaultAsync();
+                           double newBalance = (lastTransaction?.BalanceAfterTransaction ?? 0);
+                         if (newBalance >= bookingModel.AddOrUpdateBookingModel.TotalBill)
                             {
                                 newBooking = new Booking
                                 {
@@ -268,7 +269,7 @@ namespace SWD.TicketBooking.Service.Services
                                     TotalBalancePayment = bookingModel.AddOrUpdateBookingModel.TotalBill,
                                     PaymentStatus = SD.BookingStatus.NOTPAYING_BOOKING,
                                 };
-                            }
+                        }
                             else throw new BadRequestException("SỐ DƯ KHÔNG ĐỦ ĐỂ THỰC HIỆN DỊCH VỤ NÀY!");
                         }
                         await _unitOfWork.BookingRepository.AddAsync(newBooking);
@@ -322,11 +323,10 @@ namespace SWD.TicketBooking.Service.Services
                                     isValid = false;
                                 }
                             };
-                        }
+                        }                                
                         _unitOfWork.Complete();
                         var rs = await UpdateStatusBooking(newBooking.BookingID);
                         result.Result = rs;                  
-                        scope.Complete();
                         return (result, newBooking.BookingID);
                     }
 
@@ -334,7 +334,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new Exception(ex.Message, ex);
                     }
-                }
+                
             
             }
         public async Task<List<SendMailBookingModel.MailBookingModel>> UpdateStatusBooking(Guid bookingID)
@@ -396,12 +396,27 @@ namespace SWD.TicketBooking.Service.Services
                 };              
                 if (findBooking.TotalBalancePayment > 0)
                 {
-                    findBooking.User.Balance -= (double)findBooking.TotalBalancePayment;
-                    if(findBooking.User.Balance < 0)
+                    var lastTransaction = await _unitOfWork.TransactionRepository
+                                                     .FindByCondition(t => t.UserID == findBooking.User.UserID)
+                                                     .OrderByDescending(t => t.TransactionDate)
+                                                     .FirstOrDefaultAsync();
+                    double? newBalance = (lastTransaction?.BalanceAfterTransaction ?? 0);
+                    newBalance -= findBooking.TotalBalancePayment;
+                    if (newBalance < 0)
                     {
-                        findBooking.User.Balance = 0;
+                        newBalance = 0;
                     }
-                    _unitOfWork.UserRepository.Update(findBooking.User);
+
+                    var newTransaction = new Transaction
+                    {
+                        TransactionID = Guid.NewGuid(),
+                        UserID = findBooking.User.UserID,
+                        Amount = findBooking.TotalBalancePayment,
+                        TransactionDate = DateTime.Now,
+                        BalanceAfterTransaction = newBalance,
+                        TransactionType = SD.TransactionStatus.TRANSACTION_PAYMENT
+                    };
+                    _unitOfWork.TransactionRepository.AddAsync(newTransaction);
                 }
                 _unitOfWork.Complete();
                 foreach(var ticket in findTicket)
@@ -438,67 +453,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        public async Task<ActionOutcome> CancelTicket(Guid ticketDetailID)
-        {
-            try
-            {
-                var result = new ActionOutcome();
-                double totalBillCancel = 0;
-                DateTime currentTime = DateTime.Now;
-                var findTicket = await _unitOfWork.TicketDetailRepository.GetByIdAsync(ticketDetailID);
-                if (findTicket == null)
-                {
-                    throw new NotFoundException(SD.Notification.NotFound("VÉ"));
-                }
-                var startTime = findTicket.Booking.Trip.StartTime;
-                if (currentTime <= startTime?.AddHours(-12))
-                {
-                    findTicket.Status = SD.Booking_TicketStatus.CANCEL_TICKET;
-                    totalBillCancel += (double)findTicket.Price;
-                    _unitOfWork.TicketDetailRepository.Update(findTicket);
-                    var findService = await _unitOfWork.TicketDetail_ServiceRepository
-                                                       .GetAll()
-                                                       .Where(_ => _.TicketDetailID == ticketDetailID)
-                                                       .ToListAsync();
-                    foreach (var ticket in findService)
-                    {
-                        ticket.Status = SD.Booking_ServiceStatus.CANCEL_TICKETSERVICE;
-                        totalBillCancel += (double)(ticket.Quantity * ticket.Price);
-                        _unitOfWork.TicketDetail_ServiceRepository.Update(ticket);
-                    }
-                    var findUser = await _unitOfWork.TicketDetailRepository
-                                                    .FindByCondition(_ => _.TicketDetailID == ticketDetailID)
-                                                    .Select(_ => _.Booking.User)
-                                                    .FirstOrDefaultAsync();
-                    findUser.Balance = totalBillCancel * 0.7;
-                    _unitOfWork.UserRepository.Update(findUser);
-                    var otherTickets = await _unitOfWork.TicketDetailRepository
-                                                        .FindByCondition(_ => _.BookingID == findTicket.BookingID && _.TicketDetailID != ticketDetailID)
-                                                        .ToListAsync();
-
-                    if (otherTickets == null || !otherTickets.Any())
-                    {
-                        var findBooking = await _unitOfWork.BookingRepository.GetByIdAsync((Guid)findTicket.BookingID);
-                        if (findBooking != null)
-                        {
-                            findBooking.PaymentStatus = SD.BookingStatus.CANCEL_BOOKING;
-                            _unitOfWork.BookingRepository.Update(findBooking);
-                        }
-                    }
-                }
-                else
-                {
-                    throw new BadRequestException("THỜI GIAN HỦY VÉ ĐÃ QUÁ HẠN, XIN LỖI VÌ SỰ BẤT TIỆN NÀY!");
-                }
-                _unitOfWork.Complete();
-                result.Message = "HỦY VÉ THÀNH CÔNG!";
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
-        }
+ 
         private async Task RemoveNotPayingBooking(Guid userId)
         {
             var checkNotPaying = await _unitOfWork.BookingRepository

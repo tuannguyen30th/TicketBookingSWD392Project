@@ -28,6 +28,7 @@ namespace SWD.TicketBooking.Repo.UnitOfWork
         ITicketTypeRepository TicketTypeRepository { get; }
         ITrip_UtilityRepository Trip_UtilityRepository { get; }
         ITripPictureRepository TripPictureRepository { get; }
+        ITransactionRepository TransactionRepository { get; }
         ITripRepository TripRepository { get; }
         IUserRepository UserRepository { get; }
         IUserRoleRepository UserRoleRepository { get; }

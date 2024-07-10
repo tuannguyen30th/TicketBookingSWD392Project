@@ -152,10 +152,14 @@ namespace SWD.TicketBooking.API.Controllers
             foreach (var bookingResponse in mailBookingResponses)
             {
                 StringBuilder serviceDetails = new StringBuilder();
+                double totalServiceCost = 0;
                 if (bookingResponse.MailBookingServices != null)
                 {
                     foreach (var service in bookingResponse.MailBookingServices)
                     {
+
+                        double serviceTotal = service.ServicePrice * service.Quantity;
+                        totalServiceCost += serviceTotal;
                         serviceDetails.AppendLine($@"
             <p style=""font-size: medium; margin: 0;"">
                 <span style=""color: dimgray;"">Dịch vụ:</span>
@@ -172,6 +176,7 @@ namespace SWD.TicketBooking.API.Controllers
                 <span style=""color: dimgray;"">Không có dịch vụ nào!</span>
             </p>");
                 }
+                double totalBill = bookingResponse.Price + totalServiceCost;
                 emailBody.AppendLine($@"
         <body style=""font-size: 14px; background: #f5f5f5; padding: 20px;"">
             <h1 style=""text-align: center;"">Xác nhận hoàn thành đặt vé</h1>
@@ -202,7 +207,7 @@ namespace SWD.TicketBooking.API.Controllers
                 <tr>
                     <td colspan=""2"" style=""padding: 20px; text-align: center; background: #F5B642;"">
                         <h1 style=""font-size: 18px;"">Tổng hóa đơn</h1>
-                        <h1>{bookingResponse.TotalBill:N0}đ</h1>
+                        <h1>{totalBill:N0}đ</h1>
                         <div style=""height: 100px; margin: 20px 0;"">
                             <img src=""{bookingResponse.QrCodeImage}"" alt=""QR code"" style=""height: 100%;"" />
                         </div>

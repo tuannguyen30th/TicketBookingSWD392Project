@@ -35,7 +35,7 @@ namespace SWD.TicketBooking.Repo.Entities
 
         [MaxLength(15)]
         public string? PhoneNumber { get; set; } = string.Empty;
-        public double Balance { get; set; }
+        //public double Balance { get; set; }
         public DateTimeOffset? CreateDate { get; set; }
         public bool? IsVerified { get; set; }
         public string? AccessToken { get; set; } = string.Empty;

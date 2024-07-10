@@ -15,6 +15,8 @@ using SWD.TicketBooking.Service.Dtos.User;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.Transactions;
 using static QRCoder.PayloadGenerator;
 using static System.Net.WebRequestMethods;
@@ -107,8 +109,30 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
                 }
-                var userEntity = _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).Include(_ => _.UserRole).FirstOrDefault();
-                var userModel = _mapper.Map<UserModel>(userEntity);
+                var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).Include(_ => _.UserRole).FirstOrDefaultAsync();
+                var getBalance = (double) await _unitOfWork.TransactionRepository
+                                                           .FindByCondition(_ => _.UserID == userEntity.UserID)
+                                                           .OrderByDescending(_ => _.TransactionDate)
+                                                           .Select(_ => _.BalanceAfterTransaction)
+                                                           .FirstOrDefaultAsync();
+                var userModel = new UserModel
+                {
+                    UserID = userEntity.UserID,
+                    UserName = userEntity.UserName,
+                    Password = userEntity.Password,
+                    FullName = userEntity.FullName,
+                    Email = userEntity.Email,
+                    Avatar = userEntity.Avatar,
+                    Address = userEntity.Address,
+                    OTPCode = userEntity.OTPCode,
+                    PhoneNumber = userEntity.PhoneNumber,
+                    Balance = getBalance,
+                    CreateDate = userEntity.CreateDate,
+                    IsVerified = userEntity.IsVerified,
+                    Status = userEntity.Status,
+                    CompanyID = (Guid)userEntity.CompanyID,
+                    RoleID = (Guid)userEntity.RoleID
+                };
                 return userModel;
             }
             catch (Exception ex)
@@ -222,13 +246,37 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                var user = await _unitOfWork.UserRepository
+                var userEntity = await _unitOfWork.UserRepository
                                             .GetAll()
                                             .Where(u => u.UserID.Equals(id))
                                             .Include(u => u.UserRole)
                                             .FirstOrDefaultAsync();
-                var us = _mapper.Map<UserDetailModel>(user);
-                return us;
+                var getBalance = (double)await _unitOfWork.TransactionRepository
+                                                          .FindByCondition(_ => _.UserID == userEntity.UserID)
+                                                          .OrderByDescending(_ => _.TransactionDate)
+                                                          .Select(_ => _.BalanceAfterTransaction)
+                                                          .FirstOrDefaultAsync();
+                var userModel = new UserDetailModel
+                {
+                    UserID = userEntity.UserID,
+                    UserName = userEntity.UserName,
+                    Password = userEntity.Password,
+                    FullName = userEntity.FullName,
+                    Email = userEntity.Email,
+                    Avatar = userEntity.Avatar,
+                    Address = userEntity.Address,
+                    OTPCode = userEntity.OTPCode,
+                    PhoneNumber = userEntity.PhoneNumber,
+                    Balance = getBalance,
+                    CreateDate = userEntity.CreateDate,
+                    IsVerified = userEntity.IsVerified,
+                    Status = userEntity.Status,
+                    CompanyID = (Guid)userEntity.CompanyID,
+                    RoleID = (Guid)userEntity.RoleID,
+                    RoleName = userEntity.UserRole.RoleName
+
+                };
+                return userModel;
             }
             catch (Exception ex)
             {

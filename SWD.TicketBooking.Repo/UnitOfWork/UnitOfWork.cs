@@ -30,6 +30,7 @@ namespace SWD.TicketBooking.Repo.UnitOfWork
         public ITicketDetailRepository TicketDetailRepository { get; }
         public ITicketType_TripRepository TicketType_TripRepository { get; }
         public ITicketTypeRepository TicketTypeRepository { get; }
+        public ITransactionRepository TransactionRepository { get; }
         public ITrip_UtilityRepository Trip_UtilityRepository { get; }
         public ITripPictureRepository TripPictureRepository { get; }
         public ITripRepository TripRepository { get; }
@@ -54,6 +55,7 @@ namespace SWD.TicketBooking.Repo.UnitOfWork
             ITicketDetail_ServiceRepository ticketDetail_ServiceRepository,
             ITicketDetailRepository ticketDetailRepository,
             ITicketType_TripRepository ticketType_TripRepository,
+            ITransactionRepository transactionRepository,
             ITicketTypeRepository ticketTypeRepository,
             ITrip_UtilityRepository trip_UtilityRepository,
             ITripPictureRepository tripPictureRepository,
@@ -81,6 +83,7 @@ namespace SWD.TicketBooking.Repo.UnitOfWork
             TicketType_TripRepository = ticketType_TripRepository;
             TicketTypeRepository = ticketTypeRepository;
             Trip_UtilityRepository = trip_UtilityRepository;
+            TransactionRepository = transactionRepository;
             TripPictureRepository = tripPictureRepository;
             TripRepository = tripRepository;
             UserRepository = userRepository;
