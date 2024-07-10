@@ -9,7 +9,9 @@ namespace SWD.TicketBooking.Service.Dtos
     public class PopularRouteModel
     {
         public Guid RouteID { get; set; }
+        public Guid FromCityID { get; set; }
         public string FromCity { get; set; }
+        public Guid ToCityID { get; set; }
         public string ToCity { get; set; }
         public string StartLocation { get; set; }
         public string EndLocation { get; set; }
