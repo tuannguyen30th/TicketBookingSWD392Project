@@ -93,7 +93,9 @@ namespace SWD.TicketBooking.Service.Services
                     var routeRs = new PopularRouteModel
                     {
                         RouteID = getRoute.RouteID,
+                        FromCityID = getRoute.FromCity.CityID,
                         FromCity = getRoute.FromCity.Name,
+                        ToCityID = getRoute.ToCity.CityID,
                         ToCity = getRoute.ToCity.Name,
                         StartLocation = getRoute.StartLocation,
                         EndLocation = getRoute.EndLocation,

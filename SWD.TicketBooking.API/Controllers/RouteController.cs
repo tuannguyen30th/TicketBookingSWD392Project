@@ -53,9 +53,9 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpGet("managed-routes/popular")]
         public async Task<IActionResult> GetPopularRoutes()
         {
-            var rs = await _routeService.GetPopularRoutes();
-            //var response = _mapper.Map<List<GetRouteFromCompanyResponse>>(rs);        
-            return Ok(rs);
+            var rs = await _routeService.GetPopularRoutes();      
+            var response = _mapper.Map<List<PopularRouteResponse>>(rs);
+            return Ok(response);
         }
         /*        [AllowAnonymous]
                 [HttpGet("managed-routes")]
