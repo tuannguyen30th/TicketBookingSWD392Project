@@ -278,6 +278,7 @@ public class IdentityService
                     CreateDate = DateTime.Now,
                     RoleID = new Guid("9ADBB896-AB5C-4688-9048-30CC8367A519"),
                     Status = SD.GeneralStatus.ACTIVE,
+                    FullName = companyName,
                     IsVerified = true
                 };
                 await _unitOfWork.UserRepository.AddAsync(user);
