@@ -277,7 +277,8 @@ public class IdentityService
                     Avatar = "https://firebasestorage.googleapis.com/v0/b/ticketbooking-427114.appspot.com/o/AVATAR_DEFAULT%2Fbb2cc7bf-b176-4518-88ef-0896b73f32e6?alt=media&token=05fbc03f-a08a-41ef-a746-f6177483d873",
                     CreateDate = DateTime.Now,
                     RoleID = new Guid("9ADBB896-AB5C-4688-9048-30CC8367A519"),
-                    Status = SD.GeneralStatus.ACTIVE
+                    Status = SD.GeneralStatus.ACTIVE,
+                    FullName = companyName
                 };
                 await _unitOfWork.UserRepository.AddAsync(user);
                 _unitOfWork.Complete();
