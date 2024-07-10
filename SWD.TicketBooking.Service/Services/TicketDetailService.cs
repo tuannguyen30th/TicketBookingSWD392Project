@@ -294,7 +294,7 @@ namespace SWD.TicketBooking.Service.Services
                     var priceRs = new PriceInSearchTicketModel
                     {
                         Price = (double)ticketDetail.Price,
-                        Services = await GetAllServiceName(services)
+                        Services = await GetAllServiceName(services, ticketDetail.TicketDetailID)
                     };
 
                     var rs = new SearchTicketModel
@@ -315,7 +315,7 @@ namespace SWD.TicketBooking.Service.Services
 
         }
 
-        public async Task<List<ServiceInSearchTicket>> GetAllServiceName(List<Guid?> serviceID)
+        public async Task<List<ServiceInSearchTicket>> GetAllServiceName(List<Guid?> serviceID, Guid ticketDetail)
         {
             var rs = new List<ServiceInSearchTicket>();
             foreach (var item in serviceID)
@@ -328,6 +328,12 @@ namespace SWD.TicketBooking.Service.Services
                                                           t.Quantity
                                                       })
                                                       .FirstOrDefaultAsync();
+                var stationID = await _unitOfWork.TicketDetail_ServiceRepository
+                                                 .FindByCondition(t => t.TicketDetailID.Equals(ticketDetail) && t.ServiceID.Equals(item))
+                                                 .FirstOrDefaultAsync();
+                var station = await _unitOfWork.StationRepository
+                                                .FindByCondition(s => s.StationID.Equals(stationID.StationID))
+                                                .FirstOrDefaultAsync();
                 var name = await _unitOfWork.ServiceRepository
                                              .FindByCondition(t => t.ServiceID == item)
                                              .Select(s => s.Name)
@@ -336,7 +342,8 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     Price = (double)(priceInService.Price * priceInService.Quantity),
                     Quantity = (int)priceInService.Quantity,
-                    ServiceName = name
+                    ServiceName = name,
+                    StationName= station.Name
                 };
                 rs.Add(stationModel);
             }
@@ -503,6 +510,7 @@ namespace SWD.TicketBooking.Service.Services
                                                        t.StationID.Equals(station.StationID)
                                                     )
                                              .FirstOrDefaultAsync();
+                
                 var serviceResult = new ServiceInTicketModel
                 {
                     ServiceName = serviceResponse.Name,
@@ -513,7 +521,7 @@ namespace SWD.TicketBooking.Service.Services
                     HasCheck = service_ticket.HasCheck,
                     ServiceID = serviceResponse.ServiceID,
                     StationID = station.StationID,
-                    TicketDetailServiceID = ticketDetailService.TicketDetail_ServiceID
+                    TicketDetailServiceID = ticketDetailService?.TicketDetailID ?? Guid.Empty
                 };
 
                 rs.Add(serviceResult);
@@ -548,20 +556,26 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateStatusServiceInTicket(Guid ticketDetailServiceID)
+        public async Task<int> UpdateStatusServiceInTickets(List<Guid> ticketDetailServiceIDs)
         {
             try
             {
-                var check = await _unitOfWork.TicketDetail_ServiceRepository
-                                             .GetAll()
-                                             .Where(t => t.TicketDetail_ServiceID.Equals(ticketDetailServiceID))
-                                             .FirstOrDefaultAsync();
-                if (check == null)
+                var checkList = await _unitOfWork.TicketDetail_ServiceRepository
+                                                 .GetAll()
+                                                 .Where(t => ticketDetailServiceIDs.Contains(t.TicketDetail_ServiceID))
+                                                 .ToListAsync();
+
+                if (checkList == null || !checkList.Any())
                 {
                     throw new InternalServerErrorException(SD.Notification.Internal("DỊCH VỤ", "KHI CẬP NHẬT TRẠNG THÁI CHO DỊCH VỤ NÀY"));
                 }
-                check.HasCheck = true;
-                var rs = _unitOfWork.Complete();
+
+                foreach (var check in checkList)
+                {
+                    check.HasCheck = true;
+                }
+
+                var rs =  _unitOfWork.Complete(); // Ensure CompleteAsync returns an int if using async
                 return rs;
             }
             catch (Exception ex)
@@ -569,6 +583,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new InternalServerErrorException(SD.Notification.Internal("CẬP NHẬT", "KHI CẬP NHẬT TRẠNG THÁI"));
             }
         }
+
 
     }
 }

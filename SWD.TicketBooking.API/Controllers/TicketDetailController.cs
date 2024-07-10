@@ -105,9 +105,9 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpPut("ticket-detail/station/service")]
-        public async Task<IActionResult> ChangeStatusServiceInTicketDetail(Guid ticketDetailServiceID)
+        public async Task<IActionResult> ChangeStatusServiceInTicketDetail(List<Guid> ticketDetailServiceID)
         {
-            var rs = await _ticketDetailService.UpdateStatusServiceInTicket(ticketDetailServiceID);
+            var rs = await _ticketDetailService.UpdateStatusServiceInTickets(ticketDetailServiceID);
             return Ok(rs);
         }
 
