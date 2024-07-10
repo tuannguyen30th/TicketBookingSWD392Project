@@ -159,8 +159,8 @@ namespace SWD.TicketBooking.API.Controllers
                         serviceDetails.AppendLine($@"
             <p style=""font-size: medium; margin: 0;"">
                 <span style=""color: dimgray;"">Dịch vụ:</span>
-                <span style=""font-weight: bold;color: #ea7019;"">{service.ServiceName} - </span>
-                <span style=""font-weight: bold;color: #ea7019;"">{service.ServicePrice:N0}đ - </span>                                           
+                <span style=""font-weight: bold;color: #ea7019;"">{service.ServiceName} (x{service.Quantity}) - </span>
+                <span style=""font-weight: bold;color: #ea7019;"">{(service.ServicePrice * service.Quantity):N0}đ - </span>                                           
                 <span style=""font-weight: bold;"">{service.AtStation}</span>
             </p>");
                     }

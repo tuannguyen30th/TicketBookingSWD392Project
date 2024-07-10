@@ -412,6 +412,7 @@ namespace SWD.TicketBooking.Service.Services
                                                                .Select(_ => new SendMailBookingModel.MailBookingServiceModel
                                                                {
                                                                    ServicePrice = (double)_.Price,
+                                                                   Quantity = (int)_.Quantity,
                                                                    ServiceName = _.Service.Name,
                                                                    AtStation = _.Station.Name
                                                                }).ToListAsync();

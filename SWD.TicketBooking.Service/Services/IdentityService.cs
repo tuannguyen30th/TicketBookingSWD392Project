@@ -19,6 +19,7 @@ using static QRCoder.PayloadGenerator;
 using Org.BouncyCastle.Ocsp;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SWD.TicketBooking.Service.Services;
 
@@ -240,8 +241,8 @@ public class IdentityService
         }
     }
 
-    public async Task<int> CreateManagementAccount(string email, string companyName)
-    {
+    public async Task<bool> CreateManagementAccount(string email, string companyName)
+        {
         try
         {
             if (!FunctionCommon.IsValidEmail(email))
@@ -258,30 +259,41 @@ public class IdentityService
                 {
                     EmailToId = email,
                     EmailToName = "TicketBookingWebSite",
-                    EmailBody = "Your password is" + password,
-                    EmailSubject = "YOUR ACCOUNT IN THE BUS JOURNEY"
+                    EmailBody = SendAccountToManager(email, password, companyName),
+                    EmailSubject = "TÀI KHOẢN CÔNG TY ĐÃ ĐĂNG KÍ TẠI WEBSITE THE BUS JOURNEY"
                 };
                 var emailResult = await _emailService.SendEmailAsync(mailData);
                 if (!emailResult)
                 {
                     return 0;
                 }
-                var user = await _unitOfWork.UserRepository.AddAsync( new User
+                var userId = Guid.NewGuid();
+                var companyId = Guid.NewGuid();
+                var user = new User
                 {
+                    UserID = userId,
                     Email = email,
                     Password = SecurityUtil.Hash(password),
-                    Avatar = "https://firebasestorage.googleapis.com/v0/b/cloudfunction-yt-2b3df.appspot.com/o/AVATAR_DEFAULT%2Fdc5551cc-b063-45d8-86e0-84ec6b7d2af6?alt=media&token=8f897d9b-bc83-45e2-9102-f0056f93a914",
-                    Status = SD.GeneralStatus.ACTIVE,
-                    UserID = Guid.NewGuid()
-                });
-                var company = await _unitOfWork.CompanyRepository.AddAsync(new Company
+                    Avatar = "https://firebasestorage.googleapis.com/v0/b/ticketbooking-427114.appspot.com/o/AVATAR_DEFAULT%2Fbb2cc7bf-b176-4518-88ef-0896b73f32e6?alt=media&token=05fbc03f-a08a-41ef-a746-f6177483d873",
+                    CreateDate = DateTime.Now,
+                    RoleID = new Guid("9ADBB896-AB5C-4688-9048-30CC8367A519"),
+                    Status = SD.GeneralStatus.ACTIVE
+                };
+                await _unitOfWork.UserRepository.AddAsync(user);
+                _unitOfWork.Complete();
+                var company = new Company
                 {
+                    CompanyID = companyId,
                     Name = companyName,
                     Status = SD.GeneralStatus.ACTIVE,
-                    UserID = user.UserID
-                });
+                    UserID = userId 
+                };
+                await _unitOfWork.CompanyRepository.AddAsync(company);
+                _unitOfWork.Complete();
+                user.CompanyID = companyId;
+                _unitOfWork.UserRepository.Update(user);
                 var rs = _unitOfWork.Complete();
-                return rs;
+                return rs > 0 ? true : false;
             }
             else
             {
@@ -542,5 +554,40 @@ public class IdentityService
   </body>
 
     ";
+    }
+    private string SendAccountToManager(string email, string password, string companyName)
+    {
+        return $@"<body style=""font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f6f6f6;"">
+    <div style=""max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"">
+        <div class=""header"">
+            <div style=""text-align: center"">
+                <img
+                  src=""https://img.freepik.com/free-vector/students-bus-transportation_24877-83765.jpg?size=338&ext=jpg&ga=GA1.1.553209589.1715040000&semt=ais""
+                  alt=""logo""
+                  width=""70""
+                />
+            </div>
+            <p style=""text-align: center; font-weight: bold; margin-top: 0"">
+                <span style=""color: #f99f41"">THE BUS </span>
+                <span style=""color: #3498db"">JOURNEY</span>
+            </p>
+        </div>
+        <div  style=""padding: 5px 20px 20px;"">
+            <p>Xin chào quí khách !</p>
+            <p>Bạn đã thành công trong việc đăng kí Website <strong>The Bus Journey.</strong> </p>
+            <p>Với tên công ty là : <strong style=""font-size: 18px; color:#f99f41;"">{companyName}.</strong>
+            <p>Dưới đây là tài khoản của bạn: </p>
+            <p>Email: <strong>{email}</strong></p>
+            <p>Mật khẩu: <strong>{password}</strong></p>
+            <p>Vui lòng giữ kín thông tin này và không được chia sẻ đến bất cứ ai, nếu có chuyện gì xảy ra ngoài ý muốn <strong>The Bus Journey</strong> sẽ không chịu trách nhiệm.</p>
+            <p>Xin cảm ơn !</p>
+        </div>
+        <div style=""text-align: center; padding: 10px; font-size: 12px; color: #777777;"">
+            <p>Cảm ơn bạn đã chọn dịch vụ của chúng tôi !</p>
+            <p>Vui lòng truy cập vào Website <strong>The Bus Journey</strong> để tiếp tục !</p>
+            <a href=""https://admin-bus-journey.vercel.app/?fbclid=IwZXh0bgNhZW0CMTAAAR3s1jlKgf1Vzv6Ypt6YQ5s9iE3O3jnsln30ECpErINLUgrJS8CbUHoQ7-A_aem_V25RoaCRILDky_Gk7TYrNg"">https://admin-bus-journey.vercel.app</a>
+        </div>
+    </div>
+</body>";
     }
 }
