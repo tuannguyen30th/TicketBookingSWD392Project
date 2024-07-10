@@ -17,7 +17,7 @@ namespace SWD.TicketBooking.Service.Services
         Task<bool> VerifyTicketDetail(string qrCode);
 
         Task<int> ChangeStatus(Guid ticketDetailID);
-        Task<int> UpdateStatusServiceInTicket(Guid ticketDetailServiceID);
+        Task<int> UpdateStatusServiceInTicket(List<Guid> ticketDetailServiceIDs);
 
     }
 }

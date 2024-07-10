@@ -446,7 +446,7 @@ namespace SWD.TicketBooking.Service.Services
                                                     .FindByCondition(rc => rc.Route_CompanyID.Equals(trip.Route_CompanyID) && rc.Status.Equals(SD.GeneralStatus.ACTIVE))
                                                     .FirstOrDefaultAsync();
                 var route = await _unitOfWork.RouteRepository
-                                             .FindByCondition(r => r.RouteID.Equals(routeCompany.RouteID) /*&& r.Status.Equals(SD.GeneralStatus.ACTIVE)*/)
+                                             .FindByCondition(r => r.RouteID.Equals(routeCompany.RouteID) && r.Status.Equals(SD.GeneralStatus.ACTIVE))
                                              .FirstOrDefaultAsync();
 
                 var routeResponse = GetTripBaseOnModel(trip, booking, route, ticketDetail);
@@ -587,20 +587,27 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> UpdateStatusServiceInTicket(Guid ticketDetailServiceID)
+
+        public async Task<int> UpdateStatusServiceInTickets(List<Guid> ticketDetailServiceIDs)
         {
             try
             {
-                var check = await _unitOfWork.TicketDetail_ServiceRepository
-                                             .GetAll()
-                                             .Where(t => t.TicketDetail_ServiceID.Equals(ticketDetailServiceID))
-                                             .FirstOrDefaultAsync();
-                if (check == null)
+                var checkList = await _unitOfWork.TicketDetail_ServiceRepository
+                                                 .GetAll()
+                                                 .Where(t => ticketDetailServiceIDs.Equals(t.TicketDetail_ServiceID))
+                                                 .ToListAsync();
+
+                if (checkList == null || !checkList.Any())
                 {
                     throw new InternalServerErrorException(SD.Notification.Internal("DỊCH VỤ", "KHI CẬP NHẬT TRẠNG THÁI CHO DỊCH VỤ NÀY"));
                 }
-                check.HasCheck = true;
-                var rs = _unitOfWork.Complete();
+
+                foreach (var check in checkList)
+                {
+                    check.HasCheck = true;
+                }
+
+                var rs = _unitOfWork.Complete(); // Ensure CompleteAsync returns an int if using async
                 return rs;
             }
             catch (Exception ex)
@@ -608,6 +615,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new InternalServerErrorException(SD.Notification.Internal("CẬP NHẬT", "KHI CẬP NHẬT TRẠNG THÁI"));
             }
         }
+
 
     }
 }
