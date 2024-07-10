@@ -64,7 +64,7 @@ namespace SWD.TicketBooking.Service.Services
                     var serviceDetailModel = new ServiceDetailModel
                     {
                         ServiceName = ticketDetail_Service.Service.Name,
-                        ServicePrice = (double)ticketDetail_Service.Price,
+                        ServicePrice = (double)(ticketDetail_Service.Price * ticketDetail_Service.Quantity),
                         Quantity = (int)ticketDetail_Service.Quantity,
                         ServiceInStation = ticketDetail_Service.Station.Name
                     };
