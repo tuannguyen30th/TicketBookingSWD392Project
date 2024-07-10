@@ -326,7 +326,7 @@ namespace SWD.TicketBooking.Service.Services
                     var priceRs = new PriceInSearchTicketModel
                     {
                         Price = (double)ticketDetail.Price,
-                        Services = await GetAllServiceName(services)
+                        Services = await GetAllServiceName(services, ticketDetail.TicketDetailID)
                     };
 
                     var rs = new SearchTicketModel
@@ -347,7 +347,7 @@ namespace SWD.TicketBooking.Service.Services
 
         }
 
-        public async Task<List<ServiceInSearchTicket>> GetAllServiceName(List<Guid?> serviceID)
+        public async Task<List<ServiceInSearchTicket>> GetAllServiceName(List<Guid?> serviceID, Guid ticketDetail)
         {
             var rs = new List<ServiceInSearchTicket>();
             foreach (var item in serviceID)
@@ -360,6 +360,12 @@ namespace SWD.TicketBooking.Service.Services
                                                           t.Quantity
                                                       })
                                                       .FirstOrDefaultAsync();
+                var stationID = await _unitOfWork.TicketDetail_ServiceRepository
+                                                 .FindByCondition(t => t.TicketDetailID.Equals(ticketDetail) && t.ServiceID.Equals(item))
+                                                 .FirstOrDefaultAsync();
+                var station = await _unitOfWork.StationRepository
+                                                .FindByCondition(s => s.StationID.Equals(stationID.StationID))
+                                                .FirstOrDefaultAsync();
                 var name = await _unitOfWork.ServiceRepository
                                              .FindByCondition(t => t.ServiceID == item)
                                              .Select(s => s.Name)
@@ -368,7 +374,8 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     Price = (double)(priceInService.Price * priceInService.Quantity),
                     Quantity = (int)priceInService.Quantity,
-                    ServiceName = name
+                    ServiceName = name,
+                    StationName= station.Name
                 };
                 rs.Add(stationModel);
             }
