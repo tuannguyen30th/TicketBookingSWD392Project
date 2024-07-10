@@ -45,7 +45,7 @@ namespace SWD.TicketBooking.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("managed-ticket-details/customers/{customerID}")]
-        [Cache(1200)]
+        //[Cache(1200)]
         public async Task<IActionResult> GetTicketDetailByUser([FromRoute] Guid customerID)
         {
             try

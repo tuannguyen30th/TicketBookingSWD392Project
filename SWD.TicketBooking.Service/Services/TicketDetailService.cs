@@ -110,6 +110,7 @@ namespace SWD.TicketBooking.Service.Services
                                                 .Include(_ => _.Trip.Route_Company.Route.FromCity)
                                                 .Include(_ => _.Trip.Route_Company.Route.ToCity)
                                                 .Include(_ => _.Trip.Route_Company.Route)
+                                                .OrderByDescending(_ => _.BookingTime)
                                                 .ToListAsync();
 
                 var rsList = new List<GetTicketDetailByUserModel>();
@@ -353,7 +354,11 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var priceInService = await _unitOfWork.TicketDetail_ServiceRepository
                                                       .FindByCondition(t => t.ServiceID == item)
-                                                      .Select(t => t.Price)
+                                                      .Select(t => new
+                                                      {
+                                                          t.Price,
+                                                          t.Quantity
+                                                      })
                                                       .FirstOrDefaultAsync();
                 var name = await _unitOfWork.ServiceRepository
                                              .FindByCondition(t => t.ServiceID == item)
@@ -361,7 +366,8 @@ namespace SWD.TicketBooking.Service.Services
                                              .FirstOrDefaultAsync();
                 var stationModel = new ServiceInSearchTicket
                 {
-                    Price = (double)priceInService,
+                    Price = (double)(priceInService.Price * priceInService.Quantity),
+                    Quantity = (int)priceInService.Quantity,
                     ServiceName = name
                 };
                 rs.Add(stationModel);

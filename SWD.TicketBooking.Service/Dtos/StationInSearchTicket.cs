@@ -13,6 +13,8 @@ namespace SWD.TicketBooking.Service.Dtos
         public string? ServiceName { get; set; }
         [JsonPropertyName("Price")]
         public double Price { get; set; }
+        [JsonPropertyName("Quantity")]
+        public int Quantity { get; set; }
 
     }
 }

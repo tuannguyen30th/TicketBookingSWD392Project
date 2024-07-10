@@ -44,7 +44,6 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-                // Get the total bookings per trip
                 var test = await _unitOfWork.BookingRepository
                     .GetAll()
                     .GroupBy(b => b.TripID)
@@ -55,7 +54,6 @@ namespace SWD.TicketBooking.Service.Services
                     })
                     .ToListAsync();
 
-                // Get the route IDs for each trip
                 var routeIDs = await _unitOfWork.TripRepository
                     .GetAll()
                     .Where(t => test.Select(tt => tt.TripID).Contains(t.TripID))
@@ -64,23 +62,22 @@ namespace SWD.TicketBooking.Service.Services
                     .Distinct()
                     .ToListAsync();
 
-                // Order the route IDs by the total bookings per trip
-                var topRoutes = routeIDs
-                    .GroupBy(r => r)
+                var allTrips = _unitOfWork.TripRepository
+                    .GetAll()
+                    .Include(tr => tr.Route_Company.Route)
+                    .ToList();
+
+                var topRoutes = allTrips
+                    .GroupBy(tr => tr.Route_Company.RouteID)
                     .Select(g => new
                     {
                         RouteID = g.Key,
-                        TotalBookings = test.Where(t => _unitOfWork.TripRepository
-                            .GetAll()
-                            .Include(tr => tr.Route_Company.Route)
-                            .Where(tr => tr.TripID == t.TripID)
-                            .Select(tr => tr.Route_Company.RouteID)
-                            .Contains(g.Key))
-                            .Sum(t => t.TotalBooking)
+                        TotalBookings = g.Sum(tr => test.Where(t => t.TripID == tr.TripID).Sum(t => t.TotalBooking))
                     })
                     .OrderByDescending(r => r.TotalBookings)
                     .Take(5)
                     .ToList();
+
 
                 var rs = new List<PopularRouteModel>();
 
