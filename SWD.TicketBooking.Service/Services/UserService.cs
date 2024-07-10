@@ -111,9 +111,9 @@ namespace SWD.TicketBooking.Service.Services
                 }
 
                 var userEntity = await _unitOfWork.UserRepository
-                    .FindByCondition(x => x.Email == email)
-                    .Include(_ => _.UserRole)
-                    .FirstOrDefaultAsync();
+                                                  .FindByCondition(x => x.Email == email)
+                                                  .Include(_ => _.UserRole)
+                                                  .FirstOrDefaultAsync();
 
                 if (userEntity == null)
                 {
@@ -137,7 +137,7 @@ namespace SWD.TicketBooking.Service.Services
                     Address = userEntity.Address ,
                     OTPCode = userEntity.OTPCode ,
                     PhoneNumber = userEntity.PhoneNumber ,
-                    Balance = (int)getBalance,
+                    Balance = getBalance,
                     CreateDate = userEntity.CreateDate,
                     IsVerified = userEntity.IsVerified,
                     Status = userEntity.Status,
@@ -266,8 +266,12 @@ namespace SWD.TicketBooking.Service.Services
                                             .Where(u => u.UserID.Equals(id))
                                             .Include(u => u.UserRole)
                                             .FirstOrDefaultAsync();
+                if (userEntity == null)
+                {
+                    throw new NotFoundException(SD.Notification.NotFound("NGƯỜI DÙNG"));
+                }
                 var getBalance = await _unitOfWork.TransactionRepository
-                                                   .FindByCondition(_ => _.UserID == userEntity.UserID)
+                                                   .FindByCondition(_ => _.UserID == id)
                                                    .OrderByDescending(_ => _.TransactionDate)
                                                    .Select(_ => (double?)_.BalanceAfterTransaction)
                                                    .FirstOrDefaultAsync() ?? 0.0;
@@ -287,9 +291,9 @@ namespace SWD.TicketBooking.Service.Services
                     CreateDate = userEntity.CreateDate,
                     IsVerified = userEntity.IsVerified,
                     Status = userEntity.Status,
-                    CompanyID = (Guid)userEntity.CompanyID,
-                    RoleID = (Guid)userEntity.RoleID,
-                    RoleName = userEntity.UserRole.RoleName
+                    CompanyID = userEntity.CompanyID,
+                    RoleID = userEntity.RoleID,
+                    RoleName = userEntity.UserRole?.RoleName
 
                 };
                 return userModel;

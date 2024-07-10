@@ -22,7 +22,7 @@ namespace SWD.TicketBooking.Service.Dtos
 
         [MaxLength(255)]
         [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        public string? Email { get; set; } = string.Empty;
 
         public string? Avatar { get; set; }
 
@@ -33,13 +33,13 @@ namespace SWD.TicketBooking.Service.Dtos
 
         [MaxLength(15)]
         public string? PhoneNumber { get; set; } = string.Empty;
-        public double Balance { get; set; }
+        public double? Balance { get; set; }
         public DateTimeOffset? CreateDate { get; set; }
         public bool? IsVerified { get; set; }
 
         public string? Status { get; set; } = string.Empty;
-        public Guid RoleID { get; set; }
-        public Guid CompanyID { get; set; }
-        public string RoleName { get; set; }
+        public Guid? RoleID { get; set; }
+        public Guid? CompanyID { get; set; }
+        public string? RoleName { get; set; }
     }
 }
