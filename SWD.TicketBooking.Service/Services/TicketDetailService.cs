@@ -542,6 +542,7 @@ namespace SWD.TicketBooking.Service.Services
                                                        t.StationID.Equals(station.StationID)
                                                     )
                                              .FirstOrDefaultAsync();
+                
                 var serviceResult = new ServiceInTicketModel
                 {
                     ServiceName = serviceResponse.Name,
@@ -552,7 +553,7 @@ namespace SWD.TicketBooking.Service.Services
                     HasCheck = service_ticket.HasCheck,
                     ServiceID = serviceResponse.ServiceID,
                     StationID = station.StationID,
-                    TicketDetailServiceID = ticketDetailService.TicketDetail_ServiceID
+                    TicketDetailServiceID = ticketDetailService?.TicketDetailID ?? Guid.Empty
                 };
 
                 rs.Add(serviceResult);
