@@ -25,7 +25,7 @@ namespace SWD.TicketBooking.Service.Dtos.User
         [MaxLength(255)]
         [EmailAddress]
         [JsonPropertyName("Email")]
-        public string Email { get; set; } = string.Empty;
+        public string? Email { get; set; } = string.Empty;
 
         [JsonPropertyName("Avatar")]
         public string? Avatar { get; set; }
@@ -42,7 +42,7 @@ namespace SWD.TicketBooking.Service.Dtos.User
         public string? PhoneNumber { get; set; } = string.Empty;
 
         [JsonPropertyName("Balance")]
-        public double Balance { get; set; }
+        public double? Balance { get; set; }
 
         [JsonPropertyName("CreateDate")]
         public DateTimeOffset? CreateDate { get; set; }
@@ -54,9 +54,9 @@ namespace SWD.TicketBooking.Service.Dtos.User
         public string? Status { get; set; } = string.Empty;
 
         [JsonPropertyName("CompanyID")]
-        public Guid CompanyID { get; set; }
+        public Guid? CompanyID { get; set; }
 
         [JsonPropertyName("RoleID")]
-        public Guid RoleID { get; set; }
+        public Guid? RoleID { get; set; }
     }
 }

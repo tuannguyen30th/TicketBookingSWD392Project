@@ -109,30 +109,42 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new BadRequestException("EMAIL KHÔNG HỢP LỆ!");
                 }
-                var userEntity = await _unitOfWork.UserRepository.FindByCondition(x => x.Email == email).Include(_ => _.UserRole).FirstOrDefaultAsync();
-                var getBalance = (double) await _unitOfWork.TransactionRepository
-                                                           .FindByCondition(_ => _.UserID == userEntity.UserID)
-                                                           .OrderByDescending(_ => _.TransactionDate)
-                                                           .Select(_ => _.BalanceAfterTransaction)
-                                                           .FirstOrDefaultAsync();
+
+                var userEntity = await _unitOfWork.UserRepository
+                    .FindByCondition(x => x.Email == email)
+                    .Include(_ => _.UserRole)
+                    .FirstOrDefaultAsync();
+
+                if (userEntity == null)
+                {
+                    throw new NotFoundException("KHÔNG TÌM THẤY NGƯỜI DÙNG VỚI EMAIL NÀY!");
+                }
+
+                var getBalance = await _unitOfWork.TransactionRepository
+                                                  .FindByCondition(_ => _.UserID == userEntity.UserID)
+                                                  .OrderByDescending(_ => _.TransactionDate)
+                                                  .Select(_ => (double?)_.BalanceAfterTransaction)
+                                                  .FirstOrDefaultAsync() ?? 0.0;
+
                 var userModel = new UserModel
                 {
                     UserID = userEntity.UserID,
-                    UserName = userEntity.UserName,
-                    Password = userEntity.Password,
-                    FullName = userEntity.FullName,
-                    Email = userEntity.Email,
-                    Avatar = userEntity.Avatar,
-                    Address = userEntity.Address,
-                    OTPCode = userEntity.OTPCode,
-                    PhoneNumber = userEntity.PhoneNumber,
-                    Balance = getBalance,
+                    UserName = userEntity.UserName ,
+                    Password = userEntity.Password ,
+                    FullName = userEntity.FullName ,
+                    Email = userEntity.Email ,
+                    Avatar = userEntity.Avatar ,
+                    Address = userEntity.Address ,
+                    OTPCode = userEntity.OTPCode ,
+                    PhoneNumber = userEntity.PhoneNumber ,
+                    Balance = (int)getBalance,
                     CreateDate = userEntity.CreateDate,
                     IsVerified = userEntity.IsVerified,
                     Status = userEntity.Status,
-                    CompanyID = (Guid)userEntity.CompanyID,
-                    RoleID = (Guid)userEntity.RoleID
+                    CompanyID = userEntity.CompanyID ,
+                    RoleID = userEntity.UserRole?.RoleID 
                 };
+
                 return userModel;
             }
             catch (Exception ex)
@@ -141,7 +153,10 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-       
+
+
+
+
         public async Task<(CreateUserReq returnModel, string message)> SendOTPCode(CreateUserReq req)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -251,11 +266,12 @@ namespace SWD.TicketBooking.Service.Services
                                             .Where(u => u.UserID.Equals(id))
                                             .Include(u => u.UserRole)
                                             .FirstOrDefaultAsync();
-                var getBalance = (double)await _unitOfWork.TransactionRepository
-                                                          .FindByCondition(_ => _.UserID == userEntity.UserID)
-                                                          .OrderByDescending(_ => _.TransactionDate)
-                                                          .Select(_ => _.BalanceAfterTransaction)
-                                                          .FirstOrDefaultAsync();
+                var getBalance = await _unitOfWork.TransactionRepository
+                                                   .FindByCondition(_ => _.UserID == userEntity.UserID)
+                                                   .OrderByDescending(_ => _.TransactionDate)
+                                                   .Select(_ => (double?)_.BalanceAfterTransaction)
+                                                   .FirstOrDefaultAsync() ?? 0.0;
+
                 var userModel = new UserDetailModel
                 {
                     UserID = userEntity.UserID,
