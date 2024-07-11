@@ -13,6 +13,9 @@ namespace SWD.TicketBooking.API.ResponseModels
         public string CityName { get; set; }
         [JsonPropertyName("StationName")]
         public string StationName { get; set; }
+
+        [JsonPropertyName("Status")]
+        public string Status { get; set; }
         [JsonPropertyName("ServiceTypeInStation")]
         public List<ServiceTypeInStationModel> ServiceTypeInStation { get; set; }
     }
