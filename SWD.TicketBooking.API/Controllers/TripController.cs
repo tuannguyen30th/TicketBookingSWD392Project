@@ -52,9 +52,22 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpGet("manage-trips/{tripId}/pictures")]
         public async Task<IActionResult> GetTripPictureDetail(Guid tripId)
         {
-            //   var rs = _mapper.Map<List<GetPictureResponse>>(await _tripService.GetPictureOfTrip(tripId));
             var rs = new List<string>();
             rs = await _tripService.GetPictureOfTrip(tripId);
+            return Ok(rs);
+        }
+        [AllowAnonymous]
+        [HttpGet("manage-trips/{companyID}")]
+        public async Task<IActionResult> GetTripsFromCompany(Guid companyID)
+        {
+            var rs = await _tripService.GetTripsFromCompany(companyID);
+            return Ok(rs);
+        }
+        [AllowAnonymous]
+        [HttpGet("manage-trips/{tripID}/details")]
+        public async Task<IActionResult> TripDetails(Guid tripID)
+        {
+            var rs = await _tripService.TripDetails(tripID);
             return Ok(rs);
         }
         [HttpGet("managed-trips/from-city/{fromCity}/to-city/{toCity}/start-time/{startTime}/page-number/{pageNumber}/page-size/{pageSize}")]

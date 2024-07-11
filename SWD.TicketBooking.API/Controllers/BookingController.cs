@@ -185,6 +185,7 @@ namespace SWD.TicketBooking.API.Controllers
                     <td style=""width: 50%; vertical-align: top; border-right: 1px dashed #404040; padding: 20px;"">
                         <div style=""margin-bottom: 20px;"">
                             <p style=""font-size: large; font-weight: 600;"">Giá vé: <span style=""font-size: x-large; font-weight: 600;color: #ea7019;"">{bookingResponse.Price:N0}đ</span></p>
+                        
                             <p style=""font-size: medium; font-weight: 600;"">Giá dịch vụ:</p>
                         </div>
                         {serviceDetails}
@@ -211,7 +212,7 @@ namespace SWD.TicketBooking.API.Controllers
                         <div style=""height: 100px; margin: 20px 0;"">
                             <img src=""{bookingResponse.QrCodeImage}"" alt=""QR code"" style=""height: 100%;"" />
                         </div>
-                        <p>Cảm ơn quý khách đã tin tưởng</p>
+                        <p>Cảm ơn quý khách đã tin tưởng !</p>
                     </td>
                 </tr>
             </table>
