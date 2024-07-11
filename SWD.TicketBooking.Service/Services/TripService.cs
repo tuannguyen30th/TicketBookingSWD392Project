@@ -72,14 +72,14 @@ namespace SWD.TicketBooking.Service.Services
                                                        .FindByCondition(_ => _.TripID == tripID.TripID)
                                                        .Select(_ => (double?)_.Price)
                                                        .MinAsync() ?? 0;
-                    var companyName = tripID.Route_Company.Company.Name;
 
                     var searchTrip = new SearchTripModel
                     {
                         TripID = trip.TripID,
                         RouteID = (Guid)trip.Route_Company.RouteID,
                         TemplateID = (Guid)trip.TemplateID,
-                        CompanyName = companyName,
+                        CompanyName = tripID.Route_Company.Company.Name,
+                        CompanyID = tripID.Route_Company.Company.CompanyID,
                         ImageUrl = tripImage,
                         AverageRating = (double)roundedRatingAverage,
                         QuantityRating = ratingQuantity,
