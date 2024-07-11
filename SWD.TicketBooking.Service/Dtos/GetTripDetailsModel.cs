@@ -18,6 +18,8 @@ namespace SWD.TicketBooking.Service.Dtos
 
         [JsonPropertyName("StaffName")]
         public string? StaffName { get; set; }
+        [JsonPropertyName("StaffEmail")]
+        public string? StaffEmail { get; set; }
 
         [JsonPropertyName("FromCity")]
         public string? FromCity { get; set; }
@@ -69,6 +71,8 @@ namespace SWD.TicketBooking.Service.Dtos
 
         public class TripStationModel
         {
+            [JsonPropertyName("StationID")]
+            public Guid? StationID { get; set; }
             [JsonPropertyName("StationName")]
             public string? StationName { get; set; }
 
