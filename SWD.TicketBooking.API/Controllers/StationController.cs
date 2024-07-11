@@ -76,7 +76,7 @@ namespace SWD.TicketBooking.API.Controllers
         public async Task<IActionResult> GetStationById(Guid stationID)
         {
             var station = await _stationService.GetStationById(stationID);
-            var rs = _mapper.Map<GetStationResponse>(station);
+            var rs = _mapper.Map<GetStationByCompanyResponse>(station);
             return Ok(rs);
         }
 
