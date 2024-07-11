@@ -127,7 +127,7 @@ namespace SWD.TicketBooking.Service.Services
                                                   ToCity = _.Route.ToCity.Name,
                                                   StartLocation = _.Route.StartLocation,
                                                   EndLocation = _.Route.EndLocation,
-                                                  Status = _.Route.Status,
+                                                  Status = _.Status,
                                               })
                                               .ToListAsync();
                 return result;
