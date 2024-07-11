@@ -37,7 +37,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var stations = await _unitOfWork.StationRepository
-                                                .FindByCondition(_ => _.CompanyID.Equals(companyID) && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                .FindByCondition(_ => _.CompanyID.Equals(companyID))
                                                 .Include(_ => _.City)
                                                 .ToListAsync();
                 var result = new List<GetStationByCompanyModel>();
