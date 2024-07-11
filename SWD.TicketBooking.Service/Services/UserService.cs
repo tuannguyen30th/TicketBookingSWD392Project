@@ -310,7 +310,12 @@ namespace SWD.TicketBooking.Service.Services
                 var rs = await _unitOfWork.UserRepository.GetAll().Where(_ => _.CompanyID == companyID).Select(_ => new GetStaffFromCompanyModel
                 {
                     StaffID = _.UserID,
-                    Name = _.FullName
+                    CompanyID = companyID,
+                    Name = _.FullName,
+                    Email = _.Email,
+                    Password = _.Password,
+                    Address = _.Address,
+                    PhoneNumber = _.PhoneNumber
                 }).ToListAsync();
                 return rs;
             }

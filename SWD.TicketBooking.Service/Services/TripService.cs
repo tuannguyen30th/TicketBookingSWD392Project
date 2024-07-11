@@ -7,6 +7,10 @@ using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.Exceptions;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Linq;
+using static SWD.TicketBooking.Service.Dtos.GetTripDetailsModel;
 
 namespace SWD.TicketBooking.Service.Services
 {
@@ -99,6 +103,96 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
+        public async Task<GetTripDetailsModel> TripDetails(Guid tripID)
+        {
+            try
+            {
+                var trip = await _unitOfWork.TripRepository
+                                                     .GetAll()
+                                                     .Include(_ => _.User)
+                                                     .Include(_ => _.Route_Company)
+                                                     .ThenInclude(_ => _.Route)
+                                                     .ThenInclude(_ => _.FromCity)
+                                                     .Include(_ => _.Route_Company)
+                                                     .ThenInclude(_ => _.Route)
+                                                     .ThenInclude(_ => _.ToCity)
+                                                     .Where(_ => _.TripID == tripID)
+                                                     .FirstOrDefaultAsync();
+
+                var tripPictures = await _unitOfWork.TripPictureRepository.GetAll()
+                                                    .Where(_ => _.TripID == trip.TemplateID && _.Status == SD.GeneralStatus.ACTIVE)
+                                                    .Select(_ => _.ImageUrl)
+                                                    .ToListAsync();
+                var tripUtilities = await _unitOfWork.Trip_UtilityRepository
+                                                     .GetAll()
+                                                     .Include(_ => _.Utility)
+                                                     .Where(_ => _.TripID == trip.TemplateID && _.Status == SD.GeneralStatus.ACTIVE)
+                                                     .Select(_ => new TripUtilityModel
+                                                     {
+                                                         UtilityName = _.Utility.Name,
+                                                         Description = _.Utility.Description
+                                                     })
+                                                     .ToListAsync();
+                var getSeats = await _unitOfWork.TicketType_TripRepository
+                                                .GetAll()
+                                                .Include(_ => _.TicketType)
+                                                .Where(_ => _.TripID == trip.TemplateID && _.Status == SD.GeneralStatus.ACTIVE)
+                                                .Select(_ => new TripPriceSeat
+                                                {
+
+                                                    SeatName = _.TicketType.Name,
+                                                    Price = _.Price,
+                                                    Quantity = _.Quantity
+                                                })
+                                                .ToListAsync();
+                var stationsByRoute = await _unitOfWork.StationCompany_RouteRepository
+                                                       .GetAll()
+                                                       .Where(_ => _.RouteID == trip.Route_Company.RouteID 
+                                                                && _.Station_Company.CompanyID == trip.Route_Company.CompanyID && _.Status == SD.GeneralStatus.ACTIVE)
+                                                       .OrderBy(_ => _.OrderInRoute)
+                                                       .Select(_ => _.Station_CompanyID)
+                                                       .ToListAsync();
+                var stationsByCompany = await _unitOfWork.Station_CompanyRepository
+                                                         .GetAll()
+                                                         .Include(_ => _.Station.City)
+                                                         .Where(_ => stationsByRoute.Contains(_.Station_CompanyID)
+                                                                       && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                         .Include(_ => _.Station)
+                                                         .Select(_ => new TripStationModel
+                                                         {
+                                                             StationID = _.StationID,
+                                                             StationName = _.Station.Name,
+                                                             AtCity = _.Station.City.Name,
+                                                         })
+                                                         .ToListAsync();
+                var result = new GetTripDetailsModel
+                {
+                    TripID = trip.TripID,
+                    FromCity = trip.Route_Company.Route.FromCity.Name,
+                    ToCity = trip.Route_Company.Route.ToCity.Name,
+                    StartLocation = trip.Route_Company.Route.StartLocation,
+                    EndLocation = trip.Route_Company.Route.EndLocation,
+                    StartDate = trip.StartTime?.ToString("yyyy-MM-dd"),
+                    StartTime = trip.StartTime?.ToString("HH:mm"),
+                    EndDate = trip.EndTime?.ToString("yyyy-MM-dd"),
+                    EndTime = trip.EndTime?.ToString("HH:mm"),
+                    StaffName = trip?.User?.FullName,
+                    StaffID = trip?.User?.UserID,
+                    StaffEmail = trip?.User?.Email,
+                    ImageUrls = tripPictures,
+                    TripStationModels = stationsByCompany,
+                    TripPriceSeats = getSeats,
+                    TripUtilityModels = tripUtilities,
+                    Status = trip.Status,
+                };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
         public async Task<ActionOutcome> GetAllSeatsFromTrip(Guid tripID)
         {
             try
@@ -151,14 +245,9 @@ namespace SWD.TicketBooking.Service.Services
                                                          .Select(_ => _.TemplateID)
                                                          .FirstOrDefaultAsync();
 
-                    var getTripID = await _unitOfWork.TripRepository
-                                                     .FindByCondition(_ => _.TemplateID == getTemplateID)
-                                                     .ToListAsync();
-                    var tripID = getTripID.FirstOrDefault(_ => _.IsTemplate == true)?.TripID ?? Guid.Empty;
-
                     var pics = await _unitOfWork.TripPictureRepository
                                                 .GetAll()
-                                                .Where(_ => _.TripID == tripID)
+                                                .Where(_ => _.TripID == getTemplateID)
                                                 .Select(_ => _.TripPictureID)
                                                 .ToListAsync();
 
@@ -755,7 +844,6 @@ namespace SWD.TicketBooking.Service.Services
                     if (createTrip.StaffID.Count != createTrip.TimeTrips.Count)
                     {
                         throw new BadRequestException("MỖI CHUYẾN ĐI PHẢI CÓ NHÂN VIÊN GIÁM SÁT!");
-
                     }
                     bool hasOverlap = false;
                     for (int i = 0; i < createTrip.TimeTrips.Count; i++)
@@ -775,7 +863,6 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     else
                     {
-                      
                         for (int i = 0; i < createTrip.TimeTrips.Count; i++)
                         {
                             var createTime = createTrip.TimeTrips[i];
@@ -793,7 +880,7 @@ namespace SWD.TicketBooking.Service.Services
                                 }
                             }
                             var staff = createTrip.StaffID[i];
-                  
+
                             var trip = new Trip
                             {
                                 TripID = Guid.NewGuid(),
@@ -858,6 +945,10 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
                 }
+                if (trip.StartTime < DateTime.Now)
+                {
+                    throw new BadRequestException("KHÔNG THỂ THAY ĐỔI TRẠNG THÁI CỦA CHUYẾN XE");
+                }
                 trip.Status = SD.GeneralStatus.INACTIVE;
                 _unitOfWork.TripRepository.Update(trip);
                 var rs = _unitOfWork.Complete();
@@ -866,6 +957,59 @@ namespace SWD.TicketBooking.Service.Services
                     return true;
                 }
                 return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<List<GetTripFromCompanyModel>> GetTripsFromCompany(Guid companyID)
+        {
+            try
+            {
+                var list = new List<GetTripFromCompanyModel>();
+                var getRouteCompanyIds = await _unitOfWork.Route_CompanyRepository
+                                                          .GetAll()
+                                                          .Where(_ => _.CompanyID == companyID)
+                                                          .Select(_ => _.Route_CompanyID)
+                                                          .ToListAsync();
+
+                var getTrips = await _unitOfWork.TripRepository
+                                                .GetAll()
+                                                .Include(_ => _.User)
+                                                .Include(_ => _.Route_Company.Route.FromCity)
+                                                .Include(_ => _.Route_Company.Route.ToCity)
+                                                .Where(_ => getRouteCompanyIds.Contains((Guid)_.Route_CompanyID))
+                                                .ToListAsync();
+
+                foreach (var trip in getTrips)
+                {
+                    var getPrice = await _unitOfWork.TicketType_TripRepository
+                                                    .GetAll()
+                                                    .Include(_ => _.TicketType)
+                                                    .Where(_ => _.TripID == trip.TemplateID)
+                                                    .Select(_ => _.Price)
+                                                    .ToListAsync();
+                    var data = new GetTripFromCompanyModel
+                    {
+                        TripID = trip.TripID,
+                        FromCity = trip.Route_Company.Route.FromCity.Name,
+                        ToCity = trip.Route_Company.Route.ToCity.Name,
+                        StartLocation = trip.Route_Company.Route.StartLocation,
+                        EndLocation = trip.Route_Company.Route.EndLocation,
+                        StartDate = trip.StartTime?.ToString("yyyy-MM-dd"),
+                        StartTime = trip.StartTime?.ToString("HH:mm"),
+                        EndDate = trip.EndTime?.ToString("yyyy-MM-dd"),
+                        EndTime = trip.EndTime?.ToString("HH:mm"),
+                        StaffName = trip?.User?.FullName,
+                        MinPrice = getPrice.Min(),
+                        MaxPrice = getPrice.Max(),
+                        Status = trip.Status,
+                    };
+                    list.Add(data);
+                }
+                return list;
             }
             catch (Exception ex)
             {
@@ -932,9 +1076,13 @@ namespace SWD.TicketBooking.Service.Services
 
         public async Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id)
         {
-            var tripID = await GetTripIDFromTemplate(id);
+            var getTemplateID = await _unitOfWork.TripRepository
+                                                        .GetAll()
+                                                        .Where(_ => _.TripID == id)
+                                                        .Select(_ => _.TemplateID)
+                                                        .FirstOrDefaultAsync();
             var utilities = await _unitOfWork.Trip_UtilityRepository
-                                             .FindByCondition(_ => _.TripID == tripID.TripID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                             .FindByCondition(_ => _.TripID == getTemplateID && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                                              .Select(_ => _.Utility)
                                              .ToListAsync();
             var result = new List<UtilityModel>();
