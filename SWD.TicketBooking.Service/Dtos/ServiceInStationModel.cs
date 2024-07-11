@@ -19,6 +19,8 @@ namespace SWD.TicketBooking.Service.Dtos
 
     public class ServiceInStationModel
     {
+        [JsonPropertyName("Service_StationID")]
+        public Guid Service_StationID { get; set; }
         [JsonPropertyName("ServiceID")]
         public Guid ServiceID { get; set; }
         [JsonPropertyName("Price")]
