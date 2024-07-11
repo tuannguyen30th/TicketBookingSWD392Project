@@ -15,6 +15,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<List<PopularTripModel>> GetPopularTrips();
         Task<PagedResult<SearchTripModel>> SearchTrip(Guid fromCity, Guid toCity, DateTime startTime, int pageNumber, int pageSize, string[]? seatAvailability, string? sortOption, Guid[]? sortCompany);
         Task<bool> CreateTrip(CreateTripModel createTrip);
+        Task<bool> UpdateTrip(UpdateTripModel updateTripModel, Guid tripID);
         Task<bool> ChangeStatusTrip(Guid tripId);
         Task<GetSeatBookedFromTripModel> GetSeatBookedFromTrip(Guid tripID);
         Task<List<UtilityModel>> GetAllUtilityByTripID(Guid id);

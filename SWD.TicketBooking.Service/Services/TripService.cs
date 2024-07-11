@@ -911,28 +911,61 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        /*    public async Task UpdateTrip(UpdateTripModel updateTripModel, int tripID)
+        public async Task<bool> UpdateTrip(UpdateTripModel updateTripModel, Guid tripID)
+        {
+            try
             {
-                try
+                var trip = await _unitOfWork.TripRepository.GetAll()
+                                                           .Where(_ => _.TripID.Equals(tripID)/* && DateTime.Now < _.StartTime*/ && _.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                           .FirstOrDefaultAsync();
+                if (trip == null)
                 {
-                    var trip = await _unitOfWork.TripRepository.GetByIdAsync(tripID);
-                    if (trip == null)
+                    throw new NotFoundException(SD.Notification.NotFoundByField("CHUYẾN XE", "ID"));
+                }
+
+                var bookingOfTrip = await _unitOfWork.BookingRepository.GetAll()
+                                                                       .Where(_ => _.TripID.Equals(trip.TripID))
+                                                                       .ToListAsync();
+
+                if (bookingOfTrip.Any())
+                {
+                    throw new BadRequestException("CHUYẾN XE ĐÃ TỒN TẠI BOOKING.");
+                }
+
+                var checkExistTemplateInTime = await _unitOfWork.TripRepository
+                                                .FindByCondition(_ => _.TemplateID == trip.TemplateID
+                                                                   && _.IsTemplate == false
+                                                                   && _.Status == SD.GeneralStatus.ACTIVE)
+                                                .ToListAsync();
+
+                foreach (var existingTrip in checkExistTemplateInTime)
+                {
+                    if (updateTripModel.StartTime < existingTrip.EndTime && updateTripModel.EndTime > existingTrip.StartTime)
                     {
-                        throw new Exception("Trip not found.");
+                        throw new BadRequestException("KHUNG THỜI GIAN CHUYẾN XE NÀY BỊ TRÙNG LẶP VỚI MỘT CHUYẾN XE KHÁC TRONG CÙNG NGÀY!");
                     }
-
-                    // Update trip properties
-                    trip.RouteID = updateTripModel.RouteID;
-                    trip.StartTime = updateTripModel.StartTime;
-                    trip.EndTime = updateTripModel.EndTime;
-
-                    var tripPictures = await _unitOfWork.TripPictureRepository.FindByCondition(_ => _.TripID == tripID).ToListAsync();
                 }
-                catch (Exception ex)
+
+                trip.StaffID = updateTripModel.StaffID;
+                trip.StartTime = updateTripModel.StartTime;
+                trip.EndTime = updateTripModel.EndTime;
+
+                _unitOfWork.TripRepository.Update(trip);
+
+                var rs = _unitOfWork.Complete();
+
+                if (rs > 0)
                 {
-                    throw new Exception("Error updating trip.", ex);
+                    return true;
                 }
-            }*/
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
 
         public async Task<bool> ChangeStatusTrip(Guid tripId)
         {
