@@ -527,7 +527,7 @@ namespace SWD.TicketBooking.Service.Services
                     HasCheck = service_ticket.HasCheck,
                     ServiceID = serviceResponse.ServiceID,
                     StationID = station.StationID,
-                    TicketDetailServiceID = ticketDetailService?.TicketDetailID ?? Guid.Empty
+                    TicketDetailServiceID = ticketDetailService?.TicketDetail_ServiceID ?? Guid.Empty
                 };
 
                 rs.Add(serviceResult);
