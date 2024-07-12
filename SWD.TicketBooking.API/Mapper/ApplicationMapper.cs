@@ -127,6 +127,9 @@ namespace SWD.TicketBooking.API.Mapper
 
             /////TicketType/////
             CreateMap<TicketTypeResponse, TicketType>().ReverseMap();
+
+            /////Dashboard/////
+            CreateMap<DashboardInfoByCompanyModel, DashboardInfoByCompanyResponse>().ReverseMap();
         }
     }
 }

@@ -33,6 +33,7 @@ namespace SWD.TicketBooking.API.Installer
             services.AddScoped<IStatusService, StatusService>();
             services.AddScoped<IResponseCacheService, ResponseCacheService>();
             services.AddHostedService<TripStatusUpdaterService>();
+            services.AddScoped<IDashboardService ,DashboardService>();
         }
     }
 }
