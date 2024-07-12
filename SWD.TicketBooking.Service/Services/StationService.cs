@@ -230,243 +230,252 @@ namespace SWD.TicketBooking.Service.Services
             return stationResult;
         }
 
-            //public async Task<string> CreateStation(CreateStationModel stationModel)
-            //{
-            //    try
-            //    {
-            //        var check = await _unitOfWork.StationRepository
-            //                                     .GetAll().Where(s =>s.Name.Equals(stationModel.StationName))
-            //                                     .FirstOrDefaultAsync();
-            //        if (check == null)
-            //        {
-            //            var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
-            //            var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
-            //            var station = await _unitOfWork.StationRepository.AddAsync(new Station 
-            //                    {   
-            //                        CityID = city.CityID,
-            //                        CompanyID = company.CompanyID,
-            //                        Name = stationModel.StationName, 
-            //                        Status = SD.GeneralStatus.ACTIVE,
-            //                    });
-            //            if (station == null)
-            //            {
-            //                throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
-            //            }
+        //public async Task<string> CreateStation(CreateStationModel stationModel)
+        //{
+        //    try
+        //    {
+        //        var check = await _unitOfWork.StationRepository
+        //                                     .GetAll().Where(s =>s.Name.Equals(stationModel.StationName))
+        //                                     .FirstOrDefaultAsync();
+        //        if (check == null)
+        //        {
+        //            var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
+        //            var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
+        //            var station = await _unitOfWork.StationRepository.AddAsync(new Station 
+        //                    {   
+        //                        CityID = city.CityID,
+        //                        CompanyID = company.CompanyID,
+        //                        Name = stationModel.StationName, 
+        //                        Status = SD.GeneralStatus.ACTIVE,
+        //                    });
+        //            if (station == null)
+        //            {
+        //                throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
+        //            }
 
-            //            var checkout_Route = await _unitOfWork.RouteRepository
-            //                                                  .GetAll()
-            //                                                  .Where(r => r.RouteID.Equals(stationModel.RouteId) && r.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-            //                                                  .FirstOrDefaultAsync();
-            //            var station_route = new StationCompany_Route
-            //            {
-            //                Station_RouteID = new Guid(),
-            //                RouteID = checkout_Route.RouteID,
-            //                StationID = station.StationID,
-            //                Status = SD.GeneralStatus.ACTIVE,
-            //                OrderInRoute = stationModel.OrderInRoute
-            //            };
+        //            var checkout_Route = await _unitOfWork.RouteRepository
+        //                                                  .GetAll()
+        //                                                  .Where(r => r.RouteID.Equals(stationModel.RouteId) && r.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+        //                                                  .FirstOrDefaultAsync();
+        //            var station_route = new StationCompany_Route
+        //            {
+        //                Station_RouteID = new Guid(),
+        //                RouteID = checkout_Route.RouteID,
+        //                StationID = station.StationID,
+        //                Status = SD.GeneralStatus.ACTIVE,
+        //                OrderInRoute = stationModel.OrderInRoute
+        //            };
 
-            //            _unitOfWork.Complete();
-            //            return "OK";
-            //        }
-            //        else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
+        //            _unitOfWork.Complete();
+        //            return "OK";
+        //        }
+        //        else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
 
-            //    } catch (Exception ex)
-            //    {
-            //        throw new Exception(ex.Message,ex);
-            //    }
-            //}
+        //    } catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message,ex);
+        //    }
+        //}
 
-            public async Task<bool> CreateStation(CreateStationModel stationModel)
+        public async Task<bool> CreateStation(CreateStationModel stationModel)
+        {
+            try
             {
-                try
+                var check = await _unitOfWork.StationRepository
+                                             .GetAll()
+                                             .Where(s => s.Name.Equals(stationModel.StationName)
+                                                            && s.CityID.Equals(stationModel.CityId)
+                                                            && s.CompanyID.Equals(stationModel.CompanyId))
+                                             .FirstOrDefaultAsync();
+                if (check == null)
                 {
-                    var check = await _unitOfWork.StationRepository
-                                                 .GetAll()
-                                                 .Where(s => s.Name.Equals(stationModel.StationName)
-                                                                && s.CityID.Equals(stationModel.CityId)
-                                                                && s.CompanyID.Equals(stationModel.CompanyId))
-                                                 .FirstOrDefaultAsync();
-                    if (check == null)
+                    var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
+                    if (company == null)
                     {
-                        var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
-                        if (company == null)
+                        throw new BadRequestException(SD.Notification.NotFoundByField("NHÀ XE", "ID"));
+                    }
+                    var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
+                    if (city == null)
+                    {
+                        throw new BadRequestException(SD.Notification.NotFoundByField("THÀNH PHỐ", "ID"));
+                    }
+                    var station = await _unitOfWork.StationRepository.AddAsync(new Station
+                    {
+                        StationID = new Guid(),
+                        CityID = city.CityID,
+                        CompanyID = company.CompanyID,
+                        Name = stationModel.StationName,
+                        Status = SD.GeneralStatus.ACTIVE,
+                    });
+                    if (station == null)
+                    {
+                        throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
+                    }
+
+                    var rs = _unitOfWork.Complete();
+                    return rs > 0 ? true : false;
+                }
+                else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<string> UpdateStation(Guid stationId, UpdateStationModel stationModel)
+        {
+            try
+            {
+                var checkExisted = await _unitOfWork.StationRepository
+                                              .GetAll()
+                                              .Where(s => s.StationID == stationId)
+                                              .FirstOrDefaultAsync();
+
+                var checkStatus = await _unitOfWork.StationRepository
+                                         .GetAll()
+                                         .Where(s => s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && s.StationID == stationId)
+                                         .FirstOrDefaultAsync();
+                if (checkExisted == null)
+                {
+                    throw new NotFoundException(SD.Notification.NotFound("TRẠM"));
+                }
+                else if (checkStatus == null)
+                {
+                    throw new NotFoundException(SD.Notification.Status());
+                }
+                else
+                {
+                    var checkName = await _unitOfWork.StationRepository
+                                                     .GetAll()
+                                                     .Where(s => s.Name.ToLower().Equals(stationModel.StationName))
+                                                     .FirstOrDefaultAsync();
+                    if (checkName == null)
+                    {
+                        checkExisted.Name = stationModel.StationName;
+                        _unitOfWork.StationRepository.Update(checkExisted);
+                        _unitOfWork.Complete();
+                    }
+                    return "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<bool> CompanyRegisStation(Guid companyID, List<Guid> stationID)
+        {
+            try
+            {
+                var check = await _unitOfWork.CompanyRepository.GetByIdAsync(companyID);
+                if (check != null)
+                {
+                    var uniqueIDs = new HashSet<Guid>();
+                    foreach (var id in stationID)
+                    {
+                        if (!uniqueIDs.Add(id))
                         {
-                            throw new BadRequestException(SD.Notification.NotFoundByField("NHÀ XE", "ID"));
+                            throw new BadRequestException($"Duplicate stationID found: {id}");
                         }
-                        var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
-                        if (city == null)
+
+                        var checkStation = await _unitOfWork.StationRepository.GetByIdAsync(id);
+                        if (checkStation == null)
                         {
-                            throw new BadRequestException(SD.Notification.NotFoundByField("THÀNH PHỐ", "ID"));
+                            throw new BadRequestException(SD.Notification.NotFoundByField("TRẠM", id.ToString().ToUpper()));
                         }
-                        var station = await _unitOfWork.StationRepository.AddAsync(new Station
+
+                        var checkExisted = await _unitOfWork.Station_CompanyRepository
+                                                            .GetAll()
+                                                            .Where(_ => _.StationID.Equals(id) && _.CompanyID.Equals(companyID))
+                                                            .FirstOrDefaultAsync();
+
+                        if (checkExisted != null)
                         {
-                            StationID = new Guid(),
-                            CityID = city.CityID,
-                            CompanyID = company.CompanyID,
-                            Name = stationModel.StationName,
+                            if (checkExisted.Status.Equals(SD.GeneralStatus.ACTIVE))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                checkExisted.Status = SD.GeneralStatus.ACTIVE;
+                                _unitOfWork.Station_CompanyRepository.Update(checkExisted);
+                                continue;
+                            }
+                        }
+
+                        var station_company = await _unitOfWork.Station_CompanyRepository.AddAsync(new Station_Company
+                        {
+                            Station_CompanyID = new Guid(),
+                            StationID = id,
+                            CompanyID = companyID,
                             Status = SD.GeneralStatus.ACTIVE,
                         });
-                        if (station == null)
+
+                        if (station_company == null)
                         {
                             throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
                         }
-
-                        var rs = _unitOfWork.Complete();
-                        return rs > 0 ? true : false;
                     }
-                    else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
 
+                    _unitOfWork.Complete();
+                    return true;
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message, ex);
-                }
+                else throw new BadRequestException(SD.Notification.NotFoundByField("NHÀ XE", "ID"));
+
             }
-
-            public async Task<string> UpdateStation(Guid stationId, UpdateStationModel stationModel)
+            catch (Exception ex)
             {
-                try
-                {
-                    var check = await _unitOfWork.StationRepository
-                                                  .GetAll()
-                                                  .Where(s => s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE) && s.StationID == stationId)
-                                                  .FirstOrDefaultAsync();
-                    if (check == null)
-                    {
-                        throw new NotFoundException(SD.Notification.NotFound("TRẠM"));
-                    }
-                    else
-                    {
-                        var checkName = await _unitOfWork.StationRepository
-                                                         .GetAll()
-                                                         .Where(s => s.Name.ToLower().Equals(stationModel.StationName))
-                                                         .FirstOrDefaultAsync();
-                        if (checkName == null)
-                        {
-                            check.Name = stationModel.StationName;
-                            _unitOfWork.StationRepository.Update(check);
-                            _unitOfWork.Complete();
-                        }
-                        return "OK";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message, ex);
-                }
+                throw new Exception(ex.Message, ex);
             }
-
-            public async Task<bool> CompanyRegisStation(Guid companyID, List<Guid> stationID)
-            {
-                try
-                {
-                    var check = await _unitOfWork.CompanyRepository.GetByIdAsync(companyID);
-                    if (check != null)
-                    {
-                        var uniqueIDs = new HashSet<Guid>();
-                        foreach (var id in stationID)
-                        {
-                            if (!uniqueIDs.Add(id))
-                            {
-                                throw new BadRequestException($"Duplicate stationID found: {id}");
-                            }
-
-                            var checkStation = await _unitOfWork.StationRepository.GetByIdAsync(id);
-                            if (checkStation == null)
-                            {
-                                throw new BadRequestException(SD.Notification.NotFoundByField("TRẠM", id.ToString().ToUpper()));
-                            }
-
-                            var checkExisted = await _unitOfWork.Station_CompanyRepository
-                                                                .GetAll()
-                                                                .Where(_ => _.StationID.Equals(id) && _.CompanyID.Equals(companyID))
-                                                                .FirstOrDefaultAsync();
-
-                            if (checkExisted != null)
-                            {
-                                if (checkExisted.Status.Equals(SD.GeneralStatus.ACTIVE))
-                                {
-                                    continue;
-                                }
-                                else
-                                {
-                                    checkExisted.Status = SD.GeneralStatus.ACTIVE;
-                                    _unitOfWork.Station_CompanyRepository.Update(checkExisted);
-                                    continue;
-                                }
-                            }
-
-                            var station_company = await _unitOfWork.Station_CompanyRepository.AddAsync(new Station_Company
-                            {
-                                Station_CompanyID = new Guid(),
-                                StationID = id,
-                                CompanyID = companyID,
-                                Status = SD.GeneralStatus.ACTIVE,
-                            });
-
-                            if (station_company == null)
-                            {
-                                throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
-                            }
-                        }
-
-                        _unitOfWork.Complete();
-                        return true;
-                    }
-                    else throw new BadRequestException(SD.Notification.NotFoundByField("NHÀ XE", "ID"));
-
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message, ex);
-                }
-            }
-
-            public async Task<List<GetStationModel>> GetStationsByCityId(Guid cityID)
-            {
-                try
-                {
-                    var stations = await _unitOfWork.StationRepository
-                                                   .GetAll()
-                                                   .Where(_ => _.CityID.Equals(cityID) && _.Status.Equals(SD.GeneralStatus.ACTIVE))
-                                                   .ToListAsync();
-
-                    var rs = _mapper.Map<List<GetStationModel>>(stations);
-                    return rs;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message, ex);
-                }
-            }
-
-            /*   public async Task<List<StationFromRouteModel>> GetAllStationInRoute(Guid id)
-               {
-                   try
-                   {
-                       var route = await _unitOfWork.TripRepository
-                                                    .FindByCondition(s => s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)
-                                                                      && s.Route_Company.Route.Status.Equals(SD.GeneralStatus.ACTIVE))
-                                                    .Include(_ => _.Route_Company)
-                                                    .Select(s => s.Route_Company.RouteID).FirstOrDefaultAsync();
-                       var stations = await _unitOfWork.Station_RouteRepository
-                                                       .FindByCondition(_ => _.RouteID == route)
-                                                       .Include(_ => _.Station)
-                                                       .OrderBy(_ => _.OrderInRoute)
-                                                       .Select(_ => new StationFromRouteModel
-                                                       {
-                                                           StationID = (Guid)_.StationID,
-                                                           Name = _.Station.Name
-                                                       })
-                                                       .ToListAsync();
-                       return stations;
-                   }
-                   catch (Exception ex)
-                   {
-                       throw new Exception(ex.Message, ex);
-                   }
-               }*/
-
         }
+
+        public async Task<List<GetStationModel>> GetStationsByCityId(Guid cityID)
+        {
+            try
+            {
+                var stations = await _unitOfWork.StationRepository
+                                               .GetAll()
+                                               .Where(_ => _.CityID.Equals(cityID) && _.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                               .ToListAsync();
+
+                var rs = _mapper.Map<List<GetStationModel>>(stations);
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        /*   public async Task<List<StationFromRouteModel>> GetAllStationInRoute(Guid id)
+           {
+               try
+               {
+                   var route = await _unitOfWork.TripRepository
+                                                .FindByCondition(s => s.TripID == id && s.Status.Trim().Equals(SD.GeneralStatus.ACTIVE)
+                                                                  && s.Route_Company.Route.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                .Include(_ => _.Route_Company)
+                                                .Select(s => s.Route_Company.RouteID).FirstOrDefaultAsync();
+                   var stations = await _unitOfWork.Station_RouteRepository
+                                                   .FindByCondition(_ => _.RouteID == route)
+                                                   .Include(_ => _.Station)
+                                                   .OrderBy(_ => _.OrderInRoute)
+                                                   .Select(_ => new StationFromRouteModel
+                                                   {
+                                                       StationID = (Guid)_.StationID,
+                                                       Name = _.Station.Name
+                                                   })
+                                                   .ToListAsync();
+                   return stations;
+               }
+               catch (Exception ex)
+               {
+                   throw new Exception(ex.Message, ex);
+               }
+           }*/
+
     }
+}

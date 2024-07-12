@@ -73,6 +73,10 @@
             {
                 return $"VẤN ĐỀ XẢY RA VỚI {entity} - {issue}!".ToUpper();
             }
+            public static string Status()
+            {
+                return $"CHỈ CÓ THỂ ĐỔI TÊN Ở TRẠNG THÁI HOẠT ĐỘNG".ToUpper();
+            }
         }
         
         public static class Entity
