@@ -230,56 +230,59 @@ namespace SWD.TicketBooking.Service.Services
             return stationResult;
         }
 
-        //public async Task<string> CreateStation(CreateStationModel stationModel)
-        //{
-        //    try
-        //    {
-        //        var check = await _unitOfWork.StationRepository
-        //                                     .GetAll().Where(s =>s.Name.Equals(stationModel.StationName))
-        //                                     .FirstOrDefaultAsync();
-        //        if (check == null)
-        //        {
-        //            var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
-        //            var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
-        //            var station = await _unitOfWork.StationRepository.AddAsync(new Station 
-        //                    {   
-        //                        CityID = city.CityID,
-        //                        CompanyID = company.CompanyID,
-        //                        Name = stationModel.StationName, 
-        //                        Status = SD.GeneralStatus.ACTIVE,
-        //                    });
-        //            if (station == null)
-        //            {
-        //                throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
-        //            }
 
-        //            var checkout_Route = await _unitOfWork.RouteRepository
-        //                                                  .GetAll()
-        //                                                  .Where(r => r.RouteID.Equals(stationModel.RouteId) && r.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-        //                                                  .FirstOrDefaultAsync();
-        //            var station_route = new StationCompany_Route
-        //            {
-        //                Station_RouteID = new Guid(),
-        //                RouteID = checkout_Route.RouteID,
-        //                StationID = station.StationID,
-        //                Status = SD.GeneralStatus.ACTIVE,
-        //                OrderInRoute = stationModel.OrderInRoute
-        //            };
+            //public async Task<string> CreateStation(CreateStationModel stationModel)
+            //{
+            //    try
+            //    {
+            //        var check = await _unitOfWork.StationRepository
+            //                                     .GetAll().Where(s =>s.Name.Equals(stationModel.StationName))
+            //                                     .FirstOrDefaultAsync();
+            //        if (check == null)
+            //        {
+            //            var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
+            //            var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
+            //            var station = await _unitOfWork.StationRepository.AddAsync(new Station 
+            //                    {   
+            //                        CityID = city.CityID,
+            //                        CompanyID = company.CompanyID,
+            //                        Name = stationModel.StationName, 
+            //                        Status = SD.GeneralStatus.ACTIVE,
+            //                    });
+            //            if (station == null)
+            //            {
+            //                throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
+            //            }
 
-        //            _unitOfWork.Complete();
-        //            return "OK";
-        //        }
-        //        else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
+            //            var checkout_Route = await _unitOfWork.RouteRepository
+            //                                                  .GetAll()
+            //                                                  .Where(r => r.RouteID.Equals(stationModel.RouteId) && r.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+            //                                                  .FirstOrDefaultAsync();
+            //            var station_route = new StationCompany_Route
+            //            {
+            //                Station_RouteID = new Guid(),
+            //                RouteID = checkout_Route.RouteID,
+            //                StationID = station.StationID,
+            //                Status = SD.GeneralStatus.ACTIVE,
+            //                OrderInRoute = stationModel.OrderInRoute
+            //            };
 
-        //    } catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message,ex);
-        //    }
-        //}
+            //            _unitOfWork.Complete();
+            //            return "OK";
+            //        }
+            //        else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
 
-        public async Task<bool> CreateStation(CreateStationModel stationModel)
+            //    } catch (Exception ex)
+            //    {
+            //        throw new Exception(ex.Message,ex);
+            //    }
+            //}
+
+            public async Task<GetCompanyAfterCreateModel> CreateStation(CreateStationModel stationModel)
+
         {
             try
+
             {
                 var check = await _unitOfWork.StationRepository
                                              .GetAll()
@@ -288,32 +291,40 @@ namespace SWD.TicketBooking.Service.Services
                                                             && s.CompanyID.Equals(stationModel.CompanyId))
                                              .FirstOrDefaultAsync();
                 if (check == null)
-                {
-                    var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
-                    if (company == null)
-                    {
-                        throw new BadRequestException(SD.Notification.NotFoundByField("NHÀ XE", "ID"));
-                    }
-                    var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
-                    if (city == null)
-                    {
-                        throw new BadRequestException(SD.Notification.NotFoundByField("THÀNH PHỐ", "ID"));
-                    }
-                    var station = await _unitOfWork.StationRepository.AddAsync(new Station
-                    {
-                        StationID = new Guid(),
-                        CityID = city.CityID,
-                        CompanyID = company.CompanyID,
-                        Name = stationModel.StationName,
-                        Status = SD.GeneralStatus.ACTIVE,
-                    });
-                    if (station == null)
-                    {
-                        throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
-                    }
-
-                    var rs = _unitOfWork.Complete();
-                    return rs > 0 ? true : false;
+                {                  
+                        var company = await _unitOfWork.CompanyRepository.GetByIdAsync(stationModel.CompanyId);
+                        if (company == null)
+                        {
+                            throw new BadRequestException(SD.Notification.NotFoundByField("NHÀ XE", "ID"));
+                        }
+                        var city = await _unitOfWork.CityRepository.GetByIdAsync(stationModel.CityId);
+                        if (city == null)
+                        {
+                            throw new BadRequestException(SD.Notification.NotFoundByField("THÀNH PHỐ", "ID"));
+                        }
+                        var stationID = Guid.NewGuid();
+                        var station = await _unitOfWork.StationRepository.AddAsync(new Station
+                        {
+                            StationID = stationID,
+                            CityID = city.CityID,
+                            CompanyID = company.CompanyID,
+                            Name = stationModel.StationName,
+                            Status = SD.GeneralStatus.ACTIVE,
+                        });
+                        if (station == null)
+                        {
+                            throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
+                        }
+                        var result = new GetCompanyAfterCreateModel
+                        {
+                            StationID = stationID,
+                            CityID = city.CityID,
+                            CityName = city.Name,
+                            StationName = stationModel.StationName,
+                            Status = SD.GeneralStatus.ACTIVE,
+                        };
+                        var rs = _unitOfWork.Complete();
+                        return rs > 0 ? result : null;
                 }
                 else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
 

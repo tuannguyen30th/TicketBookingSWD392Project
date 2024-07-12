@@ -12,7 +12,7 @@ namespace SWD.TicketBooking.Service.IServices
         Task<List<StationFromRouteModel>> GetStationsFromTrip(Guid routeID, Guid companyID);
         Task<List<GetStationModel>> GetAllStationActive();
         Task<GetStationByCompanyModel> GetStationById(Guid stationId);
-        Task<bool> CreateStation(CreateStationModel stationModel);
+        Task<GetCompanyAfterCreateModel> CreateStation(CreateStationModel stationModel);
         Task<string> UpdateStation(Guid stationId, UpdateStationModel stationModel);
         //Task<List<StationFromRouteModel>> GetAllStationFromTrip(Guid id);
         Task<List<GetStationByCompanyModel>> GetAllStationsByCompanyID(Guid companyID);
