@@ -355,9 +355,14 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         checkExisted.Name = stationModel.StationName;
                         _unitOfWork.StationRepository.Update(checkExisted);
-                        _unitOfWork.Complete();
+                        var rs = _unitOfWork.Complete();
+                        return "OK";
+
                     }
-                    return "OK";
+                    else
+                    {
+                        throw new NotFoundException(SD.Notification.Existed("Station", "Name"));
+                    }
                 }
             }
             catch (Exception ex)
