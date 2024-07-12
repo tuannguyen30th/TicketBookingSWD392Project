@@ -9,6 +9,7 @@ namespace SWD.TicketBooking.Service.IServices
     public interface INotificationService
     {
         Task<string> SendNotification(string token, string title, string body);
+        Task<string> SendStaffNotification(Guid staffID, Guid tripID, string title, string body);
 
     }
 }
