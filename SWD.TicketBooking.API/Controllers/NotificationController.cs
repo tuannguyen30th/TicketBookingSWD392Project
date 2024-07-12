@@ -25,5 +25,17 @@ namespace SWD.TicketBooking.API.Controllers
 
             return BadRequest(new { message = "Failed to send notification" });
         }
+
+        [HttpPost("managed-notifications/staff")]
+        public async Task<IActionResult> SendStaffNotification(Guid staffID, Guid tripID, string title, string body)
+        {
+            var result = await _notificationService.SendStaffNotification(staffID, tripID, title, body);
+            if (result != null)
+            {
+                return Ok(new { message = "Notification sent successfully" });
+            }
+
+            return BadRequest(new { message = "Failed to send notification" });
+        }
     }
 }
