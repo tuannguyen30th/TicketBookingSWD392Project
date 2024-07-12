@@ -1,0 +1,53 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SWD.TicketBooking.Repo.UnitOfWork;
+using SWD.TicketBooking.Service.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SWD.TicketBooking.Service.Services
+{
+    public class TripStatusUpdaterService : BackgroundService
+    {
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+      
+        public TripStatusUpdaterService(IServiceScopeFactory serviceScopeFactory)
+        {
+            _serviceScopeFactory = serviceScopeFactory;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await UpdateTripStatusesAsync();
+                await Task.Delay(TimeSpan.FromMinutes(60), stoppingToken); 
+            }
+        }
+
+        private async Task UpdateTripStatusesAsync()
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                var currentTime = DateTime.UtcNow;
+
+                var tripsToUpdate = await unitOfWork.TripRepository
+                    .GetAll()
+                    .Where(_ => _.EndTime <= currentTime && _.Status != SD.GeneralStatus.INACTIVE)
+                    .ToListAsync();
+
+                foreach (var trip in tripsToUpdate)
+                {
+                    trip.Status = SD.GeneralStatus.INACTIVE;
+                }
+
+               unitOfWork.Complete();
+            }
+        }
+    }
+}

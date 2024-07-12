@@ -5,14 +5,16 @@ using SWD.TicketBooking.API.Installer;
 using SWD.TicketBooking.API.Middlewares;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.SeedData;
+
 using SWD.TicketBooking.API.Installer;
+
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
 using SWD.TicketBooking.Service.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
+using SWD.TicketBooking.Service.Services;
 
 namespace SWD.TicketBooking.API
 {
@@ -23,7 +25,7 @@ namespace SWD.TicketBooking.API
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.InstallerServicesInAssembly(builder.Configuration);
             builder.Services.AddResponseCaching();
-            var app = builder.Build();      
+            var app = builder.Build();
             app.UseSwagger(op => op.SerializeAsV2 = false);
             app.UseSwaggerUI(options =>
             {
@@ -39,13 +41,14 @@ namespace SWD.TicketBooking.API
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
-         
+
             app.UseAuthorization();
 
             app.MapControllers();
             app.UseResponseCaching();
             await app.RunAsync();
         }
+
         private static void ApplyMigration(WebApplication app)
         {
             using (var scope = app.Services.CreateScope())
@@ -57,5 +60,13 @@ namespace SWD.TicketBooking.API
                 }
             }
         }
-    }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+             Host.CreateDefaultBuilder(args)
+                 .ConfigureServices((hostContext, services) =>
+                 {
+                     services.AddHostedService<TripStatusUpdaterService>();
+                     
+                 });
+        }
 }

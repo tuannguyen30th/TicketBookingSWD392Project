@@ -65,6 +65,7 @@ namespace SWD.TicketBooking.Service.Services
 
                         var listServiceInStationModelTask = listServiceInServiceType.Select(async s => new ServiceInStationModel
                         {
+                            Service_StationID = listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().Station_ServiceID,
                             ServiceID = s.ServiceID,
                             Name = s.Name,
                             Price = (double)listServiceInStation.Where(p => p.ServiceID.Equals(s.ServiceID)).FirstOrDefault().Price,

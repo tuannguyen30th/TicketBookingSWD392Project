@@ -66,27 +66,12 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var serviceStation = await _unitOfWork.Station_ServiceRepository.GetByIdAsync(stationServiceID);
-                var checkExisted = await _unitOfWork.Station_ServiceRepository
-                                                    .FindByCondition(_ => _.ServiceID == updateServiceInStationModel.ServiceID &&
-                                                                          _.StationID == updateServiceInStationModel.StationID)
-                                                    .FirstOrDefaultAsync();              
 
-                if (checkExisted.Station_ServiceID != updateServiceInStationModel.Station_ServiceID)
+                if (serviceStation == null)
                 {
-                    var checkDuplicate = await _unitOfWork.Station_ServiceRepository
-                                                          .FindByCondition(_ => _.ServiceID == updateServiceInStationModel.ServiceID &&
-                                                                                _.StationID == updateServiceInStationModel.StationID &&
-                                                                                _.Station_ServiceID != updateServiceInStationModel.Station_ServiceID)
-                                                          .AnyAsync();
-
-                    if (checkDuplicate)
-                    {
-                        throw new BadRequestException(SD.Notification.Existed("TRẠM", "DỊCH VỤ"));
-                    }
+                    throw new BadRequestException(SD.Notification.Existed("TRẠM", "DỊCH VỤ"));
                 }
 
-                serviceStation.StationID = updateServiceInStationModel.StationID;
-                serviceStation.ServiceID = updateServiceInStationModel.ServiceID;
                 serviceStation.Price = updateServiceInStationModel.Price;
                 if (updateServiceInStationModel.ImageUrl != null && updateServiceInStationModel.ImageUrl.Length > 0)
                 {
