@@ -400,7 +400,7 @@ namespace SWD.TicketBooking.Service.Services
                 {
                     throw new NotFoundException(SD.Notification.NotFound("QR code"));
                 }
-
+               
                 var booking = await _unitOfWork.BookingRepository
                                                .GetAll()
                                                .Where(b => b.BookingID.Equals(ticketDetail.BookingID) && b.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
@@ -492,15 +492,21 @@ namespace SWD.TicketBooking.Service.Services
                                                 .Where(s => s.TicketDetailID.Equals(ticketDetailId) && s.Status.Equals(SD.Booking_ServiceStatus.PAYING_TICKETSERVICE))
                                                 .Select(s => s.ServiceID)
                                                 .ToListAsync();
+
+            
             var rs = new List<ServiceInTicketModel>();
             foreach (var service in listServices)
             {
                 var serviceResponse = await _unitOfWork.ServiceRepository.FindByCondition(s => s.ServiceID.Equals(service) && s.Status.Equals(SD.GeneralStatus.ACTIVE))
                                                                          .FirstOrDefaultAsync();
-                var station_service = await _unitOfWork.Station_ServiceRepository.FindByCondition(st => st.ServiceID.Equals(service) && st.Status.Equals(SD.GeneralStatus.ACTIVE))
+                var station_service = await _unitOfWork.Station_ServiceRepository.FindByCondition(st => st.ServiceID.Equals(serviceResponse.ServiceID) && st.Status.Equals(SD.GeneralStatus.ACTIVE))
                                                                          .FirstOrDefaultAsync();
-                var station = await _unitOfWork.StationRepository.FindByCondition(st => st.StationID.Equals(station_service.StationID) && st.Status.Equals(SD.GeneralStatus.ACTIVE))
-                                                                         .FirstOrDefaultAsync();
+                var stationID = await _unitOfWork.TicketDetail_ServiceRepository
+                                                .FindByCondition(t => t.TicketDetailID.Equals(ticketDetailId) && t.ServiceID.Equals(service))
+                                                .FirstOrDefaultAsync();
+                var station = await _unitOfWork.StationRepository
+                                                .FindByCondition(s => s.StationID.Equals(stationID.StationID))
+                                                .FirstOrDefaultAsync();
                 var service_ticket = await _unitOfWork.TicketDetail_ServiceRepository.FindByCondition(st => st.TicketDetailID.Equals(ticketDetailId) && st.ServiceID.Equals(service) && st.Status.Equals(SD.Booking_ServiceStatus.PAYING_TICKETSERVICE))
                                                                                     .FirstOrDefaultAsync();
                 var ticketDetailService = await _unitOfWork.TicketDetail_ServiceRepository
