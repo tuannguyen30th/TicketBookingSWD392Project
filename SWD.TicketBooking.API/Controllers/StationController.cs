@@ -85,7 +85,7 @@ namespace SWD.TicketBooking.API.Controllers
         {
             var map = _mapper.Map<CreateStationModel>(request);
             var rs = await _stationService.CreateStation(map);
-            return rs ? Ok(rs) : BadRequest(rs);
+            return Ok(rs);
         }
 
         [HttpPost("managed-stations/company-registation/company/{companyID}")]

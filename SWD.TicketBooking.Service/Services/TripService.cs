@@ -10,6 +10,7 @@ using SWD.TicketBooking.Service.Utilities;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Net.Sockets;
 using static SWD.TicketBooking.Service.Dtos.GetTripDetailsModel;
 
 namespace SWD.TicketBooking.Service.Services
@@ -108,16 +109,16 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var trip = await _unitOfWork.TripRepository
-                                                     .GetAll()
-                                                     .Include(_ => _.User)
-                                                     .Include(_ => _.Route_Company)
-                                                     .ThenInclude(_ => _.Route)
-                                                     .ThenInclude(_ => _.FromCity)
-                                                     .Include(_ => _.Route_Company)
-                                                     .ThenInclude(_ => _.Route)
-                                                     .ThenInclude(_ => _.ToCity)
-                                                     .Where(_ => _.TripID == tripID)
-                                                     .FirstOrDefaultAsync();
+                                            .GetAll()
+                                            .Include(_ => _.User)
+                                            .Include(_ => _.Route_Company)
+                                            .ThenInclude(_ => _.Route)
+                                            .ThenInclude(_ => _.FromCity)
+                                            .Include(_ => _.Route_Company)
+                                            .ThenInclude(_ => _.Route)
+                                            .ThenInclude(_ => _.ToCity)
+                                            .Where(_ => _.TripID == tripID)
+                                            .FirstOrDefaultAsync();
 
                 var tripPictures = await _unitOfWork.TripPictureRepository.GetAll()
                                                     .Where(_ => _.TripID == trip.TemplateID && _.Status == SD.GeneralStatus.ACTIVE)
@@ -139,7 +140,6 @@ namespace SWD.TicketBooking.Service.Services
                                                 .Where(_ => _.TripID == trip.TemplateID && _.Status == SD.GeneralStatus.ACTIVE)
                                                 .Select(_ => new TripPriceSeat
                                                 {
-
                                                     SeatName = _.TicketType.Name,
                                                     Price = _.Price,
                                                     Quantity = _.Quantity
@@ -147,7 +147,7 @@ namespace SWD.TicketBooking.Service.Services
                                                 .ToListAsync();
                 var stationsByRoute = await _unitOfWork.StationCompany_RouteRepository
                                                        .GetAll()
-                                                       .Where(_ => _.RouteID == trip.Route_Company.RouteID 
+                                                       .Where(_ => _.RouteID == trip.Route_Company.RouteID
                                                                 && _.Station_Company.CompanyID == trip.Route_Company.CompanyID && _.Status == SD.GeneralStatus.ACTIVE)
                                                        .OrderBy(_ => _.OrderInRoute)
                                                        .Select(_ => _.Station_CompanyID)
@@ -213,11 +213,11 @@ namespace SWD.TicketBooking.Service.Services
                                                                && _.Status != SD.Booking_TicketStatus.NOTPAYING_TICKET)
                                                    .ToListAsync();
                 rs.Result = ticketFromTrip.Select(_ => new List<string>
-                                   {
-                                       _.TicketDetailID.ToString(),
-                                       _.SeatCode,
-                                       _.Status
-                                   }).ToList();
+                                          {
+                                              _.TicketDetailID.ToString(),
+                                              _.SeatCode,
+                                              _.Status
+                                          }).ToList();
 
                 return rs;
             }
@@ -780,6 +780,23 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new BadRequestException("TỔNG SỐ LƯỢNG GHẾ PHẢI ÍT NHẤT LÀ 20!");
                     }
+                    if (createTrip.TicketType_TripModels.Count == 2)
+                    {
+                        var ticketTypes = new List<string> { "HÀNG ĐẦU", "HÀNG CUỐI" };
+
+                        foreach (var ticketType in createTrip.TicketType_TripModels)
+                        {
+                            var checkName = await _unitOfWork.TicketTypeRepository
+                                                         .FindByCondition(_ => _.TicketTypeID == ticketType.TicketTypeID)
+                                                         .Select(_ => _.Name.ToUpper())
+                                                         .FirstOrDefaultAsync();
+
+                            if (!ticketTypes.Contains(checkName))
+                            {
+                                throw new BadRequestException("NẾU LÀ HAI LOẠI GHẾ THÌ BẮT BUỘC PHẢI LÀ HÀNG ĐẦU VÀ HÀNG CUỐI!");
+                            }
+                        }
+                    }
 
                     foreach (var ticketType in createTrip.TicketType_TripModels)
                     {
@@ -791,7 +808,7 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             throw new BadRequestException("SỐ LƯỢNG GHẾ KHÔNG HỢP LỆ!");
                         }
-
+                        
                         var newTicketType_Trip = new TicketType_Trip
                         {
                             TicketTypeID = ticketType.TicketTypeID,

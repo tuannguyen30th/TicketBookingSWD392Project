@@ -277,7 +277,7 @@ namespace SWD.TicketBooking.Service.Services
             //    }
             //}
 
-            public async Task<bool> CreateStation(CreateStationModel stationModel)
+            public async Task<GetCompanyAfterCreateModel> CreateStation(CreateStationModel stationModel)
             {
                 try
                 {
@@ -299,9 +299,10 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             throw new BadRequestException(SD.Notification.NotFoundByField("THÀNH PHỐ", "ID"));
                         }
+                        var stationID = Guid.NewGuid();
                         var station = await _unitOfWork.StationRepository.AddAsync(new Station
                         {
-                            StationID = new Guid(),
+                            StationID = stationID,
                             CityID = city.CityID,
                             CompanyID = company.CompanyID,
                             Name = stationModel.StationName,
@@ -311,9 +312,16 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             throw new InternalServerErrorException(SD.Notification.Internal("TRẠM", "KHI KHÔNG THỂ TẠO MỚI TRẠM NÀY"));
                         }
-
+                        var result = new GetCompanyAfterCreateModel
+                        {
+                            StationID = stationID,
+                            CityID = city.CityID,
+                            CityName = city.Name,
+                            StationName = stationModel.StationName,
+                            Status = SD.GeneralStatus.ACTIVE,
+                        };
                         var rs = _unitOfWork.Complete();
-                        return rs > 0 ? true : false;
+                        return rs > 0 ? result : null;
                     }
                     else throw new BadRequestException("TRẠM NÀY ĐÃ TỒN TẠI!");
 
