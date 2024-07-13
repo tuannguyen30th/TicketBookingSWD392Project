@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.UnitOfWork;
 using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.IServices;
@@ -153,6 +154,107 @@ namespace SWD.TicketBooking.Service.Services
                 };
 
                 return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+        public async Task<DashboardAdminModel> DashboardAdmin()
+        {
+            try
+            {
+                var currentMonth = DateTime.Now.Month;
+                var currentYear = DateTime.Now.Year;
+                var totalRevenueInMoth = await _unitOfWork.BookingRepository
+                                                          .GetAll()
+                                                          .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
+                                                          .SumAsync(_ => _.TotalBill);
+                var totalTicketBookedInMonth = _unitOfWork.TicketDetailRepository
+                                                          .GetAll()
+                                                          .Include(_ => _.Booking)
+                                                          .Where(_ => _.Booking.BookingTime.HasValue &&
+                                                                      _.Booking.BookingTime.Value.Month == currentMonth &&
+                                                                      _.Booking.BookingTime.Value.Year == currentYear &&
+                                                                      _.Status.Equals(SD.Booking_TicketStatus.UNUSED_TICKET))
+                                                          .Count();
+                var totalUsers = _unitOfWork.UserRepository
+                                            .GetAll()
+                                            .Where(_ => _.UserRole.RoleName.ToUpper().Equals("CUSTOMER") 
+                                                     && _.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                            .Count();
+               
+                var monthsInYear = Enumerable.Range(1, 12);
+
+                var revenueAllMonthInYear = await _unitOfWork.BookingRepository
+                                                             .GetAll()
+                                                             .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING) && _.BookingTime.HasValue && _.BookingTime.Value.Year == currentYear)
+                                                             .GroupBy(_ => new
+                                                             {
+                                                                 _.BookingTime.Value.Year,
+                                                                 _.BookingTime.Value.Month
+                                                             })
+                                                             .Select(_ => new
+                                                             {
+                                                                 Year = _.Key.Year,
+                                                                 Month = _.Key.Month,
+                                                                 TotalRevenueMonthInYear = _.Sum(_ => _.TotalBill)
+                                                             })
+                                                             .ToListAsync();
+
+                var fullRevenueMonths = monthsInYear.Select(month =>
+                                                   {
+                                                       var revenuesForMonth = revenueAllMonthInYear
+                                                           .Where(_ => _.Month == month)
+                                                           .ToList();
+
+                                                       var totalRevenueForMonth = revenuesForMonth.Sum(_ => _.TotalRevenueMonthInYear ?? 0);
+
+                                                       return new RevenueAllMonthInYear
+                                                       {
+                                                           Year = currentYear,
+                                                           Month = month,
+                                                           TotalRevenueMonthInYear = totalRevenueForMonth
+                                                       };
+                                                   })
+                                                    .OrderBy(revenueData => revenueData.Month)
+                                                    .ToList();
+
+                var totalCompanies = await _unitOfWork.CompanyRepository
+                                                      .GetAll()
+                                                      .Where(_ => _.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                      .CountAsync();
+
+                var revenueOfCompanyInMonths = await _unitOfWork.BookingRepository
+                                                                .GetAll()
+                                                                .Include(_ => _.Trip.Route_Company.Company)
+                                                                .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING) &&
+                                                                            _.BookingTime.Value.Month == currentMonth &&
+                                                                            _.BookingTime.Value.Year == currentYear)
+                                                                .GroupBy(_ => new {
+                                                                    _.Trip.Route_Company.Company.CompanyID,
+                                                                    _.Trip.Route_Company.Company.Name
+                                                                })
+                                                                .Select(_ => new RevenueOfCompanyInMonth
+                                                                {
+                                                                    CompanyID = _.Key.CompanyID,
+                                                                    CompanyName = _.Key.Name,
+                                                                    Year = currentYear,
+                                                                    Month = currentMonth,
+                                                                    TotalRevenueOfCompanyInMonth = _.Sum(_ => _.TotalBill ?? 0)
+                                                                })
+                                                                .OrderBy(_ => _.CompanyID) 
+                                                                .ToListAsync();
+                var result = new DashboardAdminModel
+                {
+                    TotalRevenueInMoth = totalRevenueInMoth,
+                    TotalTicketBookedInMonth = totalTicketBookedInMonth,
+                    ToTalUsers = totalUsers,
+                    TotalCompanies = totalCompanies,
+                    RevenueAllMonthInYears = fullRevenueMonths,
+                    RevenueOfCompanyInMonths = revenueOfCompanyInMonths
+                };
+                return result;
             }
             catch (Exception ex)
             {
