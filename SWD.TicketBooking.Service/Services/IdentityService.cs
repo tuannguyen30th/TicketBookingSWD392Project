@@ -412,7 +412,8 @@ public class IdentityService
             {
                 user.AccessToken = deviceToken;
             }
-            await _unitOfWork.UserRepository.Commit();
+            _unitOfWork.UserRepository.Update(user);
+             _unitOfWork.Complete();
             return new LoginResponse
             {
                 Authenticated = true,
