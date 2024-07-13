@@ -247,7 +247,7 @@ namespace SWD.TicketBooking.Service.Services
                                                                 .ToListAsync();
                 var result = new DashboardAdminModel
                 {
-                    TotalRevenueInMoth = totalRevenueInMoth,
+                    TotalRevenueInMonth = totalRevenueInMoth,
                     TotalTicketBookedInMonth = totalTicketBookedInMonth,
                     ToTalUsers = totalUsers,
                     TotalCompanies = totalCompanies,
