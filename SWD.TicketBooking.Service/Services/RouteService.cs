@@ -138,7 +138,7 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-        public async Task<int> CreateRoute(CreateRouteModel model)
+        public async Task<CreateRouteResponse> CreateRoute(CreateRouteModel model)
         {
             try
             {
@@ -174,6 +174,8 @@ namespace SWD.TicketBooking.Service.Services
                     }
 
                     checkRouteExisted = route;
+                    _unitOfWork.Complete();
+
                 }
                 else if (!checkRouteExisted.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
                 {
@@ -236,8 +238,23 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG CỦA NHÀ XE", "KHI TẠO MỚI TUYẾN ĐƯỜNG CHO NHÀ XE NÀY"));
                     }
-                    var rs = _unitOfWork.Complete();
-
+                    _unitOfWork.Complete();
+                    var fromCity = await _unitOfWork.CityRepository
+                                                  .FindByCondition(c => c.CityID.Equals(checkRouteExisted.FromCityID))
+                                                  .FirstOrDefaultAsync();
+                    var toCity = await _unitOfWork.CityRepository
+                                                  .FindByCondition(c => c.CityID.Equals(checkRouteExisted.ToCityID))
+                                                  .FirstOrDefaultAsync();
+                    var rs = new CreateRouteResponse
+                    {
+                        RouteID = checkRouteExisted.RouteID,
+                        FromCity = fromCity.Name,
+                        ToCity = toCity.Name,
+                        EndLocation = checkRouteExisted.EndLocation,
+                        StartLocation = checkRouteExisted.StartLocation,
+                        Status = checkRouteExisted.Status,
+                        Route_CompanyID = routeCompany.Route_CompanyID
+                    };
                     return rs;
                 }
                 else
