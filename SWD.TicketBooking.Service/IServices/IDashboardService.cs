@@ -10,5 +10,6 @@ namespace SWD.TicketBooking.Service.IServices
     public interface IDashboardService
     {
         Task<DashboardInfoByCompanyModel> GetAllDashboardInfoByCompany(Guid companyID);
+        Task<DashboardAdminModel> DashboardAdmin();
     }
 }
