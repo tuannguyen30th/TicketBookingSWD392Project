@@ -40,9 +40,23 @@ namespace SWD.TicketBooking.Service.Services
                     .GetAll()
                     .Where(_ => _.EndTime <= currentTime && _.Status != SD.GeneralStatus.INACTIVE)
                     .ToListAsync();
+                
 
                 foreach (var trip in tripsToUpdate)
                 {
+                    var bookings = await unitOfWork.BookingRepository.GetAll()
+                                              .Where(_ => _.TripID == trip.TripID)
+                                              .ToListAsync();
+                    foreach(var booking in bookings)
+                    {
+                        var tickets = await unitOfWork.TicketDetailRepository.GetAll()
+                                                      .Where(_ => _.BookingID ==  booking.BookingID)
+                                                      .ToListAsync();
+                        foreach(var ticket in tickets)
+                        {
+                            ticket.Status = SD.Booking_TicketStatus.USED_TICKET;
+                        }
+                    }
                     trip.Status = SD.GeneralStatus.INACTIVE;
                 }
 

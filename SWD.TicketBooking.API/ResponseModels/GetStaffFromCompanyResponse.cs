@@ -24,5 +24,7 @@ namespace SWD.TicketBooking.API.ResponseModels
 
         [JsonPropertyName("PhoneNumber")]
         public string PhoneNumber { get; set; } = string.Empty;
+        [JsonPropertyName("Status")]
+        public string Status { get; set; } = string.Empty;
     }
 }

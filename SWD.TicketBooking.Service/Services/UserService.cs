@@ -315,7 +315,8 @@ namespace SWD.TicketBooking.Service.Services
                     Email = _.Email,
                     Password = _.Password,
                     Address = _.Address,
-                    PhoneNumber = _.PhoneNumber
+                    PhoneNumber = _.PhoneNumber,
+                    Status = _.Status
                 }).ToListAsync();
                 return rs;
             }
