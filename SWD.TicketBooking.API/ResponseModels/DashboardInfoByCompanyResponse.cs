@@ -1,20 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using SWD.TicketBooking.Service.Dtos;
+using System.Text.Json.Serialization;
 
 namespace SWD.TicketBooking.API.ResponseModels
 {
     public class DashboardInfoByCompanyResponse
     {
-        [JsonPropertyName("MostPopularRouteID")]
-        public Guid MostPopularRouteID { get; set; }
-
-        [JsonPropertyName("MostPopularRoute_FromCity")]
-        public string MostPopularRoute_FromCity { get; set; }
-
-        [JsonPropertyName("MostPopularRoute_ToCity")]
-        public string MostPopularRoute_ToCity { get; set; }
-
-        [JsonPropertyName("TotalBookingsInPopularRoute")]
-        public int TotalBookingsInPopularRoute { get; set; }
+        [JsonPropertyName("PopularRoutes")]
+        public List<PopularRouteResponse> PopularRoutes { get; set; }
 
         [JsonPropertyName("TotalRoutes")]
         public int TotalRoutes { get; set; }
@@ -26,9 +18,18 @@ namespace SWD.TicketBooking.API.ResponseModels
         public int TotalBookingsInMonth { get; set; }
 
         [JsonPropertyName("MonthlyRevenue")]
-        public double MonthlyRevenue { get; set; }
+        public List<MonthlyRevenueResponse> MonthlyRevenue { get; set; }
 
         [JsonPropertyName("YearlyRevenue")]
         public double YearlyRevenue { get; set; }
+    }
+
+    public class MonthlyRevenueResponse
+    {
+        [JsonPropertyName("Month")]
+        public int Month { get; set; }
+
+        [JsonPropertyName("RevenueInMonth")]
+        public double RevenueInMonth { get; set; }
     }
 }
