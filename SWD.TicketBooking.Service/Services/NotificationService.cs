@@ -70,7 +70,7 @@ namespace SWD.TicketBooking.Service.Services
                 Notification = new Notification()
                 {
                     Title = "The Bus Journey",
-                    Body = $"Bạn vừa được {company.Name} phân công vào chuyến xe từ {fromCity.Name} ở {route.StartLocation} đến {toCity.Name} ở vào lúc {string.Format("{0:HH:mm} ngày {0:dd-MM-yyyy}", trip.StartTime)} đến {string.Format("{0:HH:mm} ngày {0:dd-MM-yyyy}", trip.EndTime)}."
+                    Body = $"Bạn vừa được {company.Name} phân công vào chuyến xe từ {fromCity.Name} ở {route.StartLocation} đến {toCity.Name} ở {route.EndLocation} vào lúc {string.Format("{0:HH:mm} ngày {0:dd-MM-yyyy}", trip.StartTime)} đến {string.Format("{0:HH:mm} ngày {0:dd-MM-yyyy}", trip.EndTime)}."
                 },
                 Data = new Dictionary<string, string>()
                 {
