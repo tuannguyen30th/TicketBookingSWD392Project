@@ -47,7 +47,7 @@ namespace SWD.TicketBooking.Service.Services
             var route_companyID = await _unitOfWork.TripRepository
                                          .GetAll()
                                          .Where(r=>r.TripID.Equals(tripID))
-                                         .Include(t=>t.Route_Company)
+                                         .Select(r=>r.Route_CompanyID)
                                          .FirstOrDefaultAsync();
             var routeCompany = await _unitOfWork.Route_CompanyRepository
                                          .GetAll()
@@ -74,7 +74,7 @@ namespace SWD.TicketBooking.Service.Services
                 },
                 Data = new Dictionary<string, string>()
                 {
-                    { "The Bus Journey", $"Bạn vừa được {company.Name} phân công vào chuyến xe từ {fromCity} ở {route.StartLocation} đến {toCity} ở vào lúc {string.Format("{0:HH:mm} ngay {0:dd-MM-yyyy}",trip.StartTime)} đến {string.Format("{0:HH:mm} ngay {0:dd-MM-yyyy}",trip.StartTime)}."}
+                    { "The Bus Journey", $"Bạn vừa được {company.Name} phân công vào chuyến xe từ {fromCity.Name} ở {route.StartLocation} đến {toCity.Name} ở vào lúc {string.Format("{0:HH:mm} ngay {0:dd-MM-yyyy}",trip.StartTime)} đến {string.Format("{0:HH:mm} ngay {0:dd-MM-yyyy}",trip.StartTime)}."}
                 }
             };
             string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
