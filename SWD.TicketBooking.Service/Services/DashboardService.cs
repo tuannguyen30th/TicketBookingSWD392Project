@@ -35,23 +35,45 @@ namespace SWD.TicketBooking.Service.Services
 
                 var allTrips = await _unitOfWork.TripRepository
                                 .GetAll()
+                                .Include(_ => _.Route_Company)
                                 .Where(_ => allRoutes.Contains((Guid)_.Route_CompanyID))
-                                .Select(_ => _.TripID)
                                 .ToListAsync();
 
                 var currentDate = DateTime.Now;
-                var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-                var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+                var startOfThisMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                var endOfThisMonth = startOfThisMonth.AddMonths(1).AddDays(-1);
 
                 var allTickets = await _unitOfWork.BookingRepository
                                                      .GetAll()
                                                      .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING) &&
-                                                                 _.BookingTime >= startOfMonth &&
-                                                                 _.BookingTime <= endOfMonth &&
-                                                                 allTrips.Contains((Guid)_.TripID))
+                                                                 _.BookingTime >= startOfThisMonth &&
+                                                                 _.BookingTime <= endOfThisMonth &&
+                                                                 allTrips.Select(_ => _.TripID).Contains((Guid)_.TripID))
                                                      .ToListAsync();
 
-                var monthlyRevenue = allTickets.Sum(_ => _.TotalBill);
+                var monthlyRevenue = new List<MonthlyRevenueModel>();
+
+                for (int month = 0; month < 12; month++)
+                {
+                    var startOfMonth = new DateTime(currentDate.Year, month + 1, 1);
+                    var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+                    var allTicket = await _unitOfWork.BookingRepository
+                                                     .GetAll()
+                                                     .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING) &&
+                                                                 _.BookingTime >= startOfMonth &&
+                                                                 _.BookingTime <= endOfMonth &&
+                                                                 allTrips.Select(_ => _.TripID).Contains((Guid)_.TripID))
+                                                     .ToListAsync();
+
+                    var revenue = allTicket.Sum(_ => _.TotalBill);
+                    var result = new MonthlyRevenueModel
+                    {
+                        Month = startOfMonth.Month,
+                        RevenueInMonth = (double)revenue
+                    };
+                    monthlyRevenue.Add(result);
+                }
 
                 var startOfYear = new DateTime(currentDate.Year, 1, 1);
                 var endOfYear = new DateTime(currentDate.Year, 12, 31);
@@ -61,60 +83,72 @@ namespace SWD.TicketBooking.Service.Services
                                                     .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING) &&
                                                                _.BookingTime >= startOfYear &&
                                                                _.BookingTime <= endOfYear &&
-                                                               allTrips.Contains((Guid)_.TripID))
+                                                               allTrips.Select(_ => _.TripID).Contains((Guid)_.TripID))
                                                     .Sum(s => s.TotalBill);
 
                 var test = await _unitOfWork.BookingRepository
-                                            .GetAll()
-                                            .GroupBy(b => b.TripID)
-                                            .Select(g => new
-                                            {
-                                                TripID = g.Key,
-                                                TotalBooking = g.Count()
-                                            })
-                                            .ToListAsync();
+                    .GetAll()
+                    .GroupBy(b => b.TripID)
+                    .Select(g => new
+                    {
+                        TripID = g.Key,
+                        TotalBooking = g.Count()
+                    })
+                    .ToListAsync();
 
                 var routeIDs = await _unitOfWork.TripRepository
-                                                .GetAll()
-                                                .Where(t => allRoutes.Contains((Guid)t.Route_CompanyID) && test.Select(tt => tt.TripID).Contains(t.TripID))
-                                                .Include(t => t.Route_Company.Route)
-                                                .Select(t => t.Route_Company.RouteID)
-                                                .Distinct()
-                                                .ToListAsync();
+                    .GetAll()
+                    .Where(t => test.Select(tt => tt.TripID).Contains(t.TripID))
+                    .Include(t => t.Route_Company.Route)
+                    .Select(t => t.Route_Company.RouteID)
+                    .Distinct()
+                    .ToListAsync();
 
-                var trips = _unitOfWork.TripRepository
-                                          .GetAll()
-                                          .Include(tr => tr.Route_Company.Route)
-                                          .Where(_ => allRoutes.Contains((Guid)_.Route_CompanyID))
-                                          .ToList();
+                var topRoutes = allTrips
+                    .GroupBy(tr => tr.Route_Company.RouteID)
+                    .Select(g => new
+                    {
+                        RouteID = g.Key,
+                        TotalBookings = g.Sum(tr => test.Where(t => t.TripID == tr.TripID).Sum(t => t.TotalBooking))
+                    })
+                    .OrderByDescending(r => r.TotalBookings)
+                    .Take(5)
+                    .ToList();
 
-                var topRoute = trips
-                                .GroupBy(tr => tr.Route_Company.RouteID)
-                                .Select(g => new
-                                {
-                                    RouteID = g.Key,
-                                    TotalBookings = g.Sum(tr => test.Where(t => t.TripID == tr.TripID).Sum(t => t.TotalBooking))
-                                })
-                                .OrderByDescending(r => r.TotalBookings)
-                                .FirstOrDefault();
 
-                var getRoute = await _unitOfWork.RouteRepository
-                                .GetAll()
-                                .Include(_ => _.FromCity)
-                                .Include(_ => _.ToCity)
-                                .Where(_ => _.RouteID.Equals((Guid)topRoute.RouteID))
-                                .FirstOrDefaultAsync();
+                var popularRoutes = new List<PopularRouteModel>();
+
+                foreach (var route in topRoutes)
+                {
+                    var getRoute = await _unitOfWork.RouteRepository
+                                                    .GetAll()
+                                                    .Include(_ => _.FromCity)
+                                                    .Include(_ => _.ToCity)
+                                                    .Where(_ => _.RouteID.Equals((Guid)route.RouteID))
+                                                    .FirstOrDefaultAsync();
+
+                    var routeRs = new PopularRouteModel
+                    {
+                        RouteID = getRoute.RouteID,
+                        FromCityID = getRoute.FromCity.CityID,
+                        FromCity = getRoute.FromCity.Name,
+                        ToCityID = getRoute.ToCity.CityID,
+                        ToCity = getRoute.ToCity.Name,
+                        StartLocation = getRoute.StartLocation,
+                        EndLocation = getRoute.EndLocation,
+                        TotalBooking = route.TotalBookings
+                    };
+
+                    popularRoutes.Add(routeRs);
+                }
 
                 var rs = new DashboardInfoByCompanyModel
                 {
-                    MostPopularRouteID = (Guid)getRoute.RouteID,
-                    MostPopularRoute_FromCity = getRoute.FromCity.Name,
-                    MostPopularRoute_ToCity = getRoute.ToCity.Name,
-                    TotalBookingsInPopularRoute = topRoute.TotalBookings,
+                    PopularRoutes = popularRoutes,
                     TotalRoutes = allRoutes.Count(),
                     TotalTrips = allTrips.Count(),
                     TotalBookingsInMonth = (int)allTickets.Sum(_ => _.Quantity),
-                    MonthlyRevenue = (double)monthlyRevenue,
+                    MonthlyRevenue = monthlyRevenue,
                     YearlyRevenue = (double)yearlyRevenue
                 };
 

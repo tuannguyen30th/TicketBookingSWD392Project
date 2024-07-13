@@ -130,6 +130,7 @@ namespace SWD.TicketBooking.API.Mapper
 
             /////Dashboard/////
             CreateMap<DashboardInfoByCompanyModel, DashboardInfoByCompanyResponse>().ReverseMap();
+            CreateMap<MonthlyRevenueModel, MonthlyRevenueResponse>().ReverseMap();
         }
     }
 }
