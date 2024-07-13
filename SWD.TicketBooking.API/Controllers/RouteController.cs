@@ -71,11 +71,8 @@ namespace SWD.TicketBooking.API.Controllers
         {
             var map = _mapper.Map<CreateRouteModel>(req);
             var rs = await _routeService.CreateRoute(map);
-            if (rs < 1)
-            {
-                return BadRequest("Create failed");
-            }
-            return Ok("Create successfully");
+            
+            return Ok(rs);
         }
 
         [AllowAnonymous]

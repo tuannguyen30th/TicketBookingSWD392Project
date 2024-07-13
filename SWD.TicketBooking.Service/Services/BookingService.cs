@@ -323,10 +323,11 @@ namespace SWD.TicketBooking.Service.Services
                                     isValid = false;
                                 }
                             };
-                        }                                
-                        _unitOfWork.Complete();
-                        var rs = await UpdateStatusBooking(newBooking.BookingID);
-                        result.Result = rs;                  
+                        }
+                _unitOfWork.Complete();
+
+                var rs = await UpdateStatusBooking(newBooking.BookingID);
+                        result.Result = rs;
                         return (result, newBooking.BookingID);
                     }
 
