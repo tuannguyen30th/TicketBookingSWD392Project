@@ -36,7 +36,7 @@ namespace SWD.TicketBooking.Service.Services
             string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
             return response;
         }
-        public async Task<string> SendStaffNotification(Guid staffID, Guid tripID, string title, string body)
+        public async Task<string> SendStaffNotification(Guid staffID, Guid tripID)
         {
             var token = await _unitOfWork.UserRepository
                                          .GetAll()
@@ -69,13 +69,13 @@ namespace SWD.TicketBooking.Service.Services
                 Token = token,
                 Notification = new Notification()
                 {
-                    Title = title,
-                    Body = body
+                    Title = "The Bus Journey",
+                    Body = $"Bạn vừa được {company.Name} phân công vào chuyến xe từ {fromCity.Name} ở {route.StartLocation} đến {toCity.Name} ở vào lúc {string.Format("{0:HH:mm} ngay {0:dd-MM-yyyy}", trip.StartTime)} đến {string.Format("{0:HH:mm} ngay {0:dd-MM-yyyy}", trip.StartTime)}."
                 },
                 Data = new Dictionary<string, string>()
                 {
-                    { "The Bus Journey", $"Bạn vừa được {company.Name} phân công vào chuyến xe từ {fromCity.Name} ở {route.StartLocation} đến {toCity.Name} ở vào lúc {string.Format("{0:HH:mm} ngay {0:dd-MM-yyyy}",trip.StartTime)} đến {string.Format("{0:HH:mm} ngay {0:dd-MM-yyyy}",trip.StartTime)}."}
-                }
+                    { "Key1","Value1"}
+            }
             };
             string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
             return response;

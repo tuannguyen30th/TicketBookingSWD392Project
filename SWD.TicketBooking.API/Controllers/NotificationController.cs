@@ -27,9 +27,9 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpPost("managed-notifications/staff")]
-        public async Task<IActionResult> SendStaffNotification(Guid staffID, Guid tripID, string title, string body)
+        public async Task<IActionResult> SendStaffNotification(Guid staffID, Guid tripID)
         {
-            var result = await _notificationService.SendStaffNotification(staffID, tripID, title, body);
+            var result = await _notificationService.SendStaffNotification(staffID, tripID);
             if (result != null)
             {
                 return Ok(new { message = "Notification sent successfully" });
