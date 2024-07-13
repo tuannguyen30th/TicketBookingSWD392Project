@@ -9,7 +9,7 @@ namespace SWD.TicketBooking.Service.IServices
 {
     public interface IServiceService
     {
-        Task<int> CreateService(CreateServiceModel createServiceModel);
+        Task<CreateServiceResponse> CreateService(CreateServiceModel createServiceModel);
         Task<int> UpdateService(UpdateServiceModel updateServiceModel, Guid serviceID);
         Task<bool> UpdateStatus(Guid serviceID);
         //Task<List<ServiceTypeInStationModel>> ServicesFromStations(Guid stationID);

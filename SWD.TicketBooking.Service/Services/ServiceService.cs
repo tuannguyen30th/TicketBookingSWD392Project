@@ -58,7 +58,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<int> CreateService(CreateServiceModel createServiceModel)
+        public async Task<CreateServiceResponse> CreateService(CreateServiceModel createServiceModel)
         {
             try
             {
@@ -78,8 +78,15 @@ namespace SWD.TicketBooking.Service.Services
                     ServiceTypeID = createServiceModel.ServiceTypeID,
                     Status = SD.GeneralStatus.ACTIVE
                 };
-                await _unitOfWork.ServiceRepository.AddAsync(service);
-                var rs = _unitOfWork.Complete();
+                var serviceRs = await _unitOfWork.ServiceRepository.AddAsync(service);
+                _unitOfWork.Complete();
+                var rs = new CreateServiceResponse
+                {
+                    ServiceID = serviceRs.ServiceID,
+                    ServiceTypeID = (Guid)serviceRs.ServiceTypeID,
+                    Name = serviceRs.Name,
+                    Status = serviceRs.Status
+                };
                 return rs;
             }
             catch (Exception ex)

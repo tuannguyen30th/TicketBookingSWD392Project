@@ -10,6 +10,6 @@ namespace SWD.TicketBooking.Service.Dtos
     public class UpdateServiceInStationModel
     {
         public double Price { get; set; }
-        public IFormFile ImageUrl { get; set; }
+        public IFormFile? ImageUrl { get; set; }
     }
 }
