@@ -37,18 +37,26 @@ namespace SWD.TicketBooking.Service.Services
                 var allTrips = await _unitOfWork.TripRepository
                                 .GetAll()
                                 .Include(_ => _.Route_Company)
-                                .Where(_ => allRoutes.Contains((Guid)_.Route_CompanyID))
+                                .Where(_ => allRoutes.Contains((Guid)_.Route_CompanyID) && _.IsTemplate == false)
                                 .ToListAsync();
 
                 var currentDate = DateTime.Now;
                 var startOfThisMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 var endOfThisMonth = startOfThisMonth.AddMonths(1).AddDays(-1);
 
+                var allTicketDetails = await _unitOfWork.TicketDetailRepository
+                                                        .GetAll()
+                                                        .Where(_ => _.Status.Equals(SD.Booking_TicketStatus.USED_TICKET))
+                                                        .Select(_ => _.BookingID)
+                                                        .Distinct()
+                                                        .ToListAsync();
+
                 var allTickets = await _unitOfWork.BookingRepository
                                                      .GetAll()
                                                      .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING) &&
                                                                  _.BookingTime >= startOfThisMonth &&
                                                                  _.BookingTime <= endOfThisMonth &&
+                                                                 allTicketDetails.Contains(_.BookingID) &&
                                                                  allTrips.Select(_ => _.TripID).Contains((Guid)_.TripID))
                                                      .ToListAsync();
 
