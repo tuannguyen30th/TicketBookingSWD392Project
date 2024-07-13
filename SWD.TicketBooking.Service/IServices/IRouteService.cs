@@ -10,7 +10,7 @@ namespace SWD.TicketBooking.Service.IServices
     public interface IRouteService
     {
         Task<List<RouteModel>> GetAllRoutes();
-        Task<int> CreateRoute(CreateRouteModel model);
+        Task<CreateRouteResponse> CreateRoute(CreateRouteModel model);
         Task<int> UpdateRoute(Guid routeId, CreateRouteModel model);
         Task<List<GetRouteFromCompanyModel>> GetAllRouteFromCompany(Guid companyID);
         Task<List<PopularRouteModel>> GetPopularRoutes();
