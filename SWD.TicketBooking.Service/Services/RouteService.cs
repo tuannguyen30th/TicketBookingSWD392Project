@@ -191,10 +191,6 @@ namespace SWD.TicketBooking.Service.Services
                                                               .GetAll()
                                                               .Where(_ => _.CompanyID.Equals(model.CompanyID) && _.StationID.Equals(station.StationID))
                                                               .FirstOrDefaultAsync();
-                    if (checkStationCompanyExisted != null)
-                    {
-                        throw new InternalServerErrorException(SD.Notification.Existed("NHÀ XE", "KHI TẠO MỚI TUYẾN ĐƯỜNG"));
-                    }
 
                     if (checkStationCompanyExisted == null)
                     {
@@ -206,19 +202,20 @@ namespace SWD.TicketBooking.Service.Services
                                                                   StationID = station.StationID,
                                                                   Status = SD.GeneralStatus.ACTIVE
                                                               });
+                        checkStationCompanyExisted = stationCompany;
+                    }
 
-                        var routeStation = await _unitOfWork.StationCompany_RouteRepository.AddAsync(new StationCompany_Route
-                        {
-                            Station_CompanyID = stationCompany.Station_CompanyID,
-                            StationCompany_RouteID = Guid.NewGuid(),
-                            OrderInRoute = station.OrderInRoute,
-                            RouteID = checkRouteExisted.RouteID,
-                            Status = SD.GeneralStatus.ACTIVE
-                        });
-                        if (routeStation == null)
-                        {
-                            throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG CỦA NHÀ XE", "KHI TẠO MỚI TUYẾN ĐƯỜNG CHO NHÀ XE NÀY"));
-                        }
+                    var routeStation = await _unitOfWork.StationCompany_RouteRepository.AddAsync(new StationCompany_Route
+                    {
+                        Station_CompanyID = checkStationCompanyExisted.Station_CompanyID,
+                        StationCompany_RouteID = Guid.NewGuid(),
+                        OrderInRoute = station.OrderInRoute,
+                        RouteID = checkRouteExisted.RouteID,
+                        Status = SD.GeneralStatus.ACTIVE
+                    });
+                    if (routeStation == null)
+                    {
+                        throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG CỦA NHÀ XE", "KHI TẠO MỚI TUYẾN ĐƯỜNG CHO NHÀ XE NÀY"));
                     }
                 }
                 var checkRouteCompanyExisted = await _unitOfWork.Route_CompanyRepository
