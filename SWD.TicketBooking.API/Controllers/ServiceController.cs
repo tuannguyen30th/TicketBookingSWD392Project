@@ -31,6 +31,13 @@ namespace SWD.TicketBooking.API.Controllers
             var services = await _serviceService.GetAllActiveServices();
             return Ok(services);
         }
+        
+        [HttpGet("managed-service/types")]
+        public async Task<IActionResult> GetAllServiceTypes()
+        {
+            var services = await _serviceTypeService.GetAllServiceTypes();
+            return Ok(services);
+        }
 
         [HttpGet("managed-services/stations/{stationID}/types/{serviceTypeID}")]
         public async Task<IActionResult> ServicesOfTypeFromStations([FromRoute] Guid stationID, [FromRoute] Guid serviceTypeID)

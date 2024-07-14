@@ -88,7 +88,8 @@ namespace SWD.TicketBooking.API.Mapper
             CreateMap<CreateStationModel, CreateStationRequest>().ReverseMap();
             CreateMap<UpdateStationModel, UpdateStationRequest>().ReverseMap();
 
-            CreateMap<CreateStationWithServiceModel, CreateStationWithServiceRequest>().ReverseMap();
+            CreateMap<AddServiceToStationModel, AddServiceToStationRequest>().ReverseMap();
+            CreateMap<ServiceToCreateModel, ServiceToCreateRequest>().ReverseMap();
 
             /////Company/////
             CreateMap<GetCompanyModel, Company>().ReverseMap();
@@ -127,10 +128,6 @@ namespace SWD.TicketBooking.API.Mapper
 
             /////TicketType/////
             CreateMap<TicketTypeResponse, TicketType>().ReverseMap();
-
-            /////Dashboard/////
-            CreateMap<DashboardInfoByCompanyModel, DashboardInfoByCompanyResponse>().ReverseMap();
-            CreateMap<MonthlyRevenueModel, MonthlyRevenueResponse>().ReverseMap();
         }
     }
 }

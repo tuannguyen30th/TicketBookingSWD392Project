@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace SWD.TicketBooking.Service.Dtos
 {
-    public class CreateStationWithServiceModel
+    public class AddServiceToStationModel
     {
-        public Guid CompanyID { get; set; }
-        public Guid CityID { get; set; }
-        public string StationName { get; set; }
-        public List<ServiceToCreateModel> ServiceToCreateModels { get; set; }
+        public Guid? StationID { get; set; }
+        public List<ServiceToCreateModel>? ServiceToCreateModels { get; set; }
     }
 
     public class ServiceToCreateModel
     {
-        public Guid ServiceID { get; set; }
-        public double Price { get; set; }
-        public IFormFile Image { get; set; }
+        public Guid? ServiceTypeID { get; set; }
+        public Guid? ServiceID { get; set; }
+        public string? Name { get; set; }
+        public double? Price { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

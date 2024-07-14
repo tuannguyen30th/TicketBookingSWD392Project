@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWD.TicketBooking.Service.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace SWD.TicketBooking.Service.IServices
     {
         Task<ServiceTypeModel> ServicesOfTypeFromStations(Guid stationID, Guid serviceTypeID);
         Task<List<ServiceTypeModel>> ServiceTypesFromStation(Guid stationID);
+        Task<List<GetAllServiceTypeResponse>> GetAllServiceTypes();
 
     }
 }
