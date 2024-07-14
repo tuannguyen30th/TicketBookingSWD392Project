@@ -105,7 +105,7 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<List<StationFromRouteModel>> GetStationsFromTrip(Guid routeID, Guid companyID)
+        /*public async Task<List<StationFromRouteModel>> GetStationsFromTrip(Guid routeID, Guid companyID)
         {
             try
             {
@@ -127,6 +127,33 @@ namespace SWD.TicketBooking.Service.Services
                                                          .ToListAsync();
                 return stationsByCompany;
 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }*/
+        public async Task<List<StationFromRouteModel>> GetStationsFromRoute(Guid routeID, Guid companyID)
+        {
+            try
+            {
+                var stationsByCompany = await _unitOfWork.StationCompany_RouteRepository
+                                                         .GetAll()
+                                                         .Where(scr => scr.RouteID == routeID && scr.Station_Company.CompanyID == companyID)
+                                                         .OrderBy(scr => scr.OrderInRoute)
+                                                         .Join(_unitOfWork.Station_CompanyRepository.GetAll(),
+                                                               scr => scr.Station_CompanyID,
+                                                               sc => sc.Station_CompanyID,
+                                                               (scr, sc) => new { scr, sc })
+                                                         .Where(joined => joined.sc.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                         .Select(joined => new StationFromRouteModel
+                                                         {
+                                                             StationID = (Guid)joined.sc.StationID,
+                                                             Name = joined.sc.Station.Name
+                                                         })
+                                                         .ToListAsync();
+
+                return stationsByCompany;
             }
             catch (Exception ex)
             {

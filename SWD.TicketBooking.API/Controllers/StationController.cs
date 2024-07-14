@@ -47,9 +47,9 @@ namespace SWD.TicketBooking.API.Controllers
         }
 
         [HttpGet("managed-stations/routes/{routeID}/companyID/{companyID}")]
-        public async Task<IActionResult> GetStationsFromTrip(Guid routeID, Guid companyID)
+        public async Task<IActionResult> GetStationsFromRoute(Guid routeID, Guid companyID)
         {
-            var stations = await _stationService.GetStationsFromTrip(routeID, companyID);
+            var stations = await _stationService.GetStationsFromRoute(routeID, companyID);
             var stationResponses = _mapper.Map<List<StationFromRouteResponse>>(stations);
             return Ok(stationResponses);
         }
