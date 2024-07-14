@@ -305,10 +305,52 @@ namespace SWD.TicketBooking.Service.Services
                                                             .FindByCondition(s => s.StationID.Equals(station.StationID) && s.Status.Equals(SD.GeneralStatus.ACTIVE))
                                                             .FirstOrDefaultAsync();
                         if (checkStation != null)
-                        { 
-                           
+                        {
+                            var checkStationCompany = await _unitOfWork.Station_CompanyRepository
+                                                                       .FindByCondition(sc => sc.StationID.Equals(station.StationID) && sc.CompanyID.Equals(model.CompanyID))
+                                                                       .FirstOrDefaultAsync();
+                            if (checkStationCompany== null)
+                            {
+                                var checkStationCompanyExisted = await _unitOfWork.Station_CompanyRepository
+                                                              .GetAll()
+                                                              .Where(_ => _.CompanyID.Equals(model.CompanyID) && _.StationID.Equals(station.StationID))
+                                                              .FirstOrDefaultAsync();
+                                if (checkStationCompanyExisted != null)
+                                {
+                                    throw new InternalServerErrorException(SD.Notification.Existed("NHÀ XE", "KHI TẠO MỚI TUYẾN ĐƯỜNG"));
+                                }
+
+                                if (checkStationCompanyExisted == null)
+                                {
+                                    var stationCompany = await _unitOfWork.Station_CompanyRepository
+                                                                          .AddAsync(new Station_Company
+                                                                          {
+                                                                              Station_CompanyID = Guid.NewGuid(),
+                                                                              CompanyID = model.CompanyID,
+                                                                              StationID = station.StationID,
+                                                                              Status = SD.GeneralStatus.ACTIVE
+                                                                          });
+
+                                    var routeStation = await _unitOfWork.StationCompany_RouteRepository.AddAsync(new StationCompany_Route
+                                    {
+                                        Station_CompanyID = stationCompany.Station_CompanyID,
+                                        StationCompany_RouteID = Guid.NewGuid(),
+                                        OrderInRoute = station.OrderInRoute,
+                                        RouteID = route.RouteID,
+                                        Status = SD.GeneralStatus.ACTIVE
+                                    });
+                                    if (routeStation == null)
+                                    {
+                                        throw new InternalServerErrorException(SD.Notification.Internal("TUYẾN ĐƯỜNG CỦA NHÀ XE", "KHI TẠO MỚI TUYẾN ĐƯỜNG CHO NHÀ XE NÀY"));
+                                    }
+                                    _unitOfWork.Complete();
+                                    checkStationCompany = await _unitOfWork.Station_CompanyRepository
+                                                                       .FindByCondition(sc => sc.StationID.Equals(station.StationID) && sc.CompanyID.Equals(model.CompanyID))
+                                                                       .FirstOrDefaultAsync();
+                                }
+                            }
                             var checkStationCompanyRoute = await _unitOfWork.StationCompany_RouteRepository
-                                                                .FindByCondition(scr => scr.Station_CompanyID.Equals(model.StationCompany))
+                                                                .FindByCondition(scr =>scr.Station_CompanyID.Equals(checkStationCompany.Station_CompanyID))
                                                                 .FirstOrDefaultAsync();
                             checkStationCompanyRoute.OrderInRoute = station.OrderInRoute;
                             var stationRouteUpdate = _unitOfWork.StationCompany_RouteRepository.Update(checkStationCompanyRoute);
