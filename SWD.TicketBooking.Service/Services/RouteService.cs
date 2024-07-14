@@ -119,10 +119,12 @@ namespace SWD.TicketBooking.Service.Services
             {
                 var result = await _unitOfWork.Route_CompanyRepository
                                               .GetAll()
+                                              .Include(_ => _.Route)
                                               .Where(_ => _.CompanyID == companyID)
                                               .Select(_ => new GetRouteFromCompanyModel
                                               {
                                                   Route_CompanyID = _.Route_CompanyID,
+                                                  RouteID = _.Route.RouteID,
                                                   FromCity = _.Route.FromCity.Name,
                                                   ToCity = _.Route.ToCity.Name,
                                                   StartLocation = _.Route.StartLocation,

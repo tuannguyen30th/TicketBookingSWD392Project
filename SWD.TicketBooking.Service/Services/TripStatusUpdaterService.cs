@@ -37,27 +37,35 @@ namespace SWD.TicketBooking.Service.Services
                 var currentTime = DateTime.UtcNow;
 
                 var tripsToUpdate = await unitOfWork.TripRepository
-                    .GetAll()
-                    .Where(_ => _.EndTime <= currentTime && _.Status != SD.GeneralStatus.INACTIVE)
-                    .ToListAsync();
+                                                    .GetAll()
+                                                    .Where(_ => _.EndTime <= currentTime && _.Status != SD.GeneralStatus.INACTIVE)
+                                                    .ToListAsync();
                 
 
                 foreach (var trip in tripsToUpdate)
                 {
-                    var bookings = await unitOfWork.BookingRepository.GetAll()
-                                              .Where(_ => _.TripID == trip.TripID)
-                                              .ToListAsync();
-                    foreach(var booking in bookings)
+                    trip.EndTime = trip.EndTime.Value.AddMinutes(15);
+
+                    if (trip.EndTime <= currentTime)
                     {
-                        var tickets = await unitOfWork.TicketDetailRepository.GetAll()
-                                                      .Where(_ => _.BookingID ==  booking.BookingID)
-                                                      .ToListAsync();
-                        foreach(var ticket in tickets)
+                        var bookings = await unitOfWork.BookingRepository.GetAll()
+                                                       .Where(_ => _.TripID == trip.TripID)
+                                                       .ToListAsync();
+                        foreach (var booking in bookings)
                         {
-                            ticket.Status = SD.Booking_TicketStatus.USED_TICKET;
+                            var tickets = await unitOfWork.TicketDetailRepository.GetAll()
+                                                          .Where(_ => _.BookingID == booking.BookingID)
+                                                          .ToListAsync();
+                            foreach (var ticket in tickets)
+                            {
+                                if (ticket.Status.Equals(SD.Booking_TicketStatus.UNUSED_TICKET))
+                                {
+                                    ticket.Status = SD.Booking_TicketStatus.USED_TICKET;
+                                }
+                            }
                         }
+                        trip.Status = SD.GeneralStatus.INACTIVE;
                     }
-                    trip.Status = SD.GeneralStatus.INACTIVE;
                 }
 
                unitOfWork.Complete();

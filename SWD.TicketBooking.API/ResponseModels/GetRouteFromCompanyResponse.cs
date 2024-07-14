@@ -7,6 +7,9 @@ namespace SWD.TicketBooking.API.ResponseModels
         [JsonPropertyName("Route_CompanyID")]
         public Guid Route_CompanyID { get; set; }
 
+        [JsonPropertyName("RouteID")]
+        public Guid RouteID { get; set; }
+
         [JsonPropertyName("FromCity")]
         public string? FromCity { get; set; } = string.Empty;
 
@@ -18,10 +21,8 @@ namespace SWD.TicketBooking.API.ResponseModels
 
         [JsonPropertyName("EndLocation")]
         public string? EndLocation { get; set; } = string.Empty;
+
         [JsonPropertyName("Status")]
-
         public string? Status { get; set; } = string.Empty;
-
-
     }
 }
