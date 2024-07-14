@@ -57,43 +57,6 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-
-        public async Task<CreateServiceResponse> CreateService(CreateServiceModel createServiceModel)
-        {
-            try
-            {
-                var checkExistedName = await _unitOfWork.ServiceRepository
-                                                        .GetAll()
-                                                        .Where(_ => _.ServiceTypeID == createServiceModel.ServiceTypeID && _.Name.ToLower().Trim().Equals(createServiceModel.Name.ToLower()))
-                                                        .FirstOrDefaultAsync();
-                if (checkExistedName != null)
-                {
-                    throw new BadRequestException(SD.Notification.Existed("DỊCH VỤ", "TÊN"));
-                }
-
-                var service = new SWD.TicketBooking.Repo.Entities.Service
-                {
-                    ServiceID = Guid.NewGuid(),
-                    Name = createServiceModel.Name,
-                    ServiceTypeID = createServiceModel.ServiceTypeID,
-                    Status = SD.GeneralStatus.ACTIVE
-                };
-                var serviceRs = await _unitOfWork.ServiceRepository.AddAsync(service);
-                _unitOfWork.Complete();
-                var rs = new CreateServiceResponse
-                {
-                    ServiceID = serviceRs.ServiceID,
-                    ServiceTypeID = (Guid)serviceRs.ServiceTypeID,
-                    Name = serviceRs.Name,
-                    Status = serviceRs.Status
-                };
-                return rs;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
-        }
       
         public async Task<int> UpdateService(UpdateServiceModel updateServiceModel, Guid serviceID)
         {

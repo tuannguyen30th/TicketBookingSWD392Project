@@ -23,45 +23,6 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
-        public async Task<bool> CreateServiceStation(CreateServiceInStationModel createServiceInStationModel)
-        {
-            try
-            {
-                var checkExisted = await _unitOfWork.Station_ServiceRepository
-                                                    .FindByCondition(_ => _.ServiceID == createServiceInStationModel.ServiceID && _.StationID == createServiceInStationModel.StationID)
-                                                    .FirstOrDefaultAsync();
-                if (checkExisted != null)
-                {
-                    throw new BadRequestException("DỊCH VỤ ĐÃ TỒN TẠI Ở TRẠM NÀY!");
-                }
-                var serviceStation = new Station_Service
-                {
-                    Station_ServiceID = Guid.NewGuid(),
-                    StationID = createServiceInStationModel.StationID,
-                    ServiceID = createServiceInStationModel.ServiceID,
-                    Price = createServiceInStationModel.Price,
-                    ImageUrl = "",
-                    Status = SD.GeneralStatus.ACTIVE
-                };
-                var imagePath = FirebasePathName.SERVICE_STATION + $"{serviceStation.Station_ServiceID}";
-                var imageUploadResult = await _firebaseService.UploadFileToFirebase(createServiceInStationModel.ImageUrl, imagePath);
-                if (imageUploadResult.IsSuccess)
-                {
-                    serviceStation.ImageUrl = (string)imageUploadResult.Result;
-                }
-                await _unitOfWork.Station_ServiceRepository.AddAsync(serviceStation);
-                var rs = _unitOfWork.Complete();
-                if (rs > 0)
-                {
-                    return true;
-                }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
-        }
 
         public async Task<List<ServiceTypeInStationModel>> AddServiceIntoStation(AddServiceToStationModel reqModel)
         {
