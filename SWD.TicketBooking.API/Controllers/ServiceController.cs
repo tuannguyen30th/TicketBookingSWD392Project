@@ -54,14 +54,6 @@ namespace SWD.TicketBooking.API.Controllers
             return Ok(serviceTypes);
         }
 
-        [HttpPost("managed-services")]
-        public async Task<IActionResult> CreateService([FromBody] CreateServiceRequest createServiceModel)
-        {
-            var serviceToUpdate = _mapper.Map<CreateServiceModel>(createServiceModel);
-
-            var service = await _serviceService.CreateService(serviceToUpdate);
-            return Ok(service);
-        }
         [HttpPut("managed-services/{serviceID}")]
         public async Task<IActionResult> UpdateService([FromBody] UpdateServiceRequest updateServiceModel, [FromRoute] Guid serviceID)
         {
