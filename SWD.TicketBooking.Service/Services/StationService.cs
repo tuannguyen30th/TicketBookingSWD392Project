@@ -109,7 +109,6 @@ namespace SWD.TicketBooking.Service.Services
         {
             try
             {
-
                 var stationsByRoute = await _unitOfWork.StationCompany_RouteRepository
                                                        .GetAll()
                                                        .Where(_ => _.RouteID == routeID && _.Station_Company.CompanyID == companyID)
@@ -126,7 +125,6 @@ namespace SWD.TicketBooking.Service.Services
                                                              StationID = (Guid)_.StationID,
                                                          })
                                                          .ToListAsync();
-
                 return stationsByCompany;
 
             }
