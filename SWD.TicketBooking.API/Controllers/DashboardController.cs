@@ -23,7 +23,7 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpGet("managed-dashboards/company/{companyID}")]
         public async Task<IActionResult> GetAllDashboardInfoByCompany([FromRoute] Guid companyID)
         {
-            var rs = _mapper.Map<DashboardInfoByCompanyResponse>(await _dashboardService.GetAllDashboardInfoByCompany(companyID));
+            var rs = await _dashboardService.GetAllDashboardInfoByCompany(companyID);
             return Ok(rs);
         }
         [HttpGet("managed-dashboards/admins")]
