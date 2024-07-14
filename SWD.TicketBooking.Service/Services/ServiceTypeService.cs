@@ -4,6 +4,7 @@ using NuGet.Protocol;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Repositories;
 using SWD.TicketBooking.Repo.UnitOfWork;
+using SWD.TicketBooking.Service.Dtos;
 using SWD.TicketBooking.Service.IServices;
 using SWD.TicketBooking.Service.Utilities;
 using static SWD.TicketBooking.Service.Dtos.ServiceFromStationModel;
@@ -21,7 +22,30 @@ namespace SWD.TicketBooking.Service.Services
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
-        public async Task<List<ServiceTypeModel>> ServiceTypesFromStation(Guid stationID)
+
+        public async Task<List<GetAllServiceTypeResponse>> GetAllServiceTypes()
+        {
+            try
+            {
+                var rs = await _unitOfWork.ServiceTypeRepository
+                                          .GetAll()
+                                          .Where(_ => _.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                          .Select(_ => new GetAllServiceTypeResponse
+                                          {
+                                              ServiceTypeID = _.ServiceTypeID,
+                                              Name = _.Name
+                                          })
+                                          .ToListAsync();
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+
+            public async Task<List<ServiceTypeModel>> ServiceTypesFromStation(Guid stationID)
         {
             try
             {
