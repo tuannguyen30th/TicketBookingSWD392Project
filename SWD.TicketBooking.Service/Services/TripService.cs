@@ -878,7 +878,6 @@ namespace SWD.TicketBooking.Service.Services
                     };
                     result.Message = "TẠO CHUYẾN XE MẪU THÀNH CÔNG!";
                     result.IsSuccess = true;
-
                     return result;
                 }
 
@@ -1005,13 +1004,7 @@ namespace SWD.TicketBooking.Service.Services
                     var rs = _unitOfWork.Complete();
 
                     if (rs < 0)
-                    {
-                        return new ActionOutcome
-                        {
-                            IsSuccess = false,
-                            Message = "LỖI KHI TẠO CHUYẾN XE!"
-                        };
-                    }
+                    
                     foreach (var trip in resultGetTrips)
                     {
                         var token = await _unitOfWork.UserRepository
@@ -1054,6 +1047,7 @@ namespace SWD.TicketBooking.Service.Services
                         };
                         string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
                     }
+
                     result.Result = resultGetTrips;
                     result.Message = "TẠO CHUYẾN XE THÀNH CÔNG!";
                     result.IsSuccess = true;
