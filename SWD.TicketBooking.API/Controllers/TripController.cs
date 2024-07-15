@@ -100,11 +100,14 @@ namespace SWD.TicketBooking.API.Controllers
         [HttpPost("managed-trips")]
         public async Task<IActionResult> CreateTrip([FromForm] CreateTripModel createTripRequest)
         {
+            var d = Request.Headers;
+            var form = Request.Form;
+
             var updatedService = await _tripService.CreateTrip(createTripRequest);
             await _responseCacheService.RemoveCacheResponseAsync("/trip-management/managed-trips/from-city");
             return Ok(updatedService);
-        }        
-        
+        }
+
         [HttpPut("managed-trips/trip/{tripID}")]
         public async Task<IActionResult> UpdateTrip([FromBody] UpdateTripModel updateTripRequest, [FromRoute] Guid tripID)
         {

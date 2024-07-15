@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FirebaseAdmin.Messaging;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
@@ -731,135 +732,117 @@ namespace SWD.TicketBooking.Service.Services
             }
         }
 
-        public async Task<ActionOutcome> CreateTrip(CreateTripModel createTrip)
+        private async Task<(bool isSuccess, string message, List<TripPicture> data)> CreateTripImages(CreateTripModel createTripModel, Guid createdTripId)
+        {
+            var guidPath = Guid.NewGuid();
+            var successImages = new List<TripPicture>();
+            foreach (var imageUrl in createTripModel.ImageUrls)
+            {
+                var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, FirebasePathName.TRIP + $"{guidPath.ToString()}");
+                if (!imageUploadResult.IsSuccess)
+                {
+                    return (false, SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"), null);
+                }
+
+                successImages.Add(new TripPicture
+                {
+                    TripPictureID = guidPath,
+                    TripID = createdTripId,
+                    ImageUrl = (string)imageUploadResult.Result,
+                    Status = SD.GeneralStatus.ACTIVE
+                });
+            }
+
+            await _unitOfWork.TripPictureRepository.AddRangeAsync(successImages);
+            return (true, string.Empty, successImages);
+        }
+        private async Task<(bool isSuccess, string message, List<TicketType_Trip> data)> CreateTicketTypes(CreateTripModel createTripModel, Guid createdTripId)
         {
             try
             {
-                if (createTrip.IsTemplate == true)
+                var prices = new List<double>();
+                var successTicketTypes = new List<TicketType_Trip>();
+                foreach (var ticketType in createTripModel.TicketType_TripModels)
                 {
+                    successTicketTypes.Add(new TicketType_Trip
+                    {
+                        TicketTypeID = ticketType.TicketTypeID,
+                        TripID = createdTripId,
+                        Price = ticketType.Price,
+                        Quantity = ticketType.Quantity,
+                        Status = SD.GeneralStatus.ACTIVE
+                    });
+                }
+                await _unitOfWork.TicketType_TripRepository.AddRangeAsync(successTicketTypes);
+
+                return (true, string.Empty, successTicketTypes);
+            }
+            catch (Exception ex)
+            {
+                return (false, SD.Notification.Internal("LOẠI VÉ", "KHI TẠO"), null);
+            }
+        }
+        private async Task<(bool isSuccess, string message, List<Trip_Utility> data)> CreateUtility(CreateTripModel createTripModel, Guid createdTripId)
+        {
+            try
+            {
+                var successUtilities = new List<Trip_Utility>();
+                foreach (var tripUtility in createTripModel.Trip_UtilityModels)
+                {
+                    successUtilities.Add(new Trip_Utility
+                    {
+                        TripID = createdTripId,
+                        UtilityID = tripUtility.UtilityID,
+                        Status = SD.GeneralStatus.ACTIVE
+                    });
+                }
+                await _unitOfWork.Trip_UtilityRepository.AddRangeAsync(successUtilities);
+
+                return (true, string.Empty, successUtilities);
+            }
+            catch (Exception ex)
+            {
+                return (true, SD.Notification.Internal("TIỆN ÍCH", "KHI TẠO"), null);
+            }
+
+        }
+        public async Task<ActionOutcome> CreateTrip(CreateTripModel createTripModel)
+        {
+            try
+            {
+                if (createTripModel.IsTemplate == true)
+                {
+                    var validationResult = await createTripModel.ValidateForCreatingWithTemplate(_unitOfWork);
+                    if (!validationResult.isSuccess)
+                    {
+                        throw new BadRequestException(validationResult.message);
+                    }
+
                     var result = new ActionOutcome();
 
-                    if (createTrip.ImageUrls == null)
+                    var createdTrip = createTripModel.MapToTrip();
+                    var tripID = createdTrip.TripID;
+                    await _unitOfWork.TripRepository.AddAsync(createdTrip);
+
+                    var CreateTripImageResult = await CreateTripImages(createTripModel, createdTrip.TripID);
+                    if (!CreateTripImageResult.isSuccess)
                     {
-                        throw new BadRequestException("TẤT CẢ CÁC TRƯỜNG PHẢI CÓ DỮ LIỆU!");
+                        throw new BadRequestException(CreateTripImageResult.message);
                     }
 
-                    var tripID = Guid.NewGuid();
-                    var trip = new Trip
+                    var CreateTicketTypeResult = await CreateTicketTypes(createTripModel, createdTrip.TripID);
+                    if (!CreateTicketTypeResult.isSuccess)
                     {
-                        TripID = tripID,
-                        Route_CompanyID = createTrip.Route_CompanyID,
-                        StaffID = null,
-                        IsTemplate = true,
-                        TemplateID = tripID,
-                        Status = SD.GeneralStatus.ACTIVE
-                    };
-
-                    await _unitOfWork.TripRepository.AddAsync(trip);
-
-                    var imageUrls = createTrip.ImageUrls;
-                    foreach (var imageUrl in imageUrls)
-                    {
-                        var guidPath = Guid.NewGuid().ToString();
-                        var imagePath = FirebasePathName.TRIP + $"{guidPath}";
-
-                        var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, imagePath);
-
-                        if (!imageUploadResult.IsSuccess)
-                        {
-                            throw new InternalServerErrorException(SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"));
-                        }
-
-                        var newtripImage = new TripPicture
-                        {
-                            TripPictureID = Guid.NewGuid(),
-                            TripID = trip.TripID,
-                            ImageUrl = (string)imageUploadResult.Result,
-                            Status = SD.GeneralStatus.ACTIVE
-                        };
-
-                        await _unitOfWork.TripPictureRepository.AddAsync(newtripImage);
+                        throw new BadRequestException(CreateTicketTypeResult.message);
                     }
 
-                    if (createTrip.TicketType_TripModels.Count < 2)
+                    var CreateUtilityResult = await CreateUtility(createTripModel, createdTrip.TripID);
+                    if (!CreateUtilityResult.isSuccess)
                     {
-                        throw new BadRequestException("PHẢI CÓ ÍT NHẤT 2 LOẠI GHẾ!");
+                        throw new BadRequestException(CreateUtilityResult.message);
                     }
 
-                    int totalQuantity = (int)createTrip.TicketType_TripModels.Sum(_ => _.Quantity);
-
-                    if (totalQuantity < 20)
-                    {
-                        throw new BadRequestException("TỔNG SỐ LƯỢNG GHẾ PHẢI ÍT NHẤT LÀ 20!");
-                    }
-
-                    if (createTrip.TicketType_TripModels.Count == 2)
-                    {
-                        var ticketTypes = new List<string> { "HÀNG ĐẦU", "HÀNG CUỐI" };
-
-                        foreach (var ticketType in createTrip.TicketType_TripModels)
-                        {
-                            var checkName = await _unitOfWork.TicketTypeRepository
-                                                         .FindByCondition(_ => _.TicketTypeID == ticketType.TicketTypeID)
-                                                         .Select(_ => _.Name.ToUpper())
-                                                         .FirstOrDefaultAsync();
-
-                            if (!ticketTypes.Contains(checkName))
-                            {
-                                throw new BadRequestException("NẾU LÀ HAI LOẠI GHẾ THÌ BẮT BUỘC PHẢI LÀ HÀNG ĐẦU VÀ HÀNG CUỐI!");
-                            }
-                        }
-                    }
-
-                    var prices = new List<double>();
-                    foreach (var ticketType in createTrip.TicketType_TripModels)
-                    {
-                        if (ticketType.Price <= 0 || ticketType.Quantity <= 0)
-                        {
-                            throw new BadRequestException("GIÁ VÉ VÀ SỐ LƯỢNG PHẢI LỚN HƠN 0!");
-                        }
-
-                        if (ticketType.Quantity % 4 != 0)
-                        {
-                            throw new BadRequestException("SỐ LƯỢNG GHẾ KHÔNG HỢP LỆ!");
-                        }
-
-                        var newTicketType_Trip = new TicketType_Trip
-                        {
-                            TicketTypeID = ticketType.TicketTypeID,
-                            TripID = trip.TripID,
-                            Price = ticketType.Price,
-                            Quantity = ticketType.Quantity,
-                            Status = SD.GeneralStatus.ACTIVE
-                        };
-
-                        await _unitOfWork.TicketType_TripRepository.AddAsync(newTicketType_Trip);
-                        prices.Add((double)newTicketType_Trip.Price);
-                    }
-
-                    foreach (var tripUtility in createTrip.Trip_UtilityModels)
-                    {
-                        var newTrip_Utility = new Trip_Utility
-                        {
-                            TripID = trip.TripID,
-                            UtilityID = tripUtility.UtilityID,
-                            Status = SD.GeneralStatus.ACTIVE
-                        };
-                        await _unitOfWork.Trip_UtilityRepository.AddAsync(newTrip_Utility);
-                    }
-    
-                    var city = await _unitOfWork.Route_CompanyRepository
-                                            .GetAll()
-                                            .Include(_ => _.Route)
-                                            .ThenInclude(_ => _.FromCity)
-                                            .Include(_ => _.Route)
-                                            .ThenInclude(_ => _.ToCity)
-                                            .Where(_ => _.Route_CompanyID == createTrip.Route_CompanyID)
-                                            .FirstOrDefaultAsync();
-
-                    var rs = _unitOfWork.Complete();
-
-                    if (rs < 0)
+                    if (_unitOfWork.Complete() <= 0)
                     {
                         return new ActionOutcome
                         {
@@ -868,6 +851,15 @@ namespace SWD.TicketBooking.Service.Services
                         };
                     }
 
+                    var prices = CreateTicketTypeResult.data.Select(x => x.Price.HasValue ? (double)x.Price : 0).ToList();
+                    var city = await _unitOfWork.Route_CompanyRepository
+                                            .GetAll()
+                                            .Include(_ => _.Route)
+                                            .ThenInclude(_ => _.FromCity)
+                                            .Include(_ => _.Route)
+                                            .ThenInclude(_ => _.ToCity)
+                                            .Where(_ => _.Route_CompanyID == createTripModel.Route_CompanyID)
+                                            .FirstOrDefaultAsync();
                     result.Result = new GetTripAfterCreateModel
                     {
                         TripID = tripID,
@@ -882,21 +874,20 @@ namespace SWD.TicketBooking.Service.Services
                         EndLocation = city.Route.EndLocation,
                         MinPrice = prices.Min(),
                         MaxPrice = prices.Max(),
-                        Status = trip.Status
+                        Status = createdTrip.Status
                     };
-
                     result.Message = "TẠO CHUYẾN XE MẪU THÀNH CÔNG!";
                     result.IsSuccess = true;
+
                     return result;
                 }
-
 
                 else
                 {
                     var result = new ActionOutcome();
 
                     var getInformationTrip = await _unitOfWork.TripRepository
-                                                              .FindByCondition(_ => _.TemplateID == createTrip.TemplateID)
+                                                              .FindByCondition(_ => _.TemplateID == createTripModel.TemplateID)
                                                               .FirstOrDefaultAsync();
 
                     if (getInformationTrip == null)
@@ -904,7 +895,7 @@ namespace SWD.TicketBooking.Service.Services
                         throw new NotFoundException(SD.Notification.NotFound("CHUYẾN XE"));
                     }
 
-                    foreach (var timeTrip in createTrip.TimeTrips)
+                    foreach (var timeTrip in createTripModel.TimeTrips)
                     {
                         if (timeTrip.StartTime == null || timeTrip.EndTime == null)
                         {
@@ -915,16 +906,16 @@ namespace SWD.TicketBooking.Service.Services
                             throw new BadRequestException("THỜI GIAN BẮT ĐẦU PHẢI TRƯỚC THỜI GIAN KẾT THÚC CHUYẾN XE!");
                         }
                     }
-                 /*   if (createTrip.StaffID.Count != createTrip.TimeTrips.Count)
-                    {
-                        throw new BadRequestException("MỖI CHUYẾN ĐI PHẢI CÓ NHÂN VIÊN GIÁM SÁT!");
-                    }*/
+                    /*   if (createTrip.StaffID.Count != createTrip.TimeTrips.Count)
+                       {
+                           throw new BadRequestException("MỖI CHUYẾN ĐI PHẢI CÓ NHÂN VIÊN GIÁM SÁT!");
+                       }*/
                     bool hasOverlap = false;
-                    for (int i = 0; i < createTrip.TimeTrips.Count; i++)
+                    for (int i = 0; i < createTripModel.TimeTrips.Count; i++)
                     {
-                        for (int j = i + 1; j < createTrip.TimeTrips.Count; j++)
+                        for (int j = i + 1; j < createTripModel.TimeTrips.Count; j++)
                         {
-                            if (createTrip.TimeTrips[i].StartTime <= createTrip.TimeTrips[j].EndTime && createTrip.TimeTrips[j].StartTime <= createTrip.TimeTrips[i].EndTime)
+                            if (createTripModel.TimeTrips[i].StartTime <= createTripModel.TimeTrips[j].EndTime && createTripModel.TimeTrips[j].StartTime <= createTripModel.TimeTrips[i].EndTime)
                             {
                                 hasOverlap = true;
                             }
@@ -938,11 +929,11 @@ namespace SWD.TicketBooking.Service.Services
                     }
                     else
                     {
-                        for (int i = 0; i < createTrip.TimeTrips.Count; i++)
+                        for (int i = 0; i < createTripModel.TimeTrips.Count; i++)
                         {
-                            var createTime = createTrip.TimeTrips[i];
+                            var createTime = createTripModel.TimeTrips[i];
                             var checkExistTemplateInTime = await _unitOfWork.TripRepository
-                                                                            .FindByCondition(_ => _.TemplateID == createTrip.TemplateID
+                                                                            .FindByCondition(_ => _.TemplateID == createTripModel.TemplateID
                                                                                                && _.IsTemplate == false
                                                                                                && _.Status == SD.GeneralStatus.ACTIVE)
                                                                             .ToListAsync();
@@ -956,18 +947,18 @@ namespace SWD.TicketBooking.Service.Services
                             }
                             //var staff = createTrip.StaffID[i];
                             var getStaffName = await _unitOfWork.UserRepository
-                                                                .FindByCondition(_ => _.UserID == createTrip.StaffID)
+                                                                .FindByCondition(_ => _.UserID == createTripModel.StaffID)
                                                                 .Select(_ => _.FullName)
                                                                 .FirstOrDefaultAsync() ?? "Unknown Staff";
-   
+
                             var getPrices = await _unitOfWork.TicketType_TripRepository
                                                              .GetAll()
-                                                             .Where(_ => _.TripID == createTrip.TemplateID)
+                                                             .Where(_ => _.TripID == createTripModel.TemplateID)
                                                              .Select(_ => _.Price)
                                                              .ToListAsync();
                             var route_CompanyID = await _unitOfWork.TripRepository
                                                         .GetAll()
-                                                        .Where(_ => _.TemplateID == createTrip.TemplateID && _.IsTemplate == true)
+                                                        .Where(_ => _.TemplateID == createTripModel.TemplateID && _.IsTemplate == true)
                                                         .Select(_ => _.Route_CompanyID)
                                                         .FirstOrDefaultAsync();
                             var city = await _unitOfWork.Route_CompanyRepository
@@ -982,14 +973,14 @@ namespace SWD.TicketBooking.Service.Services
                             {
                                 TripID = Guid.NewGuid(),
                                 Route_CompanyID = getInformationTrip.Route_CompanyID,
-                                StaffID = createTrip.StaffID,
+                                StaffID = createTripModel.StaffID,
                                 IsTemplate = false,
                                 StartTime = createTime.StartTime,
                                 EndTime = createTime.EndTime,
-                                TemplateID = createTrip.TemplateID,
+                                TemplateID = createTripModel.TemplateID,
                                 Status = SD.GeneralStatus.ACTIVE
                             };
-                          
+
                             await _unitOfWork.TripRepository.AddAsync(trip);
                             var resultGetTrip = new GetTripAfterCreateModel
                             {
@@ -1010,10 +1001,10 @@ namespace SWD.TicketBooking.Service.Services
                             resultGetTrips.Add(resultGetTrip);
                         }
                     }
-                   
+
                     var rs = _unitOfWork.Complete();
-                  
-                    if (rs < 0)
+
+                    if (rs <= 0)
                     {
                         return new ActionOutcome
                         {
@@ -1021,8 +1012,50 @@ namespace SWD.TicketBooking.Service.Services
                             Message = "LỖI KHI TẠO CHUYẾN XE!"
                         };
                     }
+                    foreach (var trip in resultGetTrips)
+                    {
+                        var token = await _unitOfWork.UserRepository
+                                        .GetAll()
+                                        .Where(t => t.UserName.Equals(trip.StaffName))
+                                        .Select(t => t.AccessToken)
+                                        .FirstOrDefaultAsync();
+                        var route_companyID = await _unitOfWork.TripRepository
+                                                     .GetAll()
+                                                     .Where(r => r.TripID.Equals(trip.TripID))
+                                                     .Select(r => r.Route_CompanyID)
+                                                     .FirstOrDefaultAsync();
+                        var routeCompany = await _unitOfWork.Route_CompanyRepository
+                                                     .GetAll()
+                                                     .Where(r => r.Route_CompanyID.Equals(route_companyID))
+                                                     .FirstOrDefaultAsync();
+                        var route = await _unitOfWork.RouteRepository
+                                                      .GetAll()
+                                                      .Where(r => r.RouteID.Equals(routeCompany.RouteID))
+                                                      .FirstOrDefaultAsync();
+                        var company = await _unitOfWork.CompanyRepository
+                                                       .GetAll()
+                                                       .Where(c => c.CompanyID.Equals(routeCompany.CompanyID))
+                                                       .FirstOrDefaultAsync();
+                        var fromCity = await _unitOfWork.CityRepository.FindByCondition(c => c.CityID.Equals(route.FromCityID)).FirstOrDefaultAsync();
+                        var toCity = await _unitOfWork.CityRepository.FindByCondition(c => c.CityID.Equals(route.ToCityID)).FirstOrDefaultAsync();
+
+                        var message = new Message()
+                        {
+                            Token = token,
+                            Notification = new Notification()
+                            {
+                                Title = "The Bus Journey",
+                                Body = $"Bạn vừa được {company.Name} phân công vào chuyến xe từ {fromCity.Name} ở {route.StartLocation} đến {toCity.Name} ở {route.EndLocation} vào lúc {string.Format("{0:HH:mm} ngày {0:dd-MM-yyyy}", trip.StartTime)} đến {string.Format("{0:HH:mm} ngày {0:dd-MM-yyyy}", trip.EndTime)}."
+                            },
+                            Data = new Dictionary<string, string>()
+                            {
+                                { "Key1","Value1"}
+                            }
+                        };
+                        string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+                    }
                     result.Result = resultGetTrips;
-                    result.Message = "TẠO CHUYẾN XE MẪU THÀNH CÔNG!";
+                    result.Message = "TẠO CHUYẾN XE THÀNH CÔNG!";
                     result.IsSuccess = true;
                     return result;
                 }
@@ -1149,6 +1182,7 @@ namespace SWD.TicketBooking.Service.Services
                     var data = new GetTripFromCompanyModel
                     {
                         TripID = trip.TripID,
+                        StaffID = (Guid)trip.StaffID,
                         FromCity = trip.Route_Company.Route.FromCity.Name,
                         ToCity = trip.Route_Company.Route.ToCity.Name,
                         StartLocation = trip.Route_Company.Route.StartLocation,

@@ -11,7 +11,11 @@ namespace SWD.TicketBooking.Service.Dtos
     {
         [JsonPropertyName("TripID")]
         public Guid TripID { get; set; }
+        [JsonPropertyName("StaffID")]
+        public Guid StaffID { get; set; }
         [JsonPropertyName("FromCity")]
+        public string? StaffName { get; set; }
+        [JsonPropertyName("MinPrice")]
         public string? FromCity { get; set; }
         [JsonPropertyName("ToCity")]
         public string? ToCity { get; set; }
@@ -29,8 +33,7 @@ namespace SWD.TicketBooking.Service.Dtos
         public string? EndDate { get; set; }
 
         [JsonPropertyName("StaffName")]
-        public string? StaffName { get; set; }
-        [JsonPropertyName("MinPrice")]
+        
         public double? MinPrice { get; set; }
         [JsonPropertyName("MaxPrice")]
         public double? MaxPrice { get; set; }
