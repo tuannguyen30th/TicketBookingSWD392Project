@@ -340,6 +340,17 @@ namespace SWD.TicketBooking.Service.Services
                                 checkStationCompanyRoute.OrderInRoute = station.OrderInRoute;
                                 _unitOfWork.StationCompany_RouteRepository.Update(checkStationCompanyRoute);
                             }
+                            else
+                            {
+                                var routeStation = await _unitOfWork.StationCompany_RouteRepository.AddAsync(new StationCompany_Route
+                                {
+                                    Station_CompanyID = checkStationCompanyExisted.Station_CompanyID,
+                                    StationCompany_RouteID = Guid.NewGuid(),
+                                    OrderInRoute = station.OrderInRoute,
+                                    RouteID = route.RouteID,
+                                    Status = SD.GeneralStatus.ACTIVE
+                                });
+                            }
                         }
                        
                     }
