@@ -104,29 +104,27 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
-
-        public async Task<List<StationFromRouteModel>> GetStationsFromTrip(Guid routeID, Guid companyID)
+        public async Task<List<StationFromRouteModel>> GetStationsFromRoute(Guid routeID, Guid companyID)
         {
             try
             {
-                var stationsByRoute = await _unitOfWork.StationCompany_RouteRepository
-                                                       .GetAll()
-                                                       .Where(_ => _.RouteID == routeID && _.Station_Company.CompanyID == companyID)
-                                                       .OrderBy(_ => _.OrderInRoute)
-                                                       .Select(_ => _.Station_CompanyID)
-                                                       .ToListAsync();
-                var stationsByCompany = await _unitOfWork.Station_CompanyRepository
-                                                         .FindByCondition(_ => stationsByRoute.Contains(_.Station_CompanyID)
-                                                                       && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
-                                                         .Include(_ => _.Station)
-                                                         .Select(_ => new StationFromRouteModel
+                var stationsByCompany = await _unitOfWork.StationCompany_RouteRepository
+                                                         .GetAll()
+                                                         .Where(scr => scr.RouteID == routeID && scr.Station_Company.CompanyID == companyID)
+                                                         .OrderBy(scr => scr.OrderInRoute)
+                                                         .Join(_unitOfWork.Station_CompanyRepository.GetAll(),
+                                                               scr => scr.Station_CompanyID,
+                                                               sc => sc.Station_CompanyID,
+                                                               (scr, sc) => new { scr, sc })
+                                                         .Where(joined => joined.sc.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                         .Select(joined => new StationFromRouteModel
                                                          {
-                                                             Name = _.Station.Name,
-                                                             StationID = (Guid)_.StationID,
+                                                             StationID = (Guid)joined.sc.StationID,
+                                                             Name = joined.sc.Station.Name
                                                          })
                                                          .ToListAsync();
-                return stationsByCompany;
 
+                return stationsByCompany;
             }
             catch (Exception ex)
             {

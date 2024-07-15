@@ -21,14 +21,6 @@ namespace SWD.TicketBooking.API.Controllers
             _stationServiceService = stationServiceService;
             _mapper = mapper;
         }
-        //[HttpPost("managed-station-services")]
-        //public async Task<IActionResult> CreateServiceStation([FromForm] CreateServiceInStationRequest createServiceInStationRequest)
-        //{
-        //    var serviceStationCreate = _mapper.Map<CreateServiceInStationModel>(createServiceInStationRequest);
-
-        //    var rs = await _stationServiceService.CreateServiceStation(serviceStationCreate);
-        //    return Ok(rs);
-        //}
         [HttpPut("managed-station-services/{stationServiceID}")]
         public async Task<IActionResult> UpdateServiceStation([FromForm] UpdateServiceInStationRequest updateServiceInStationRequest, [FromRoute] Guid stationServiceID)
         {
