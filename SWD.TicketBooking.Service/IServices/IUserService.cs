@@ -21,5 +21,8 @@ namespace SWD.TicketBooking.Service.IServices
         Task<List<GetStaffFromCompanyModel>> GetStaffFromCompany(Guid companyID);
         Task<Guid> GetCompanyIDByUser (Guid userId);
         Task<List<UserModel>> GetAllUsersByRole(string roleName);
+
+        Task<string> GetAccessToken(Guid ID);
+
     }
 }

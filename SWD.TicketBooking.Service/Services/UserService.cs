@@ -65,6 +65,28 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+        public async Task<string> GetAccessToken(Guid ID)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository
+                                            .GetAll()
+                                            .Where(u=>u.UserID == ID)
+                                            .Select(u=>u.AccessToken)
+                                            .FirstOrDefaultAsync();
+                var user1 = await _unitOfWork.UserRepository
+                                            .GetAll()
+                                            .Where(u => u.UserID == ID)
+                                            .FirstOrDefaultAsync();
+                var rs = user;
+                return rs;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
         public async Task<UserModel> GetUserByEmailForOTP(string email)
         {
             try

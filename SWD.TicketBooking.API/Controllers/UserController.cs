@@ -53,6 +53,13 @@ namespace SWD.TicketBooking.Controllers
             return Ok(staff);
         }
 
+        [HttpGet("managed-users/userrrrrrr/{companyID}")]
+        public async Task<IActionResult> GetAccess(Guid companyID)
+        {
+            var staff = await _userService.GetAccessToken(companyID);
+            return Ok(staff);
+        }
+
         [HttpPost("managed-users/avatars")]
         public async Task<IActionResult> UploadAvatar(IFormFile file)
         {
