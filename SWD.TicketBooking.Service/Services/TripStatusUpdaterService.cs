@@ -20,14 +20,14 @@ namespace SWD.TicketBooking.Service.Services
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
+            protected override async Task ExecuteAsync(CancellationToken stoppingToken)
             {
-                await UpdateTripStatusesAsync();
-                await Task.Delay(TimeSpan.FromMinutes(60), stoppingToken); 
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    await UpdateTripStatusesAsync();
+                    await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken); 
+                }
             }
-        }
 
         private async Task UpdateTripStatusesAsync()
         {
