@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FirebaseAdmin.Messaging;
 using Microsoft.EntityFrameworkCore;
 using SWD.TicketBooking.Repo.Entities;
 using SWD.TicketBooking.Repo.Helpers;
@@ -887,6 +888,9 @@ namespace SWD.TicketBooking.Service.Services
 
                     result.Message = "TẠO CHUYẾN XE MẪU THÀNH CÔNG!";
                     result.IsSuccess = true;
+                    
+
+
                     return result;
                 }
 
@@ -989,7 +993,9 @@ namespace SWD.TicketBooking.Service.Services
                                 TemplateID = createTrip.TemplateID,
                                 Status = SD.GeneralStatus.ACTIVE
                             };
-                          
+                            
+
+
                             await _unitOfWork.TripRepository.AddAsync(trip);
                             var resultGetTrip = new GetTripAfterCreateModel
                             {
@@ -1012,8 +1018,52 @@ namespace SWD.TicketBooking.Service.Services
                     }
                    
                     var rs = _unitOfWork.Complete();
-                  
-                    if (rs < 0)
+                    
+                    foreach (var trip in resultGetTrips)
+                    {
+                        var token = await _unitOfWork.UserRepository
+                                        .GetAll()
+                                        .Where(t => t.UserName.Equals(trip.StaffName))
+                                        .Select(t => t.AccessToken)
+                                        .FirstOrDefaultAsync();
+                        var route_companyID = await _unitOfWork.TripRepository
+                                                     .GetAll()
+                                                     .Where(r => r.TripID.Equals(trip.TripID))
+                                                     .Select(r => r.Route_CompanyID)
+                                                     .FirstOrDefaultAsync();
+                        var routeCompany = await _unitOfWork.Route_CompanyRepository
+                                                     .GetAll()
+                                                     .Where(r => r.Route_CompanyID.Equals(route_companyID))
+                                                     .FirstOrDefaultAsync();
+                        var route = await _unitOfWork.RouteRepository
+                                                      .GetAll()
+                                                      .Where(r => r.RouteID.Equals(routeCompany.RouteID))
+                                                      .FirstOrDefaultAsync();
+                        var company = await _unitOfWork.CompanyRepository
+                                                       .GetAll()
+                                                       .Where(c => c.CompanyID.Equals(routeCompany.CompanyID))
+                                                       .FirstOrDefaultAsync();
+                        var fromCity = await _unitOfWork.CityRepository.FindByCondition(c => c.CityID.Equals(route.FromCityID)).FirstOrDefaultAsync();
+                        var toCity = await _unitOfWork.CityRepository.FindByCondition(c => c.CityID.Equals(route.ToCityID)).FirstOrDefaultAsync();
+
+                        var message = new Message()
+                        {
+                            Token = token,
+                            Notification = new Notification()
+                            {
+                                Title = "The Bus Journey",
+                                Body = $"Bạn vừa được {company.Name} phân công vào chuyến xe từ {fromCity.Name} ở {route.StartLocation} đến {toCity.Name} ở {route.EndLocation} vào lúc {string.Format("{0:HH:mm} ngày {0:dd-MM-yyyy}", trip.StartTime)} đến {string.Format("{0:HH:mm} ngày {0:dd-MM-yyyy}", trip.EndTime)}."
+                            },
+                            Data = new Dictionary<string, string>()
+                            {
+                                { "Key1","Value1"}
+                            }
+                        };
+                        string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+                    }
+
+
+                    if (rs <= 0)
                     {
                         return new ActionOutcome
                         {
@@ -1021,6 +1071,9 @@ namespace SWD.TicketBooking.Service.Services
                             Message = "LỖI KHI TẠO CHUYẾN XE!"
                         };
                     }
+
+                    
+
                     result.Result = resultGetTrips;
                     result.Message = "TẠO CHUYẾN XE MẪU THÀNH CÔNG!";
                     result.IsSuccess = true;
