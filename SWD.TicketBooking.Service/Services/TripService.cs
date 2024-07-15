@@ -734,11 +734,11 @@ namespace SWD.TicketBooking.Service.Services
 
         private async Task<(bool isSuccess, string message, List<TripPicture> data)> CreateTripImages(CreateTripModel createTripModel, Guid createdTripId)
         {
-            var guidPath = Guid.NewGuid();
+    
             var successImages = new List<TripPicture>();
             foreach (var imageUrl in createTripModel.ImageUrls)
             {
-                var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, FirebasePathName.TRIP + $"{guidPath.ToString()}");
+                var imageUploadResult = await _firebaseService.UploadFileToFirebase(imageUrl, FirebasePathName.TRIP + $"{Guid.NewGuid().ToString()}");
                 if (!imageUploadResult.IsSuccess)
                 {
                     return (false, SD.Notification.Internal("HÌNH ẢNH", "KHI TẢI LÊN"), null);
@@ -746,7 +746,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 successImages.Add(new TripPicture
                 {
-                    TripPictureID = guidPath,
+                    TripPictureID = Guid.NewGuid(),
                     TripID = createdTripId,
                     ImageUrl = (string)imageUploadResult.Result,
                     Status = SD.GeneralStatus.ACTIVE
@@ -841,8 +841,8 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         throw new BadRequestException(CreateUtilityResult.message);
                     }
-
-                    if (_unitOfWork.Complete() <= 0)
+                    var rs = _unitOfWork.Complete();
+                    if (rs < 0)
                     {
                         return new ActionOutcome
                         {
@@ -851,7 +851,7 @@ namespace SWD.TicketBooking.Service.Services
                         };
                     }
 
-                    var prices = CreateTicketTypeResult.data.Select(x => x.Price.HasValue ? (double)x.Price : 0).ToList();
+                    var prices = CreateTicketTypeResult.data.Select(_ => _.Price.HasValue ? (double)_.Price : 0).ToList();
                     var city = await _unitOfWork.Route_CompanyRepository
                                             .GetAll()
                                             .Include(_ => _.Route)
@@ -1004,7 +1004,7 @@ namespace SWD.TicketBooking.Service.Services
 
                     var rs = _unitOfWork.Complete();
 
-                    if (rs <= 0)
+                    if (rs < 0)
                     {
                         return new ActionOutcome
                         {
