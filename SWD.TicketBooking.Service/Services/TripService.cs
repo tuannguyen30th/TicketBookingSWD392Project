@@ -847,7 +847,7 @@ namespace SWD.TicketBooking.Service.Services
                         };
                         await _unitOfWork.Trip_UtilityRepository.AddAsync(newTrip_Utility);
                     }
-
+    
                     var city = await _unitOfWork.Route_CompanyRepository
                                             .GetAll()
                                             .Include(_ => _.Route)
@@ -910,7 +910,7 @@ namespace SWD.TicketBooking.Service.Services
                         {
                             throw new BadRequestException("SỐ LƯỢNG THỜI GIAN BẮT ĐẦU PHẢI TRÙNG VỚI SỐ LƯỢNG THỜI GIAN KẾT THÚC!");
                         }
-                        if (timeTrip.StartTime > timeTrip.EndTime)
+                        if (timeTrip.StartTime >= timeTrip.EndTime)
                         {
                             throw new BadRequestException("THỜI GIAN BẮT ĐẦU PHẢI TRƯỚC THỜI GIAN KẾT THÚC CHUYẾN XE!");
                         }
@@ -924,7 +924,7 @@ namespace SWD.TicketBooking.Service.Services
                     {
                         for (int j = i + 1; j < createTrip.TimeTrips.Count; j++)
                         {
-                            if (createTrip.TimeTrips[i].StartTime < createTrip.TimeTrips[j].EndTime && createTrip.TimeTrips[j].StartTime < createTrip.TimeTrips[i].EndTime)
+                            if (createTrip.TimeTrips[i].StartTime <= createTrip.TimeTrips[j].EndTime && createTrip.TimeTrips[j].StartTime <= createTrip.TimeTrips[i].EndTime)
                             {
                                 hasOverlap = true;
                             }
@@ -949,7 +949,7 @@ namespace SWD.TicketBooking.Service.Services
 
                             foreach (var existingTrip in checkExistTemplateInTime)
                             {
-                                if (createTime.StartTime < existingTrip.EndTime && createTime.EndTime > existingTrip.StartTime)
+                                if (createTime.StartTime <= existingTrip.EndTime && createTime.EndTime >= existingTrip.StartTime)
                                 {
                                     throw new BadRequestException("KHUNG THỜI GIAN CHUYẾN XE NÀY BỊ TRÙNG LẶP VỚI MỘT CHUYẾN XE KHÁC TRONG CÙNG NGÀY!");
                                 }
@@ -958,21 +958,26 @@ namespace SWD.TicketBooking.Service.Services
                             var getStaffName = await _unitOfWork.UserRepository
                                                                 .FindByCondition(_ => _.UserID == createTrip.StaffID)
                                                                 .Select(_ => _.FullName)
-                                                                .FirstOrDefaultAsync();
+                                                                .FirstOrDefaultAsync() ?? "Unknown Staff";
    
                             var getPrices = await _unitOfWork.TicketType_TripRepository
                                                              .GetAll()
                                                              .Where(_ => _.TripID == createTrip.TemplateID)
                                                              .Select(_ => _.Price)
                                                              .ToListAsync();
-                            var city = await _unitOfWork.Route_CompanyRepository
+                            var route_CompanyID = await _unitOfWork.TripRepository
                                                         .GetAll()
-                                                        .Include(_ => _.Route)
-                                                        .ThenInclude(_ => _.FromCity)
-                                                        .Include(_ => _.Route)
-                                                        .ThenInclude(_ => _.ToCity)
-                                                        .Where(_ => _.Route_CompanyID == createTrip.Route_CompanyID)
+                                                        .Where(_ => _.TemplateID == createTrip.TemplateID && _.IsTemplate == true)
+                                                        .Select(_ => _.Route_CompanyID)
                                                         .FirstOrDefaultAsync();
+                            var city = await _unitOfWork.Route_CompanyRepository
+                                                    .GetAll()
+                                                    .Include(_ => _.Route)
+                                                    .ThenInclude(_ => _.FromCity)
+                                                    .Include(_ => _.Route)
+                                                    .ThenInclude(_ => _.ToCity)
+                                                    .Where(_ => _.Route_CompanyID == route_CompanyID)
+                                                    .FirstOrDefaultAsync();
                             var trip = new Trip
                             {
                                 TripID = Guid.NewGuid(),
