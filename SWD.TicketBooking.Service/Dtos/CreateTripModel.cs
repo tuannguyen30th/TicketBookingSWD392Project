@@ -13,7 +13,7 @@ namespace SWD.TicketBooking.Service.Dtos
     {
         public Guid? Route_CompanyID { get; set; }
         public bool? IsTemplate { get; set; }
-        public List<Guid?> StaffID { get; set; } = new List<Guid?>();
+        public Guid? StaffID { get; set; }
         public Guid? TemplateID { get; set; }
         public List<IFormFile> ImageUrls { get; set; } = new List<IFormFile>();
         public List<TimeTrip> TimeTrips { get; set; } = new List<TimeTrip>();

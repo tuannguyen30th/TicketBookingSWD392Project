@@ -915,10 +915,10 @@ namespace SWD.TicketBooking.Service.Services
                             throw new BadRequestException("THỜI GIAN BẮT ĐẦU PHẢI TRƯỚC THỜI GIAN KẾT THÚC CHUYẾN XE!");
                         }
                     }
-                    if (createTrip.StaffID.Count != createTrip.TimeTrips.Count)
+                 /*   if (createTrip.StaffID.Count != createTrip.TimeTrips.Count)
                     {
                         throw new BadRequestException("MỖI CHUYẾN ĐI PHẢI CÓ NHÂN VIÊN GIÁM SÁT!");
-                    }
+                    }*/
                     bool hasOverlap = false;
                     for (int i = 0; i < createTrip.TimeTrips.Count; i++)
                     {
@@ -954,9 +954,9 @@ namespace SWD.TicketBooking.Service.Services
                                     throw new BadRequestException("KHUNG THỜI GIAN CHUYẾN XE NÀY BỊ TRÙNG LẶP VỚI MỘT CHUYẾN XE KHÁC TRONG CÙNG NGÀY!");
                                 }
                             }
-                            var staff = createTrip.StaffID[i];
+                            //var staff = createTrip.StaffID[i];
                             var getStaffName = await _unitOfWork.UserRepository
-                                                                .FindByCondition(_ => _.UserID == createTrip.StaffID[i])
+                                                                .FindByCondition(_ => _.UserID == createTrip.StaffID)
                                                                 .Select(_ => _.FullName)
                                                                 .FirstOrDefaultAsync();
    
@@ -977,7 +977,7 @@ namespace SWD.TicketBooking.Service.Services
                             {
                                 TripID = Guid.NewGuid(),
                                 Route_CompanyID = getInformationTrip.Route_CompanyID,
-                                StaffID = staff,
+                                StaffID = createTrip.StaffID,
                                 IsTemplate = false,
                                 StartTime = createTime.StartTime,
                                 EndTime = createTime.EndTime,
