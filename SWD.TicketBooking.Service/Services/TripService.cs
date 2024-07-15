@@ -1176,18 +1176,18 @@ namespace SWD.TicketBooking.Service.Services
                     var data = new GetTripFromCompanyModel
                     {
                         TripID = trip.TripID,
-                        StaffID = (Guid)trip.StaffID,
-                        FromCity = trip.Route_Company.Route.FromCity.Name,
-                        ToCity = trip.Route_Company.Route.ToCity.Name,
-                        StartLocation = trip.Route_Company.Route.StartLocation,
-                        EndLocation = trip.Route_Company.Route.EndLocation,
+                        StaffID = trip.StaffID ?? Guid.Empty,
+                        FromCity = trip.Route_Company?.Route?.FromCity?.Name ?? null,
+                        ToCity = trip.Route_Company?.Route?.ToCity?.Name ?? null,
+                        StartLocation = trip.Route_Company?.Route?.StartLocation ?? null,
+                        EndLocation = trip.Route_Company?.Route?.EndLocation ?? null,
                         StartDate = trip.StartTime?.ToString("yyyy-MM-dd"),
                         StartTime = trip.StartTime?.ToString("HH:mm"),
                         EndDate = trip.EndTime?.ToString("yyyy-MM-dd"),
                         EndTime = trip.EndTime?.ToString("HH:mm"),
-                        StaffName = trip?.User?.FullName,
-                        MinPrice = getPrice.Min(),
-                        MaxPrice = getPrice.Max(),
+                        StaffName = trip.User?.FullName ?? null,
+                        MinPrice = getPrice.Any() ? getPrice.Min() : 0,
+                        MaxPrice = getPrice.Any() ? getPrice.Max() : 0,
                         Status = trip.Status,
                     };
                     list.Add(data);
