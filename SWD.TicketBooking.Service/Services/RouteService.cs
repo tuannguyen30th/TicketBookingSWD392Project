@@ -158,12 +158,12 @@ namespace SWD.TicketBooking.Service.Services
                 var checkRouteExisted = await _unitOfWork.RouteRepository.GetAll().Where(_ => _.FromCityID == model.FromCityID
                                                                 && _.ToCityID == model.ToCityID
                                                                 && _.StartLocation == model.StartLocation && _.EndLocation == model.EndLocation).FirstOrDefaultAsync();
-
+                var routeID = Guid.NewGuid();
                 if (checkRouteExisted == null)
                 {
                     var route = await _unitOfWork.RouteRepository.AddAsync(new Route
                     {
-                        RouteID = Guid.NewGuid(),
+                        RouteID = routeID,
                         FromCityID = model.FromCityID,
                         ToCityID = model.ToCityID,
                         StartLocation = model.StartLocation,

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static SWD.TicketBooking.Service.Dtos.GetTemplatesFromCompanyModel;
 
 namespace SWD.TicketBooking.Service.Services
 {
@@ -24,7 +25,99 @@ namespace SWD.TicketBooking.Service.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+        public async Task<ActionOutcome> GetTemplatesFromCompany(Guid companyID)
+        {
+            try
+            {
+                var result = new ActionOutcome();
+                var listTemplates = new List<GetTemplatesFromCompanyModel>();
+                var routeCompanies = await _unitOfWork.Route_CompanyRepository.GetAll()
+                                                      .Where(_ => _.CompanyID == companyID)
+                                                      .Select(_ => _.Route_CompanyID)
+                                                      .ToListAsync();
 
+                var trips = await _unitOfWork.TripRepository
+                                            .GetAll()
+                                            .Include(_ => _.User)
+                                            .Include(_ => _.Route_Company)
+                                            .ThenInclude(_ => _.Route)
+                                            .ThenInclude(_ => _.FromCity)
+                                            .Include(_ => _.Route_Company)
+                                            .ThenInclude(_ => _.Route)
+                                            .ThenInclude(_ => _.ToCity)
+                                            .Where(_ => routeCompanies.Contains((Guid)_.Route_CompanyID) && _.IsTemplate == true)
+                                            .ToListAsync();
+                foreach (var trip in trips)
+                {
+                    var tripPictures = await _unitOfWork.TripPictureRepository.GetAll()
+                                                        .Where(_ => _.TripID == trip.TemplateID && _.Status == SD.GeneralStatus.ACTIVE)
+                                                        .Select(_ => _.ImageUrl)
+                                                        .ToListAsync();
+                    var tripUtilities = await _unitOfWork.Trip_UtilityRepository
+                                                         .GetAll()
+                                                         .Include(_ => _.Utility)
+                                                         .Where(_ => _.TripID == trip.TemplateID && _.Status == SD.GeneralStatus.ACTIVE)
+                                                         .Select(_ => new TripUtilityModel
+                                                         {
+                                                             UtilityName = _.Utility.Name,
+                                                             Description = _.Utility.Description
+                                                         })
+                                                         .ToListAsync();
+                    var getSeats = await _unitOfWork.TicketType_TripRepository
+                                                    .GetAll()
+                                                    .Include(_ => _.TicketType)
+                                                    .Where(_ => _.TripID == trip.TemplateID && _.Status == SD.GeneralStatus.ACTIVE)
+                                                    .Select(_ => new TripPriceSeat
+                                                    {
+                                                        SeatName = _.TicketType.Name,
+                                                        Price = _.Price,
+                                                        Quantity = _.Quantity
+                                                    })
+                                                    .ToListAsync();
+                    var stationsByRoute = await _unitOfWork.StationCompany_RouteRepository
+                                                           .GetAll()
+                                                           .Where(_ => _.RouteID == trip.Route_Company.RouteID
+                                                                    && _.Station_Company.CompanyID == trip.Route_Company.CompanyID && _.Status == SD.GeneralStatus.ACTIVE)
+                                                           .OrderBy(_ => _.OrderInRoute)
+                                                           .Select(_ => _.Station_CompanyID)
+                                                           .ToListAsync();
+                    var stationsByCompany = await _unitOfWork.Station_CompanyRepository
+                                                             .GetAll()
+                                                             .Include(_ => _.Station.City)
+                                                             .Where(_ => stationsByRoute.Contains(_.Station_CompanyID)
+                                                                           && _.Status.Trim().Equals(SD.GeneralStatus.ACTIVE))
+                                                             .Include(_ => _.Station)
+                                                             .Select(_ => new TripStationModel
+                                                             {
+                                                                 StationID = _.StationID,
+                                                                 StationName = _.Station.Name,
+                                                                 AtCity = _.Station.City.Name,
+                                                             })
+                                                             .ToListAsync();
+                    var template = new GetTemplatesFromCompanyModel
+                    {
+                        TemplateID = trip.TemplateID,
+                        FromCity = trip.Route_Company.Route.FromCity.Name,
+                        ToCity = trip.Route_Company.Route.ToCity.Name,
+                        StartLocation = trip.Route_Company.Route.StartLocation,
+                        EndLocation = trip.Route_Company.Route.EndLocation,
+                        ImageUrls = tripPictures,
+                        TripStationModels = stationsByCompany,
+                        TripPriceSeats = getSeats,
+                        TripUtilityModels = tripUtilities,
+                        Status = trip.Status,
+                    };
+                    listTemplates.Add(template);
+                }
+                result.Result = listTemplates;
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
         public async Task<List<GetCompanyModel>> GetAllActiveCompanies()
         {
             try

@@ -11,6 +11,7 @@ namespace SWD.TicketBooking.Service.Services
     {
         Task<List<GetCompanyModel>> GetAllActiveCompanies();
         Task<GetCompanyModel> GetCompanyById(Guid id);
+        Task<ActionOutcome> GetTemplatesFromCompany(Guid companyID);
         Task<int> CreateCompany(CreateCompanyModel model);
         Task<int> UpdateCompany(Guid companyId, CreateCompanyModel model);
         Task<int> ChangeStatus(Guid companyId, string status);

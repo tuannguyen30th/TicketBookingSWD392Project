@@ -23,6 +23,7 @@ namespace SWD.TicketBooking.API.Controllers
             _mapper = mapper;
         }
 
+
         [AllowAnonymous]
         [HttpGet("managed-companies")]
         public async Task<IActionResult> GetAllActiveCompanies()
@@ -40,7 +41,13 @@ namespace SWD.TicketBooking.API.Controllers
             var rs = _mapper.Map<GetCompanyResponse>(company);
             return Ok(rs);
         }
-
+        [AllowAnonymous]
+        [HttpGet("managed-companies/{companyID}/templates")]
+        public async Task<IActionResult> GetTemplatesFromCompany(Guid companyID)
+        {
+            var companies = await _companyService.GetTemplatesFromCompany(companyID);
+            return Ok(companies);
+        }
         [AllowAnonymous]
         [HttpPost("managed-companies")]
         public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyRequest req)

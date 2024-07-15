@@ -12,5 +12,6 @@ namespace SWD.TicketBooking.Service.Dtos
     {
         public Guid StationID { get; set; }
         public string? Name { get; set; }
+        public int Indexdd { get; set; }
     }
 }
