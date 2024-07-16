@@ -41,8 +41,8 @@ namespace SWD.TicketBooking.Service.Services
                                 .ToListAsync();
 
                 var currentDate = DateTime.Now;
-                var startOfThisMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-                var endOfThisMonth = startOfThisMonth.AddMonths(1).AddDays(-1);
+                var currentMonth = DateTime.Now.Month;
+                var currentYear = DateTime.Now.Year;
 
                 var allTicketDetails = await _unitOfWork.TicketDetailRepository
                                                         .GetAll()
@@ -54,8 +54,8 @@ namespace SWD.TicketBooking.Service.Services
                 var allTickets = await _unitOfWork.BookingRepository
                                                      .GetAll()
                                                      .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING) &&
-                                                                 _.BookingTime >= startOfThisMonth &&
-                                                                 _.BookingTime <= endOfThisMonth &&
+                                                                 _.BookingTime.Value.Month == currentMonth &&
+                                                                 _.BookingTime.Value.Year == currentYear &&
                                                                  allTicketDetails.Contains(_.BookingID) &&
                                                                  allTrips.Select(_ => _.TripID).Contains((Guid)_.TripID))
                                                      .ToListAsync();
@@ -156,7 +156,7 @@ namespace SWD.TicketBooking.Service.Services
                     PopularRoutes = popularRoutes,
                     TotalRoutes = allRoutes.Count(),
                     TotalTrips = allTrips.Count(),
-                    TotalBookingsInMonth = (int)allTickets.Sum(_ => _.Quantity),
+                    TotalBookingsInMonth = allTickets.Count(),
                     MonthlyRevenue = monthlyRevenue,
                     YearlyRevenue = (double)yearlyRevenue
                 };
@@ -184,7 +184,7 @@ namespace SWD.TicketBooking.Service.Services
                                                           .Where(_ => _.Booking.BookingTime.HasValue &&
                                                                       _.Booking.BookingTime.Value.Month == currentMonth &&
                                                                       _.Booking.BookingTime.Value.Year == currentYear &&
-                                                                      _.Status.Equals(SD.Booking_TicketStatus.UNUSED_TICKET))
+                                                                      _.Status.Equals(SD.Booking_TicketStatus.USED_TICKET))
                                                           .Count();
                 var totalUsers = _unitOfWork.UserRepository
                                             .GetAll()
