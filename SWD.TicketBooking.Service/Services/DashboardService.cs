@@ -176,7 +176,10 @@ namespace SWD.TicketBooking.Service.Services
                 var currentYear = DateTime.Now.Year;
                 var totalRevenueInMoth = await _unitOfWork.BookingRepository
                                                           .GetAll()
-                                                          .Where(_ => _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
+                                                          .Where(_ => _.BookingTime.HasValue &&
+                                                                      _.BookingTime.Value.Month == currentMonth &&
+                                                                      _.BookingTime.Value.Year == currentYear &&
+                                                                       _.PaymentStatus.Equals(SD.BookingStatus.PAYING_BOOKING))
                                                           .SumAsync(_ => _.TotalBill);
                 var totalTicketBookedInMonth = _unitOfWork.TicketDetailRepository
                                                           .GetAll()
