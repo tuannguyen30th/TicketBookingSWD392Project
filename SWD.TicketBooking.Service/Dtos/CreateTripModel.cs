@@ -83,7 +83,7 @@ namespace SWD.TicketBooking.Service.Dtos
 
             if (createModel.TicketType_TripModels.Count == 2)
             {
-                var ticketTypes = new List<string> { "HÀNG ĐẦU", "HÀNG CUỐI" };
+                var ticketTypes = new List<string> { "HÀNG ĐẦU", "HÀNG SAU" };
 
                 foreach (var ticketType in createModel.TicketType_TripModels)
                 {
@@ -94,7 +94,7 @@ namespace SWD.TicketBooking.Service.Dtos
 
                     if (!ticketTypes.Contains(checkName))
                     {
-                        return (false, "NẾU LÀ HAI LOẠI GHẾ THÌ BẮT BUỘC PHẢI LÀ HÀNG ĐẦU VÀ HÀNG CUỐI!");
+                        return (false, "NẾU LÀ HAI LOẠI GHẾ THÌ BẮT BUỘC PHẢI LÀ HÀNG ĐẦU VÀ HÀNG SAU!");
                     }
                 }
             }

@@ -1065,7 +1065,7 @@ namespace SWD.TicketBooking.Service.Services
             try
             {
                 var trip = await _unitOfWork.TripRepository.GetAll()
-                                                           .Where(_ => _.TripID.Equals(tripID)/* && DateTime.Now < _.StartTime*/ && _.Status.Equals(SD.GeneralStatus.ACTIVE))
+                                                           .Where(_ => _.TripID.Equals(tripID) && _.Status.Equals(SD.GeneralStatus.ACTIVE))
                                                            .FirstOrDefaultAsync();
                 if (trip == null)
                 {
@@ -1089,7 +1089,7 @@ namespace SWD.TicketBooking.Service.Services
 
                 foreach (var existingTrip in checkExistTemplateInTime)
                 {
-                    if (updateTripModel.StartTime < existingTrip.EndTime && updateTripModel.EndTime > existingTrip.StartTime)
+                    if (updateTripModel.StartTime <= existingTrip.EndTime && updateTripModel.EndTime >= existingTrip.StartTime)
                     {
                         throw new BadRequestException("KHUNG THỜI GIAN CHUYẾN XE NÀY BỊ TRÙNG LẶP VỚI MỘT CHUYẾN XE KHÁC TRONG CÙNG NGÀY!");
                     }
