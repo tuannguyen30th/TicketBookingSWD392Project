@@ -65,6 +65,8 @@ namespace SWD.TicketBooking.Service.Services
                 throw new Exception(ex.Message, ex);
             }
         }
+
+       
         public async Task<UserModel> GetUserByEmailForOTP(string email)
         {
             try
